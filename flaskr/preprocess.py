@@ -27,6 +27,7 @@ bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'pkl'])
 
 UPLOAD_FOLDER = "D:\\Campus\\Semester 8\\FYP\\Web App Dev\\FYP\\Alz-App\\flaskr\\upload\\"
+ANNOTATION_TBL = UPLOAD_FOLDER + "AnnotationTbls\\GPL570-55999.csv"
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -40,12 +41,23 @@ def index():
 def view():
 
 	if(current_app.config['APP_ALZ'].df != ''):
-		df = PreProcess.getDF(current_app.config['APP_ALZ'].df.path)
+		df = PreProcess.mergeDF(current_app.config['APP_ALZ'].df.path , ANNOTATION_TBL)
+		# df = PreProcess.getDF(current_app.config['APP_ALZ'].df.path)
+		current_app.config['APP_ALZ'].df.setDF(df) #merge df
 
 		return render_template("preprocess/tableView.html", tables=[df.to_html(classes='data')], titles=df.columns.values)
 
 	else:
 		return redirect('/pre')
+
+@bp.route("/3")
+def norm():
+	x = current_app.config['APP_ALZ'].df
+	if(x != ''):
+		df = PreProcess.step3(x.df)
+		return render_template("preprocess/tableView.html", tables=[df.to_html(classes='data')], titles=df.columns.values)
+	else:
+ 		return redirect('/pre')
 
 @bp.route('/', methods=['POST'])
 def upload_file():
