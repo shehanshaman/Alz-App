@@ -23,7 +23,7 @@ class PreProcess:
 		probes = PreProcess.getProbeDF(probe_path)
 		df_merge = pd.merge(df_T, probes, on='ID')
 
-		return df_merge.head()
+		return df_merge
 
 	def rmNullRows(df_merge):
 		df_merge_rm_null = df_merge.dropna(how='any',axis=0)
@@ -57,4 +57,12 @@ class PreProcess:
 		df_merge_rm_null_float = PreProcess.df2float(df_merge_rm_null)
 		df_symbol = PreProcess.dfNormSKlearn(df_merge_rm_null_float, df_merge_rm_null)
 
-		return df_symbol.head()
+		return df_symbol
+
+	def probe2Symbol(df_symbol):
+		df_avg_symbol = df_symbol.groupby(['Gene Symbol']).agg([np.average])
+		df_avg_symbol.reset_index(drop=False, inplace=True)
+		# df_avg_symbol = df_avg_symbol.drop(['index'], axis = 1)
+		df_avg_symbol.columns = df_symbol.columns
+
+		return df_avg_symbol

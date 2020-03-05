@@ -43,9 +43,9 @@ def view():
 	if(current_app.config['APP_ALZ'].df != ''):
 		df = PreProcess.mergeDF(current_app.config['APP_ALZ'].df.path , ANNOTATION_TBL)
 		# df = PreProcess.getDF(current_app.config['APP_ALZ'].df.path)
-		current_app.config['APP_ALZ'].df.setDF(df) #merge df
+		current_app.config['APP_ALZ'].df.setMergeDF(df) #merge df
 
-		return render_template("preprocess/tableView.html", tables=[df.to_html(classes='data')], titles=df.columns.values)
+		return render_template("preprocess/tableView.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
 
 	else:
 		return redirect('/pre')
@@ -54,8 +54,19 @@ def view():
 def norm():
 	x = current_app.config['APP_ALZ'].df
 	if(x != ''):
-		df = PreProcess.step3(x.df)
-		return render_template("preprocess/tableView.html", tables=[df.to_html(classes='data')], titles=df.columns.values)
+		df = PreProcess.step3(x.merge_df)
+		x.setSymbolDF(df)
+		return render_template("preprocess/tableView.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+	else:
+ 		return redirect('/pre')
+
+@bp.route("/probe2symbol")
+def probe2symbol():
+	x = current_app.config['APP_ALZ'].df
+	if(x != ''):
+		df = PreProcess.probe2Symbol(x.symbol_df)
+		x.setAvgSymbolDF(df)
+		return render_template("preprocess/tableView.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
 	else:
  		return redirect('/pre')
 
