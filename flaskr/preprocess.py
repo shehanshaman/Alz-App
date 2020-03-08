@@ -1,25 +1,21 @@
 from flask import Blueprint
 from flask import flash
-from flask import g
 from flask import redirect
 from flask import render_template, current_app
 from flask import request
-from flask import url_for
-from werkzeug.exceptions import abort
-
-from flaskr.auth import login_required
-from flaskr.db import get_db
 
 import os
-import urllib.request
-from flask import Flask
 from werkzeug.utils import secure_filename
 
 from .classes.dfClass import DF #file upload instance
 from .classes.preProcessClass import PreProcess
+from .classes.featureReductionClass import FeatureReduction
 
-import pandas as pd
-import numpy as np
+import io
+import random
+from flask import Response
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
@@ -70,6 +66,13 @@ def probe2symbol():
     else:
         return redirect('/pre')
 
+@bp.route("/fr")
+def FR():
+    df = PreProcess.getDF(UPLOAD_FOLDER + "\\other\\GSE5281_DE_2311.plk")
+    df_200 = FeatureReduction.getSelectedFeatures(df, 200)
+    # print(df_200.shape)
+    return render_template("preprocess/feRe.html", posts="")
+
 @bp.route('/', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
@@ -93,3 +96,12 @@ def upload_file():
         else:
             flash('Allowed file types are txt, pdf, png, jpg, jpeg, gif')
             return redirect(request.url)
+
+@bp.route('/plot_fr.png')
+def plot_png():
+    df = PreProcess.getDF(UPLOAD_FOLDER + "\\other\\GSE5281_DE_2311.plk")
+    selectedFeatures = FeatureReduction.getScoresFromUS(df)
+    fig = FeatureReduction.create_figure(selectedFeatures)
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')

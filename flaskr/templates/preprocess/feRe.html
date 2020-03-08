@@ -1,21 +1,15 @@
-<!doctype html>
-<title>Python Flask File Upload Example</title>
-<h2>Select a file to upload</h2>
-<p>
-	{% with messages = get_flashed_messages() %}
-	  {% if messages %}
-		<ul class=flashes>
-		{% for message in messages %}
-		  <li>{{ message }}</li>
-		{% endfor %}
-		</ul>
-	  {% endif %}
-	{% endwith %}
-</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feature Reduction</title>
+</head>
+<body>
+<img src="/pre/plot_fr.png" alt="my plot">
+
 <form method="post" action="/pre/" enctype="multipart/form-data">
     <dl>
 		<p>
-			<input type="file" name="file" autocomplete="off" required>
 			<label for="anno_tbl">ANNOTATION TABLE:</label>
 		    <input name="anno_tbl" id="anno_tbl" value="{{ request.form['anno_tbl'] }}" required>
 		    <label for="column_selection">COLUMN AVERAGE:</label>
@@ -26,3 +20,5 @@
 		<input type="submit" value="Submit">
 	</p>
 </form>
+</body>
+</html>
