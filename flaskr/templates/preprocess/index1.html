@@ -1,0 +1,28 @@
+<!doctype html>
+<title>Python Flask File Upload Example</title>
+<h2>Select a file to upload</h2>
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+</p>
+<form method="post" action="/pre/" enctype="multipart/form-data">
+    <dl>
+		<p>
+			<input type="file" name="file" autocomplete="off" required>
+			<label for="anno_tbl">ANNOTATION TABLE:</label>
+		    <input name="anno_tbl" id="anno_tbl" value="{{ request.form['anno_tbl'] }}" required>
+		    <label for="column_selection">COLUMN AVERAGE:</label>
+		    <input name="column_selection" id="column_selection" value="{{ request.form['column_selection'] }}" required>
+		</p>
+    </dl>
+    <p>
+		<input type="submit" value="Submit">
+	</p>
+</form>
