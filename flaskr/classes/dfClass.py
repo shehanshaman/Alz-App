@@ -13,6 +13,9 @@ class DF:
     def setAvgSymbolDF(self, df):
         self.avg_symbol_df = df
 
+    def setReduceDF(self, df):
+        self.reduce_df = df
+
 # def getAnnoTblName(self):
 # 	return self.anno_tbl
 
