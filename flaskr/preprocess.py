@@ -35,7 +35,7 @@ def allowed_file(filename):
 @bp.route("/")
 def index():
     print(current_app.config['APP_ALZ'].df)
-    return render_template("preprocess/index.html", posts="")
+    return render_template("preprocess/index2.html", posts="")
 
 @bp.route("/view")
 def view():
@@ -45,7 +45,7 @@ def view():
         # df = PreProcess.getDF(current_app.config['APP_ALZ'].df.path)
         current_app.config['APP_ALZ'].df.setMergeDF(df) #merge df
 
-        return render_template("preprocess/tableView.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+        return render_template("preprocess/index2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
 
     else:
         return redirect('/pre')
@@ -74,10 +74,10 @@ def probe2symbol():
 def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
-        if 'file' not in request.files:
+        if 'chooseFile' not in request.files:
             flash('No file part')
             return redirect(request.url)
-        file = request.files['file']
+        file = request.files['chooseFile']
         if file.filename == '':
             flash('No file selected for uploading')
             return redirect(request.url)
