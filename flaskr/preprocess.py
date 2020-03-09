@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 from .classes.dfClass import DF #file upload instance
 from .classes.preProcessClass import PreProcess
 from .classes.featureReductionClass import FeatureReduction
+from .classes.featureSelectionClass import FeatureSelection
 
 import io
 import random
@@ -68,14 +69,47 @@ def probe2symbol():
 
 @bp.route("/fr")
 def FR():
-    df = PreProcess.getDF(UPLOAD_FOLDER + "\\other\\GSE5281_DE_2311.plk")
-    df_200 = FeatureReduction.getSelectedFeatures(df, 200)
     # print(df_200.shape)
     return render_template("preprocess/feRe.html", posts="")
+
+@bp.route("/fr" , methods=['POST'])
+def FR_selected():
+    if request.method == 'POST':
+        features_count = request.form['features_count']
+        df = PreProcess.getDF(UPLOAD_FOLDER + "\\other\\GSE5281_DE_2311.plk")
+        df_200 = FeatureReduction.getSelectedFeatures(df, int(features_count))
+
+        #testing only
+        df_obj_tmp = DF("a", "b", "c")
+        df_obj_tmp.setReduceDF(df_200)
+        current_app.config['APP_ALZ'].df = df_obj_tmp
+
+        return redirect('/pre/fs')
+
+    return redirect('/')
+
+@bp.route("/fs")
+def FS():
+    return render_template("preprocess/fs.html", posts="")
+
+@bp.route("/fs" , methods=['POST'])
+def FS_post():
+    x = current_app.config['APP_ALZ'].df
+
+    if request.method == 'POST':
+        features_count = request.form['features_count']
+        df_pca = FeatureSelection.PCA(x.reduce_df, int(features_count))
+        df_rf = FeatureSelection.RandomForest(x.reduce_df, int(features_count))
+        df_et = FeatureSelection.ExtraTrees(x.reduce_df, int(features_count))
+        return render_template("preprocess/tableView.html", tables=[df_et.head().to_html(classes='data')],
+                               titles=df_et.head().columns.values)
+
+    return render_template("preprocess/fs.html", posts="")
 
 @bp.route('/', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
+        anno_tbl = request.form["anno_tbl"]
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')

@@ -7,13 +7,11 @@
 <body>
 <img src="/pre/plot_fr.png" alt="my plot">
 
-<form method="post" action="/pre/" enctype="multipart/form-data">
+<form method="post" action="/pre/fr" enctype="multipart/form-data">
     <dl>
 		<p>
-			<label for="anno_tbl">ANNOTATION TABLE:</label>
-		    <input name="anno_tbl" id="anno_tbl" value="{{ request.form['anno_tbl'] }}" required>
-		    <label for="column_selection">COLUMN AVERAGE:</label>
-		    <input name="column_selection" id="column_selection" value="{{ request.form['column_selection'] }}" required>
+			<label for="features_count">SELECTED FEATURES</label>
+		    <input name="features_count" id="features_count" value="{{ request.form['features_count'] }}" required>
 		</p>
     </dl>
     <p>
