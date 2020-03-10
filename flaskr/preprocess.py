@@ -32,8 +32,10 @@ def allowed_file(filename):
 @bp.route("/")
 def index():
     print(current_app.config['APP_ALZ'].df)
-    return render_template("preprocess/index2.html", posts="")
+    return render_template("preprocess/step-1.html", posts="")
+    #return render_template("preprocess/index2.html", posts="")
 
+#first step table show
 @bp.route("/view")
 def view():
 
@@ -42,35 +44,50 @@ def view():
         # df = PreProcess.getDF(current_app.config['APP_ALZ'].df.path)
         current_app.config['APP_ALZ'].df.setMergeDF(df) #merge df
 
-        return render_template("preprocess/index2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+        return render_template("preprocess/step-2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
 
     else:
         return redirect('/pre')
 
-@bp.route("/3")
+#normalization and null remove
+@bp.route("/step-3", methods=['POST'])
 def norm():
     x = current_app.config['APP_ALZ'].df
     if(x != ''):
         df = PreProcess.step3(x.merge_df)
         x.setSymbolDF(df)
-        return render_template("preprocess/tableView.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+        #return render_template("preprocess/index2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+        return redirect('/pre/probe2symbol')
     else:
         return redirect('/pre')
 
+#step 2
+@bp.route("/step-2")
+def indexstep1():
+    return render_template("preprocess/step-3.html", posts="")
+
+#step 4 to 5
 @bp.route("/probe2symbol")
 def probe2symbol():
     x = current_app.config['APP_ALZ'].df
     if(x != ''):
         df = PreProcess.probe2Symbol(x.symbol_df)
         x.setAvgSymbolDF(df)
-        return render_template("preprocess/tableView.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+        return render_template("preprocess/step-4.html", tablesstep4=[df.head().to_html(classes='data')], titlesstep4=df.head().columns.values)
     else:
         return redirect('/pre')
 
+#step 4
+@bp.route("/step-5")
+def indexstep2():
+    return render_template("preprocess/step-5.html", posts="")
+
+#step 6
 @bp.route("/fr")
 def FR():
     # print(df_200.shape)
     return render_template("preprocess/feRe.html", posts="")
+
 
 @bp.route("/fr" , methods=['POST'])
 def FR_selected():
@@ -88,6 +105,7 @@ def FR_selected():
 
     return redirect('/')
 
+#step 7
 @bp.route("/fs")
 def FS():
     return render_template("preprocess/fs.html", posts="")
@@ -106,6 +124,7 @@ def FS_post():
 
     return render_template("preprocess/fs.html", posts="")
 
+#file upload
 @bp.route('/', methods=['POST'])
 def upload_file():
     if request.method == 'POST':

@@ -153,6 +153,7 @@
 
           <h3 id="h3-head-2" class="card__title" style="text-align: center;">DATA-SET BEFORE PRE-PROCESSING</h3> 
         </div>
+
         <div style="overflow: auto;">
           {% for table in tables %}
                       {{titles[loop.index]}}
@@ -179,61 +180,55 @@
           <h3 id="h3-head-3" class="card__title" style="text-align: center;">DATA PRE-PROCESSING</h3>  
         </div>
 
-          <div class="row" style="margin-top: 40px;">
-            <div class="col-sm-6">
-              <h5 id="h3-head-1" class="card__title" style="text-align: center;">NORMALIZATION METHOD:</h5>
-            </div>
-            <div class="col-sm-6">
-              <div class="md-form">
-                <div class="dropdown">
-                  <button class="dLabel dropdown-select-normalize-method" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Select
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-normalize-method" aria-labelledby="dLabel">
-                    <li>Early Morning (1AM-7AM)</li>
-                    <li>Late Morning (8AM-11AM)</li>
-                    <li>Afternoon (12PM-3PM)</li>
-                    <li>Early Evening (4PM-7PM)</li>
-                    <li>Late Evening (8PM-12PM)</li>
-                  </ul>
-                </div>            
-              </div>          
-            </div> 
-          </div>
+          <form method="post" action="/pre/step-3" enctype="multipart/form-data">
 
-          <div class="row" style="margin-top: 40px;">
-            <div class="col-sm-6">
-              <h5 id="h3-head-1" class="card__title" style="text-align: center;">NULL VALUE REMOVING METHOD:</h5>
+            <div class="row" style="margin-top: 40px;">
+              <div class="col-sm-6">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">NORMALIZATION METHOD:</h5>
+              </div>
+              <div class="col-sm-6">
+                <div class="md-form">
+                    <select class="form-control" id="norm_mthd" name="norm_mthd">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>            
+                </div>          
+              </div> 
             </div>
-            <div class="col-sm-6">
-              <div class="md-form">
-                <div class="dropdown">
-                  <button class="dLabel dropdown-select-null-value" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Select
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-null-value" aria-labelledby="dLabel">
-                    <li>Early Morning (1AM-7AM)</li>
-                    <li>Late Morning (8AM-11AM)</li>
-                    <li>Afternoon (12PM-3PM)</li>
-                    <li>Early Evening (4PM-7PM)</li>
-                    <li>Late Evening (8PM-12PM)</li>
-                  </ul>
-                </div>            
-              </div>          
-            </div> 
-          </div>
 
-          <div class="row" style="margin-top: 40px;">
-            <div class="col-sm-5"></div>
-            <div class='form-field col-sm-6 step-3-default'>
-              <p><input name='checkbox-3-default' type="checkbox" class="filled-in" id="checkbox-3-default" value='checkbox-3-default'/>
-                <label for="checkbox-3-default">DEFAULT METHODS</label>
-              </p>
+            <div class="row" style="margin-top: 40px;">
+              <div class="col-sm-6">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">NULL VALUE REMOVING METHOD:</h5>
+              </div>
+              <div class="col-sm-6">
+                <div class="md-form">
+                    <select class="form-control" id="null_rmv" name="null_rmv">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>             
+                </div>          
+              </div> 
             </div>
-            <div class="col-sm-1"></div>
-          </div>
+
+            <div class="row" style="margin-top: 40px;">
+              <div class="col-sm-5"></div>
+              <div class='form-field col-sm-6 step-3-default'>
+                <p><input name='checkbox-3-default' type="checkbox" class="filled-in" id="checkbox-3-default" value='checkbox-3-default'/>
+                  <label for="checkbox-3-default">DEFAULT METHODS</label>
+                </p>
+              </div>
+              <div class="col-sm-1"></div>
+            </div>
+
+            <center>
+            <div class="row" style="margin-top: 40px;">
+              <div class="col-sm-12">
+                <input class="waves-effect waves-dark btn" type="submit" value="Submit">
+              </div>
+            </div>
+            </center>
+
+          </form>
 
           <hr class="line-hr">
 
@@ -251,6 +246,14 @@
         <div class="step-content">
         <div class="row">
           <h3 id="h3-head-2" class="card__title" style="text-align: center;">DATA-SET AFTER PRE-PROCESSING</h3>  
+        </div>
+
+        <div style="overflow: auto;">
+          {% for table in tablesstep4 %}
+                      {{titlesstep4[loop.index]}}
+                      {{ table|safe }}
+          {% endfor %}
+
         </div>
 
         <hr class="line-hr">
