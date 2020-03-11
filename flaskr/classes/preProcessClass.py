@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 import pandas as pd
+from flask import jsonify
 from sklearn import preprocessing
 
 class PreProcess:
@@ -69,3 +70,18 @@ class PreProcess:
 		df_avg_symbol.columns = df_symbol.columns
 
 		return df_avg_symbol
+
+	def getDfDetails(df):
+		# df.set_index('ID', inplace=True)
+		# df = df.T
+		# print(df.head())
+		# x = df.drop("class",1)
+		x =df
+		shape = x.shape
+		min = x.min().min()
+		max = x.max().max()
+		unique_probes = x['ID'].unique().shape
+		null_count = x.isnull().sum()
+
+		ds = {'shape': shape, 'min': min, 'max': max, 'unique_probes': unique_probes, 'null_count':null_count}
+		return jsonify(ds)
