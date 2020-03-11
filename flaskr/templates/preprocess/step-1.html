@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+
+  <title>FYP</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">  
+
+  <!--bootstrap-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">  
+
+  <!-- Materializecss compiled and minified CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
+
+  <!--Import Google Icon Font-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+</head>
+
+<style type="text/css">
+
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+</style>
+
+<body style="background-color: #f3f6f9;">
+  
+  <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <form method="post" action="/pre/" enctype="multipart/form-data">
+
+          <div class="step-content">
+          <div class="row head-word">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose your basic dataset</h3> 
+          </div>
+
+          <div class="where-you-like" style="margin-top: 40px;">
+
+            <div class="row">
+              <div class="col-sm-6">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">DATASET:</h5>
+              </div>
+              <div class="col-sm-6">
+                <div class="file-upload">
+                  <div class="file-select">
+                    <div class="file-select-button" id="fileName">Choose File</div>
+                    <div class="file-select-name" id="noFile">No file choosen...</div> 
+                    <input type="file" name="chooseFile" id="chooseFile" required>
+                  </div>
+                </div>
+              </div> 
+            </div>
+
+            <div class="row" style="margin-top: 40px;">
+              <div class="col-sm-6">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">ANNOTATION TABLE:</h5>
+              </div>
+              <div class="col-sm-6">
+                <div class="md-form">
+                  <select class="form-control" id="anno_tbl" name="anno_tbl">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                  </select>           
+                </div>          
+              </div> 
+            </div>
+
+            <div class="row" style="margin-top: 40px;">
+              <div class="col-sm-6">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">COLUMN AVERAGE:</h5>
+              </div>
+              <div class="col-sm-6">
+                <div class="md-form">
+                  <select class="form-control" id="column_selection" name="column_selection">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                  </select>             
+                </div>          
+              </div> 
+            </div>
+            <center>
+            <div class="row" style="margin-top: 40px;">
+              <div class="col-sm-12">
+                <input class="waves-effect waves-dark btn" type="submit" value="Submit">
+              </div>
+            </div>
+            </center>
+          </div>
+
+      </form>
+
+  </div>
+
+</body>
+</html>
+ 
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!--dropdown-->
+<script type="text/javascript" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'></script>
+
+<script type="text/javascript" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous" src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
+
+<!--main navbar-->
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+
+<script type="text/javascript">
+
+// $('.dropdown-menu-annotation-table li').on('click', function() {
+//   var getValue = $(this).text();
+//   $('.dropdown-select-annotation-table').text(getValue);
+// });
+
+// $('.dropdown-menu-column-avg li').on('click', function() {
+//   var getValue = $(this).text();
+//   $('.dropdown-select-column-avg').text(getValue);
+// });
+</script>
+
