@@ -11,6 +11,9 @@ class PreProcess:
 		# df = df.iloc[[0, 2], [1, 3]]
 		return df
 
+	def saveDF(df, path):
+		df.to_pickle(path)
+
 	def getProbeDF(name):
 		probes = pd.read_csv(name)
 		probes = probes[['Gene Symbol', 'ID']]

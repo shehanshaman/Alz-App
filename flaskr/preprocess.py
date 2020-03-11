@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, session
 from flask import flash
 from flask import redirect
 from flask import render_template, current_app
@@ -18,6 +18,9 @@ from flask import Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
+import json
+import pandas as pd
+
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'pkl'])
@@ -25,24 +28,32 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'pkl'])
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = ROOT_PATH + "\\upload\\"
 ANNOTATION_TBL = UPLOAD_FOLDER + "AnnotationTbls\\GPL570-55999.csv"
+TMP_PATH = ROOT_PATH + "\\upload\\tmp\\"
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @bp.route("/")
 def index():
-    print(current_app.config['APP_ALZ'].df)
+    # print(session['df'].df)
     return render_template("preprocess/step-1.html", posts="")
     #return render_template("preprocess/index2.html", posts="")
 
 #first step table show
 @bp.route("/view")
 def view():
+    x = json2df('user')
+    if x is not None:
 
-    if(current_app.config['APP_ALZ'].df != ''):
-        df = PreProcess.mergeDF(current_app.config['APP_ALZ'].df.path , ANNOTATION_TBL)
-        # df = PreProcess.getDF(current_app.config['APP_ALZ'].df.path)
-        current_app.config['APP_ALZ'].df.setMergeDF(df) #merge df
+        if x.merge_df is None:
+            df = PreProcess.mergeDF(x.path , ANNOTATION_TBL)
+            path = TMP_PATH+ "merge_" + x.file_name
+            PreProcess.saveDF(df, path)
+            x.setMergeDF(path) #merge df
+            # session["df"] = df.to_json()
+            df2session(x, 'user')
+        else:
+            df = PreProcess.getDF(x.merge_df)
 
         return render_template("preprocess/step-2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
 
@@ -52,30 +63,50 @@ def view():
 #normalization and null remove
 @bp.route("/step-3", methods=['POST'])
 def norm():
-    x = current_app.config['APP_ALZ'].df
-    if(x != ''):
-        df = PreProcess.step3(x.merge_df)
-        x.setSymbolDF(df)
-        #return render_template("preprocess/index2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
-        return redirect('/pre/probe2symbol')
-    else:
-        return redirect('/pre')
+    x = json2df('user')
+    if x is not None:
+        if x.merge_df is not None:
+            if x.symbol_df is None:
+                df = PreProcess.step3(PreProcess.getDF(x.merge_df))
+                #create symbol_df
+                path = TMP_PATH + "symbol_" + x.file_name
+                PreProcess.saveDF(df, path)
+                x.setSymbolDF(path)
+                df2session(x, 'user')
+            #return render_template("preprocess/index2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+            return redirect('/pre/probe2symbol')
+
+    return redirect('/pre')
 
 #step 2
 @bp.route("/step-2")
 def indexstep1():
-    return render_template("preprocess/step-3.html", posts="")
+    x = json2df('user')
+    if x is not None:
+        if x.merge_df is not None:
+
+            return render_template("preprocess/step-3.html", posts="")
+
+    return redirect('/pre')
 
 #step 4 to 5
 @bp.route("/probe2symbol")
 def probe2symbol():
-    x = current_app.config['APP_ALZ'].df
-    if(x != ''):
-        df = PreProcess.probe2Symbol(x.symbol_df)
-        x.setAvgSymbolDF(df)
-        return render_template("preprocess/step-4.html", tablesstep4=[df.head().to_html(classes='data')], titlesstep4=df.head().columns.values)
-    else:
-        return redirect('/pre')
+    x = json2df('user')
+    if x is not None:
+        if x.symbol_df is not None:
+            if x.avg_symbol_df is None:
+                df = PreProcess.probe2Symbol(PreProcess.getDF(x.symbol_df))
+
+                path = TMP_PATH + "avg_symbol_" + x.file_name
+                PreProcess.saveDF(df, path)
+                x.setAvgSymbolDF(path)
+                df2session(x, 'user')
+            else:
+                df = PreProcess.getDF(x.avg_symbol_df)
+            return render_template("preprocess/step-4.html", tablesstep4=[df.head().to_html(classes='data')], titlesstep4=df.head().columns.values)
+
+    return redirect('/pre')
 
 #step 4
 @bp.route("/step-5")
@@ -141,8 +172,14 @@ def upload_file():
             anno_tbl = request.form["anno_tbl"]
             column_selection = request.form["column_selection"]
             filename = secure_filename(file.filename)
-            df_obj = DF(os.path.join(UPLOAD_FOLDER, filename), anno_tbl, column_selection)
-            current_app.config['APP_ALZ'].df = df_obj
+            df_obj = DF(file_name= filename, path = os.path.join(UPLOAD_FOLDER, filename), anno_tbl = anno_tbl, col_sel_method = column_selection, merge_df = None,
+                        symbol_df = None, avg_symbol_df=None, reduce_df=None)
+            # current_app.config['APP_ALZ'].df = df_obj
+
+            json_data = json.dumps(df_obj.__dict__)
+            print(json_data)
+            session['user'] = json_data
+            print(DF(**json.loads(json_data)))
             file.save(df_obj.path)
             flash('File successfully uploaded')
             return redirect('/pre/view')
@@ -158,3 +195,12 @@ def plot_png():
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
+
+def json2df(df_name):
+    json_data = session[df_name]
+    df = DF(**json.loads(json_data))
+    return  df
+
+def df2session(obj, name):
+    json_data = json.dumps(obj.__dict__)
+    session[name] = json_data
