@@ -57,8 +57,7 @@ def view():
 
         return render_template("preprocess/step-2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
 
-    else:
-        return redirect('/pre')
+    return redirect('/pre')
 
 #normalization and null remove
 @bp.route("/step-3", methods=['POST'])
@@ -128,9 +127,12 @@ def FR_selected():
         df_200 = FeatureReduction.getSelectedFeatures(df, int(features_count))
 
         #testing only
-        df_obj_tmp = DF("a", "b", "c")
-        df_obj_tmp.setReduceDF(df_200)
-        current_app.config['APP_ALZ'].df = df_obj_tmp
+        # df_obj_tmp = DF("a", "b", "c")
+        x = json2df('user')
+        path = TMP_PATH + "reduce_" + x.file_name
+        PreProcess.saveDF(df_200, path)
+        x.setReduceDF(path)
+        df2session(x, 'user')
 
         return redirect('/pre/fs')
 
@@ -143,13 +145,13 @@ def FS():
 
 @bp.route("/fs" , methods=['POST'])
 def FS_post():
-    x = current_app.config['APP_ALZ'].df
+    x = json2df('user')
 
     if request.method == 'POST':
         features_count = request.form['features_count']
-        df_pca = FeatureSelection.PCA(x.reduce_df, int(features_count))
-        df_rf = FeatureSelection.RandomForest(x.reduce_df, int(features_count))
-        df_et = FeatureSelection.ExtraTrees(x.reduce_df, int(features_count))
+        df_pca = FeatureSelection.PCA(PreProcess.getDF(x.reduce_df), int(features_count))
+        df_rf = FeatureSelection.RandomForest(PreProcess.getDF(x.reduce_df), int(features_count))
+        df_et = FeatureSelection.ExtraTrees(PreProcess.getDF(x.reduce_df), int(features_count))
         return render_template("preprocess/tableView.html", tables=[df_et.head().to_html(classes='data')],
                                titles=df_et.head().columns.values)
 
@@ -197,9 +199,13 @@ def plot_png():
     return Response(output.getvalue(), mimetype='image/png')
 
 def json2df(df_name):
-    json_data = session[df_name]
-    df = DF(**json.loads(json_data))
-    return  df
+    if session.get(df_name):
+        json_data = session[df_name]
+        df = DF( ** json.loads(json_data))
+        return df
+
+    return None
+
 
 def df2session(obj, name):
     json_data = json.dumps(obj.__dict__)
