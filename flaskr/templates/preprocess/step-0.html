@@ -3,11 +3,11 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>FYP</title>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">  
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
   <!--bootstrap-->
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">  
@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
 
 </head>
+
 
 <body style="background-color: #f3f6f9;">
 
@@ -52,10 +53,13 @@
     {% endif %}
 
   </div>
-  
+
+</div>
+
+
   <div id="mainDataInterface-id" class="container mainDataInterface">
 
-        <form method="post" action="/pre/" enctype="multipart/form-data">
+        <form method="post" action="/pre/upload/" enctype="multipart/form-data">
 
           <div class="step-content">
               <div class="row head-word">
@@ -65,56 +69,28 @@
 
           <div class="where-you-like" style="margin-top: 40px;">
 
-            <div class="row" style="margin-top: 40px;">
+            <div class="row">
               <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">DATASET:</h5>
               </div>
               <div class="col-sm-6">
-                <div class="md-form">
-                  <select class="form-control" id="available_files" name="available_files">
-                      {% for name in available_list %}
-                      <option value="{{ name }}">{{ name }}</option>
-                      {% endfor %}
-                  </select>
+                <div class="file-upload">
+                  <div class="file-select">
+                    <div class="file-select-button" id="fileName">Choose File</div>
+                    <div class="file-select-name" id="noFile">No file choosen...</div>
+                    <input type="file" name="chooseFile" id="chooseFile" required>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">ANNOTATION TABLE:</h5>
-              </div>
-              <div class="col-sm-6">
-                <div class="md-form">
-                  <select class="form-control" id="anno_tbl" name="anno_tbl">
-                      {% for name in annotation_list %}
-                      <option value="{{ name }}">{{ name }}</option>
-                      {% endfor %}
-                  </select>           
-                </div>          
-              </div> 
-            </div>
 
-            <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">COLUMN AVERAGE:</h5>
-              </div>
-              <div class="col-sm-6">
-                <div class="md-form">
-                  <select class="form-control" id="column_selection" name="column_selection">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                  </select>             
-                </div>          
-              </div> 
-            </div>
-            <center>
             <div class="row" style="margin-top: 40px;">
               <div class="col-sm-12">
                 <input class="waves-effect waves-dark btn" type="submit" value="Submit">
               </div>
             </div>
-            </center>
+
           </div>
 
         </form>
@@ -142,7 +118,7 @@
 <!--main navbar-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+{#<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>#}
 
 <script type="text/javascript">
 

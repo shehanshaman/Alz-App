@@ -21,49 +21,38 @@
 
 </head>
 
-<style type="text/css">
-
-.slidecontainer {
-  width: 100%;
-}
-
-.slider {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 15px;
-  border-radius: 5px;
-  background: #d3d3d3;
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
-}
-
-.slider:hover {
-  opacity: 1;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: #4CAF50;
-  cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: #4CAF50;
-  cursor: pointer;
-}
-
-</style>
 
 <body style="background-color: #f3f6f9;">
+
+<div class="nav">
+  <input type="checkbox" id="nav-check">
+  <div class="nav-header">
+    <div class="nav-title">
+      Alz
+    </div>
+  </div>
+  <div class="nav-btn">
+    <label for="nav-check">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+  </div>
+
+  <div class="nav-links">
+{#    <a href="" target="_blank">Home</a>#}
+{#    <a href="http://stackoverflow.com/users/4084003/" target="_blank">Stackoverflow</a>#}
+{#    <a href="https://in.linkedin.com/in/jonesvinothjoseph" target="_blank">LinkedIn</a>#}
+
+    {% if g.user %}
+        <span>{{ g.user['username'] }}</span>
+        <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% else %}
+        <a href="{{ url_for('auth.register') }}">Register</a>
+        <a href="{{ url_for('auth.login') }}">Log In</a>
+    {% endif %}
+
+  </div>
   
   <div id="mainDataInterface-id" class="container mainDataInterface">
 

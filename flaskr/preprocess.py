@@ -21,23 +21,40 @@ from matplotlib.figure import Figure
 import json
 import pandas as pd
 
+from flaskr.auth import login_required
+from flask import g
+
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'pkl'])
+ALLOWED_EXTENSIONS = set(['pkl'])
 
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = ROOT_PATH + "\\upload\\"
-ANNOTATION_TBL = UPLOAD_FOLDER + "AnnotationTbls\\GPL570-55999.csv"
+ANNOTATION_TBL = UPLOAD_FOLDER + "AnnotationTbls\\"
 TMP_PATH = ROOT_PATH + "\\upload\\tmp\\"
+USER_PATH = UPLOAD_FOLDER + "users\\"
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @bp.route("/")
+@login_required
 def index():
-    # print(session['df'].df)
-    return render_template("preprocess/step-1.html", posts="")
-    #return render_template("preprocess/index2.html", posts="")
+    list_names = []
+    annotation_list = []
+    path = USER_PATH + str(g.user["id"]) + "\\"
+    if not os.path.exists(path):
+        os.makedirs(path)
+        os.makedirs(path+"tmp\\")
+    for filename in os.listdir(path):
+        list_names.append(filename)
+
+    for filename in os.listdir(ANNOTATION_TBL):
+        annotation_list.append(filename)
+    # print(list_names)
+    list_names.remove("tmp")
+    return render_template("preprocess/step-1.html", available_list=list_names, annotation_list= annotation_list)
+
 
 #first step table show
 @bp.route("/view")
@@ -46,17 +63,14 @@ def view():
     if x is not None:
 
         if x.merge_df is None:
-            df = PreProcess.mergeDF(x.path , ANNOTATION_TBL)
-            path = TMP_PATH+ "merge_" + x.file_name
+            df = PreProcess.mergeDF(x.path , ANNOTATION_TBL + x.anno_tbl)
+            path = USER_PATH + str(g.user["id"]) + "\\tmp\\" + "merge_" + x.file_name
             PreProcess.saveDF(df, path)
             x.setMergeDF(path) #merge df
-            # session["df"] = df.to_json()
             df2session(x, 'user')
         else:
             df = PreProcess.getDF(x.merge_df)
 
-        # ds = PreProcess.getDfDetails(df)
-        # print(ds)
         return render_template("preprocess/step-2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
 
     return redirect('/pre')
@@ -70,7 +84,7 @@ def norm():
             if x.symbol_df is None:
                 df = PreProcess.step3(PreProcess.getDF(x.merge_df))
                 #create symbol_df
-                path = TMP_PATH + "symbol_" + x.file_name
+                path = USER_PATH + str(g.user["id"]) + "\\tmp\\" + "symbol_" + x.file_name
                 PreProcess.saveDF(df, path)
                 x.setSymbolDF(path)
                 df2session(x, 'user')
@@ -99,7 +113,7 @@ def probe2symbol():
             if x.avg_symbol_df is None:
                 df = PreProcess.probe2Symbol(PreProcess.getDF(x.symbol_df))
 
-                path = TMP_PATH + "avg_symbol_" + x.file_name
+                path = USER_PATH + str(g.user["id"]) + "\\tmp\\" + "avg_symbol_" + x.file_name
                 PreProcess.saveDF(df, path)
                 x.setAvgSymbolDF(path)
                 df2session(x, 'user')
@@ -159,36 +173,44 @@ def FS_post():
 
     return render_template("preprocess/fs.html", posts="")
 
-#file upload
+
 @bp.route('/', methods=['POST'])
-def upload_file():
+def create_object():
     if request.method == 'POST':
         anno_tbl = request.form["anno_tbl"]
-        # check if the post request has the file part
-        if 'chooseFile' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['chooseFile']
-        if file.filename == '':
-            flash('No file selected for uploading')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            anno_tbl = request.form["anno_tbl"]
-            column_selection = request.form["column_selection"]
-            filename = secure_filename(file.filename)
-            df_obj = DF(file_name= filename, path = os.path.join(UPLOAD_FOLDER, filename), anno_tbl = anno_tbl, col_sel_method = column_selection, merge_df = None,
-                        symbol_df = None, avg_symbol_df=None, reduce_df=None)
-            # current_app.config['APP_ALZ'].df = df_obj
+        column_selection = request.form["column_selection"]
+        available_file = request.form["available_files"]
 
+        path = USER_PATH + str(g.user["id"]) + "\\"
+
+        if anno_tbl and column_selection and available_file:
+            df_obj = DF(file_name=available_file, path=os.path.join(path, available_file), anno_tbl=anno_tbl,
+                        col_sel_method=column_selection, merge_df=None,
+                        symbol_df=None, avg_symbol_df=None, reduce_df=None)
             json_data = json.dumps(df_obj.__dict__)
-            print(json_data)
             session['user'] = json_data
-            print(DF(**json.loads(json_data)))
-            file.save(df_obj.path)
-            flash('File successfully uploaded')
             return redirect('/pre/view')
+
+    return redirect('/pre/')
+
+@bp.route('/upload')
+def upload_file_view():
+    return render_template("preprocess/step-0.html")
+
+# file upload
+@bp.route('/upload/', methods=['POST'])
+def upload_file():
+    if request.method == 'POST':
+
+        file = request.files['chooseFile']
+
+        if file and allowed_file(file.filename):
+
+            filename = secure_filename(file.filename)
+            path = USER_PATH + str(g.user["id"]) + "\\" + filename
+            file.save(path)
+            return redirect('/pre')
         else:
-            flash('Allowed file types are txt, pdf, png, jpg, jpeg, gif')
             return redirect(request.url)
 
 @bp.route('/plot_fr.png')
