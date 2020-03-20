@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>FYP</title>
+
+    <!-- Materializecss compiled and minified CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+  <!--bootstrap-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+  <!--Import Google Icon Font-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+{#    <style>#}
+{#        .slider{#}
+{#            height: 400px;#}
+{#        }#}
+{#    </style>#}
+</head>
+
+
+<body style="background-color: #f3f6f9;">
+
+<div class="nav">
+
+  <div class="nav-header">
+    <div class="nav-title">Alz</div>
+  </div>
+
+  <div class="nav-links">
+    <div>
+        <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
+        <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+        <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
+    </div>
+
+    {% if g.user %}
+        <span>{{ g.user['username'] }}</span>
+        <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% else %}
+        <a href="{{ url_for('auth.register') }}">Register</a>
+        <a href="{{ url_for('auth.login') }}">Log In</a>
+    {% endif %}
+
+  </div>
+</div>
+
+
+  <div id="mainDataInterface-id" class="container mainDataInterface">
+
+      <li class="step">
+        <div class="step-title waves-effect waves-dark">Step 7</div>
+        <div class="step-content">
+        <div class="row">
+          <h3 id="h3-head-6" class="card__title" style="text-align: center;">FEATURE SELECTION</h3>
+        </div>
+
+        <div class="row">
+          <h5 id="h3-head-1" class="card__title" style="text-align: center;">SELECT THREE FEATURE SELECTION METHODS</h5>
+        </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <ul id="listFrom" class="nav nav-pills nav-stacked">
+                      <li data-id="1" class="active" data-value="Patates">Patates</li>
+                      <li data-id="2" class="active" data-value="Patates">Patates</li>
+                      <li data-id="3" class="active" data-value="Aggouria">Aggouria</li>
+                      <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>
+                    </ul>
+                  </div>
+                  <div class="col-sm-6">
+                    <ul id="listTo" class="nav nav-pills nav-stacked"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <h5 id="h3-head-1" class="card__title" style="text-align: center;">NUMBER OF FEATURES SELECTED</h5>
+          </div>
+          <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+              <div class="slidecontainer">
+                <input type="range" min="30" max="100" value="50" class="slider" id="myRange">
+                <p>Value: <span id="demo"></span></p>
+              </div>
+            </div>
+            <div class="col-sm-3"></div>
+          </div>
+
+        <hr class="line-hr">
+
+          <div class="step-actions">
+            <button class="waves-effect waves-dark btn next-step step-6-click" onclick="myFunction()">CONTINUE</button>
+            <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+          </div>
+        </div>
+      </li>
+
+
+  </div>
+
+    <form style="display: none" action="/fs" method="POST" id="form">
+      <input type="hidden" id="fs_methods" name="fs_methods" value=""/>
+    </form>
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!--dropdown-->
+<script type="text/javascript" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'></script>
+
+<script type="text/javascript" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous" src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
+
+<!--main navbar-->
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+
+<script>
+ function myFunction() {
+    var val = document.getElementById("listTo");
+    var arr = val.getElementsByClassName('active');
+    var fs = new Array(3);
+    var i;
+    for (i = 0; i < arr.length; i++) {
+        fs[i] = arr[i].getAttribute('data-value');
+    }
+
+    fs[3] = document.getElementById("demo").innerHTML;
+
+    $("#fs_methods").val(fs);
+    $("#form").submit();
+
+{#    $.post("./",#}
+{#    {#}
+{#      name: fs[0],#}
+{#      city: fs[3]#}
+{#    });#}
+{##}
+{#    console.log(fs);#}
+
+ }
+</script>
