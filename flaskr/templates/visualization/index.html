@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_vis.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <title>FYP: Visualization</title>
+</head>
+<body>
+<div class="nav">
+
+  <div class="nav-header">
+    <div class="nav-title">Alz</div>
+  </div>
+
+  <div class="nav-links">
+    <div>
+        <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
+        <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+        <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
+    </div>
+
+    {% if g.user %}
+        <span>{{ g.user['username'] }}</span>
+        <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    {% else %}
+        <a href="{{ url_for('auth.register') }}">Register</a>
+        <a href="{{ url_for('auth.login') }}">Log In</a>
+    {% endif %}
+
+  </div>
+</div>
+
+<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form" method="post" action="/vis/">
+					<span class="login100-form-title p-b-43">
+						Visualization
+					</span>
+
+                    <div class="row" style="margin-top: 40px;">
+                      <div class="col-sm-12">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
+                      </div>
+                      <div class="col-sm-12">
+                        <div class="md-form">
+                          <select class="form-control" id="available_files" name="available_files">
+                              {% for name in available_list %}
+                              <option value="{{ name }}">{{ name }}</option>
+                              {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="row" style="margin-top: 40px;">
+                      <div class="col-sm-12">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">GENE SYMBOLS:</h5>
+                      </div>
+                      <div class="col-sm-12">
+                        <div class="md-form">
+                          <select class="form-control" id="features" name="features">
+                              {% for feature in features_list %}
+                              <option value="{{ feature }}">{{ feature }}</option>
+                              {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn">
+							Update
+						</button>
+					</div>
+
+				</form>
+
+                 <div class="result">
+                    <img src="data:image/png;base64,{{ image_data }}" alt="my plot">
+                </div>
+			</div>
+		</div>
+
+</div>
+</body>
+{#<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>#}
+<script>
+
+{#    function fileChangeFun() {#}
+{#        $( "select option:selected" ).each(function() {#}
+{#            var name =  $( this ).text();#}
+{#            var xhttp = new XMLHttpRequest();#}
+{#              xhttp.onreadystatechange=function() {#}
+{#                if (this.readyState == 4 && this.status == 200) {#}
+{#                  console.log(this.responseText);#}
+{#                }#}
+{#              };#}
+{#              xhttp.open("GET", "?available_files=" + name, true);#}
+{#              xhttp.send();#}
+{#        });#}
+{#    }#}
+
+{#    onchange="fileChangeFun()"#}
+</script>
+</html>
