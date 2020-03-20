@@ -1263,7 +1263,23 @@ th {
 .nav > .nav-links {
   display: inline;
   float: right;
-  font-size: 18px;
+  /*font-size: 18px;*/
+}
+
+.nav > .nav-links > div {
+  display: inline-block;
+  padding: 13px 35px 13px 10px;
+  text-decoration: none;
+}
+
+.nav > .nav-links > div > a {
+  text-decoration: none;
+  color: #efefef;
+  padding: 13px 10px 13px 10px;
+}
+
+.nav > .nav-links >  div > a:hover {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .nav > .nav-links > a {

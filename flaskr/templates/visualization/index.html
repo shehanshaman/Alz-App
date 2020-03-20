@@ -11,20 +11,18 @@
 </head>
 <body>
 <div class="nav">
-  <input type="checkbox" id="nav-check">
+
   <div class="nav-header">
-    <div class="nav-title">Alz
-    </div>
-  </div>
-  <div class="nav-btn">
-    <label for="nav-check">
-      <span></span>
-      <span></span>
-      <span></span>
-    </label>
+    <div class="nav-title">Alz</div>
   </div>
 
   <div class="nav-links">
+    <div>
+        <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
+        <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+        <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
+    </div>
+
     {% if g.user %}
         <span>{{ g.user['username'] }}</span>
         <a href="{{ url_for('auth.logout') }}">Log Out</a>
@@ -41,7 +39,7 @@
 			<div class="wrap-login100">
 				<form class="login100-form validate-form" method="post" action="/vis/">
 					<span class="login100-form-title p-b-43">
-						Login to continue
+						Visualization
 					</span>
 
                     <div class="row" style="margin-top: 40px;">
