@@ -8,6 +8,12 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 
+from sklearn.model_selection import cross_val_score, cross_val_predict
+from sklearn import svm
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
+
 class FeatureSelection:
 
     def PCA(df_200F, len):
@@ -18,7 +24,7 @@ class FeatureSelection:
         # 160 samples with 2312 features
         train_features = X
 
-        model = PCA(n_components=55).fit(train_features)  # n_components=63
+        model = PCA(n_components=100).fit(train_features)  # n_components=63
         X_pc = model.transform(train_features)
 
         # number of components
@@ -81,3 +87,57 @@ class FeatureSelection:
         # df_50F_FI.head()
 
         return df_50F_FI
+
+    def getTop3ClassificationResults(X_train, X_test, y_train, y_test):
+        svm_li_clf = svm.SVC(kernel='linear')  # Linear Kernel
+        score_svm_li = cross_val_score(svm_li_clf, X_train, y_train, cv=3)
+        svm_li_clf.fit(X_train, y_train)
+
+        svm_rbf_clf = SVC(kernel="rbf", gamma="auto", C=1)
+        score_svm_rbf = cross_val_score(svm_rbf_clf, X_train, y_train, cv=3)
+        svm_rbf_clf.fit(X_train, y_train)
+
+        RF_clf = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=42)
+        score_RF = cross_val_score(RF_clf, X_train, y_train, cv=3)
+        RF_clf.fit(X_train, y_train)
+
+        y_pred_svm_li = svm_li_clf.predict(X_test)
+        y_pred_svm_rbf = svm_rbf_clf.predict(X_test)
+        y_pred_RF = RF_clf.predict(X_test)
+
+        m = np.array([[round(metrics.accuracy_score(np.int64(y_test.values), y_pred_svm_rbf) * 100, 2),
+                       round(score_svm_rbf.mean() * 100, 2)],
+                      [round(metrics.accuracy_score(np.int64(y_test.values), y_pred_svm_li) * 100, 2),
+                       round(score_svm_li.mean() * 100, 2)],
+                      [round(metrics.accuracy_score(np.int64(y_test.values), y_pred_RF) * 100, 2),
+                       round(score_svm_li.mean() * 100, 2)]])
+
+        return m
+
+    def getSummaryFeatureSelection(df_50F_PCA, df_50F_FI, df_50F_RF, y, rows):
+        X_train, X_test, y_train, y_test = train_test_split(df_50F_PCA, y, test_size=0.3, random_state=42)
+        m_pca = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)
+
+        X_train, X_test, y_train, y_test = train_test_split(df_50F_FI, y, test_size=0.3, random_state=42)
+        m_fi = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)
+
+        X_train, X_test, y_train, y_test = train_test_split(df_50F_RF, y, test_size=0.3, random_state=42)
+        m_rf = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)
+
+        # rows = ["classifier", "PCA", "Random Forest", "Extra Tree"]
+        rows.insert(0, "classifier")
+        cla = ["SVM + Gaussian kernel", "SVM + linear kerne", "Random forest"]
+
+        data_testing = np.array([cla, m_pca[:, 0], m_fi[:, 0], m_rf[:, 0]])
+        results_testing = pd.DataFrame(data=data_testing, index=rows).transpose()
+
+        data_training = np.array([cla, m_pca[:, 1], m_fi[:, 1], m_rf[:, 1]])
+        results_training = pd.DataFrame(data=data_training, index=rows).transpose()
+
+        results_testing = results_testing.set_index('classifier')
+        results_training = results_training.set_index('classifier')
+
+        results_testing = results_testing.astype(float)
+        results_training = results_training.astype(float)
+
+        return results_testing, results_training

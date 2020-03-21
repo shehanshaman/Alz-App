@@ -1348,4 +1348,16 @@ th {
     height: calc(100vh - 50px);
     overflow-y: auto;
   }
+
 }
+
+  .nav-stacked > li {
+    color: #fff;
+    background-color: #428bca;
+    padding: 10px 15px;
+    text-align: center;
+  }
+
+  .step{
+    margin-top: 20px
+  }

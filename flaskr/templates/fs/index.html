@@ -10,14 +10,14 @@
     <!-- Materializecss compiled and minified CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
   <!--bootstrap-->
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
   <!--Import Google Icon Font-->
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
 {#    <style>#}
 {#        .slider{#}
@@ -56,8 +56,7 @@
 
   <div id="mainDataInterface-id" class="container mainDataInterface">
 
-      <li class="step">
-        <div class="step-title waves-effect waves-dark">Step 7</div>
+      <div class="step">
         <div class="step-content">
         <div class="row">
           <h3 id="h3-head-6" class="card__title" style="text-align: center;">FEATURE SELECTION</h3>
@@ -73,9 +72,9 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <ul id="listFrom" class="nav nav-pills nav-stacked">
-                      <li data-id="1" class="active" data-value="Patates">Patates</li>
-                      <li data-id="2" class="active" data-value="Patates">Patates</li>
-                      <li data-id="3" class="active" data-value="Aggouria">Aggouria</li>
+                      <li data-id="1" class="active" data-value="PCA">PCA</li>
+                      <li data-id="2" class="active" data-value="Random Forest">Random Forest</li>
+                      <li data-id="3" class="active" data-value="Extra Tree Classifier">Extra Tree Classifier</li>
                       <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>
                     </ul>
                   </div>
@@ -108,12 +107,12 @@
             <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
           </div>
         </div>
-      </li>
+      </div>
 
 
   </div>
 
-    <form style="display: none" action="/fs" method="POST" id="form">
+    <form style="display: none" action="/fs/" method="POST" id="form">
       <input type="hidden" id="fs_methods" name="fs_methods" value=""/>
     </form>
 </body>
@@ -153,14 +152,6 @@
 
     $("#fs_methods").val(fs);
     $("#form").submit();
-
-{#    $.post("./",#}
-{#    {#}
-{#      name: fs[0],#}
-{#      city: fs[3]#}
-{#    });#}
-{##}
-{#    console.log(fs);#}
 
  }
 </script>

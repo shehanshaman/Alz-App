@@ -18,3 +18,13 @@ CREATE TABLE post (
   body TEXT NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
+
+CREATE TABLE results (
+  user_id INTEGER PRIMARY KEY,
+  filename VARCHAR(100),
+  fs_methods VARCHAR(100),
+  col_method1 TEXT,
+  col_method2 TEXT,
+  col_method3 TEXT,
+  FOREIGN KEY (user_id) REFERENCES user (id)
+);
