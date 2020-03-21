@@ -141,3 +141,42 @@ class FeatureSelection:
         results_training = results_training.astype(float)
 
         return results_testing, results_training
+
+    def getFeatureSummary(df, y, col_uni, overlap, rows):
+        list0 = ["SVM + Gaussian kernel", "SVM + Linear kernel", "Random forest"]
+
+        count = [len(col_uni[0]), len(col_uni[1]), len(col_uni[2]), len(overlap)]
+
+        diff_df = df[col_uni[0]]
+
+        X_train, X_test, y_train, y_test = train_test_split(diff_df, y, test_size=0.3, random_state=42)
+        list1 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)[:, 0]  # same dataset
+
+        diff_df = df[col_uni[1]]
+
+        X_train, X_test, y_train, y_test = train_test_split(diff_df, y, test_size=0.3, random_state=42)
+        list2 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)[:, 0]  # same dataset
+
+        diff_df = df[col_uni[2]]
+
+        X_train, X_test, y_train, y_test = train_test_split(diff_df, y, test_size=0.3, random_state=42)
+        list3 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)[:, 0]  # same dataset
+
+        diff_df = df[overlap]
+
+        X_train, X_test, y_train, y_test = train_test_split(diff_df, y, test_size=0.3, random_state=42)
+        list4 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)[:, 0]  # same dataset
+
+        rows.insert(0, "classifier")
+        rows.insert(4, "Overlap")
+        rows.pop()
+        # rows = ["classifier", "PCA", "Random Forest", "Extra Tree", "Overlap"]
+
+        data = np.array([list0, list1, list2, list3, list4])
+        results = pd.DataFrame(data=data, index=rows).transpose()
+
+        results = results.set_index('classifier')
+
+        df_count = pd.DataFrame({'id': rows[1:5], 'val': count})
+
+        return results, df_count

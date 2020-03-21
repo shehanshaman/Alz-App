@@ -1,8 +1,9 @@
 import os
 from flask import Blueprint, session
-from flask import render_template, current_app
+from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
+from flask import redirect
 
 import base64
 import io
@@ -53,7 +54,7 @@ def get_val():
 
     UserResult.update_selected_col(selected_col, user_id)
 
-    return render_template("fs/result.html")
+    return redirect('/fs/result')
 
 @bp.route("/result")
 def result():
@@ -63,27 +64,26 @@ def result():
     df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
 
     # df_50F_PCA, df_50F_FI, df_50F_RF
-    col = r['col_method1'].split(',')
-    df_m1 = df[col]
-    col = r['col_method2'].split(',')
-    df_m2 = df[col]
-    col = r['col_method3'].split(',')
-    df_m3 = df[col]
+    col_m1 = r['col_method1'].split(',')
+    df_m1 = df[col_m1]
+    col_m2 = r['col_method2'].split(',')
+    df_m2 = df[col_m2]
+    col_m3 = r['col_method3'].split(',')
+    df_m3 = df[col_m3]
     y = df["class"]
     method_names = r['fs_methods'].split(',')
     method_names.pop()
+
+    col = [col_m1, col_m2, col_m3]
 
     results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3,y, method_names)
 
     img64 = get_summary_plot(results_testing, results_training)
 
-    return render_template("fs/result.html", image_data=img64)
+    return render_template("fs/result.html", image_data=img64, methods = method_names, columns = col)
 
 def get_summary_plot(results_testing, results_training):
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14, 5))
-
-    # fig.subplots_adjust(wspace=0.3, hspace=0.2, top=0.8)
-    # fig.set_figwidth(15)
 
     axes[0].set_ylim([75, 100])
     axes[1].set_ylim([75, 100])

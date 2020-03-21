@@ -76,7 +76,7 @@ def register():
             db.commit()
 
             # Adding user to results
-            user_id = get_user_id(username)
+            user_id = UserResult.get_user_id(username)
             db.execute(
                 "INSERT INTO results (user_id, filename) VALUES (?, ?)",
                 (user_id,'GSE5281_DE_200.plk'),
