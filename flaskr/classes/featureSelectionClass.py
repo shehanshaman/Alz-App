@@ -180,3 +180,148 @@ class FeatureSelection:
         df_count = pd.DataFrame({'id': rows[1:5], 'val': count})
 
         return results, df_count
+
+
+
+    def returnScoreDataFrameModels(dataFrame, y, len):
+        lists1 = []
+        lists2 = []
+        lists3 = []
+
+        for i in FeatureSelection.get_range_array(len):
+
+            lists1.append(FeatureSelection.svmLinear(dataFrame.iloc[:, 0:(i)], y))
+            lists2.append(FeatureSelection.svmGaussian(dataFrame.iloc[:, 0:(i)], y))
+            lists3.append(FeatureSelection.randomForest(dataFrame.iloc[:, 0:(i)], y))
+
+        rows = ["svmLinear", "svmGaussian", "randomForest"]
+
+        data = np.array([lists1, lists2, lists3])
+        modelScore = pd.DataFrame(data=data, index=rows).transpose()
+
+        return modelScore
+
+    def get_range_array(len):
+        array = [100, 90, 80, 70, 60, 50, 40, 30, 20, 15, 10, 5, 3, 2, 1]
+        return array[array.index(FeatureSelection.roundupten(len)):]
+
+    def svmLinear(dataFrame, target):
+        clf = svm.SVC(kernel='linear')  # Linear Kernel
+        scores = cross_val_score(clf, dataFrame, target, cv=3)
+
+        return scores.mean()
+
+    def svmGaussian(dataFrame, target):
+        # Create a svm Classifier
+        clf = SVC(kernel="rbf", gamma="auto", C=1)
+        scores = cross_val_score(clf, dataFrame, target, cv=3)
+
+        return scores.mean()
+
+    def randomForest(dataFrame, target):
+        # Create a svm Classifier
+        clf = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=42)
+        scores = cross_val_score(clf, dataFrame, target, cv=3)
+
+        return scores.mean()
+
+    def roundupten(x):
+        return int(x / 10.0) * 10
+
+    def getHighlyCorrelatedFeatures(corr, i):
+        # Select upper triangle of correlation matrix
+        upper = corr.where(np.triu(np.ones(corr.shape), k=1).astype(np.bool))
+
+        # Find index of feature columns with correlation greater than 0.95
+        to_drop = [column for column in upper.columns if any(upper[column] > i)]
+
+        return to_drop
+
+    def compareCorrelatedFeatures(cmp_corr_pca, cmp_corr_fi, cmp_corr_rf):
+        lists0 = []
+        lists1 = []
+        lists2 = []
+        lists3 = []
+
+        i = 0.95
+
+        while i >= 0.8:
+            lists0.append(i)
+            lists1.append(len(FeatureSelection.getHighlyCorrelatedFeatures(cmp_corr_pca, i)) * 100 / 34)
+            lists2.append(len(FeatureSelection.getHighlyCorrelatedFeatures(cmp_corr_rf, i)) * 100 / 18)
+            lists3.append(len(FeatureSelection.getHighlyCorrelatedFeatures(cmp_corr_fi, i)) * 100 / 18)
+
+            i = i - 0.005
+
+        rows = ["Correlation value", "PCA", "Random Forest", "Extra Tree"]
+
+        data = np.array([lists0, lists1, lists2, lists3])
+        results = pd.DataFrame(data=data, index=rows).transpose()
+        results = results.set_index('Correlation value')
+
+        return results
+
+    def getSelectedDF(df, corr, ran):
+        columns = np.full((corr.shape[0],), True, dtype=bool)
+        for i in range(corr.shape[0]):
+            for j in range(i + 1, corr.shape[0]):
+                if corr.iloc[i, j] >= ran or corr.iloc[i, j] <= -ran:
+                    if columns[j]:
+                        columns[j] = False
+
+        selected_columns = df.columns[columns]
+        df_selected = df[selected_columns]
+
+        return df_selected
+
+    def returnScoreDataFrame(dataFrame, y):
+        lists0 = []
+        lists1 = []
+        lists2 = []
+        lists3 = []
+        lists4 = []
+
+        i = 1
+
+        while i >= 0.6:
+            # for i in range(0,50):
+            df_tmp = dataFrame
+            df_tmp = FeatureSelection.getSelectedDF(df_tmp, df_tmp.corr(), i)
+
+            lists0.append(i)
+            lists1.append(FeatureSelection.svmLinear(df_tmp, y))
+            lists2.append(FeatureSelection.svmGaussian(df_tmp, y))
+            lists3.append(FeatureSelection.randomForest(df_tmp, y))
+            lists4.append(len(df_tmp.columns))
+
+            i = i - 0.0025
+
+        rows = ["i", "svmLinear", "svmGaussian", "randomForest", "No of features"]
+
+        data = np.array([lists0, lists1, lists2, lists3, lists4])
+        results = pd.DataFrame(data=data, index=rows).transpose()
+
+        return results
+
+    def get_max_corr_scores(corrScore):
+        w1 = corrScore.loc[corrScore['svmLinear'].idxmax()]
+        w2 = corrScore.loc[corrScore['svmGaussian'].idxmax()]
+        w3 = corrScore.loc[corrScore['randomForest'].idxmax()]
+
+        df_1 = pd.DataFrame(w1).reset_index()
+        df_2 = pd.DataFrame(w2).reset_index()
+        df_3 = pd.DataFrame(w3).reset_index()
+
+        result = pd.merge(df_1, df_2, on='index')
+        result = pd.merge(result, df_3, on='index')
+
+        result.columns = ['index', 'svmLinear', 'svmGaussian', 'randomForest']
+        result = result.set_index('index')
+        result = result.T
+        max_result = [result.loc[result['svmLinear'].idxmax()]['svmLinear'],
+                      result.loc[result['svmGaussian'].idxmax()]['svmGaussian'],
+                      result.loc[result['randomForest'].idxmax()]['randomForest']]
+        result["Maximum Accuracy"] = max_result
+        result = result.drop(["svmLinear", "svmGaussian", "randomForest"], axis=1)
+
+        return result

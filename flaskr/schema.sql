@@ -27,5 +27,9 @@ CREATE TABLE results (
   col_method1 TEXT,
   col_method2 TEXT,
   col_method3 TEXT,
+  col_overlapped TEXT,
+  col_selected_method TEXT,
+  selected_method VARCHAR(30),
+
   FOREIGN KEY (user_id) REFERENCES user (id)
 );
