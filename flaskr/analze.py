@@ -58,11 +58,13 @@ def index():
     small_set_pic_hash = get_small_set_features_fig(m_scores,x_scores, method_names[1:4])
 
     return render_template("analyze/index.html", corr_data = correlation_pic_hash, overlap_data = overlap_pic_hash, small_set= small_set_pic_hash, methods = method_names[1:4])
+    # return render_template("analyze/index.html", corr_data = "", overlap_data = "", small_set= "", methods = method_names[0:3])
 
 
 @bp.route("/step2", methods=['POST'])
 def selected_method():
     user_id = session.get("user_id")
+
     selected_method = request.form["selected_method"]
     UserResult.update_result(user_id, 'selected_method', selected_method)
 
@@ -76,6 +78,7 @@ def selected_method():
     col_m2 = r['col_method2'].split(',')
     col_m3 = r['col_method3'].split(',')
     method_names = r['fs_methods'].split(',')
+    overlap = r['col_overlapped'].split(',')
 
     i = method_names.index(selected_method)
 
@@ -90,18 +93,48 @@ def selected_method():
 
     # Corr scores and select
     corrScore = FeatureSelection.returnScoreDataFrame(df[col_uni[i]], y) #0 tobe change according to the user
-    cmp_corr_results_pic_hash = get_corr_score_fig(corrScore)
+    corr_score_pic_hash = get_corr_score_fig(corrScore)
 
     max_corr_df = FeatureSelection.get_max_corr_scores(corrScore)
 
-    x = df.drop(["class"], axis=1)
+    # x = df.drop(["class"], axis=1)
+    x = df[col_uni[i]]
     col_selected_method = FeatureSelection.getSelectedDF(x, x.corr(), max_corr_df.loc[max_corr_df['Maximum Accuracy'].idxmax()]['i']).columns.tolist()
     col_selected_str = ','.join(e for e in col_selected_method)
 
     UserResult.update_result(user_id, 'col_selected_method', col_selected_str)
 
-    return render_template("analyze/analyze_correlation.html", overlap_data=cmp_corr_results_pic_hash, tables=[max_corr_df.head().to_html(classes='data')], titles=max_corr_df.head().columns.values, method_title = selected_method)
+    return render_template("analyze/analyze_correlation.html", corr_results=cmp_corr_results_pic_hash,
+                           tables=[max_corr_df.head().to_html(classes='data')], titles=max_corr_df.head().columns.values,
+                           method_title = selected_method, overlap = overlap, corr_selected = col_selected_method,
+                           max_clasify = max_corr_df['Maximum Accuracy'].idxmax(), corr_score = corr_score_pic_hash)
 
+@bp.route("/step3")
+def final_result():
+    user_id = session.get("user_id")
+    r = UserResult.get_user_results(user_id)
+    overlap = r['col_overlapped'].split(',')
+    col_selected_method = r['col_selected_method'].split(',')
+    selected_method = r['selected_method']
+
+    filename = r['filename']
+    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    y = df["class"]
+
+    dis_gene = list(dict.fromkeys(overlap + col_selected_method))
+
+    r1_df = FeatureSelection.getTop3ClassificationResults_by_df(df[col_selected_method], y)
+    r2_df = FeatureSelection.getTop3ClassificationResults_by_df(df[dis_gene], y)
+
+    selected_roc_pic_hash = get_heatmap_roc(df[col_selected_method], y)
+    all_roc_pic_hash = get_heatmap_roc(df[dis_gene], y)
+
+    r_len = [len(col_selected_method), len(dis_gene)]
+    r_col = [col_selected_method, dis_gene]
+
+    return render_template("analyze/final_result.html", sel_roc=selected_roc_pic_hash, table_r1 = [r1_df.to_html(classes='data')],
+                           title_r1 = r1_df.head().columns.values, all_roc=all_roc_pic_hash, table_r2 = [r2_df.to_html(classes='data')],
+                           title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col)
 
 def checkList(list1, list2):
     for word in list2:
@@ -246,7 +279,7 @@ def get_cmp_corr_results_fig(results):
     return pic_hash
 
 def get_corr_score_fig(corrScore):
-    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
     ax1.plot(corrScore['i'], corrScore["svmLinear"], label='linear')
     ax1.plot(corrScore['i'], corrScore["svmGaussian"], label='linear')
@@ -261,6 +294,31 @@ def get_corr_score_fig(corrScore):
 
     fig.subplots_adjust(wspace=0.2)
     fig.set_figwidth(15)
+
+    pic_IObytes = io.BytesIO()
+    fig.savefig(pic_IObytes, format='png')
+    pic_IObytes.seek(0)
+    pic_hash = base64.b64encode(pic_IObytes.read())
+
+    pic_hash = pic_hash.decode("utf-8")
+
+    return pic_hash
+
+def get_heatmap_roc(df, y):
+    fpr, tpr, roc_auc = FeatureSelection.get_ROC_parameters(df, y)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 8))
+    fig.tight_layout(pad=10.0)
+
+    ax1.plot(fpr[0], tpr[0], label="SVM linear, auc=" + str(round(roc_auc[0], 2)))
+    ax1.plot(fpr[1], tpr[1], label="SVM gaussian, auc=" + str(round(roc_auc[1], 2)))
+    ax1.plot(fpr[2], tpr[2], label="Random forest, auc=" + str(round(roc_auc[2], 2)))
+
+    ax1.set_ylabel("Sensitivity")
+    ax1.set_ylabel("1 - Specificity")
+
+    ax1.legend(loc="lower right")
+
+    sns.heatmap(df.corr(), cmap="RdYlGn", ax=ax2)
 
     pic_IObytes = io.BytesIO()
     fig.savefig(pic_IObytes, format='png')

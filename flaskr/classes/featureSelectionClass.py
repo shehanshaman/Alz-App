@@ -14,6 +14,10 @@ from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_auc_score
+
 class FeatureSelection:
 
     def PCA(df_200F, len):
@@ -113,6 +117,17 @@ class FeatureSelection:
                        round(score_svm_li.mean() * 100, 2)]])
 
         return m
+
+    def getTop3ClassificationResults_by_df(df, y):
+        X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.3, random_state=42)
+        m = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)
+        classifier_result_df = pd.DataFrame(m, columns=["Testing", "Training"])
+        classifiers = ["SVM + Gaussian kernel", "SVM + Linear kernel", "Random Forest"]
+        classifier_result_df["index"] = classifiers
+        classifier_result_df = classifier_result_df.set_index('index')
+        classifier_result_df.index.name = None
+
+        return classifier_result_df
 
     def getSummaryFeatureSelection(df_50F_PCA, df_50F_FI, df_50F_RF, y, rows):
         X_train, X_test, y_train, y_test = train_test_split(df_50F_PCA, y, test_size=0.3, random_state=42)
@@ -325,3 +340,42 @@ class FeatureSelection:
         result = result.drop(["svmLinear", "svmGaussian", "randomForest"], axis=1)
 
         return result
+
+    def get_ROC_parameters(df_tmp, y):
+
+        X_train, X_test, y_train, y_test = train_test_split(df_tmp, y, test_size=0.3, random_state=42)
+
+        classifier_SVM_li = OneVsRestClassifier(svm.SVC(kernel='linear', probability=True,
+                                                        random_state=42))
+        classifier_SVM_gu = OneVsRestClassifier(svm.SVC(kernel='rbf', probability=True,
+                                                        random_state=42))
+        classifier_RF = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=42)
+
+        y_score_SVM_li = classifier_SVM_li.fit(X_train, y_train).decision_function(X_test)
+        y_score_SVM_gu = classifier_SVM_gu.fit(X_train, y_train).decision_function(X_test)
+        y_score_SVM_RF = classifier_RF.fit(X_train, y_train)
+
+        fpr_li, tpr_li, _ = roc_curve(np.int64(y_test.ravel()), y_score_SVM_li.ravel())
+        fpr_gu, tpr_gu, _ = roc_curve(np.int64(y_test.ravel()), y_score_SVM_gu.ravel())
+
+        roc_auc_li = auc(fpr_li, tpr_li)
+        roc_auc_gu = auc(fpr_gu, tpr_gu)
+
+        y_pred_proba_RF = classifier_RF.predict_proba(X_test)[::, 1]
+        fpr_RF, tpr_RF, _ = metrics.roc_curve(np.int64(y_test.values), y_pred_proba_RF)
+        roc_auc_RF = metrics.roc_auc_score(np.int64(y_test.values), y_pred_proba_RF)
+
+        fpr = [fpr_li, fpr_gu, fpr_RF]
+        tpr = [tpr_li, tpr_gu, tpr_RF]
+        roc_auc = [roc_auc_li, roc_auc_gu, roc_auc_RF]
+
+        # plt.plot(fpr_li, tpr_li, label="SVM linear, auc=" + str(round(roc_auc_li, 2)))
+        # plt.plot(fpr_gu, tpr_gu, label="SVM gaussian, auc=" + str(round(roc_auc_gu, 2)))
+        # plt.plot(fpr_RF, tpr_RF, label="Random forest, auc=" + str(round(roc_auc_RF, 2)))
+        #
+        # plt.ylabel("Sensitivity")
+        # plt.xlabel("1 - Specificity")
+        #
+        # plt.legend(loc="lower right")
+
+        return fpr, tpr, roc_auc
