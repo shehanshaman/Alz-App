@@ -23,8 +23,6 @@
 
     <style>
         .summary_plot > img {
-            border: 1px solid #ddd;
-            border-radius: 4px;
             padding: 5px;
             width: 100%;
         }
@@ -52,7 +50,7 @@
             border: none;
             outline: none;
             padding: 12px 16px;
-            background-color: #f1f1f1;
+            background-color: #a3a0a0;
             cursor: pointer;
         }
 
@@ -70,8 +68,16 @@
             width: 90%;
         }
 
-        .corr_result_text{
+        .corr_result_text {
             margin-top: 15%;
+        }
+
+        .result_content {
+            border-style: ridge;
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 16px;
         }
     </style>
 
@@ -107,49 +113,60 @@
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
-    <div class="step-content">
+    <div class="step-heading">
         <div class="row">
             <h3 id="h3-head-6" class="card__title" style="text-align: center;">Correlation: {{ method_title }}</h3>
         </div>
+    </div>
 
+    <div class="step-content">
 
-        <div class="row">
-            <div class="result_plot col-sm-6">
-                <img src="data:image/png;base64,{{ corr_results }}" alt="overlap">
-            </div>
-            <div class="col-sm-6 corr_result_text">
-                <p> An interpretation of the number of correlation features with the variation of correlation values</p>
-            </div>
-        </div>
-
-        <div class="row">
-            <h4 id="h3-head-6" class="card__title" style="text-align: center;">Variation of the correlation
-                coefficients of the genes found only by {{ method_title }} with
-                classification accuracy</h4>
-        </div>
-
-
-        <div class="row">
-            <div class="summary_plot">
-                <img src="data:image/png;base64,{{ corr_score }}" alt="overlap">
+        <div class="result_content">
+            <div class="row">
+                <div class="result_plot col-sm-6">
+                    <img src="data:image/png;base64,{{ corr_results }}" alt="overlap">
+                </div>
+                <div class="col-sm-6 corr_result_text">
+                    <p> An interpretation of the number of correlation features with the variation of correlation
+                        values</p>
+                </div>
             </div>
         </div>
 
-        <div class="row">
 
-            <h4 id="h3-head-2" class="card__title" style="text-align: center;">Finding features that has minimum
-                correlated and high classification accuracy</h4>
+        <div class="result_content">
+            <div class="row">
+                <h4 id="h4-head-6" class="card__title" style="text-align: center;">Variation of the correlation
+                    coefficients of the genes found only by {{ method_title }} with
+                    classification accuracy</h4>
+            </div>
+
+            <div class="row">
+                <div class="summary_plot">
+                    <img src="data:image/png;base64,{{ corr_score }}" alt="overlap">
+                </div>
+            </div>
         </div>
 
-        <div style="overflow: auto;">
-            {% for table in tables %}
-                {{ titles[loop.index] }}
-                {{ table|safe }}
-            {% endfor %}
 
+        <div class="result_content">
+            <div class="row">
+
+                <h4 id="h4-head-2" class="card__title" style="text-align: center;">Finding features that has minimum
+                    correlated and high classification accuracy</h4>
+            </div>
+
+            <div style="overflow: auto;">
+                {% for table in tables %}
+                    {{ titles[loop.index] }}
+                    {{ table|safe }}
+                {% endfor %}
+
+            </div>
         </div>
 
-        <div class="row">
+
+        <div class="row list-view">
             <div id="btnContainer">
                 <button class="btn" onclick="listView()"><i class="fa fa-bars"></i> List</button>
                 <button class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
@@ -173,9 +190,12 @@
         <hr class="line-hr">
 
         <div class="step-actions">
-            <button class="waves-effect waves-dark btn next-step step-6-click" onclick="">CONTINUE
+            <button class="waves-effect waves-dark btn next-step step-6-click">
+                <a href="{{ url_for('analyze.final_result') }}">CONTINUE</a>
             </button>
-            <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+            <button class="waves-effect waves-dark btn-flat previous-step">
+                <a href="{{ url_for('analyze.index') }}">BACK</a>
+            </button>
         </div>
     </div>
 

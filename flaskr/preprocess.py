@@ -1,5 +1,4 @@
 from flask import Blueprint, session
-from flask import flash
 from flask import redirect
 from flask import render_template, current_app
 from flask import request

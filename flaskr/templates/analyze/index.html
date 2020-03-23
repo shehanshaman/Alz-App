@@ -23,8 +23,6 @@
 
     <style>
         .summary_plot > img {
-            border: 1px solid #ddd;
-            border-radius: 4px;
             padding: 5px;
             width: 100%;
         }
@@ -37,6 +35,14 @@
             margin-bottom: 0;
             align-content: center;
             text-align: center;
+        }
+
+        .result_content {
+            border-style: ridge;
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 16px;
         }
     </style>
 
@@ -72,22 +78,31 @@
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
-    <div class="step">
-        <div class="step-content">
-            <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;">Trainig accuracies of genes only
-                    found by each classifier and the overlapped set of genes</h3>
-            </div>
+    <div class="step-heading">
+        <div class="row">
+            <h3 id="h3-head-6" class="card__title" style="text-align: center;">Analysis</h3>
+        </div>
+    </div>
 
+    <div class="step-content">
+
+        <div class="result_content">
+            <div class="row">
+                <h4 id="h4-head-6" class="card__title" style="text-align: center;">Trainig accuracies of genes only
+                    found by each classifier and the overlapped set of genes</h4>
+            </div>
 
             <div class="row">
                 <div class="summary_plot">
                     <img src="data:image/png;base64,{{ overlap_data }}" alt="overlap">
                 </div>
             </div>
+        </div>
 
+
+        <div class="result_content">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;">Classification accuracy of three
+                <h3 id="h4-head-6" class="card__title" style="text-align: center;">Classification accuracy of three
                     classifiers using incrementally smaller sets of genes</h3>
             </div>
 
@@ -97,9 +112,12 @@
                     <img src="data:image/png;base64,{{ small_set }}" alt="small_set">
                 </div>
             </div>
+        </div>
 
+
+        <div class="result_content">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;"> Correlation matrix</h3>
+                <h3 id="h4-head-6" class="card__title" style="text-align: center;"> Correlation matrix</h3>
             </div>
 
 
@@ -108,23 +126,24 @@
                     <img src="data:image/png;base64,{{ corr_data }}" alt="correlation">
                 </div>
             </div>
+        </div>
 
-            <div class="row centre">
-                <button class="button waves-effect waves-dark btn" value="{{ methods[0] }}">{{ methods[0] }}</button>
-                <button class="button waves-effect waves-dark btn" value="{{ methods[1] }}">{{ methods[1] }}</button>
-                <button class="button waves-effect waves-dark btn" value="{{ methods[2] }}">{{ methods[2] }}</button>
-            </div>
 
-            <hr class="line-hr">
+        <div class="row centre">
+            <button class="button waves-effect waves-dark btn" value="{{ methods[0] }}">{{ methods[0] }}</button>
+            <button class="button waves-effect waves-dark btn" value="{{ methods[1] }}">{{ methods[1] }}</button>
+            <button class="button waves-effect waves-dark btn" value="{{ methods[2] }}">{{ methods[2] }}</button>
+        </div>
 
-            <div class="step-actions">
-                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
-            </div>
+        <hr class="line-hr">
+
+        <div class="step-actions">
+            <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
         </div>
     </div>
 
     <form style="display: none" action="/an/step2" method="POST" id="form">
-      <input type="hidden" id="selected_method" name="selected_method" value=""/>
+        <input type="hidden" id="selected_method" name="selected_method" value=""/>
     </form>
 
 </div>
@@ -155,10 +174,10 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
 
 <script>
-    $("button").click(function() {
-    var fired_button = $(this).val();
+    $("button").click(function () {
+        var fired_button = $(this).val();
 
-    $("#selected_method").val(fired_button);
-    $("#form").submit();
-});
+        $("#selected_method").val(fired_button);
+        $("#form").submit();
+    });
 </script>

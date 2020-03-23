@@ -4,6 +4,7 @@ from flask import render_template, current_app
 from flask import request
 import matplotlib.pyplot as plt
 import seaborn as sns
+from flask import redirect
 
 import base64
 import io
@@ -15,7 +16,7 @@ from .classes.featureSelectionClass import FeatureSelection
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 USER_PATH = ROOT_PATH + "\\upload\\users\\"
 
-bp = Blueprint("an", __name__, url_prefix="/an")
+bp = Blueprint("analyze", __name__, url_prefix="/an")
 
 @bp.route("/")
 def index():
@@ -61,14 +62,19 @@ def index():
     # return render_template("analyze/index.html", corr_data = "", overlap_data = "", small_set= "", methods = method_names[0:3])
 
 
-@bp.route("/step2", methods=['POST'])
+@bp.route("/step2")
 def selected_method():
     user_id = session.get("user_id")
 
-    selected_method = request.form["selected_method"]
-    UserResult.update_result(user_id, 'selected_method', selected_method)
+    if request.method == 'POST':
+        selected_method = request.form["selected_method"]
+        UserResult.update_result(user_id, 'selected_method', selected_method)
 
     r = UserResult.get_user_results(user_id)
+    selected_method = r['selected_method']
+
+    if selected_method is None:
+        return redirect('/an')
 
     filename = r['filename']
     df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)

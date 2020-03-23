@@ -34,8 +34,7 @@
             padding: 15px;
             margin-top: 10px;
             margin-bottom: 10px;
-{#            border: 1px solid #ccc !important;#}
-            border-radius: 16px;
+        {#            border: 1px solid #ccc !important;#} border-radius: 16px;
         }
 
     </style>
@@ -114,7 +113,8 @@
                 </div>
 
                 <div class="alert alert-info">
-                    <strong>Info!</strong> {{ method }} + overlapped extracted {{ len[1] }} features. <h6>{{ col[1] }}</h6>
+                    <strong>Info!</strong> {{ method }} + overlapped extracted {{ len[1] }} features.
+                    <h6>{{ col[1] }}</h6>
                 </div>
 
                 <div class="row">
@@ -143,14 +143,15 @@
             <hr class="line-hr">
 
             <div class="step-actions">
-                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+                <button class="waves-effect waves-dark btn next-step step-6-click">
+                    <a href="{{ url_for('analyze.final_result') }}">CONTINUE</a>
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step">
+                    <a href="{{ url_for('analyze.selected_method') }}">BACK</a>
+                </button>
             </div>
         </div>
     </div>
-
-    <form style="display: none" action="/an/step2" method="POST" id="form">
-        <input type="hidden" id="selected_method" name="selected_method" value=""/>
-    </form>
 
 </div>
 
