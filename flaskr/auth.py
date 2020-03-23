@@ -83,6 +83,13 @@ def register():
             )
             db.commit()
 
+            # Adding user to modeling
+            db.execute(
+                "INSERT INTO modeling (user_id, trained_file) VALUES (?, ?)",
+                (user_id, ''),
+            )
+            db.commit()
+
             return redirect(url_for("auth.login"))
 
         flash(error)
@@ -157,3 +164,19 @@ class UserResult:
             "UPDATE results SET  col_method1 = ?, col_method2 = ?, col_method3 = ? WHERE user_id = ?", (selected_col[0],selected_col[1], selected_col[2], user_id),
         )
         db.commit()
+
+    def update_modeling(user_id, column, value):
+        db = get_db()
+        db.execute(
+            "UPDATE modeling SET " + column +" = ? WHERE user_id = ?",( value, user_id),
+        )
+        db.commit()
+
+    def get_user_model(user_id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM modeling WHERE user_id = ?", (user_id,)
+        ).fetchone()
+        if result is not None:
+            return result
+        return None

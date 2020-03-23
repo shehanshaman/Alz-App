@@ -144,9 +144,9 @@
             <hr class="line-hr">
 
             <div class="step-actions">
-                <button class="waves-effect waves-dark btn next-step step-6-click" onclick="">CONTINUE
+                <button class="waves-effect waves-dark btn next-step step-6-click"><a href="{{ url_for('analyze.index') }}">Analyze</a>
                 </button>
-                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+                <button class="waves-effect waves-dark btn-flat previous-step"><a href="{{ url_for('fs.index') }}">BACK</a></button>
             </div>
         </div>
     </div>

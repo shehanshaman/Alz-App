@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!-- Materializecss compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+</head>
+
+<body style="background-color: #f3f6f9;">
+
+<div class="nav">
+
+    <div class="nav-header">
+        <div class="nav-title">Alz</div>
+    </div>
+
+    <div class="nav-links">
+        <div>
+            <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
+            <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visulization</a>
+            <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
+        </div>
+
+        {% if g.user %}
+            <span>{{ g.user['username'] }}</span>
+            <a href="{{ url_for('auth.logout') }}">Log Out</a>
+        {% else %}
+            <a href="{{ url_for('auth.register') }}">Register</a>
+            <a href="{{ url_for('auth.login') }}">Log In</a>
+        {% endif %}
+
+    </div>
+</div>
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+    <form method="post" action="/mod/" enctype="multipart/form-data">
+
+        <div class="step-content">
+            <div class="row head-word">
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;">MODELING</h3>
+            </div>
+        </div>
+
+        {% if state == '1' %}
+
+            <div class="alert alert-success alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Success!</strong> Your predictive model created successfully. <a href="">Lets Try</a>
+            </div>
+
+        {% elif state == '0' %}
+
+            <div class="alert alert-danger alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Danger!</strong> Something went wrong.
+            </div>
+
+        {% endif %}
+
+        <div class="features">
+            <h5>Extracted Features </h5>
+            <div class="well">{{ features }}</div>
+        </div>
+
+        <br>
+
+        <div class="where-you-like" style="margin-top: 40px;">
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Choose File:</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <select class="form-control" id="available_files" name="available_files">
+                            {% for name in available_list %}
+                                <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Classifier:</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <select class="form-control" id="classifier" name="classifier">
+                            {% for name in classifier_list %}
+                                <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <br><br>
+            <hr class="line-hr">
+
+            <div class="step-actions">
+                <button class="waves-effect waves-dark btn next-step step-6-click" onclick="">CONTINUE
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!--dropdown-->
+<script type="text/javascript" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous" src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'></script>
+
+<script type="text/javascript" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous" src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
+
+<!--main navbar-->
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>

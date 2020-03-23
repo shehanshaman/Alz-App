@@ -41,7 +41,7 @@ def create_app(test_config=None):
     db.init_app(app)
 
     # apply the blueprints to the app
-    from flaskr import auth, blog, preprocess, visualization, fs, analze, validation
+    from flaskr import auth, blog, preprocess, visualization, fs, analze, validation, modeling
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
@@ -50,6 +50,7 @@ def create_app(test_config=None):
     app.register_blueprint(fs.bp)
     app.register_blueprint(analze.bp)
     app.register_blueprint(validation.bp)
+    app.register_blueprint(modeling.bp)
 
     # make url_for('index') == url_for('blog.index')
     # in another app, you might define a separate main index here with

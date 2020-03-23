@@ -4,6 +4,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS results;
+DROP TABLE IF EXISTS modeling;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,6 +31,16 @@ CREATE TABLE results (
   col_overlapped TEXT,
   col_selected_method TEXT,
   selected_method VARCHAR(30),
+
+  FOREIGN KEY (user_id) REFERENCES user (id)
+);
+
+CREATE TABLE modeling (
+  user_id INTEGER PRIMARY KEY,
+  trained_file VARCHAR(100),
+  clasifier VARCHAR(50),
+  features TEXT,
+  model_path_name VARCHAR(100),
 
   FOREIGN KEY (user_id) REFERENCES user (id)
 );

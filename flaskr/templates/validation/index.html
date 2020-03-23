@@ -156,7 +156,12 @@
         <hr class="line-hr">
 
         <div class="step-actions">
-            <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+            <button class="waves-effect waves-dark btn next-step step-6-click">
+                <a href="{{ url_for('modeling.index') }}">MODELING</a>
+            </button>
+            <button class="waves-effect waves-dark btn-flat previous-step">
+                <a href="{{ url_for('analyze.final_result') }}">BACK</a>
+            </button>
         </div>
     </div>
 
@@ -187,7 +192,7 @@
         var i = event.param3;
 
         if (i == '4') {
-            var out = "<b>Identified All Genes: "+ list.length + " </b><br><br>" + list + "<br><br> <b>Already Identified Genes: "+ head.length + "</b><br><br>" + head;
+            var out = "<b>Identified All Genes: " + list.length + " </b><br><br>" + list + "<br><br> <b>Already Identified Genes: " + head.length + "</b><br><br>" + head;
             console.log(list.length);
             element_head.innerHTML = "Our Framework";
             element.innerHTML = out;
