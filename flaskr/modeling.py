@@ -1,10 +1,11 @@
 import os
 
+import pandas as pd
 from flask import Blueprint, session, request
 from flask import render_template
 from flask import redirect
 from flask import g
-from sklearn import svm
+from sklearn import svm, preprocessing
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 import pickle
@@ -93,19 +94,37 @@ def predict():
 
     if request.method == "POST":
         selected_file = request.form["available_files"]
-        df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + selected_file)
+        df_path = USER_PATH + str(user_id) + "\\" + selected_file
+        df = PreProcess.getDF(df_path)
 
-        is_norm = request.form["is_norm"]
-        is_map = request.form["is_map"]
+        is_norm = request.form.get("is_norm")
+        is_map = request.form.get("is_map")
 
-        if(is_norm == "true"):
-            df = PreProcess.step3(df)
+        if is_map == "true":
+            annotation_file = request.form["anno_tbl"]
+            df = PreProcess.mergeDF(df_path, ANNOTATION_TBL + annotation_file)
+
+        if is_norm == "true":
+            if is_map == 'true':
+                df = PreProcess.step3(df)
+            else:
+                df = get_norm_df(df)
 
         model_name = r['model_path_name']
 
         result = get_predicted_result_df(user_id, model_name, df[features])
+        result = result.astype(str)
+        result[result == '0'] = 'Negative'
+        result[result == '1'] = 'Positive'
+        # result = result.replace({'0': 'Negative', '1': 'Positive'})
+        frame = {'ID': df.index, 'Predicted Result': result}
+        out_result = pd.DataFrame(frame)
 
-    return render_template("modeling/predict.html", available_list=list_names, details = details, annotation_list= annotation_list)
+        return render_template("modeling/predict.html", available_list=list_names, details = details, annotation_list= annotation_list,
+                           tables=[out_result.to_html(classes = 'display" id = "table_id')])
+
+    return render_template("modeling/predict.html", available_list=list_names, details=details,
+                           annotation_list=annotation_list, tables='')
 
 def get_predicted_result_df(user_id, model_name, df):
     model = pickle.load(open(USER_PATH + str(user_id) + "\\tmp\\" + model_name, 'rb'))
@@ -141,3 +160,13 @@ def create_model_pkl(user_id, filename, classifier):
 
     return 1
 
+
+def get_norm_df(df):
+    x = df.values  # returns a numpy array
+    min_max_scaler = preprocessing.MinMaxScaler()
+    x_scaled = min_max_scaler.fit_transform(x)
+    df_new = pd.DataFrame(data=x_scaled, columns=df.columns)
+    df_new.insert(loc=0, column=df.columns.name, value=df.index)
+    df_new = df_new.set_index([df.columns.name])
+    df_new.index.name = None
+    return df_new

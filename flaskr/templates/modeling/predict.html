@@ -19,6 +19,25 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
 
+    {#    Table css and js#}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
+
+    <style>
+        .pagination li.active {
+            background-color: inherit;
+        }
+
+        #anno_tbl_div{
+            visibility: hidden;
+        }
+    </style>
+
 </head>
 
 <body style="background-color: #f3f6f9;">
@@ -49,146 +68,183 @@
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
-    <form method="post" action="/mod/predict/" enctype="multipart/form-data">
+    <div class="step-content">
+        <div class="row head-word">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;">PREDICTION</h3>
+        </div>
+    </div>
 
-        <div class="step-content">
-            <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;">PREDICTION</h3>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="row">
+                <h5>Details</h5>
             </div>
-        </div>
-
-        <div>
-            <ul>
-                <li>Classifier: {{ details[2] }}</li>
-                <li>Trained from: {{ details[1] }}</li>
-                <li>Features: {{ details[0] }}</li>
-            </ul>
-        </div>
-
-        <br>
-
-        <div class="where-you-like" style="margin-top: 40px;">
-
-            <div class="row" style="margin-top: 40px;">
-                <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Choose File:</h5>
-                </div>
-                <div class="col-sm-5">
-                    <div class="md-form">
-                        <select class="form-control" id="available_files" name="available_files">
-                            {% for name in available_list %}
-                                <option value="{{ name }}">{{ name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-1">
-                    <button type="button" class="button btn btn-warning">View</button>
-                </div>
+            <div class="row">
+                <table>
+                    <tr>
+                        <td>Classifier:</td>
+                        <td>{{ details[2] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Trained from:</td>
+                        <td>{{ details[1] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Features:</td>
+                        <td>{{ details[0] }}</td>
+                    </tr>
+                </table>
             </div>
 
-            <div class="row" style="margin-top: 40px;">
-                <div class="row">
-                    <h5 id="h5-head-1" class="card__title" style="text-align: center;">Check preprocess steps</h5>
-                </div>
-                <div class="row">
+            <form method="post" action="/mod/predict/" enctype="multipart/form-data">
 
-                    <div class="switch row" id="all">
-                        <span class="col-sm-6">Normalize: </span>
-                        <label class="col-sm-6" onclick="update_checkbox(event)">
-                            Off
-                            <input type="checkbox" value="" id="is_norm" name="is_norm">
-                            <span class="lever"></span>
-                            On
-                        </label>
-                    </div>
+                <br>
 
-                    <div class="switch row">
-                        <div class="row">
-                            <span class="col-sm-6">Annotation Table Mapping </span>
-                            <label class="col-sm-6" onclick="update_checkbox(event)">
-                                Off
-                                <input type="checkbox" value="" id="is_map" name="is_map">
-                                <span class="lever"></span>
-                                On
-                            </label>
+                <div class="where-you-like" style="margin-top: 40px;">
+
+                    <div class="row" style="margin-top: 40px;">
+                        <div class="col-sm-4">
+                            <h5 id="" class="card__title" style="text-align: center;">Choose File:</h5>
                         </div>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-5">
+                            <div class="md-form">
+                                <select class="form-control" id="available_files" name="available_files">
+                                    {% for name in available_list %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="button btn btn-warning">View</button>
+                        </div>
+                    </div>
 
+                    <div class="row" style="margin-top: 40px;">
                         <div class="row">
-                            <div class="col-sm-6"></div>
-                            <div class="col-sm-6">
-                                <div class="md-form">
-                                    <select class="form-control" id="anno_tbl" name="anno_tbl">
-                                        {% for name in annotation_list %}
-                                            <option value="{{ name }}">{{ name }}</option>
-                                        {% endfor %}
-                                    </select>
+                            <h5 id="h5-head-1" class="card__title" style="text-align: center;">Check preprocess
+                                steps</h5>
+                        </div>
+                        <div class="row">
+
+                            <div class="switch row" id="all">
+                                <span class="col-sm-6">Normalize: </span>
+                                <label class="col-sm-6" onclick="update_checkbox(event)">
+                                    Off
+                                    <input type="checkbox" value="false" id="is_norm" name="is_norm">
+                                    <span class="lever"></span>
+                                    On
+                                </label>
+                            </div>
+
+                            <div class="switch row">
+                                <div class="row">
+                                    <span class="col-sm-6">Annotation Table Mapping </span>
+                                    <label class="col-sm-6" onclick="update_checkbox(event)">
+                                        Off
+                                        <input type="checkbox" value="false" id="is_map" name="is_map">
+                                        <span class="lever"></span>
+                                        On
+                                    </label>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6"></div>
+                                    <div class="col-sm-6">
+                                        <div class="md-form" id="anno_tbl_div">
+                                            <select class="form-control" id="anno_tbl" name="anno_tbl">
+                                                {% for name in annotation_list %}
+                                                    <option value="{{ name }}">{{ name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
                     </div>
-
-
                 </div>
 
-            </div>
-            <br><br>
-            <hr class="line-hr">
+                <div class="submit">
+                    <button class="waves-effect waves-dark btn next-step step-6-click" onclick="">SUBMIT</button>
+                </div>
 
-            <div class="step-actions">
-                <button class="waves-effect waves-dark btn next-step step-6-click" onclick="">CONTINUE
-                </button>
-                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
-            </div>
+            </form>
         </div>
 
-    </form>
+        <div class="col-sm-2"></div>
 
+        <div class="col-sm-4">
+            <div class="row">
+                {% if tables %}
+                    <div class="row">
+                        <div class="row">
+                            <h5 id="h5-head-12" class="card__title" style="text-align: center;">Predicted
+                                Results</h5>
+                        </div>
+
+                        <div class="row table_view">
+                            {% for table in tables %}
+                                {{ table|safe }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <hr class="line-hr">
+
+{#        <div class="step-actions">#}
+{#            <button class="waves-effect waves-dark btn next-step step-6-click" onclick="">CONTINUE#}
+{#            </button>#}
+{#            <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>#}
+{#        </div>#}
+    </div>
 </div>
 
+<div class="row">
     <form style="display: none" action="/view/" method="POST" id="form" target="_blank">
         <input type="hidden" id="selected_file" name="selected_file" value=""/>
     </form>
+</div>
 
 </body>
 </html>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
 
 <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
 
 <!-- Materializecss compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
 
-<!-- jQueryValidation Plugin -->
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
-
-<!--dropdown-->
-<script type="text/javascript" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous" src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'></script>
-
-<script type="text/javascript" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous" src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
-
-<!--main navbar-->
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
-
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
 
 <script>
+    $(document).ready(function () {
+        $('#table_id').DataTable();
+    });
+</script>
+
+<script>
     function update_checkbox(event) {
-        {#        console.log(event.target.id);#}
         var id = event.target.id;
         if (id) {
+
+            if(id == 'is_map'){
+                console.log(id);
+                document.getElementById("anno_tbl_div").style.visibility = "visible";
+            }
             document.getElementById(id).value = document.getElementById(id).checked;
-            console.log(document.getElementById(id).value);
         }
     };
 
-    $("button").click(function () {
+    $(".button").click(function () {
         var conceptName = $('#available_files').find(":selected").text();
-        console.log(conceptName);
 
         $("#selected_file").val(conceptName);
         $("#form").submit();

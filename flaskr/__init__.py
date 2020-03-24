@@ -1,5 +1,6 @@
 import os
 
+import pandas as pd
 from flask import Flask, render_template, session, request
 
 from .classes.app_alz import alz
@@ -39,7 +40,28 @@ def create_app(test_config=None):
         user_id = session.get("user_id")
         selected_file = request.form["selected_file"]
         df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + selected_file)
-        return render_template('preprocess/tableVIew.html', tables=[df.to_html(classes='data')], titles=df.columns.values)
+
+        if len(df.columns) > 15:
+            session['view_df_name'] = selected_file
+            df = df.iloc[:, : 10]
+
+        data = [selected_file]
+        return render_template('preprocess/tableVIew.html', tables=[df.to_html(classes = 'display" id = "table_id')], data=data)
+
+    @app.route("/view/p/", methods=["GET"])
+    def view_one_data():
+        file_name = session.get('view_df_name')
+        user_id = session.get("user_id")
+        id = request.args.get('id')
+        df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + file_name)
+        df = df.T
+
+        df_p = df[id].to_numpy()
+
+        frame = {'Feature Name': df.index, 'Value': df_p}
+        out_result = pd.DataFrame(frame)
+        data = [file_name + ": " + id]
+        return render_template('preprocess/tableVIew.html', tables=[out_result.to_html(classes='display" id = "table_id')], data=data)
 
     # register the database commands
     from flaskr import db

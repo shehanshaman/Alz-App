@@ -1,14 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP: {{ data[0] }}</title>
+
+    <!-- Materializecss compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+
+{#    Table css and js#}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
+
+
+    <style>
+        .pagination li.active {
+            background-color: inherit;
+        }
+    </style>
+
 </head>
 <body>
+<div class="nav">
 
-{% for table in tables %}
-            {{titles[loop.index]}}
-            {{ table|safe }}
-{% endfor %}
+    <div class="nav-header">
+        <div class="nav-title">Alz</div>
+    </div>
+
+    <div class="nav-links">
+        <div>
+            <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
+            <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+            <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
+        </div>
+
+        {% if g.user %}
+            <span>{{ g.user['username'] }}</span>
+            <a href="{{ url_for('auth.logout') }}">Log Out</a>
+        {% else %}
+            <a href="{{ url_for('auth.register') }}">Register</a>
+            <a href="{{ url_for('auth.login') }}">Log In</a>
+        {% endif %}
+
+    </div>
+</div>
+<div id="mainDataInterface-id" class="container mainDataInterface">
+    <div class="row">
+        <div class="row" id="h3-head-6" class="card__title">
+            <h3>{{ data[0] }}</h3>
+        </div>
+        <div class="row table_view">
+            {% for table in tables %}
+                {{ table|safe }}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<form style="display: none" action="/view/p" method="GET" id="form" target="_blank">
+    <input type="hidden" id="selected_row" name="id" value=""/>
+</form>
 </body>
+<script>
+    $(document).ready(function () {
+        $('#table_id').DataTable();
+    });
+</script>
+<script type='text/javascript'>
+    window.onload = function () {<!--   w  w w  .j  a  v a  2 s  .c  om-->
+        var rows = document.getElementsByTagName("tr");
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].onclick = function () {
+                console.log($(this).find('th')[0].innerHTML);
+                $("#selected_row").val($(this).find('th')[0].innerHTML);
+                $("#form").submit();
+            };
+        }
+    };
+</script>
 </html>
