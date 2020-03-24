@@ -73,7 +73,7 @@
                 <div class="col-sm-6">
                     <h5 id="h3-head-1" class="card__title" style="text-align: center;">Choose File:</h5>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                     <div class="md-form">
                         <select class="form-control" id="available_files" name="available_files">
                             {% for name in available_list %}
@@ -82,8 +82,57 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-sm-1">
+                    <button type="button" class="button btn btn-warning">View</button>
+                </div>
             </div>
 
+            <div class="row" style="margin-top: 40px;">
+                <div class="row">
+                    <h5 id="h5-head-1" class="card__title" style="text-align: center;">Check preprocess steps</h5>
+                </div>
+                <div class="row">
+
+                    <div class="switch row" id="all">
+                        <span class="col-sm-6">Normalize: </span>
+                        <label class="col-sm-6" onclick="update_checkbox(event)">
+                            Off
+                            <input type="checkbox" value="" id="is_norm" name="is_norm">
+                            <span class="lever"></span>
+                            On
+                        </label>
+                    </div>
+
+                    <div class="switch row">
+                        <div class="row">
+                            <span class="col-sm-6">Annotation Table Mapping </span>
+                            <label class="col-sm-6" onclick="update_checkbox(event)">
+                                Off
+                                <input type="checkbox" value="" id="is_map" name="is_map">
+                                <span class="lever"></span>
+                                On
+                            </label>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6"></div>
+                            <div class="col-sm-6">
+                                <div class="md-form">
+                                    <select class="form-control" id="anno_tbl" name="anno_tbl">
+                                        {% for name in annotation_list %}
+                                            <option value="{{ name }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
             <br><br>
             <hr class="line-hr">
 
@@ -97,6 +146,10 @@
     </form>
 
 </div>
+
+    <form style="display: none" action="/view/" method="POST" id="form" target="_blank">
+        <input type="hidden" id="selected_file" name="selected_file" value=""/>
+    </form>
 
 </body>
 </html>
@@ -122,3 +175,22 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+
+<script>
+    function update_checkbox(event) {
+        {#        console.log(event.target.id);#}
+        var id = event.target.id;
+        if (id) {
+            document.getElementById(id).value = document.getElementById(id).checked;
+            console.log(document.getElementById(id).value);
+        }
+    };
+
+    $("button").click(function () {
+        var conceptName = $('#available_files').find(":selected").text();
+        console.log(conceptName);
+
+        $("#selected_file").val(conceptName);
+        $("#form").submit();
+    });
+</script>

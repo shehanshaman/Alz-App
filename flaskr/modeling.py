@@ -15,13 +15,14 @@ from flaskr.classes.preProcessClass import PreProcess
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = ROOT_PATH + "\\upload\\"
 USER_PATH = UPLOAD_FOLDER + "users\\"
+ANNOTATION_TBL = UPLOAD_FOLDER + "AnnotationTbls\\"
 
 bp = Blueprint("modeling", __name__, url_prefix="/mod")
 
 @bp.route("/", methods = ["GET"])
 def index():
     s = 2
-    if(request.method == "GET"):
+    if request.method == "GET":
         s = request.args.get('s')
 
     user_id = session.get("user_id")
@@ -79,6 +80,10 @@ def predict():
 
     list_names.remove("tmp")
 
+    annotation_list = []
+    for filename in os.listdir(ANNOTATION_TBL):
+        annotation_list.append(filename)
+
     r = UserResult.get_user_model(user_id)
     features = r['features'].split(',')
     trained_file = r['trained_file']
@@ -89,11 +94,18 @@ def predict():
     if request.method == "POST":
         selected_file = request.form["available_files"]
         df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + selected_file)
+
+        is_norm = request.form["is_norm"]
+        is_map = request.form["is_map"]
+
+        if(is_norm == "true"):
+            df = PreProcess.step3(df)
+
         model_name = r['model_path_name']
 
         result = get_predicted_result_df(user_id, model_name, df[features])
 
-    return render_template("modeling/predict.html", available_list=list_names, details = details)
+    return render_template("modeling/predict.html", available_list=list_names, details = details, annotation_list= annotation_list)
 
 def get_predicted_result_df(user_id, model_name, df):
     model = pickle.load(open(USER_PATH + str(user_id) + "\\tmp\\" + model_name, 'rb'))

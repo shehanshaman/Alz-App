@@ -1,9 +1,12 @@
 import os
 
-from flask import Flask
+from flask import Flask, render_template, session, request
 
 from .classes.app_alz import alz
+from flaskr.classes.preProcessClass import PreProcess
 
+ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+USER_PATH = ROOT_PATH + "\\upload\\users\\"
 
 def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
@@ -31,9 +34,12 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/hello")
-    def hello():
-        return "Hello, World!"
+    @app.route("/view/", methods = ["POST"])
+    def view_df():
+        user_id = session.get("user_id")
+        selected_file = request.form["selected_file"]
+        df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + selected_file)
+        return render_template('preprocess/tableVIew.html', tables=[df.to_html(classes='data')], titles=df.columns.values)
 
     # register the database commands
     from flaskr import db
