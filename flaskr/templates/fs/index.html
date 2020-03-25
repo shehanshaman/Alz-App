@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP: Feature Selection</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+        .slider {
+            height: inherit;
+        }
+    </style>
+</head>
+
+
+<body style="background-color: #f3f6f9;">
+
+<nav>
+    <div class="nav-wrapper">
+        <a href="#!" class="brand-logo">Alz</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
+            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
+                    class="material-icons right">arrow_drop_down</i></a>
+                {% if g.user %}
+                    <li><span>{{ g.user['username'] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+    <div class="step">
+        <div class="step-content">
+            <div class="row">
+                <h3 id="h3-head-6" class="card__title" style="text-align: center;">FEATURE SELECTION</h3>
+            </div>
+
+            <div class="row">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">SELECT THREE FEATURE SELECTION
+                    METHODS</h5>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <ul id="listFrom" class="nav nav-pills nav-stacked">
+                                    <li data-id="1" class="active" data-value="PCA">PCA</li>
+                                    <li data-id="2" class="active" data-value="Random Forest">Random Forest</li>
+                                    <li data-id="3" class="active" data-value="Extra Tree Classifier">Extra Tree
+                                        Classifier
+                                    </li>
+                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-6">
+                                <ul id="listTo" class="nav nav-pills nav-stacked"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">NUMBER OF FEATURES SELECTED</h5>
+            </div>
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <div class="slidecontainer">
+                        <input type="range" min="30" max="100" value="50" class="slider" id="myRange">
+                        <p>Value: <span id="demo"></span></p>
+                    </div>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+
+            <hr class="line-hr">
+
+            <div class="step-actions">
+                <button class="waves-effect waves-dark btn next-step step-6-click" onclick="myFunction()">CONTINUE
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<form style="display: none" action="/fs/" method="POST" id="form">
+    <input type="hidden" id="fs_methods" name="fs_methods" value=""/>
+</form>
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!--main navbar-->
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $(".dropdown-trigger").dropdown();
+    });
+</script>
+
+<script>
+    function myFunction() {
+        var val = document.getElementById("listTo");
+        var arr = val.getElementsByClassName('active');
+        var fs = new Array(3);
+        var i;
+        for (i = 0; i < arr.length; i++) {
+            fs[i] = arr[i].getAttribute('data-value');
+        }
+
+        fs[3] = document.getElementById("demo").innerHTML;
+
+        $("#fs_methods").val(fs);
+        $("#form").submit();
+
+    }
+</script>

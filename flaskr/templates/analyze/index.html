@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP: Analysis</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+        .summary_plot > img {
+            padding: 5px;
+            width: 100%;
+        }
+
+        div.centre {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 0;
+            margin-bottom: 0;
+            align-content: center;
+            text-align: center;
+        }
+
+        .result_content {
+            border-style: ridge;
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 16px;
+        }
+    </style>
+
+</head>
+
+
+<body style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="#!">one</a></li>
+    <li><a href="#!">two</a></li>
+    <li class="divider"></li>
+    <li><a href="#!">three</a></li>
+</ul>
+<nav>
+    <div class="nav-wrapper">
+        <a href="#!" class="brand-logo">Alz</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
+            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
+                    class="material-icons right">arrow_drop_down</i></a>
+                {% if g.user %}
+                    <li><span>{{ g.user['username'] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+    <div class="step-heading">
+        <div class="row">
+            <h3 id="h3-head-6" class="card__title" style="text-align: center;">Analysis</h3>
+        </div>
+    </div>
+
+    <div class="step-content">
+
+        <div class="result_content">
+            <div class="row">
+                <h4 id="h4-head-6" class="card__title" style="text-align: center;">Trainig accuracies of genes only
+                    found by each classifier and the overlapped set of genes</h4>
+            </div>
+
+            <div class="row">
+                <div class="summary_plot">
+                    <img src="data:image/png;base64,{{ overlap_data }}" alt="overlap">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="result_content">
+            <div class="row">
+                <h3 id="h4-head-6" class="card__title" style="text-align: center;">Classification accuracy of three
+                    classifiers using incrementally smaller sets of genes</h3>
+            </div>
+
+
+            <div class="row">
+                <div class="summary_plot">
+                    <img src="data:image/png;base64,{{ small_set }}" alt="small_set">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="result_content">
+            <div class="row">
+                <h3 id="h4-head-6" class="card__title" style="text-align: center;"> Correlation matrix</h3>
+            </div>
+
+
+            <div class="row">
+                <div class="summary_plot">
+                    <img src="data:image/png;base64,{{ corr_data }}" alt="correlation">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row centre">
+            <button class="button waves-effect waves-dark btn" value="{{ methods[0] }}">{{ methods[0] }}</button>
+            <button class="button waves-effect waves-dark btn" value="{{ methods[1] }}">{{ methods[1] }}</button>
+            <button class="button waves-effect waves-dark btn" value="{{ methods[2] }}">{{ methods[2] }}</button>
+        </div>
+
+        <hr class="line-hr">
+
+        <div class="step-actions">
+            <button class="waves-effect waves-dark btn-flat previous-step"><a {{ url_for('fs.result') }}>BACK</a>
+            </button>
+        </div>
+    </div>
+
+    <form style="display: none" action="/an/step2" method="POST" id="form">
+        <input type="hidden" id="selected_method" name="selected_method" value=""/>
+    </form>
+
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $(".dropdown-trigger").dropdown();
+    });
+</script>
+
+<script>
+    $("button").click(function () {
+        var fired_button = $(this).val();
+
+        $("#selected_method").val(fired_button);
+        $("#form").submit();
+    });
+</script>

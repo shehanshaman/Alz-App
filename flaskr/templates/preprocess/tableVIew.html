@@ -1,14 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP: {{ data[0] }}</title>
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+
+    {#    Table css and js#}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
+
+
+    <style>
+        .pagination li.active {
+            background-color: inherit;
+        }
+    </style>
+
 </head>
 <body>
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="#!">one</a></li>
+    <li><a href="#!">two</a></li>
+    <li class="divider"></li>
+    <li><a href="#!">three</a></li>
+</ul>
+<nav>
+    <div class="nav-wrapper">
+        <a href="#!" class="brand-logo">Alz</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
+            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
+                    class="material-icons right">arrow_drop_down</i></a>
+                {% if g.user %}
+                    <li><span>{{ g.user['username'] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</nav>
 
-{% for table in tables %}
-            {{titles[loop.index]}}
-            {{ table|safe }}
-{% endfor %}
+<div id="mainDataInterface-id" class="container mainDataInterface">
+    <div class="row">
+        <div class="row" id="h3-head-6" class="card__title">
+            <h3>{{ data[0] }}</h3>
+        </div>
+        <div class="row table_view">
+            {% for table in tables %}
+                {{ table|safe }}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<form style="display: none" action="/view/p" method="GET" id="form" target="_blank">
+    <input type="hidden" id="selected_row" name="id" value=""/>
+</form>
+
 </body>
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $(".dropdown-trigger").dropdown();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#table_id').DataTable();
+    });
+</script>
+
+<script type='text/javascript'>
+    window.onload = function () {<!--   w  w w  .j  a  v a  2 s  .c  om-->
+        var rows = document.getElementsByTagName("tr");
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].onclick = function () {
+                console.log($(this).find('th')[0].innerHTML);
+                $("#selected_row").val($(this).find('th')[0].innerHTML);
+                $("#form").submit();
+            };
+        }
+    };
+</script>
 </html>

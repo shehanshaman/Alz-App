@@ -74,6 +74,22 @@ def register():
                 (username, generate_password_hash(password)),
             )
             db.commit()
+
+            # Adding user to results
+            user_id = UserResult.get_user_id(username)
+            db.execute(
+                "INSERT INTO results (user_id, filename) VALUES (?, ?)",
+                (user_id,'GSE5281_DE_200.plk'),
+            )
+            db.commit()
+
+            # Adding user to modeling
+            db.execute(
+                "INSERT INTO modeling (user_id, trained_file) VALUES (?, ?)",
+                (user_id, ''),
+            )
+            db.commit()
+
             return redirect(url_for("auth.login"))
 
         flash(error)
@@ -114,3 +130,53 @@ def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
     return redirect(url_for("index"))
+
+class UserResult:
+
+    def get_user_id(username):
+        db = get_db()
+        user = db.execute(
+            "SELECT * FROM user WHERE username = ?", (username,)
+        ).fetchone()
+        if user is not None:
+            return user["id"]
+        return None
+
+    def get_user_results(user_id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM results WHERE user_id = ?", (user_id,)
+        ).fetchone()
+        if result is not None:
+            return result
+        return None
+
+    def update_result(user_id, column, value):
+        db = get_db()
+        db.execute(
+            "UPDATE results SET " + column +" = ? WHERE user_id = ?",( value, user_id),
+        )
+        db.commit()
+
+    def update_selected_col(selected_col, user_id):
+        db = get_db()
+        db.execute(
+            "UPDATE results SET  col_method1 = ?, col_method2 = ?, col_method3 = ? WHERE user_id = ?", (selected_col[0],selected_col[1], selected_col[2], user_id),
+        )
+        db.commit()
+
+    def update_modeling(user_id, column, value):
+        db = get_db()
+        db.execute(
+            "UPDATE modeling SET " + column +" = ? WHERE user_id = ?",( value, user_id),
+        )
+        db.commit()
+
+    def get_user_model(user_id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM modeling WHERE user_id = ?", (user_id,)
+        ).fetchone()
+        if result is not None:
+            return result
+        return None

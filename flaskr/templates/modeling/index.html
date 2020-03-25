@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Pre-Process</title>
+    <title>FYP: Modeling</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
@@ -19,7 +19,6 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-
 </head>
 
 <body style="background-color: #f3f6f9;">
@@ -31,7 +30,6 @@
     <li class="divider"></li>
     <li><a href="#!">three</a></li>
 </ul>
-
 <nav>
     <div class="nav-wrapper">
         <a href="#!" class="brand-logo">Alz</a>
@@ -53,21 +51,78 @@
     </div>
 </nav>
 
+{#<div class="nav">#}
+{##}
+{#    <div class="nav-header">#}
+{#        <div class="nav-title">Alz</div>#}
+{#    </div>#}
+{##}
+{#    <div class="nav-links">#}
+{#        <div>#}
+{#            <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>#}
+{#            <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visulization</a>#}
+{#            <div><a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a></div>#}
+{#            <div class="dropdown">#}
+{#                <a class="" id="menu1" data-toggle="dropdown">Tutorials</a>#}
+{#                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">#}
+{#                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">HTML</a></li>#}
+{#                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">CSS</a></li>#}
+{#                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">JavaScript</a></li>#}
+{#                    <li role="presentation" class="divider"></li>#}
+{#                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">About Us</a></li>#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#{% if g.user %}#}
+{#    <span>{{ g.user['username'] }}</span>#}
+{#    <a href="{{ url_for('auth.logout') }}">Log Out</a>#}
+{#{% else %}#}
+{#    <a href="{{ url_for('auth.register') }}">Register</a>#}
+{#    <a href="{{ url_for('auth.login') }}">Log In</a>#}
+{#{% endif %}#}
+{##}
+{#    </div>#}
+{#</div>#}
+
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
-    <form method="post" action="/pre/" enctype="multipart/form-data">
+    <form method="post" action="/mod/" enctype="multipart/form-data">
 
         <div class="step-content">
             <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose your basic dataset</h3>
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;">MODELING</h3>
             </div>
         </div>
+
+        {% if state == '1' %}
+
+            <div class="alert alert-success alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Success!</strong> Your predictive model created successfully. <a href="">Lets Try</a>
+            </div>
+
+        {% elif state == '0' %}
+
+            <div class="alert alert-danger alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Danger!</strong> Something went wrong.
+            </div>
+
+        {% endif %}
+
+        <div class="features">
+            <h5>Extracted Features </h5>
+            <div class="well">{{ features }}</div>
+        </div>
+
+        <br>
 
         <div class="where-you-like" style="margin-top: 40px;">
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Choose File:</h5>
                 </div>
                 <div class="col-sm-6">
                     <div class="md-form">
@@ -82,12 +137,12 @@
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">ANNOTATION TABLE:</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Classifier:</h5>
                 </div>
                 <div class="col-sm-6">
                     <div class="md-form">
-                        <select class="form-control" id="anno_tbl" name="anno_tbl">
-                            {% for name in annotation_list %}
+                        <select class="form-control" id="classifier" name="classifier">
+                            {% for name in classifier_list %}
                                 <option value="{{ name }}">{{ name }}</option>
                             {% endfor %}
                         </select>
@@ -95,26 +150,12 @@
                 </div>
             </div>
 
-            <div class="row" style="margin-top: 40px;">
-                <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">COLUMN AVERAGE:</h5>
-                </div>
-                <div class="col-sm-6">
-                    <div class="md-form">
-                        <select class="form-control" id="column_selection" name="column_selection">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
-                    </div>
-                </div>
+            <br><br>
+            <hr class="line-hr">
+
+            <div class="step-actions">
+                <button class="waves-effect waves-dark btn next-step step-6-click">SUBMIT</button>
             </div>
-            <center>
-                <div class="row" style="margin-top: 40px;">
-                    <div class="col-sm-12">
-                        <input class="waves-effect waves-dark btn" type="submit" value="Submit">
-                    </div>
-                </div>
-            </center>
         </div>
 
     </form>
@@ -141,4 +182,3 @@
         $(".dropdown-trigger").dropdown();
     });
 </script>
-

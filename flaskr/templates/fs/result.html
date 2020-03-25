@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP: Feature Selection</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create two equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 33%;
+            padding: 10px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Style the buttons */
+        #btnContainer > .btn {
+            border: none;
+            outline: none;
+{#            padding: 12px 16px;#}
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        #btnContainer > .btn:hover {
+            background-color: #ddd;
+        }
+
+        #btnContainer > .btn.active {
+            background-color: #666;
+            color: white;
+        }
+
+        .summary_plot > img {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 100%;
+        }
+    </style>
+
+</head>
+
+
+<body style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="#!">one</a></li>
+    <li><a href="#!">two</a></li>
+    <li class="divider"></li>
+    <li><a href="#!">three</a></li>
+</ul>
+
+<nav>
+    <div class="nav-wrapper">
+        <a href="#!" class="brand-logo">Alz</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
+            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
+                    class="material-icons right">arrow_drop_down</i></a>
+                {% if g.user %}
+                    <li><span>{{ g.user['username'] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+    <div class="step">
+        <div class="step-content">
+            <div class="row">
+                <h3 id="h3-head-6" class="card__title" style="text-align: center;">RESULTS: Summary</h3>
+            </div>
+
+
+            <div class="row">
+                <div class="summary_plot">
+                    <img src="data:image/png;base64,{{ image_data }}" alt="summary">
+                </div>
+            </div>
+
+            <div class="row">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Selected Features</h5>
+            </div>
+
+            <div class="row">
+                <div id="btnContainer">
+                    <button class="btn" onclick="listView()"><i class="fa fa-bars"></i> List</button>
+                    <button class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+                </div>
+                <br>
+
+                <div class="row">
+                    <div class="column" style="background-color:#aaa;">
+                        <h2>{{ methods[1] }}</h2>
+                        <p>{{ columns[0] }}</p>
+                    </div>
+                    <div class="column" style="background-color:#bbb;">
+                        <h2>{{ methods[2] }}</h2>
+                        <p>{{ columns[1] }}</p>
+                    </div>
+                    <div class="column" style="background-color:#cccccc;">
+                        <h2>{{ methods[3] }}</h2>
+                        <p>{{ columns[2] }}</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <hr class="line-hr">
+
+            <div class="step-actions">
+                <button class="waves-effect waves-dark btn next-step step-6-click"><a
+                        href="{{ url_for('analyze.index') }}">Analyze</a>
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step"><a
+                        href="{{ url_for('fs.index') }}">BACK</a></button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $(".dropdown-trigger").dropdown();
+    });
+</script>
+
+<script>
+    // Get the elements with class="column"
+    var elements = document.getElementsByClassName("column");
+
+    // Declare a loop variable
+    var i;
+
+    // List View
+    function listView() {
+        for (i = 0; i < elements.length; i++) {
+            elements[i].style.width = "100%";
+        }
+    }
+
+    // Grid View
+    function gridView() {
+        for (i = 0; i < elements.length; i++) {
+            elements[i].style.width = "33%";
+        }
+    }
+
+    /* Optional: Add active class to the current button (highlight it) */
+    var container = document.getElementById("btnContainer");
+    var btns = container.getElementsByClassName("btn");
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function () {
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        });
+    }
+</script>
