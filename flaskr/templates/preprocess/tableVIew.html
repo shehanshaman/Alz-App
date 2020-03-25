@@ -108,6 +108,7 @@
     window.onload = function () {<!--   w  w w  .j  a  v a  2 s  .c  om-->
         var rows = document.getElementsByTagName("tr");
         for (var i = 0; i < rows.length; i++) {
+            if (i==0){ continue;}
             rows[i].onclick = function () {
                 console.log($(this).find('th')[0].innerHTML);
                 $("#selected_row").val($(this).find('th')[0].innerHTML);

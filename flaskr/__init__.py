@@ -61,7 +61,7 @@ def create_app(test_config=None):
         frame = {'Feature Name': df.index, 'Value': df_p}
         out_result = pd.DataFrame(frame)
         data = [file_name + ": " + id]
-        return render_template('preprocess/tableVIew.html', tables=[out_result.to_html(classes='display" id = "table_id')], data=data)
+        return render_template('preprocess/view_one_data.html', tables=[out_result.to_html(classes='display" id = "table_id')], data=data)
 
     # register the database commands
     from flaskr import db
