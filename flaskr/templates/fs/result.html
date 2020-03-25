@@ -73,35 +73,7 @@
 <body style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-    <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
-    <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
-    <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
-    <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
-</ul>
-<nav>
-    <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Alz</a>
-        <ul class="right hide-on-med-and-down">
-            <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
-            </li>
-            <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
-            </li>
-            <!-- Dropdown Trigger -->
-            <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a></li>
-            <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
-            </li>
-            {% if g.user %}
-                <li><span>{{ g.user['username'] }}</span></li>
-                <li class="nav_link"><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-            {% else %}
-                <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
-                <li class="nav_link"><a href="{{ url_for('auth.login') }}">Log In</a></li>
-            {% endif %}
-        </ul>
-    </div>
-</nav>
+{% include 'horizontal_nav_bar.html' %}
 
 <div class="card-content">
 

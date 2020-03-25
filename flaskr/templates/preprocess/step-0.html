@@ -7,8 +7,6 @@
 
     <title>FYP: Upload</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -16,8 +14,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
 </head>
 
@@ -25,48 +25,20 @@
 <body style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-    <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
-    <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
-    <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
-    <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
-</ul>
-<nav>
-    <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Alz</a>
-        <ul class="right hide-on-med-and-down">
-            <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
-            </li>
-            <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
-            </li>
-            <!-- Dropdown Trigger -->
-            <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a></li>
-            <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
-            </li>
-            {% if g.user %}
-                <li><span>{{ g.user['username'] }}</span></li>
-                <li class="nav_link"><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-            {% else %}
-                <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
-                <li class="nav_link"><a href="{{ url_for('auth.login') }}">Log In</a></li>
-            {% endif %}
-        </ul>
-    </div>
-</nav>
+{% include 'horizontal_nav_bar.html' %}
 
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
     <form method="post" action="/pre/upload/" enctype="multipart/form-data">
 
-        <div class="step-content">
-            <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose your basic dataset</h3>
+        <div class="step-content row">
+            <div class="head-word">
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose your dataset</h3>
             </div>
         </div>
 
-        <div class="where-you-like" style="margin-top: 40px;">
+        <div class="row" style="margin-top: 40px;">
 
             <div class="row">
                 <div class="col-sm-6">
@@ -83,9 +55,14 @@
                 </div>
             </div>
 
+            <br>
 
-            <div class="row" style="margin-top: 40px;">
-                <div class="col-sm-12">
+            <hr class="line-hr">
+
+            <br>
+
+            <div class="row center">
+                <div class="step-actions">
                     <input class="waves-effect waves-dark btn" type="submit" value="Submit">
                 </div>
             </div>

@@ -70,7 +70,7 @@ def view():
         else:
             df = PreProcess.getDF(x.merge_df)
 
-        return render_template("preprocess/step-2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+        return render_template("preprocess/step-2.html", tables=[df.head(15).to_html(classes='data')], titles=df.head().columns.values)
 
     return redirect('/pre')
 
