@@ -2,126 +2,116 @@
 <html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>FYP</title>
+    <title>FYP: Upload</title>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-  <!--bootstrap-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">  
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
-  <!-- Materializecss compiled and minified CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
 
-  <!--Import Google Icon Font-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
 </head>
 
 
 <body style="background-color: #f3f6f9;">
 
-<div class="nav">
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="#!">one</a></li>
+    <li><a href="#!">two</a></li>
+    <li class="divider"></li>
+    <li><a href="#!">three</a></li>
+</ul>
 
-  <div class="nav-header">
-    <div class="nav-title">Alz</div>
-  </div>
-
-  <div class="nav-links">
-    <div>
-        <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
-        <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
-        <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
+<nav>
+    <div class="nav-wrapper">
+        <a href="#!" class="brand-logo">Alz</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
+            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
+                    class="material-icons right">arrow_drop_down</i></a>
+                {% if g.user %}
+                    <li><span>{{ g.user['username'] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
+            </li>
+        </ul>
     </div>
-
-    {% if g.user %}
-        <span>{{ g.user['username'] }}</span>
-        <a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-        <a href="{{ url_for('auth.register') }}">Register</a>
-        <a href="{{ url_for('auth.login') }}">Log In</a>
-    {% endif %}
-
-  </div>
-</div>
+</nav>
 
 
-  <div id="mainDataInterface-id" class="container mainDataInterface">
+<div id="mainDataInterface-id" class="container mainDataInterface">
 
-        <form method="post" action="/pre/upload/" enctype="multipart/form-data">
+    <form method="post" action="/pre/upload/" enctype="multipart/form-data">
 
-          <div class="step-content">
-              <div class="row head-word">
+        <div class="step-content">
+            <div class="row head-word">
                 <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose your basic dataset</h3>
-              </div>
-          </div>
+            </div>
+        </div>
 
-          <div class="where-you-like" style="margin-top: 40px;">
+        <div class="where-you-like" style="margin-top: 40px;">
 
             <div class="row">
-              <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">DATASET:</h5>
-              </div>
-              <div class="col-sm-6">
-                <div class="file-upload">
-                  <div class="file-select">
-                    <div class="file-select-button" id="fileName">Choose File</div>
-                    <div class="file-select-name" id="noFile">No file choosen...</div>
-                    <input type="file" name="chooseFile" id="chooseFile" required>
-                  </div>
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">DATASET:</h5>
                 </div>
-              </div>
+                <div class="col-sm-6">
+                    <div class="file-upload">
+                        <div class="file-select">
+                            <div class="file-select-button" id="fileName">Choose File</div>
+                            <div class="file-select-name" id="noFile">No file choosen...</div>
+                            <input type="file" name="chooseFile" id="chooseFile" required>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
             <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-12">
-                <input class="waves-effect waves-dark btn" type="submit" value="Submit">
-              </div>
+                <div class="col-sm-12">
+                    <input class="waves-effect waves-dark btn" type="submit" value="Submit">
+                </div>
             </div>
 
-          </div>
+        </div>
 
-        </form>
+    </form>
 
-  </div>
+</div>
 
 </body>
 </html>
- 
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
 
 <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
 
-<!-- Materializecss compiled and minified JavaScript -->
-<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
-
 <!-- jQueryValidation Plugin -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
 
-<!--dropdown-->
-<script type="text/javascript" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-<script type="text/javascript" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous" src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
 
-<!--main navbar-->
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
-
-{#<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>#}
-
-<script type="text/javascript">
-
-// $('.dropdown-menu-annotation-table li').on('click', function() {
-//   var getValue = $(this).text();
-//   $('.dropdown-select-annotation-table').text(getValue);
-// });
-
-// $('.dropdown-menu-column-avg li').on('click', function() {
-//   var getValue = $(this).text();
-//   $('.dropdown-select-column-avg').text(getValue);
-// });
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $(".dropdown-trigger").dropdown();
+    });
 </script>
 

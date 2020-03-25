@@ -2,110 +2,116 @@
 <html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>FYP</title>
+    <title>FYP</title>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">  
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-  <!--bootstrap-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">  
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
-  <!-- Materializecss compiled and minified CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
 
-  <!--Import Google Icon Font-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
 </head>
 
 <body style="background-color: #f3f6f9;">
 
-<div class="nav">
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="#!">one</a></li>
+    <li><a href="#!">two</a></li>
+    <li class="divider"></li>
+    <li><a href="#!">three</a></li>
+</ul>
 
-  <div class="nav-header">
-    <div class="nav-title">Alz</div>
-  </div>
-
-  <div class="nav-links">
-    <div>
-        <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
-        <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
-        <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
+<nav>
+    <div class="nav-wrapper">
+        <a href="#!" class="brand-logo">Alz</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
+            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
+                    class="material-icons right">arrow_drop_down</i></a>
+                {% if g.user %}
+                    <li><span>{{ g.user['username'] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
+            </li>
+        </ul>
     </div>
+</nav>
 
-    {% if g.user %}
-        <span>{{ g.user['username'] }}</span>
-        <a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-        <a href="{{ url_for('auth.register') }}">Register</a>
-        <a href="{{ url_for('auth.login') }}">Log In</a>
-    {% endif %}
+<div id="mainDataInterface-id" class="container mainDataInterface">
 
-  </div>
-</div>
-  
-  <div id="mainDataInterface-id" class="container mainDataInterface">
+    <form method="post" action="/pre/step-3" enctype="multipart/form-data">
 
-          <form method="post" action="/pre/step-3" enctype="multipart/form-data">
-
-            <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-6">
+        <div class="row" style="margin-top: 40px;">
+            <div class="col-sm-6">
                 <h5 id="h3-head-1" class="card__title" style="text-align: center;">NORMALIZATION METHOD:</h5>
-              </div>
-              <div class="col-sm-6">
+            </div>
+            <div class="col-sm-6">
                 <div class="md-form">
                     <select class="form-control" id="norm_mthd" name="norm_mthd">
                         <option value="1">1</option>
                         <option value="2">2</option>
-                    </select>            
-                </div>          
-              </div> 
+                    </select>
+                </div>
             </div>
+        </div>
 
-            <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-6">
+        <div class="row" style="margin-top: 40px;">
+            <div class="col-sm-6">
                 <h5 id="h3-head-1" class="card__title" style="text-align: center;">NULL VALUE REMOVING METHOD:</h5>
-              </div>
-              <div class="col-sm-6">
+            </div>
+            <div class="col-sm-6">
                 <div class="md-form">
                     <select class="form-control" id="null_rmv" name="null_rmv">
                         <option value="1">1</option>
                         <option value="2">2</option>
-                    </select>             
-                </div>          
-              </div> 
+                    </select>
+                </div>
             </div>
+        </div>
 
-            <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-5"></div>
-              <div class='form-field col-sm-6 step-3-default'>
-                <p><input name='checkbox-3-default' type="checkbox" class="filled-in" id="checkbox-3-default" value='checkbox-3-default'/>
-                  <label for="checkbox-3-default">DEFAULT METHODS</label>
+        <div class="row" style="margin-top: 40px;">
+            <div class="col-sm-5"></div>
+            <div class='form-field col-sm-6 step-3-default'>
+                <p><input name='checkbox-3-default' type="checkbox" class="filled-in" id="checkbox-3-default"
+                          value='checkbox-3-default'/>
+                    <label for="checkbox-3-default">DEFAULT METHODS</label>
                 </p>
-              </div>
-              <div class="col-sm-1"></div>
             </div>
+            <div class="col-sm-1"></div>
+        </div>
 
-            <center>
+        <center>
             <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-12">
-                <input class="waves-effect waves-dark btn" type="submit" value="Submit">
-              </div>
+                <div class="col-sm-12">
+                    <input class="waves-effect waves-dark btn" type="submit" value="Submit">
+                </div>
             </div>
-            </center>
+        </center>
 
-          </form>
+    </form>
 
-      <!--end page set 3-->
+    <!--end page set 3-->
 
-  </div>
+</div>
 
 </body>
 </html>
- 
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
 
 <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
@@ -116,26 +122,14 @@
 <!-- jQueryValidation Plugin -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
 
-<!--dropdown-->
-<script type="text/javascript" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'></script>
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous" src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
 
-<!--main navbar-->
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
-
-<script type="text/javascript">
-
-// $('.dropdown-menu-annotation-table li').on('click', function() {
-//   var getValue = $(this).text();
-//   $('.dropdown-select-annotation-table').text(getValue);
-// });
-
-// $('.dropdown-menu-column-avg li').on('click', function() {
-//   var getValue = $(this).text();
-//   $('.dropdown-select-column-avg').text(getValue);
-// });
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $(".dropdown-trigger").dropdown();
+    });
 </script>
 

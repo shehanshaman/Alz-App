@@ -21,6 +21,9 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
     <style>
         .summary_plot > img {
             padding: 5px;
@@ -66,29 +69,33 @@
 
 <body style="background-color: #f3f6f9;">
 
-<div class="nav">
-
-    <div class="nav-header">
-        <div class="nav-title">Alz</div>
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="#!">one</a></li>
+    <li><a href="#!">two</a></li>
+    <li class="divider"></li>
+    <li><a href="#!">three</a></li>
+</ul>
+<nav>
+    <div class="nav-wrapper">
+        <a href="#!" class="brand-logo">Alz</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
+            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
+                    class="material-icons right">arrow_drop_down</i></a>
+                {% if g.user %}
+                    <li><span>{{ g.user['username'] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
+            </li>
+        </ul>
     </div>
-
-    <div class="nav-links">
-        <div>
-            <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
-            <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
-            <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
-        </div>
-
-        {% if g.user %}
-            <span>{{ g.user['username'] }}</span>
-            <a href="{{ url_for('auth.logout') }}">Log Out</a>
-        {% else %}
-            <a href="{{ url_for('auth.register') }}">Register</a>
-            <a href="{{ url_for('auth.login') }}">Log In</a>
-        {% endif %}
-
-    </div>
-</div>
+</nav>
 
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
@@ -180,8 +187,16 @@
 <!-- jQueryValidation Plugin -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
 
-{#<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>#}
-{#<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>#}
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $(".dropdown-trigger").dropdown();
+    });
+</script>
 
 <script>
     function more_click(event) {
