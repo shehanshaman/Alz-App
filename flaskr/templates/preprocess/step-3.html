@@ -7,8 +7,6 @@
 
     <title>FYP</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -19,38 +17,69 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
 </head>
 
 <body style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 <ul id="dropdown1" class="dropdown-content">
-    <li><a href="#!">one</a></li>
-    <li><a href="#!">two</a></li>
-    <li class="divider"></li>
-    <li><a href="#!">three</a></li>
+    <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
+    <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
+    <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
+    <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
 </ul>
-
 <nav>
     <div class="nav-wrapper">
         <a href="#!" class="brand-logo">Alz</a>
         <ul class="right hide-on-med-and-down">
-            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
-            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
-            <!-- Dropdown Trigger -->
-            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a>
-                {% if g.user %}
-                    <li><span>{{ g.user['username'] }}</span></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-                {% endif %}
+            <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
             </li>
+            <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+            </li>
+            <!-- Dropdown Trigger -->
+            <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1">Framework<i
+                    class="material-icons right">arrow_drop_down</i></a></li>
+            <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
+            </li>
+            {% if g.user %}
+                <li><span>{{ g.user['username'] }}</span></li>
+                <li class="nav_link"><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+            {% else %}
+                <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
+                <li class="nav_link"><a href="{{ url_for('auth.login') }}">Log In</a></li>
+            {% endif %}
         </ul>
     </div>
 </nav>
+
+<div class="card-content">
+
+    <ul data-method="GET" class="stepper linear">
+        <li class="step active">
+            <a href="{{ url_for('preprocess.index') }}">
+                <div class="step-title waves-effect waves-dark">Pre-processing</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('fs.index') }}">
+                <div class="step-title waves-effect waves-dark">Feature selection</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('analyze.index') }}">
+                <div class="step-title waves-effect waves-dark">Analysis</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('validation.index') }}">
+                <div class="step-title waves-effect waves-dark">Validation</div>
+            </a>
+        </li>
+    </ul>
+
+</div>
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 

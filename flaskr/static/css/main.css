@@ -1507,3 +1507,23 @@ th {
 .list-view {
     margin-top: 28px;
 }
+
+/*Navigation bar side*/
+.card-content {
+    position: fixed;
+    width: auto;
+    background: none;
+    box-shadow: none;
+    top: 25%;
+    padding-left: 10px;
+}
+
+.step > a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.nav_link > a {
+    text-decoration: none;
+    color: inherit;
+}
