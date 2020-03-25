@@ -18,6 +18,7 @@ bp = Blueprint("visualization", __name__, url_prefix="/vis")
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 USER_PATH = ROOT_PATH + "\\upload\\users\\"
 
+
 @bp.route("/")
 @login_required
 def index():
@@ -33,33 +34,30 @@ def index():
 
     return render_template("visualization/index.html")
 
-@bp.route("/",  methods=['POST'])
+
+@bp.route("/", methods=['POST'])
 def update_col():
     file_name = request.form['available_files']
-    feature = ''
-    if request.form.get("features", None):
-        feature = request.form['features']
+    feature = request.form['features']
+    img64 = getPlot(file_name, feature)
 
-    if feature:
-        session['select_file'] = file_name
-        session['select_col'] = feature
-        img64 = getPlot()
-        session['columns'] = '';
-        return render_template("visualization/index.html", available_list=session['files'], features_list = session['columns'], image_data=img64)
-
-    if file_name:
-        path = USER_PATH + str(g.user["id"]) + "\\" + file_name
-        df = PreProcess.getDF(path)
-        col = df.columns.to_list()
-        session['columns'] = col
-
-        return render_template("visualization/index.html", available_list=session['files'], features_list = session['columns'], image_data='')
+    return render_template("visualization/index.html", available_list=session['files'], image_data=img64)
 
 
-def getPlot():
-    file_name = session['select_file']
-    feature = session['select_col']
+@bp.route("/js/", methods=["GET"])
+def get_col_names_js():
+    file_name = request.args.get('available_files')
+    user_id = request.args.get('user_id')
+    path = USER_PATH + str(user_id) + "\\" + file_name
+    df = PreProcess.getDF(path)
+    col = df.columns.tolist()
+    col_str = ','.join(e for e in col)
+    print(col_str)
 
+    return col_str
+
+
+def getPlot(file_name, feature):
     path = USER_PATH + str(g.user["id"]) + "\\" + file_name
     df = PreProcess.getDF(path)
 
@@ -72,7 +70,7 @@ def getPlot():
     axs[1, 0].set_title('Boxplot')
     df.boxplot(column=[feature], by='class', ax=axs[1, 1])
     axs[1, 1].set_title('Boxplot group by class')
-    fig.suptitle(feature, fontsize=16)
+    fig.suptitle(file_name + ": " + feature, fontsize=16)
 
     pic_IObytes = io.BytesIO()
     fig.savefig(pic_IObytes, format='png')

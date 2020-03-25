@@ -62,7 +62,7 @@ def index():
     # return render_template("analyze/index.html", corr_data = "", overlap_data = "", small_set= "", methods = method_names[0:3])
 
 
-@bp.route("/step2", methods = ['HTTP', 'POST'])
+@bp.route("/step2", methods = ['GET', 'POST'])
 def selected_method():
     user_id = session.get("user_id")
 
