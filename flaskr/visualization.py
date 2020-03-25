@@ -52,7 +52,6 @@ def get_col_names_js():
     df = PreProcess.getDF(path)
     col = df.columns.tolist()
     col_str = ','.join(e for e in col)
-    print(col_str)
 
     return col_str
 
