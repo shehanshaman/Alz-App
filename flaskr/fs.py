@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, session
+from flask import Blueprint, session, g
 from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
@@ -19,13 +19,28 @@ USER_PATH = ROOT_PATH + "\\upload\\users\\"
 
 @bp.route("/")
 def index():
-    return render_template("fs/index.html")
+    list_names = []
+    path = USER_PATH + str(g.user["id"]) + "\\"
+    if not os.path.exists(path):
+        os.makedirs(path)
+        os.makedirs(path + "tmp\\")
+    for filename in os.listdir(path):
+        list_names.append(filename)
+    list_names.remove("tmp")
+
+    return render_template("fs/index.html", list_names=list_names)
 
 #Get columns of 3 different feature selection methods
 @bp.route("/" , methods=['POST'])
 def get_val():
     fs_methods = request.form["fs_methods"]
+    is_change = request.form["is_change"]
     user_id = session.get("user_id")
+
+    if is_change == 'true':
+        change_file = request.form["change_file"]
+        UserResult.update_result(user_id, 'filename', change_file)
+
     UserResult.update_result(user_id,'fs_methods', fs_methods)
 
     fs_methods = fs_methods.split(',')

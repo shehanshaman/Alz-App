@@ -55,7 +55,7 @@ def index():
     return render_template("preprocess/step-1.html", available_list=list_names, annotation_list= annotation_list)
 
 
-#first step table show
+#step 2
 @bp.route("/view")
 def view():
     x = json2df('user')
@@ -78,10 +78,17 @@ def view():
 @bp.route("/step-3", methods=['POST'])
 def norm():
     x = json2df('user')
+
+    norm_mthd = request.form["norm_mthd"]
+    null_rmv = request.form["null_rmv"]
+
+    x.setScaling(norm_mthd)
+    x.setImputation(null_rmv)
+
     if x is not None:
         if x.merge_df is not None:
             if x.symbol_df is None:
-                df = PreProcess.step3(PreProcess.getDF(x.merge_df))
+                df = PreProcess.step3(PreProcess.getDF(x.merge_df), x.scaling, x.imputation)
                 #create symbol_df
                 path = USER_PATH + str(g.user["id"]) + "\\tmp\\" + "symbol_" + x.file_name
                 PreProcess.saveDF(df, path)
@@ -92,7 +99,7 @@ def norm():
 
     return redirect('/pre')
 
-#step 2
+#step 3
 @bp.route("/step-2")
 def indexstep1():
     x = json2df('user')
@@ -118,7 +125,7 @@ def probe2symbol():
                 df2session(x, 'user')
             else:
                 df = PreProcess.getDF(x.avg_symbol_df)
-            return render_template("preprocess/step-4.html", tablesstep4=[df.head().to_html(classes='data')], titlesstep4=df.head().columns.values)
+            return render_template("preprocess/step-4.html", tablesstep4=[df.head(15).to_html(classes='data')], titlesstep4=df.head().columns.values)
 
     return redirect('/pre')
 
@@ -185,7 +192,7 @@ def create_object():
         if anno_tbl and column_selection and available_file:
             df_obj = DF(file_name=available_file, path=os.path.join(path, available_file), anno_tbl=anno_tbl,
                         col_sel_method=column_selection, merge_df=None,
-                        symbol_df=None, avg_symbol_df=None, reduce_df=None)
+                        symbol_df=None, avg_symbol_df=None, reduce_df=None, scaling=None, imputation=None)
             json_data = json.dumps(df_obj.__dict__)
             session['user'] = json_data
             return redirect('/pre/view')

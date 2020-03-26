@@ -24,6 +24,10 @@
             height: inherit;
         }
 
+        #file_tbl_div {
+            visibility: hidden;
+        }
+
     </style>
 </head>
 
@@ -65,12 +69,40 @@
     <div class="step">
         <div class="step-content">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;">FEATURE SELECTION</h3>
+                <h3 id="h3-head-6" class="card__title" style="text-align: center;">Feature Selection</h3>
             </div>
 
             <div class="row">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">SELECT THREE FEATURE SELECTION
-                    METHODS</h5>
+                <div class="switch">
+                    <div class="col-sm-12">
+                        <span class="col-sm-6" style="text-align: center;">Annotation Table Mapping </span>
+                        <label class="col-sm-6" onclick="update_checkbox(event)">
+                            Off
+                            <input type="checkbox" value="false" id="is_map" name="is_map">
+                            <span class="lever"></span>
+                            On
+                        </label>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="col-sm-6"></div>
+                        <div class="col-sm-6">
+                            <div class="md-form" id="file_tbl_div">
+                                <select class="form-control" id="file_tbl" name="file_tbl">
+                                    <option disabled="disabled" selected>Pick a choice!</option>
+                                    {% for name in list_names %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Select Three Feature Selection Methods</h5>
             </div>
 
             <div class="row">
@@ -84,7 +116,7 @@
                                     <li data-id="3" class="active" data-value="Extra Tree Classifier">Extra Tree
                                         Classifier
                                     </li>
-                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>
+{#                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>#}
                                 </ul>
                             </div>
                             <div class="col-sm-6">
@@ -96,7 +128,7 @@
             </div>
 
             <div class="row">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">NUMBER OF FEATURES SELECTED</h5>
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Number of Features Selected</h5>
             </div>
             <div class="row">
                 <div class="col-sm-3"></div>
@@ -124,6 +156,8 @@
 
 <form style="display: none" action="/fs/" method="POST" id="form">
     <input type="hidden" id="fs_methods" name="fs_methods" value=""/>
+    <input type="hidden" id="change_file" name="change_file" value=""/>
+    <input type="hidden" id="is_change" name="is_change" value=""/>
 </form>
 </body>
 </html>
@@ -165,5 +199,23 @@
         $("#fs_methods").val(fs);
         $("#form").submit();
 
-    }
+    };
+
+    $('#file_tbl').change(function () {
+
+        var conceptName = $('#file_tbl').find(":selected").text();
+        $("#change_file").val(conceptName);
+{#        console.log(conceptName);#}
+    });
+
+    function update_checkbox(event) {
+        var id = event.target.id;
+        if (id) {
+            document.getElementById("file_tbl_div").style.visibility = "visible";
+            var s = document.getElementById(id).checked;
+            document.getElementById(id).value = s
+            $("#is_change").val(s);
+            console.log(s);
+        }
+    };
 </script>

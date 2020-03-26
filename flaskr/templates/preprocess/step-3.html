@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP</title>
+    <title>FYP: Pre-processing</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -55,17 +55,20 @@
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
+    <div class="row">
+        <h5 id="" class="col-sm-12" style="text-align: left;">Step 3</h5>
+    </div>
+
     <form method="post" action="/pre/step-3" enctype="multipart/form-data">
 
         <div class="row" style="margin-top: 40px;">
             <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">NORMALIZATION METHOD:</h5>
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Scaling</h5>
             </div>
             <div class="col-sm-6">
                 <div class="md-form">
                     <select class="form-control" id="norm_mthd" name="norm_mthd">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                        <option value="sklearn">Sklearn Normalize</option>
                     </select>
                 </div>
             </div>
@@ -73,13 +76,12 @@
 
         <div class="row" style="margin-top: 40px;">
             <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">NULL VALUE REMOVING METHOD:</h5>
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Imputation</h5>
             </div>
             <div class="col-sm-6">
                 <div class="md-form">
                     <select class="form-control" id="null_rmv" name="null_rmv">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                        <option value="drop">Drop</option>
                     </select>
                 </div>
             </div>

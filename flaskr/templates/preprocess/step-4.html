@@ -58,7 +58,7 @@
 
     <div class="step-content">
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;">DATA-SET AFTER PRE-PROCESSING</h3>
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;">Dataset After Mapping</h3>
         </div>
 
         <div style="overflow: auto;">
@@ -69,14 +69,14 @@
         </div>
     </div>
 
-    <center>
-        <div class="row" style="margin-top: 40px;">
-            <div class="col-sm-12">
-                <input class="waves-effect waves-dark btn" onclick="window.location.href = '/pre/step-5';" type="submit"
-                       value="NEXT">
-            </div>
-        </div>
-    </center>
+    <hr class="line-hr">
+
+    <div class="step-actions">
+        <button class="waves-effect waves-dark btn next-step step-6-click">CONTINUE</button>
+        <button class="waves-effect waves-dark btn-flat previous-step"><a
+                href="{{ url_for('preprocess.indexstep1') }}">BACK</a></button>
+    </div>
+
 
 </div>
 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP</title>
+    <title>FYP: Prediction</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -37,6 +37,20 @@
         #anno_tbl_div {
             visibility: hidden;
         }
+
+        #modal_create {
+            float: right;
+        }
+
+        #modal_create > button {
+            background-color: #eea236;
+            font-size: 8px;
+        }
+
+        #modal_create > button > a{
+            text-decoration:none;
+            color: inherit;
+        }
     </style>
 
 </head>
@@ -57,7 +71,13 @@
     <div class="row">
         <div class="col-sm-6">
             <div class="row">
-                <h5>Details</h5>
+                <div class="col-sm-2">
+                    <h5>Details</h5>
+                </div>
+                <div class="col-sm-4" id="modal_create">
+                    <button type="button" class="btn btn-warning"><a href="{{ url_for('modeling.index') }}">Customize Model</a></button>
+                </div>
+
             </div>
             <div class="row">
                 <table>

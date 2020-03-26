@@ -56,10 +56,16 @@ class PreProcess:
 		
 		return df_symbol
 
-	def step3(df_merge):
-		df_merge_rm_null = PreProcess.rmNullRows(df_merge)
+	def step3(df_merge, norm_method, imputation_method):
+		df_merge_rm_null = df_merge
+
+		if imputation_method == 'drop':
+			df_merge_rm_null = PreProcess.rmNullRows(df_merge)
+
 		df_merge_rm_null_float = PreProcess.df2float(df_merge_rm_null)
-		df_symbol = PreProcess.dfNormSKlearn(df_merge_rm_null_float, df_merge_rm_null)
+
+		if norm_method == 'sklearn':
+			df_symbol = PreProcess.dfNormSKlearn(df_merge_rm_null_float, df_merge_rm_null)
 
 		return df_symbol
 

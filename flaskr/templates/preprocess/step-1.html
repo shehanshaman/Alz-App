@@ -18,6 +18,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <style>
+        .button{
+            margin-top: inherit;
+        }
+    </style>
 </head>
 
 <body style="background-color: #f3f6f9;">
@@ -58,7 +64,7 @@
 
         <div class="step-content">
             <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose your basic dataset</h3>
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose Dataset</h3>
             </div>
         </div>
 
@@ -66,9 +72,9 @@
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Available Files</h5>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                     <div class="md-form">
                         <select class="form-control" id="available_files" name="available_files">
                             {% for name in available_list %}
@@ -77,11 +83,14 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-sm-1">
+                    <button type="button" class="button btn btn-warning">View</button>
+                </div>
             </div>
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">ANNOTATION TABLE:</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Annotation Table</h5>
                 </div>
                 <div class="col-sm-6">
                     <div class="md-form">
@@ -96,23 +105,27 @@
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">COLUMN AVERAGE:</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Probe Selection Method</h5>
                 </div>
                 <div class="col-sm-6">
                     <div class="md-form">
                         <select class="form-control" id="column_selection" name="column_selection">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
+                            <option value="1">Average</option>
                         </select>
                     </div>
                 </div>
             </div>
         </div>
 
+        <br>
+
         <hr class="line-hr">
 
+        <br>
+
         <div class="step-actions">
-            <button class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit"><input class="" type="submit" value="Submit">
+            <button class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit"><input
+                    class="" type="submit" value="Submit">
             </button>
             <button class="waves-effect waves-dark btn-flat previous-step"><a
                     href="{{ url_for('preprocess.upload_file_view') }}">BACK</a></button>
@@ -120,6 +133,12 @@
 
     </form>
 
+</div>
+
+<div class="row">
+    <form style="display: none" action="/view/" method="POST" id="form" target="_blank">
+        <input type="hidden" id="selected_file" name="selected_file" value=""/>
+    </form>
 </div>
 
 </body>
@@ -140,6 +159,13 @@
     $(document).ready(function () {
         console.log("ready!");
         $(".dropdown-trigger").dropdown();
+    });
+
+    $(".button").click(function () {
+        var conceptName = $('#available_files').find(":selected").text();
+
+        $("#selected_file").val(conceptName);
+        $("#form").submit();
     });
 </script>
 
