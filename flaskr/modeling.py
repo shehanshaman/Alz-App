@@ -13,10 +13,12 @@ import pickle
 from flaskr.auth import UserResult
 from flaskr.classes.preProcessClass import PreProcess
 
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = ROOT_PATH + "\\upload\\"
-USER_PATH = UPLOAD_FOLDER + "users\\"
-ANNOTATION_TBL = UPLOAD_FOLDER + "AnnotationTbls\\"
+from pathlib import Path
+
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+UPLOAD_FOLDER = ROOT_PATH / "flaskr" / "upload"
+ANNOTATION_TBL = UPLOAD_FOLDER / "AnnotationTbls"
 
 bp = Blueprint("modeling", __name__, url_prefix="/mod")
 
@@ -30,10 +32,10 @@ def index():
     user_id = session.get("user_id")
 
     list_names = []
-    path = USER_PATH + str(g.user["id"]) + "\\"
+    path = USER_PATH / str(g.user["id"])
     if not os.path.exists(path):
         os.makedirs(path)
-        os.makedirs(path + "tmp\\")
+        os.makedirs(path / "tmp")
     for filename in os.listdir(path):
         list_names.append(filename)
 
@@ -74,10 +76,10 @@ def predict():
     user_id = session.get("user_id")
 
     list_names = []
-    path = USER_PATH + str(g.user["id"]) + "\\"
+    path = USER_PATH / str(g.user["id"])
     if not os.path.exists(path):
         os.makedirs(path)
-        os.makedirs(path + "tmp\\")
+        os.makedirs(path / "tmp")
     for filename in os.listdir(path):
         list_names.append(filename)
 
@@ -96,7 +98,7 @@ def predict():
 
     if request.method == "POST":
         selected_file = request.form["available_files"]
-        df_path = USER_PATH + str(user_id) + "\\" + selected_file
+        df_path = USER_PATH / str(user_id) / selected_file
         df = PreProcess.getDF(df_path)
 
         is_norm = request.form.get("is_norm")
@@ -104,7 +106,7 @@ def predict():
 
         if is_map == "true":
             annotation_file = request.form["anno_tbl"]
-            df = PreProcess.mergeDF(df_path, ANNOTATION_TBL + annotation_file)
+            df = PreProcess.mergeDF(df_path, ANNOTATION_TBL / annotation_file)
             PreProcess.saveDF(df, 'abc_1.pkl')
             df = PreProcess.step3(df, 'sklearn', 'drop')
             PreProcess.saveDF(df, 'abc_2.pkl')
@@ -137,7 +139,7 @@ def predict():
 
 
 def get_predicted_result_df(user_id, model_name, df):
-    model = pickle.load(open(USER_PATH + str(user_id) + "\\tmp\\" + model_name, 'rb'))
+    model = pickle.load(open(USER_PATH / str(user_id) / "tmp" / model_name, 'rb'))
 
     prediction = model.predict(df)
 
@@ -147,8 +149,8 @@ def get_predicted_result_df(user_id, model_name, df):
 def create_model_pkl(user_id, filename, classifier):
     r = UserResult.get_user_model(user_id)
     col_mo = r['features'].split(',')
-
-    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    file_to_open = USER_PATH / str(user_id) / filename
+    df = PreProcess.getDF(file_to_open)
     y = df["class"]
     x = df[col_mo]
 
@@ -164,7 +166,8 @@ def create_model_pkl(user_id, filename, classifier):
         return 0
 
     clf.fit(x, y)
-    pickle.dump(clf, open(USER_PATH + str(user_id) + "\\tmp\\" + "_model.pkl", 'wb'))
+    file_to_write = USER_PATH / str(user_id) / "tmp" / "_model.pkl"
+    pickle.dump(clf, open(file_to_write , 'wb'))
 
     UserResult.update_modeling(user_id, 'model_path_name', '_model.pkl')
 

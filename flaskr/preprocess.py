@@ -27,11 +27,13 @@ bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
 ALLOWED_EXTENSIONS = set(['pkl'])
 
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = ROOT_PATH + "\\upload\\"
-ANNOTATION_TBL = UPLOAD_FOLDER + "AnnotationTbls\\"
-TMP_PATH = ROOT_PATH + "\\upload\\tmp\\"
-USER_PATH = UPLOAD_FOLDER + "users\\"
+from pathlib import Path
+
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+UPLOAD_FOLDER = ROOT_PATH / "flaskr" / "upload"
+ANNOTATION_TBL = UPLOAD_FOLDER / "AnnotationTbls"
+TMP_PATH = UPLOAD_FOLDER / "tmp"
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -41,10 +43,10 @@ def allowed_file(filename):
 def index():
     list_names = []
     annotation_list = []
-    path = USER_PATH + str(g.user["id"]) + "\\"
+    path = USER_PATH / str(g.user["id"])
     if not os.path.exists(path):
         os.makedirs(path)
-        os.makedirs(path+"tmp\\")
+        os.makedirs(path / "tmp")
     for filename in os.listdir(path):
         list_names.append(filename)
 
@@ -62,10 +64,12 @@ def view():
     if x is not None:
 
         if x.merge_df is None:
-            df = PreProcess.mergeDF(x.path , ANNOTATION_TBL + x.anno_tbl)
-            path = USER_PATH + str(g.user["id"]) + "\\tmp\\" + "merge_" + x.file_name
+            df = PreProcess.mergeDF(x.path , ANNOTATION_TBL / x.anno_tbl)
+            merge_name = "merge_" + x.file_name
+            path = USER_PATH / str(g.user["id"]) / "tmp" / merge_name
+            path_str = path.as_posix()
             PreProcess.saveDF(df, path)
-            x.setMergeDF(path) #merge df
+            x.setMergeDF(path_str) #merge df
             df2session(x, 'user')
         else:
             df = PreProcess.getDF(x.merge_df)
@@ -90,9 +94,11 @@ def norm():
             if x.symbol_df is None:
                 df = PreProcess.step3(PreProcess.getDF(x.merge_df), x.scaling, x.imputation)
                 #create symbol_df
-                path = USER_PATH + str(g.user["id"]) + "\\tmp\\" + "symbol_" + x.file_name
+                symbol_name = "symbol_" + x.file_name
+                path = USER_PATH / str(g.user["id"]) / "tmp" / symbol_name
+                path_str = path.as_posix()
                 PreProcess.saveDF(df, path)
-                x.setSymbolDF(path)
+                x.setSymbolDF(path_str)
                 df2session(x, 'user')
             #return render_template("preprocess/index2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
             return redirect('/pre/probe2symbol')
@@ -118,10 +124,11 @@ def probe2symbol():
         if x.symbol_df is not None:
             if x.avg_symbol_df is None:
                 df = PreProcess.probe2Symbol(PreProcess.getDF(x.symbol_df))
-
-                path = USER_PATH + str(g.user["id"]) + "\\tmp\\" + "avg_symbol_" + x.file_name
+                avg_symbol_name = "avg_symbol_" + x.file_name
+                path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
+                path_str = path.as_posix()
                 PreProcess.saveDF(df, path)
-                x.setAvgSymbolDF(path)
+                x.setAvgSymbolDF(path_str)
                 df2session(x, 'user')
             else:
                 df = PreProcess.getDF(x.avg_symbol_df)
@@ -145,7 +152,8 @@ def FR():
 def FR_selected():
     if request.method == 'POST':
         features_count = request.form['features_count']
-        df = PreProcess.getDF(UPLOAD_FOLDER + "\\other\\GSE5281_DE_2311.plk")
+        file_to_open = UPLOAD_FOLDER / "other" / "GSE5281_DE_2311.plk"
+        df = PreProcess.getDF(file_to_open)
         df_200 = FeatureReduction.getSelectedFeatures(df, int(features_count))
 
         #testing only
@@ -187,7 +195,7 @@ def create_object():
         column_selection = request.form["column_selection"]
         available_file = request.form["available_files"]
 
-        path = USER_PATH + str(g.user["id"]) + "\\"
+        path = USER_PATH / str(g.user["id"])
 
         if anno_tbl and column_selection and available_file:
             df_obj = DF(file_name=available_file, path=os.path.join(path, available_file), anno_tbl=anno_tbl,
@@ -213,7 +221,7 @@ def upload_file():
         if file and allowed_file(file.filename):
 
             filename = secure_filename(file.filename)
-            path = USER_PATH + str(g.user["id"]) + "\\" + filename
+            path = USER_PATH / str(g.user["id"]) / filename
             file.save(path)
             return redirect('/pre')
         else:

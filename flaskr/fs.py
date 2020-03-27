@@ -12,18 +12,22 @@ from .auth import UserResult
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
-bp = Blueprint("fs", __name__, url_prefix="/fs")
+from pathlib import Path
 
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-USER_PATH = ROOT_PATH + "\\upload\\users\\"
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+
+bp = Blueprint("fs", __name__, url_prefix="/fs")
 
 @bp.route("/")
 def index():
     list_names = []
-    path = USER_PATH + str(g.user["id"]) + "\\"
+    path = USER_PATH / str(g.user["id"])
+    # path = USER_PATH + str(g.user["id"]) + "\\"
     if not os.path.exists(path):
         os.makedirs(path)
-        os.makedirs(path + "tmp\\")
+        path_tmp = path / "tmp"
+        os.makedirs(path_tmp)
     for filename in os.listdir(path):
         list_names.append(filename)
     list_names.remove("tmp")
@@ -46,7 +50,8 @@ def get_val():
     fs_methods = fs_methods.split(',')
     result = UserResult.get_user_results(user_id)
     filename = result['filename']
-    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    file_to_open = USER_PATH / str(user_id) / filename
+    df = PreProcess.getDF(file_to_open)
 
     selected_col = [None] * 3
     len = int(fs_methods[3])
@@ -76,7 +81,8 @@ def result():
     user_id = session.get("user_id")
     r = UserResult.get_user_results(user_id)
     filename = r['filename']
-    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    file_to_open = USER_PATH / str(user_id) / filename
+    df = PreProcess.getDF(file_to_open)
 
     # df_50F_PCA, df_50F_FI, df_50F_RF
     col_m1 = r['col_method1'].split(',')

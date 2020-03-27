@@ -8,8 +8,10 @@ from flask import redirect
 from flaskr.classes.preProcessClass import PreProcess
 from .auth import UserResult
 
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-GENE_CARD = ROOT_PATH + "\\upload\\Validation\\GeneCards-SearchResults.pkl"
+from pathlib import Path
+
+ROOT_PATH = Path.cwd()
+GENE_CARD = ROOT_PATH / "flaskr" / "upload" / "Validation" / "GeneCards-SearchResults.pkl"
 
 bp = Blueprint("validation", __name__, url_prefix="/val")
 

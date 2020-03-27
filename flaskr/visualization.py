@@ -13,17 +13,18 @@ import io
 
 from .classes.preProcessClass import PreProcess
 
+from pathlib import Path
+
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+
 bp = Blueprint("visualization", __name__, url_prefix="/vis")
-
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-USER_PATH = ROOT_PATH + "\\upload\\users\\"
-
 
 @bp.route("/")
 @login_required
 def index():
     list_names = []
-    path = USER_PATH + str(g.user["id"]) + "\\"
+    path = USER_PATH / str(g.user["id"])
     if os.path.exists(path):
         for filename in os.listdir(path):
             list_names.append(filename)
@@ -48,7 +49,7 @@ def update_col():
 def get_col_names_js():
     file_name = request.args.get('available_files')
     user_id = request.args.get('user_id')
-    path = USER_PATH + str(user_id) + "\\" + file_name
+    path = USER_PATH / str(user_id) / file_name
     df = PreProcess.getDF(path)
     col = df.columns.tolist()
     col_str = ','.join(e for e in col)
@@ -57,7 +58,7 @@ def get_col_names_js():
 
 
 def getPlot(file_name, feature):
-    path = USER_PATH + str(g.user["id"]) + "\\" + file_name
+    path = USER_PATH / str(g.user["id"]) / file_name
     df = PreProcess.getDF(path)
 
     fig, axs = plt.subplots(2, 2, figsize=(10, 8))

@@ -6,8 +6,10 @@ from flask import Flask, render_template, session, request
 from .classes.app_alz import alz
 from flaskr.classes.preProcessClass import PreProcess
 
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-USER_PATH = ROOT_PATH + "\\upload\\users\\"
+from pathlib import Path
+
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 
 def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
@@ -43,7 +45,8 @@ def create_app(test_config=None):
     def view_df():
         user_id = session.get("user_id")
         selected_file = request.form["selected_file"]
-        df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + selected_file)
+        file_to_open = USER_PATH / str(user_id) / selected_file
+        df = PreProcess.getDF(file_to_open)
 
         if len(df.columns) > 15:
             session['view_df_name'] = selected_file
@@ -57,7 +60,8 @@ def create_app(test_config=None):
         file_name = session.get('view_df_name')
         user_id = session.get("user_id")
         id = request.args.get('id')
-        df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + file_name)
+        file_to_open = USER_PATH / str(user_id) / file_name
+        df = PreProcess.getDF(file_to_open)
         df = df.T
 
         df_p = df[id].to_numpy()
