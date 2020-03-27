@@ -5,6 +5,10 @@ import pandas as pd
 from flask import jsonify
 from sklearn import preprocessing
 
+from scipy import stats
+import statistics
+from scipy.stats import ttest_ind
+
 class PreProcess:
 	
 	def getDF(name):
@@ -91,3 +95,47 @@ class PreProcess:
 
 		ds = {'shape': shape, 'min': min, 'max': max, 'unique_probes': unique_probes, 'null_count':null_count}
 		return jsonify(ds)
+
+	def split_df_by_class(df):
+		df['class'] = df['class'].astype(str).astype(int)
+		df_normal = df[df['class'] == 0]
+		df_AD = df[df['class'] == 1]
+		return df_normal, df_AD
+
+	def sort_pValues(dfAD, dfNormal, pvalue, foldChange):
+		filtered_index = []
+		df_AD_trans = dfAD.transpose()
+		df_normal_trans = dfNormal.transpose()
+		listAD = df_AD_trans.values.tolist()
+		listNormal = df_normal_trans.values.tolist()
+		for i in range(len(listAD) - 1):  # For each gene :
+			ttest, pval = ttest_ind(listAD[i], listNormal[i])  # calculating p values for each gene using ttest
+			mean_AD = statistics.mean(listAD[i])
+			mean_Normal = statistics.mean(listNormal[i])
+			fold = abs(mean_AD - mean_Normal)
+			if (pval < pvalue) & (fold > foldChange):
+				filtered_index.append(i)
+		return filtered_index
+
+	def set_class_to_df(df_path, class_path):
+		df = PreProcess.getDF(df_path)
+		df = df.set_index(["Gene Symbol"])
+		df = df.T
+
+		df_class = PreProcess.getDF(class_path)
+		df['class'] = df_class['class']
+
+		return df
+
+	def get_reduced_df_from_pvalues(df_path, class_path, pvalue, foldChange):
+		df = PreProcess.set_class_to_df(df_path, class_path)
+		df_normal, df_AD = PreProcess.split_df_by_class(df)
+		filtered_index = PreProcess.sort_pValues(df_AD, df_normal, pvalue, foldChange)
+		sorted_dataframe = df.filter(df.columns[filtered_index])
+		return sorted_dataframe
+
+	def get_reduced_feature_count_from_pvalues(df_path, class_path, pvalue, foldChange):
+		df = PreProcess.set_class_to_df(df_path, class_path)
+		df_normal, df_AD = PreProcess.split_df_by_class(df)
+		filtered_index = PreProcess.sort_pValues(df_AD, df_normal, pvalue, foldChange)
+		return len(filtered_index)

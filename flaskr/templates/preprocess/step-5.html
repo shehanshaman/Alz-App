@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP: Preprocess</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <style>
+        #result_div {
+            visibility: hidden;
+        }
+
+        #progress_bar {
+            visibility: hidden;
+        }
+    </style>
+
+</head>
+
+
+<body style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="card-content">
+
+    <ul data-method="GET" class="stepper linear">
+        <li class="step active">
+            <a href="{{ url_for('preprocess.index') }}">
+                <div class="step-title waves-effect waves-dark">Pre-processing</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('fs.index') }}">
+                <div class="step-title waves-effect waves-dark">Feature selection</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('analyze.index') }}">
+                <div class="step-title waves-effect waves-dark">Analysis</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('validation.index') }}">
+                <div class="step-title waves-effect waves-dark">Validation</div>
+            </a>
+        </li>
+    </ul>
+
+</div>
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+    <form method="post" action="/pre/fs/" enctype="multipart/form-data">
+        <div class="step-content">
+            <div class="row">
+                <h3 id="h3-head-4" class="card__title" style="text-align: center;">FEATURE REDUCTION</h3>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8"></div>
+                <div class="col-sm-4">
+                    <div class="row md-form">
+                        <label><b>Fold Range</b></label>
+                        <div class="dropdown">
+                            <select class="form-control dropdown-menu-fold-range" id="fold-range" name="fold-range">
+                                {% for name in data_array[1] %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row md-form">
+                        <label><b>P Value</b></label>
+                        <div class="dropdown">
+                            <select class="form-control dropdown-menu-p-value" id="p-value" name="p-value">
+                                {% for name in data_array[0] %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row progress" id="progress_bar">
+                        <div class="indeterminate"></div>
+                    </div>
+
+                    <div class="row" style="margin-top: 30px;">
+                        <button id="btn-calculate" type="button" class="btn btn-primary btn-lg btn-block"><p
+                                class="btn-page-2-p">CALCULATE</p></button>
+                    </div>
+                    <div class="row" id="result_div">
+                        <div class="row" style="margin-top: 30px;">
+                            <h5 id="h4-head-2" class="card__title" style="text-align: center;">SELECTED NUMBER OF
+                                GENES</h5>
+                        </div>
+
+                        <div class="row">
+                            <h5 id="h4-head-2" class="card__title" style="text-align: center;"><b
+                                    id="selected_features_count">2000</b></h5>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="step-actions">
+                <button class="waves-effect waves-dark btn next-step step-4-click">CONTINUE</button>
+                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".dropdown-trigger").dropdown();
+    });
+
+    $('#btn-calculate').click(function () {
+        var fold_range = $('#fold-range').find(":selected").text();
+        var p_value = $('#p-value').find(":selected").text();
+        document.getElementById("progress_bar").style.visibility = "visible";
+        document.getElementById("btn-calculate").disabled = true;
+        $.get("./fr/pf/", {pvalue: p_value, foldChange: fold_range}, function (data, status) {
+            console.log(data);
+            document.getElementById("result_div").style.visibility = "visible";
+            document.getElementById("selected_features_count").innerHTML = data
+            document.getElementById("progress_bar").style.visibility = "hidden";
+            document.getElementById("btn-calculate").disabled = false;
+        });
+
+
+    });
+</script>
+

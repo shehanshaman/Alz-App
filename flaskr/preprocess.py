@@ -23,6 +23,8 @@ import pandas as pd
 from flaskr.auth import login_required
 from flask import g
 
+import numpy as np
+
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
 ALLOWED_EXTENSIONS = set(['pkl'])
@@ -138,17 +140,33 @@ def probe2symbol():
 
 #step 4
 @bp.route("/step-5")
-def indexstep2():
-    return render_template("preprocess/step-5.html", posts="")
+def feature_reduction():
+    pvalues = np.linspace(0, 0.1, 21)
+    folds = np.linspace(0, 0.1, 21)
+
+    data_array = [pvalues, folds]
+
+    return render_template("preprocess/step-5.html", data_array=data_array)
+
+@bp.route("/fr/pf/", methods=['GET'])
+def get_feature_count_pval():
+    x = json2df('user')
+    pvalue = request.args.get("pvalue")
+    foldChange = request.args.get("foldChange")
+
+    count = PreProcess.get_reduced_feature_count_from_pvalues(x.avg_symbol_df, x.path, float(pvalue), float(foldChange))
+
+    return str(count)
+
 
 #step 6
-@bp.route("/fr")
+@bp.route("/fr2")
 def FR():
     # print(df_200.shape)
     return render_template("preprocess/feRe.html", posts="")
 
 
-@bp.route("/fr" , methods=['POST'])
+@bp.route("/fr2" , methods=['POST'])
 def FR_selected():
     if request.method == 'POST':
         features_count = request.form['features_count']

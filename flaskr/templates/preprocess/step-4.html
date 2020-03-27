@@ -72,7 +72,8 @@
     <hr class="line-hr">
 
     <div class="step-actions">
-        <button class="waves-effect waves-dark btn next-step step-6-click">CONTINUE</button>
+        <button class="waves-effect waves-dark btn next-step step-6-click"><a
+                href="{{ url_for('preprocess.feature_reduction') }}">CONTINUE</a></button>
         <button class="waves-effect waves-dark btn-flat previous-step"><a
                 href="{{ url_for('preprocess.indexstep1') }}">BACK</a></button>
     </div>
