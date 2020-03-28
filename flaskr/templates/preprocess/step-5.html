@@ -27,6 +27,13 @@
         #progress_bar {
             visibility: hidden;
         }
+
+        .volcano_plot > img {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 100%;
+        }
     </style>
 
 </head>
@@ -72,7 +79,12 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-8"></div>
+                <div class="col-sm-8">
+                    <div class="volcano_plot">
+                        <img src="data:image/png;base64,{{ volcano_hash }}" alt="volcano">
+                    </div>
+                </div>
+
                 <div class="col-sm-4">
                     <div class="row md-form">
                         <label><b>Fold Range</b></label>

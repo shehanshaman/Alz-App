@@ -37,10 +37,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/test/")
-    def test():
-        return render_template('preprocess/test.html')
-
+    # View DF
     @app.route("/view/", methods = ["POST"])
     def view_df():
         user_id = session.get("user_id")

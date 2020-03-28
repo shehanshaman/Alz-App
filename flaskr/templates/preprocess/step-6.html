@@ -20,12 +20,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <style>
-        #result_div {
-            visibility: hidden;
-        }
-
-        #progress_bar {
-            visibility: hidden;
+        .fs_plot > img {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 100%;
         }
     </style>
 
@@ -68,17 +67,22 @@
     <form method="post" action="/pre/fr/save/" enctype="multipart/form-data">
         <div class="step-content">
             <div class="row">
-                <h3 id="h3-head-5" class="card__title" style="text-align: center;">FEATUE SELECTION</h3>
+                <h3 id="h3-head-5" class="card__title" style="text-align: center;">FEATURE REDUCTION</h3>
             </div>
 
             <div class="row">
-                <div class="col-sm-8"></div>
+                <div class="col-sm-8">
+                    <div class="fs_plot">
+                        <img src="data:image/png;base64,{{ fs_fig_hash }}" alt="FR">
+                    </div>
+                </div>
 
                 <div class=" col-sm-4" style="margin-top: 30px;">
                     <div class="row md-form">
-                        <label><b>SELECTED FEATURES</b></label>
+                        <label><b>SELECT FEATURE COUNT</b></label>
                         <div class="dropdown">
-                            <select class="form-control dropdown-menu-p-value" id="features_count" name="features_count">
+                            <select class="form-control dropdown-menu-p-value" id="features_count"
+                                    name="features_count">
                                 {% for name in split_array %}
                                     <option value="{{ name }}">{{ name }}</option>
                                 {% endfor %}
@@ -88,7 +92,7 @@
                     <div class='row form-field step-miami-checkbox' style="margin-top: 30px;">
                         <p><input name='checkbox-all-features' type="checkbox" class="filled-in"
                                   id="checkbox-all-features" value='checkbox-all-features'/>
-{#                            <label for="checkbox-all-features">SELECT ALL FEATURES</label>#}
+                            {#                            <label for="checkbox-all-features">SELECT ALL FEATURES</label>#}
                         </p>
                     </div>
                 </div>

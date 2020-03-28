@@ -20,7 +20,7 @@ class FeatureReduction:
         featureScores.columns = ['Specs', 'Score']
 
         featureScores = featureScores.nlargest(df.shape[1]-1, 'Score')
-        # print(df.shape[1]-1)
+
         return featureScores
 
     def getSelectedFeatures(df, len, y):
@@ -30,14 +30,15 @@ class FeatureReduction:
         pd.options.mode.chained_assignment = None
         df_200F = df[selectedFeatures['Specs'].values]
         df_200F['class'] = y
-        # df_200F.head()
 
         return df_200F
 
-    def create_figure(selectedFeatures):
-        fig = Figure()
+    def create_figure(selectedFeatures, length):
+        fig = Figure(figsize=(12, 8))
         axis = fig.add_subplot(1, 1, 1)
-        # xs = range(100)
-        # ys = [random.randint(1, 50) for x in xs]
+        axis.set_ylabel('Score')
+        axis.set_xlabel('Specs')
+        axis.set_title('Univariate Selection: ' + str(length) + " features")
+
         axis.plot( selectedFeatures["Specs"], selectedFeatures["Score"], label='linear')
         return fig
