@@ -102,21 +102,6 @@ class PreProcess:
 		df_AD = df[df['class'] == 1]
 		return df_normal, df_AD
 
-	def sort_pValues(dfAD, dfNormal, pvalue, foldChange):
-		filtered_index = []
-		df_AD_trans = dfAD.transpose()
-		df_normal_trans = dfNormal.transpose()
-		listAD = df_AD_trans.values.tolist()
-		listNormal = df_normal_trans.values.tolist()
-		for i in range(len(listAD) - 1):  # For each gene :
-			ttest, pval = ttest_ind(listAD[i], listNormal[i])  # calculating p values for each gene using ttest
-			mean_AD = statistics.mean(listAD[i])
-			mean_Normal = statistics.mean(listNormal[i])
-			fold = abs(mean_AD - mean_Normal)
-			if (pval < pvalue) & (fold > foldChange):
-				filtered_index.append(i)
-		return filtered_index
-
 	def set_class_to_df(df_path, class_path):
 		df = PreProcess.getDF(df_path)
 		df = df.set_index(["Gene Symbol"])
@@ -127,15 +112,54 @@ class PreProcess:
 
 		return df
 
-	def get_reduced_df_from_pvalues(df_path, class_path, pvalue, foldChange):
+	def get_pvalue_fold_df(df_path, class_path):
 		df = PreProcess.set_class_to_df(df_path, class_path)
 		df_normal, df_AD = PreProcess.split_df_by_class(df)
-		filtered_index = PreProcess.sort_pValues(df_AD, df_normal, pvalue, foldChange)
-		sorted_dataframe = df.filter(df.columns[filtered_index])
+
+		pValues = []
+		fold_change = []
+
+		df_AD_trans = df_AD.transpose()
+		df_normal_trans = df_normal.transpose()
+		listAD = df_AD_trans.values.tolist()
+		listNormal = df_normal_trans.values.tolist()
+
+		for i in range(len(listAD) - 1):  # For each gene :
+			ttest, pval = ttest_ind(listAD[i], listNormal[i])  # calculating p values for each gene using ttest
+			mean_AD = statistics.mean(listAD[i])
+			mean_Normal = statistics.mean(listNormal[i])
+			fold = (mean_AD - mean_Normal)
+			fold_change.append(fold)
+			pValues.append(pval)
+
+		p_fold_df = pd.DataFrame({'fold': fold_change, 'pValues': pValues}, columns=["fold", "pValues"])
+
+		return p_fold_df
+
+	def get_filtered_df_pvalue(p_fold_df, df_path, pvalue, foldChange):
+		df = PreProcess.getDF(df_path)
+		df = df.set_index(["Gene Symbol"])
+		df = df.T
+
+		p_fold_df['is_selected'] = (abs(p_fold_df['fold']) > foldChange) & (p_fold_df['pValues'] < pvalue)
+		sorted_dataframe = df.filter(df.columns[p_fold_df['is_selected']])
+
 		return sorted_dataframe
 
-	def get_reduced_feature_count_from_pvalues(df_path, class_path, pvalue, foldChange):
-		df = PreProcess.set_class_to_df(df_path, class_path)
-		df_normal, df_AD = PreProcess.split_df_by_class(df)
-		filtered_index = PreProcess.sort_pValues(df_AD, df_normal, pvalue, foldChange)
-		return len(filtered_index)
+	def get_filtered_df_count_pvalue(p_fold_df, pvalue, foldChange):
+		p_fold_df['is_selected'] = (abs(p_fold_df['fold']) > foldChange) & (p_fold_df['pValues'] < pvalue)
+
+		return p_fold_df['is_selected'].sum()
+
+	# def get_reduced_df_from_pvalues(df_path, class_path, pvalue, foldChange):
+	# 	df = PreProcess.set_class_to_df(df_path, class_path)
+	# 	df_normal, df_AD = PreProcess.split_df_by_class(df)
+	# 	filtered_index = PreProcess.sort_pValues(df_AD, df_normal, pvalue, foldChange)
+	# 	sorted_dataframe = df.filter(df.columns[filtered_index])
+	# 	return sorted_dataframe
+    #
+	# def get_reduced_feature_count_from_pvalues(df_path, class_path, pvalue, foldChange):
+	# 	df = PreProcess.set_class_to_df(df_path, class_path)
+	# 	df_normal, df_AD = PreProcess.split_df_by_class(df)
+	# 	filtered_index = PreProcess.sort_pValues(df_AD, df_normal, pvalue, foldChange)
+	# 	return len(filtered_index)

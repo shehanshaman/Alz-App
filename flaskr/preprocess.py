@@ -20,7 +20,7 @@ from matplotlib.figure import Figure
 import json
 import pandas as pd
 
-from flaskr.auth import login_required
+from flaskr.auth import login_required, UserResult
 from flask import g
 
 import numpy as np
@@ -146,7 +146,41 @@ def feature_reduction():
 
     data_array = [pvalues, folds]
 
+    x = json2df('user')
+    p_fold_df = PreProcess.get_pvalue_fold_df(x.avg_symbol_df, x.path)
+    path = USER_PATH / str(g.user["id"]) / 'tmp' / '_p_fold.pkl'
+    PreProcess.saveDF(p_fold_df, path)
+
     return render_template("preprocess/step-5.html", data_array=data_array)
+
+#step 6
+@bp.route("/step-6/", methods=['POST'])
+def get_reduce_features_from_pvalues():
+    x = json2df('user')
+
+    user_tmp_path = USER_PATH / str(g.user["id"]) / 'tmp'
+    path = user_tmp_path / '_p_fold.pkl'
+    p_fold_df = PreProcess.getDF(path)
+
+    fold= request.form["fold-range"]
+    pvalue = request.form["p-value"]
+    df = PreProcess.get_filtered_df_pvalue(p_fold_df, x.avg_symbol_df, float(pvalue), float(fold))
+    fr_df_path = user_tmp_path / ('fr_' + x.file_name)
+    PreProcess.saveDF(df, fr_df_path)
+    x.setReduceDF(fr_df_path.as_posix())
+    df2session(x, 'user')
+
+    length = len(df.columns)
+
+    if(length < 350 ):
+        split_array = np.linspace(150, int(length / 10) * 10, 21)
+    else:
+        split_array = np.linspace(150, 350, 21)
+
+    split_array = split_array.astype(int)
+
+    return render_template("preprocess/step-6.html", split_array = split_array)
+
 
 @bp.route("/fr/pf/", methods=['GET'])
 def get_feature_count_pval():
@@ -154,17 +188,26 @@ def get_feature_count_pval():
     pvalue = request.args.get("pvalue")
     foldChange = request.args.get("foldChange")
 
-    count = PreProcess.get_reduced_feature_count_from_pvalues(x.avg_symbol_df, x.path, float(pvalue), float(foldChange))
+    path = USER_PATH / str(g.user["id"]) / 'tmp' / '_p_fold.pkl'
+    p_fold_df = PreProcess.getDF(path)
 
+    count = PreProcess.get_filtered_df_count_pvalue(p_fold_df, float(pvalue), float(foldChange))
     return str(count)
 
+@bp.route("/fr/save/", methods=['POST'])
+def save_reduced_df():
+    features_count = request.form['features_count']
+    x = json2df('user')
+    df = PreProcess.getDF(x.reduce_df)
+    df_y = PreProcess.getDF(x.path)
+    y = df_y['class']
+    df_selected = FeatureReduction.getSelectedFeatures(df, int(features_count), y)
+    path = USER_PATH / str(g.user["id"]) / ('re_' + x.file_name)
+    PreProcess.saveDF(df_selected, path)
+    user_id = session.get("user_id")
+    UserResult.update_result(user_id, 'filename', 're_' + x.file_name)
 
-#step 6
-@bp.route("/fr2")
-def FR():
-    # print(df_200.shape)
-    return render_template("preprocess/feRe.html", posts="")
-
+    return redirect('/fs/')
 
 @bp.route("/fr2" , methods=['POST'])
 def FR_selected():
@@ -189,20 +232,6 @@ def FR_selected():
 #step 7
 @bp.route("/fs")
 def FS():
-    return render_template("preprocess/fs.html", posts="")
-
-@bp.route("/fs" , methods=['POST'])
-def FS_post():
-    x = json2df('user')
-
-    if request.method == 'POST':
-        features_count = request.form['features_count']
-        df_pca = FeatureSelection.PCA(PreProcess.getDF(x.reduce_df), int(features_count))
-        df_rf = FeatureSelection.RandomForest(PreProcess.getDF(x.reduce_df), int(features_count))
-        df_et = FeatureSelection.ExtraTrees(PreProcess.getDF(x.reduce_df), int(features_count))
-        return render_template("preprocess/tableView.html", tables=[df_et.head().to_html(classes='data')],
-                               titles=df_et.head().columns.values)
-
     return render_template("preprocess/fs.html", posts="")
 
 

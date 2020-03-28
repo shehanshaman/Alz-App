@@ -65,63 +65,39 @@
 </div>
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
-    <form method="post" action="/pre/step-6/" enctype="multipart/form-data">
+    <form method="post" action="/pre/fr/save/" enctype="multipart/form-data">
         <div class="step-content">
             <div class="row">
-                <h3 id="h3-head-4" class="card__title" style="text-align: center;">FEATURE REDUCTION</h3>
+                <h3 id="h3-head-5" class="card__title" style="text-align: center;">FEATUE SELECTION</h3>
             </div>
 
             <div class="row">
                 <div class="col-sm-8"></div>
-                <div class="col-sm-4">
+
+                <div class=" col-sm-4" style="margin-top: 30px;">
                     <div class="row md-form">
-                        <label><b>Fold Range</b></label>
+                        <label><b>SELECTED FEATURES</b></label>
                         <div class="dropdown">
-                            <select class="form-control dropdown-menu-fold-range" id="fold-range" name="fold-range">
-                                {% for name in data_array[1] %}
+                            <select class="form-control dropdown-menu-p-value" id="features_count" name="features_count">
+                                {% for name in split_array %}
                                     <option value="{{ name }}">{{ name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                     </div>
-
-                    <div class="row md-form">
-                        <label><b>P Value</b></label>
-                        <div class="dropdown">
-                            <select class="form-control dropdown-menu-p-value" id="p-value" name="p-value">
-                                {% for name in data_array[0] %}
-                                    <option value="{{ name }}">{{ name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                    <div class='row form-field step-miami-checkbox' style="margin-top: 30px;">
+                        <p><input name='checkbox-all-features' type="checkbox" class="filled-in"
+                                  id="checkbox-all-features" value='checkbox-all-features'/>
+{#                            <label for="checkbox-all-features">SELECT ALL FEATURES</label>#}
+                        </p>
                     </div>
-
-                    <div class="row progress" id="progress_bar">
-                        <div class="indeterminate"></div>
-                    </div>
-
-                    <div class="row" style="margin-top: 30px;">
-                        <button id="btn-calculate" type="button" class="btn btn-primary btn-lg btn-block"><p
-                                class="btn-page-2-p">CALCULATE</p></button>
-                    </div>
-                    <div class="row" id="result_div">
-                        <div class="row" style="margin-top: 30px;">
-                            <h5 id="h4-head-2" class="card__title" style="text-align: center;">SELECTED NUMBER OF
-                                GENES</h5>
-                        </div>
-
-                        <div class="row">
-                            <h5 id="h4-head-2" class="card__title" style="text-align: center;"><b
-                                    id="selected_features_count">2000</b></h5>
-                        </div>
-                    </div>
-
-
                 </div>
             </div>
 
+            <hr class="line-hr">
+
             <div class="step-actions">
-                <button class="waves-effect waves-dark btn next-step step-5-click">CONTINUE</button>
+                <button class="waves-effect waves-dark btn next-step step-6-click">CONTINUE</button>
                 <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
             </div>
         </div>
@@ -144,26 +120,4 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
-
-<script>
-    $(document).ready(function () {
-        $(".dropdown-trigger").dropdown();
-    });
-
-    $('#btn-calculate').click(function () {
-        var fold_range = $('#fold-range').find(":selected").text();
-        var p_value = $('#p-value').find(":selected").text();
-        document.getElementById("progress_bar").style.visibility = "visible";
-        document.getElementById("btn-calculate").disabled = true;
-        $.get("./fr/pf/", {pvalue: p_value, foldChange: fold_range}, function (data, status) {
-            console.log(data);
-            document.getElementById("result_div").style.visibility = "visible";
-            document.getElementById("selected_features_count").innerHTML = data
-            document.getElementById("progress_bar").style.visibility = "hidden";
-            document.getElementById("btn-calculate").disabled = false;
-        });
-
-
-    });
-</script>
 

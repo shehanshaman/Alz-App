@@ -23,8 +23,8 @@ class FeatureReduction:
         # print(df.shape[1]-1)
         return featureScores
 
-    def getSelectedFeatures(df, len):
-        y = df["class"]  # Target Variable
+    def getSelectedFeatures(df, len, y):
+        df["class"] = y  # Target Variable
         featureScores = FeatureReduction.getScoresFromUS(df)
         selectedFeatures = featureScores.nlargest(len, 'Score')
         pd.options.mode.chained_assignment = None
