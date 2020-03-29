@@ -106,8 +106,16 @@ def result():
 def get_summary_plot(results_testing, results_training):
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14, 5))
 
-    axes[0].set_ylim([75, 100])
-    axes[1].set_ylim([75, 100])
+    min_limit_test = int(results_testing.min().min() / 10) * 10
+    min_limit_train = int(results_training.min().min() / 10) * 10
+
+    if min_limit_test > min_limit_train:
+        min_limit = min_limit_train
+    else:
+        min_limit = min_limit_test
+
+    axes[0].set_ylim([min_limit, 100])
+    axes[1].set_ylim([min_limit, 100])
     axes[0].set_ylabel("Accuracy %")
     axes[1].set_ylabel("Accuracy %")
     axes[0].set_title("Testing Accuracy")

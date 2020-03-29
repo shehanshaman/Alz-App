@@ -144,17 +144,21 @@ def probe2symbol():
 #step 4
 @bp.route("/step-5")
 def feature_reduction():
-    pvalues = np.linspace(0.001, 0.02, 20)
-    pvalues = np.around(pvalues, decimals=3)
-    folds = np.linspace(0.001, 0.02, 20)
-    folds = np.around(folds, decimals=3)
-
-    data_array = [pvalues, folds]
 
     x = json2df('user')
     p_fold_df = PreProcess.get_pvalue_fold_df(x.avg_symbol_df, x.path)
     path = USER_PATH / str(g.user["id"]) / 'tmp' / '_p_fold.pkl'
     PreProcess.saveDF(p_fold_df, path)
+
+    pvalues_max = p_fold_df['pValues'].max() * 0.1
+    fold_max = p_fold_df['fold'].max() * 0.1
+
+    pvalues = np.linspace(0.001, pvalues_max, 20)
+    pvalues = np.around(pvalues, decimals=3)
+    folds = np.linspace(0.001, fold_max, 20)
+    folds = np.around(folds, decimals=3)
+
+    data_array = [pvalues, folds]
 
     volcano_hash = get_volcano_fig(p_fold_df['fold'], p_fold_df['pValues'])
 

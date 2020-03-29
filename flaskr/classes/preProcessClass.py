@@ -43,7 +43,7 @@ class PreProcess:
 
 	def dfNormSKlearn(df_merge_rm_null_float, df_merge_rm_null):
 		x = df_merge_rm_null_float.values #returns a numpy array
-		min_max_scaler = preprocessing.MinMaxScaler()
+		min_max_scaler = preprocessing.MinMaxScaler(feature_range=(0, 15))
 		x_scaled = min_max_scaler.fit_transform(x)
 		df_norm = pd.DataFrame(x_scaled)
 
