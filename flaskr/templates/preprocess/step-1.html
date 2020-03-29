@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP: Pre-Process</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <style>
+        .button{
+            margin-top: inherit;
+        }
+    </style>
+</head>
+
+<body style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="card-content">
+
+    <ul data-method="GET" class="stepper linear">
+        <li class="step active">
+            <a href="{{ url_for('preprocess.index') }}">
+                <div class="step-title waves-effect waves-dark">Pre-processing</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('fs.index') }}">
+                <div class="step-title waves-effect waves-dark">Feature selection</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('analyze.index') }}">
+                <div class="step-title waves-effect waves-dark">Analysis</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('validation.index') }}">
+                <div class="step-title waves-effect waves-dark">Validation</div>
+            </a>
+        </li>
+    </ul>
+
+</div>
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+    <form method="post" action="/pre/" enctype="multipart/form-data">
+
+        <div class="step-content">
+            <div class="row head-word">
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose Dataset</h3>
+            </div>
+        </div>
+
+        <div class="where-you-like" style="margin-top: 40px;">
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Available Files</h5>
+                </div>
+                <div class="col-sm-5">
+                    <div class="md-form">
+                        <select class="form-control" id="available_files" name="available_files">
+                            {% for name in available_list %}
+                                <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <button type="button" class="button btn btn-warning">View</button>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Annotation Table</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <select class="form-control" id="anno_tbl" name="anno_tbl">
+                            {% for name in annotation_list %}
+                                <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Probe Selection Method</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <select class="form-control" id="column_selection" name="column_selection">
+                            <option value="1">Average</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <hr class="line-hr">
+
+        <br>
+
+        <div class="step-actions">
+            <button class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit"><input
+                    class="" type="submit" value="Submit">
+            </button>
+            <button class="waves-effect waves-dark btn-flat previous-step"><a
+                    href="{{ url_for('preprocess.upload_file_view') }}">BACK</a></button>
+        </div>
+
+    </form>
+
+</div>
+
+<div class="row">
+    <form style="display: none" action="/view/" method="POST" id="form" target="_blank">
+        <input type="hidden" id="selected_file" name="selected_file" value=""/>
+    </form>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $(".dropdown-trigger").dropdown();
+    });
+
+    $(".button").click(function () {
+        var conceptName = $('#available_files').find(":selected").text();
+
+        $("#selected_file").val(conceptName);
+        $("#form").submit();
+    });
+</script>
+

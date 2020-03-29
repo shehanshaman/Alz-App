@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP: Prediction</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    {#    Table css and js#}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
+
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <style>
+        .pagination li.active {
+            background-color: inherit;
+        }
+
+        #anno_tbl_div {
+            visibility: hidden;
+        }
+
+        #modal_create {
+            float: right;
+        }
+
+        #modal_create > button {
+            background-color: #eea236;
+            font-size: 8px;
+        }
+
+        #modal_create > button > a{
+            text-decoration:none;
+            color: inherit;
+        }
+    </style>
+
+</head>
+
+<body style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+    <div class="step-content">
+        <div class="row head-word">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;">PREDICTION</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-2">
+                    <h5>Details</h5>
+                </div>
+                <div class="col-sm-4" id="modal_create">
+                    <button type="button" class="btn btn-warning"><a href="{{ url_for('modeling.index') }}">Customize Model</a></button>
+                </div>
+
+            </div>
+            <div class="row">
+                <table>
+                    <tr>
+                        <td>Classifier:</td>
+                        <td>{{ details[2] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Trained from:</td>
+                        <td>{{ details[1] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Features:</td>
+                        <td>{{ details[0] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <form method="post" action="/mod/predict/" enctype="multipart/form-data">
+
+                <br>
+
+                <div class="where-you-like" style="margin-top: 40px;">
+
+                    <div class="row" style="margin-top: 40px;">
+                        <div class="col-sm-4">
+                            <h5 id="" class="card__title" style="text-align: center;">Choose File:</h5>
+                        </div>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-5">
+                            <div class="md-form">
+                                <select class="form-control" id="available_files" name="available_files">
+                                    {% for name in available_list %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="button btn btn-warning">View</button>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 40px;">
+                        <div class="row">
+                            <h5 id="h5-head-1" class="card__title" style="text-align: center;">Check preprocess
+                                steps</h5>
+                        </div>
+                        <div class="row">
+
+                            <div class="switch row" id="all">
+                                <span class="col-sm-6">Normalize: </span>
+                                <label class="col-sm-6" onclick="update_checkbox(event)">
+                                    Off
+                                    <input type="checkbox" value="false" id="is_norm" name="is_norm">
+                                    <span class="lever"></span>
+                                    On
+                                </label>
+                            </div>
+
+                            <div class="switch row">
+                                <div class="row">
+                                    <span class="col-sm-6">Annotation Table Mapping </span>
+                                    <label class="col-sm-6" onclick="update_checkbox(event)">
+                                        Off
+                                        <input type="checkbox" value="false" id="is_map" name="is_map">
+                                        <span class="lever"></span>
+                                        On
+                                    </label>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6"></div>
+                                    <div class="col-sm-6">
+                                        <div class="md-form" id="anno_tbl_div">
+                                            <select class="form-control" id="anno_tbl" name="anno_tbl">
+                                                {% for name in annotation_list %}
+                                                    <option value="{{ name }}">{{ name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="submit">
+                    <button class="waves-effect waves-dark btn next-step step-6-click" onclick="">SUBMIT</button>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="col-sm-2"></div>
+
+        <div class="col-sm-4">
+            <div class="row">
+                {% if tables %}
+                    <div class="row">
+                        <div class="row">
+                            <h5 id="h5-head-12" class="card__title" style="text-align: center;">Predicted
+                                Results</h5>
+                        </div>
+
+                        <div class="row table_view">
+                            {% for table in tables %}
+                                {{ table|safe }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <hr class="line-hr">
+
+    </div>
+</div>
+
+<div class="row">
+    <form style="display: none" action="/view/" method="POST" id="form" target="_blank">
+        <input type="hidden" id="selected_file" name="selected_file" value=""/>
+    </form>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $(".dropdown-trigger").dropdown();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#table_id').DataTable();
+    });
+</script>
+
+<script>
+    function update_checkbox(event) {
+        var id = event.target.id;
+        if (id) {
+
+            if (id == 'is_map') {
+                console.log(id);
+                document.getElementById("anno_tbl_div").style.visibility = "visible";
+            }
+            document.getElementById(id).value = document.getElementById(id).checked;
+        }
+    };
+
+    $(".button").click(function () {
+        var conceptName = $('#available_files').find(":selected").text();
+
+        $("#selected_file").val(conceptName);
+        $("#form").submit();
+    });
+</script>
