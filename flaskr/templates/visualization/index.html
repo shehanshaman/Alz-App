@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
@@ -26,38 +26,23 @@
             padding: 5px;
             width: 100%;
         }
+
+        #gene_symbol_div {
+            visibility: hidden;
+        }
+
+        .form_container {
+            padding-right: 10px;
+            padding-left: 10px;
+        }
     </style>
 
     <title>FYP: Visualization</title>
 </head>
 <body>
+
 <!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-    <li><a href="#!">one</a></li>
-    <li><a href="#!">two</a></li>
-    <li class="divider"></li>
-    <li><a href="#!">three</a></li>
-</ul>
-<nav>
-    <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Alz</a>
-        <ul class="right hide-on-med-and-down">
-            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
-            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
-            <!-- Dropdown Trigger -->
-            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a>
-                {% if g.user %}
-                    <li><span>{{ g.user['username'] }}</span></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-                {% endif %}
-            </li>
-        </ul>
-    </div>
-</nav>
+{% include 'horizontal_nav_bar.html' %}
 
 <div class="limiter">
     <div class="row head-word">
@@ -65,7 +50,7 @@
     </div>
     <div class="row">
 
-        <div class="col-sm-6 image_container">
+        <div class="col-sm-7 image_container">
             {% if image_data %}
                 <div class="result">
                     <img src="data:image/png;base64,{{ image_data }}" alt="my plot">
@@ -73,8 +58,6 @@
             {% endif %}
 
         </div>
-
-        <div class="col-sm-1"></div>
 
         <div class="col-sm-5 form_container">
             <form class="login100-form validate-form" method="post" action="/vis/">
@@ -86,6 +69,7 @@
                     <div class="col-sm-12">
                         <div class="md-form">
                             <select class="form-control" id="available_files" name="available_files">
+                                <option disabled="disabled" selected>Pick a choice!</option>
                                 {% for name in available_list %}
                                     <option value="{{ name }}">{{ name }}</option>
                                 {% endfor %}
@@ -94,16 +78,14 @@
                     </div>
                 </div>
 
-                <div class="row" style="margin-top: 40px;">
+                <div class="row" style="margin-top: 40px;" id="gene_symbol_div">
                     <div class="col-sm-12">
                         <h5 id="h3-head-1" class="card__title" style="text-align: center;">GENE SYMBOLS:</h5>
                     </div>
                     <div class="col-sm-12">
                         <div class="md-form">
                             <select class="form-control" id="features" name="features">
-                                {% for feature in features_list %}
-                                    <option value="{{ feature }}">{{ feature }}</option>
-                                {% endfor %}
+
                             </select>
                         </div>
                     </div>
@@ -111,7 +93,7 @@
 
 
                 <div class="step-actions">
-                    <button class="waves-effect waves-dark btn next-step step-6-click">
+                    <button class="waves-effect waves-dark btn next-step step-6-click" id="submit_button">
                         Update
                     </button>
                 </div>
@@ -136,8 +118,26 @@
 
 <script>
     $(document).ready(function () {
-        console.log("ready!");
+        $('#submit_button').prop('disabled', true);
         $(".dropdown-trigger").dropdown();
+    });
+</script>
+
+<script>
+
+    $('#available_files').change(function () {
+        document.getElementById("gene_symbol_div").style.visibility = "visible";
+
+        var conceptName = $('#available_files').find(":selected").text();
+        $('#submit_button').prop('disabled', false);
+        $.get("./js/", {available_files: conceptName, user_id: {{ g.user['id'] }}}, function (data, status) {
+            data = data.split(",");
+            for (i = 0; i < data.length; i++) {
+                console.log('.');
+                f = data[i]
+                $('#features').append("<option value=" + f + "> " + f + "</option>");
+            }
+        });
     });
 </script>
 </html>

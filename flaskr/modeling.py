@@ -13,14 +13,17 @@ import pickle
 from flaskr.auth import UserResult
 from flaskr.classes.preProcessClass import PreProcess
 
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = ROOT_PATH + "\\upload\\"
-USER_PATH = UPLOAD_FOLDER + "users\\"
-ANNOTATION_TBL = UPLOAD_FOLDER + "AnnotationTbls\\"
+from pathlib import Path
+
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+UPLOAD_FOLDER = ROOT_PATH / "flaskr" / "upload"
+ANNOTATION_TBL = UPLOAD_FOLDER / "AnnotationTbls"
 
 bp = Blueprint("modeling", __name__, url_prefix="/mod")
 
-@bp.route("/", methods = ["GET"])
+
+@bp.route("/", methods=["GET"])
 def index():
     s = 2
     if request.method == "GET":
@@ -29,10 +32,10 @@ def index():
     user_id = session.get("user_id")
 
     list_names = []
-    path = USER_PATH + str(g.user["id"]) + "\\"
+    path = USER_PATH / str(g.user["id"])
     if not os.path.exists(path):
         os.makedirs(path)
-        os.makedirs(path + "tmp\\")
+        os.makedirs(path / "tmp")
     for filename in os.listdir(path):
         list_names.append(filename)
 
@@ -50,9 +53,10 @@ def index():
     UserResult.update_modeling(user_id, 'features', col_mo_str)
 
     return render_template("modeling/index.html", available_list=list_names, classifier_list=classifier_list,
-                           features = col_mo, state = s)
+                           features=col_mo, state=s)
 
-@bp.route("/", methods = ["POST"])
+
+@bp.route("/", methods=["POST"])
 def create_model():
     user_id = session.get("user_id")
 
@@ -64,18 +68,18 @@ def create_model():
 
     is_model = create_model_pkl(user_id, available_file, classifier)
 
-    return redirect('/mod/?s='+ str(is_model))
+    return redirect('/mod/?s=' + str(is_model))
 
 
-@bp.route("/predict/", methods = ["GET", "POST"])
+@bp.route("/predict/", methods=["GET", "POST"])
 def predict():
     user_id = session.get("user_id")
 
     list_names = []
-    path = USER_PATH + str(g.user["id"]) + "\\"
+    path = USER_PATH / str(g.user["id"])
     if not os.path.exists(path):
         os.makedirs(path)
-        os.makedirs(path + "tmp\\")
+        os.makedirs(path / "tmp")
     for filename in os.listdir(path):
         list_names.append(filename)
 
@@ -94,7 +98,7 @@ def predict():
 
     if request.method == "POST":
         selected_file = request.form["available_files"]
-        df_path = USER_PATH + str(user_id) + "\\" + selected_file
+        df_path = USER_PATH / str(user_id) / selected_file
         df = PreProcess.getDF(df_path)
 
         is_norm = request.form.get("is_norm")
@@ -102,13 +106,19 @@ def predict():
 
         if is_map == "true":
             annotation_file = request.form["anno_tbl"]
-            df = PreProcess.mergeDF(df_path, ANNOTATION_TBL + annotation_file)
+            df = PreProcess.mergeDF(df_path, ANNOTATION_TBL / annotation_file)
+            PreProcess.saveDF(df, 'abc_1.pkl')
+            df = PreProcess.step3(df, 'sklearn', 'drop')
+            PreProcess.saveDF(df, 'abc_2.pkl')
+            df = PreProcess.probe2Symbol(df)
+            PreProcess.saveDF(df, 'abc_3.pkl')
+            df = df.set_index(['Gene Symbol'])
+            PreProcess.saveDF(df, 'abc_4.pkl')
+            df = df.T
+            PreProcess.saveDF(df, 'abc_5.pkl')
 
-        if is_norm == "true":
-            if is_map == 'true':
-                df = PreProcess.step3(df)
-            else:
-                df = get_norm_df(df)
+        elif is_norm == "true":
+            df = get_norm_df(df)
 
         model_name = r['model_path_name']
 
@@ -120,14 +130,16 @@ def predict():
         frame = {'ID': df.index, 'Predicted Result': result}
         out_result = pd.DataFrame(frame)
 
-        return render_template("modeling/predict.html", available_list=list_names, details = details, annotation_list= annotation_list,
-                           tables=[out_result.to_html(classes = 'display" id = "table_id')])
+        return render_template("modeling/predict.html", available_list=list_names, details=details,
+                               annotation_list=annotation_list,
+                               tables=[out_result.to_html(classes='display" id = "table_id')])
 
     return render_template("modeling/predict.html", available_list=list_names, details=details,
                            annotation_list=annotation_list, tables='')
 
+
 def get_predicted_result_df(user_id, model_name, df):
-    model = pickle.load(open(USER_PATH + str(user_id) + "\\tmp\\" + model_name, 'rb'))
+    model = pickle.load(open(USER_PATH / str(user_id) / "tmp" / model_name, 'rb'))
 
     prediction = model.predict(df)
 
@@ -137,8 +149,8 @@ def get_predicted_result_df(user_id, model_name, df):
 def create_model_pkl(user_id, filename, classifier):
     r = UserResult.get_user_model(user_id)
     col_mo = r['features'].split(',')
-
-    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    file_to_open = USER_PATH / str(user_id) / filename
+    df = PreProcess.getDF(file_to_open)
     y = df["class"]
     x = df[col_mo]
 
@@ -153,8 +165,9 @@ def create_model_pkl(user_id, filename, classifier):
     else:
         return 0
 
-    clf.fit(x,y)
-    pickle.dump(clf, open(USER_PATH + str(user_id) + "\\tmp\\"  + "_model.pkl", 'wb'))
+    clf.fit(x, y)
+    file_to_write = USER_PATH / str(user_id) / "tmp" / "_model.pkl"
+    pickle.dump(clf, open(file_to_write , 'wb'))
 
     UserResult.update_modeling(user_id, 'model_path_name', '_model.pkl')
 

@@ -7,8 +7,6 @@
 
     <title>FYP</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -19,45 +17,48 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
 </head>
 
 
 <body style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-    <li><a href="#!">one</a></li>
-    <li><a href="#!">two</a></li>
-    <li class="divider"></li>
-    <li><a href="#!">three</a></li>
-</ul>
+{% include 'horizontal_nav_bar.html' %}
 
-<nav>
-    <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Alz</a>
-        <ul class="right hide-on-med-and-down">
-            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
-            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
-            <!-- Dropdown Trigger -->
-            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a>
-                {% if g.user %}
-                    <li><span>{{ g.user['username'] }}</span></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-                {% endif %}
-            </li>
-        </ul>
-    </div>
-</nav>
+<div class="card-content">
+
+    <ul data-method="GET" class="stepper linear">
+        <li class="step active">
+            <a href="{{ url_for('preprocess.index') }}">
+                <div class="step-title waves-effect waves-dark">Pre-processing</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('fs.index') }}">
+                <div class="step-title waves-effect waves-dark">Feature selection</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('analyze.index') }}">
+                <div class="step-title waves-effect waves-dark">Analysis</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('validation.index') }}">
+                <div class="step-title waves-effect waves-dark">Validation</div>
+            </a>
+        </li>
+    </ul>
+
+</div>
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
     <div class="step-content">
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;">DATA-SET AFTER PRE-PROCESSING</h3>
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;">Dataset After Mapping</h3>
         </div>
 
         <div style="overflow: auto;">
@@ -68,14 +69,15 @@
         </div>
     </div>
 
-    <center>
-        <div class="row" style="margin-top: 40px;">
-            <div class="col-sm-12">
-                <input class="waves-effect waves-dark btn" onclick="window.location.href = '/pre/step-5';" type="submit"
-                       value="NEXT">
-            </div>
-        </div>
-    </center>
+    <hr class="line-hr">
+
+    <div class="step-actions">
+        <button class="waves-effect waves-dark btn next-step step-6-click"><a
+                href="{{ url_for('preprocess.feature_reduction') }}">CONTINUE</a></button>
+        <button class="waves-effect waves-dark btn-flat previous-step"><a
+                href="{{ url_for('preprocess.indexstep1') }}">BACK</a></button>
+    </div>
+
 
 </div>
 

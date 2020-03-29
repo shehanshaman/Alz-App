@@ -13,8 +13,10 @@ from .auth import UserResult
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-USER_PATH = ROOT_PATH + "\\upload\\users\\"
+from pathlib import Path
+
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 
 bp = Blueprint("analyze", __name__, url_prefix="/an")
 
@@ -24,7 +26,8 @@ def index():
     r = UserResult.get_user_results(user_id)
 
     filename = r['filename']
-    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    file_to_open = USER_PATH / str(user_id) / filename
+    df = PreProcess.getDF(file_to_open)
 
     col_m1 = r['col_method1'].split(',')
     col_m2 = r['col_method2'].split(',')
@@ -62,7 +65,7 @@ def index():
     # return render_template("analyze/index.html", corr_data = "", overlap_data = "", small_set= "", methods = method_names[0:3])
 
 
-@bp.route("/step2", methods = ['HTTP', 'POST'])
+@bp.route("/step2", methods = ['GET', 'POST'])
 def selected_method():
     user_id = session.get("user_id")
 
@@ -77,7 +80,8 @@ def selected_method():
         return redirect('/an')
 
     filename = r['filename']
-    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    file_to_open = USER_PATH / str(user_id) / filename
+    df = PreProcess.getDF(file_to_open)
     y = df["class"]
 
     col_m1 = r['col_method1'].split(',')
@@ -124,7 +128,8 @@ def final_result():
     selected_method = r['selected_method']
 
     filename = r['filename']
-    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    file_to_open = USER_PATH / str(user_id) / filename
+    df = PreProcess.getDF(file_to_open)
     y = df["class"]
 
     dis_gene = list(dict.fromkeys(overlap + col_selected_method))

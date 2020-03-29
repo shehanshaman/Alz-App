@@ -23,32 +23,45 @@
         .slider {
             height: inherit;
         }
+
+        #file_tbl_div {
+            visibility: hidden;
+        }
+
     </style>
 </head>
 
 
 <body style="background-color: #f3f6f9;">
 
-<nav>
-    <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Alz</a>
-        <ul class="right hide-on-med-and-down">
-            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
-            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
-            <!-- Dropdown Trigger -->
-            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a>
-                {% if g.user %}
-                    <li><span>{{ g.user['username'] }}</span></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-                {% endif %}
-            </li>
-        </ul>
-    </div>
-</nav>
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="card-content">
+
+    <ul data-method="GET" class="stepper linear">
+        <li class="step ">
+            <a href="{{ url_for('preprocess.index') }}">
+                <div class="step-title waves-effect waves-dark">Pre-processing</div>
+            </a>
+        </li>
+        <li class="step active">
+            <a href="{{ url_for('fs.index') }}">
+                <div class="step-title waves-effect waves-dark">Feature selection</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('analyze.index') }}">
+                <div class="step-title waves-effect waves-dark">Analysis</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('validation.index') }}">
+                <div class="step-title waves-effect waves-dark">Validation</div>
+            </a>
+        </li>
+    </ul>
+
+</div>
 
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
@@ -56,12 +69,40 @@
     <div class="step">
         <div class="step-content">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;">FEATURE SELECTION</h3>
+                <h3 id="h3-head-6" class="card__title" style="text-align: center;">Feature Selection</h3>
             </div>
 
             <div class="row">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">SELECT THREE FEATURE SELECTION
-                    METHODS</h5>
+                <div class="switch">
+                    <div class="col-sm-12">
+                        <span class="col-sm-6" style="text-align: center;">Change File</span>
+                        <label class="col-sm-6" onclick="update_checkbox(event)">
+                            Off
+                            <input type="checkbox" value="false" id="is_map" name="is_map">
+                            <span class="lever"></span>
+                            On
+                        </label>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="col-sm-6"></div>
+                        <div class="col-sm-6">
+                            <div class="md-form" id="file_tbl_div">
+                                <select class="form-control" id="file_tbl" name="file_tbl">
+                                    <option disabled="disabled" selected>Pick a choice!</option>
+                                    {% for name in list_names %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Select Three Feature Selection Methods</h5>
             </div>
 
             <div class="row">
@@ -75,7 +116,7 @@
                                     <li data-id="3" class="active" data-value="Extra Tree Classifier">Extra Tree
                                         Classifier
                                     </li>
-                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>
+{#                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>#}
                                 </ul>
                             </div>
                             <div class="col-sm-6">
@@ -87,7 +128,7 @@
             </div>
 
             <div class="row">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">NUMBER OF FEATURES SELECTED</h5>
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Number of Features Selected</h5>
             </div>
             <div class="row">
                 <div class="col-sm-3"></div>
@@ -115,6 +156,8 @@
 
 <form style="display: none" action="/fs/" method="POST" id="form">
     <input type="hidden" id="fs_methods" name="fs_methods" value=""/>
+    <input type="hidden" id="change_file" name="change_file" value=""/>
+    <input type="hidden" id="is_change" name="is_change" value=""/>
 </form>
 </body>
 </html>
@@ -136,8 +179,8 @@
 
 <script>
     $(document).ready(function () {
-        console.log("ready!");
         $(".dropdown-trigger").dropdown();
+        console.log("ready");
     });
 </script>
 
@@ -156,5 +199,23 @@
         $("#fs_methods").val(fs);
         $("#form").submit();
 
-    }
+    };
+
+    $('#file_tbl').change(function () {
+
+        var conceptName = $('#file_tbl').find(":selected").text();
+        $("#change_file").val(conceptName);
+{#        console.log(conceptName);#}
+    });
+
+    function update_checkbox(event) {
+        var id = event.target.id;
+        if (id) {
+            document.getElementById("file_tbl_div").style.visibility = "visible";
+            var s = document.getElementById(id).checked;
+            document.getElementById(id).value = s
+            $("#is_change").val(s);
+            console.log(s);
+        }
+    };
 </script>

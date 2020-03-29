@@ -40,33 +40,9 @@
 
 </head>
 <body>
+
 <!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-    <li><a href="#!">one</a></li>
-    <li><a href="#!">two</a></li>
-    <li class="divider"></li>
-    <li><a href="#!">three</a></li>
-</ul>
-<nav>
-    <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Alz</a>
-        <ul class="right hide-on-med-and-down">
-            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
-            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
-            <!-- Dropdown Trigger -->
-            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a>
-                {% if g.user %}
-                    <li><span>{{ g.user['username'] }}</span></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-                {% endif %}
-            </li>
-        </ul>
-    </div>
-</nav>
+{% include 'horizontal_nav_bar.html' %}
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
     <div class="row">
@@ -108,6 +84,7 @@
     window.onload = function () {<!--   w  w w  .j  a  v a  2 s  .c  om-->
         var rows = document.getElementsByTagName("tr");
         for (var i = 0; i < rows.length; i++) {
+            if (i==0){ continue;}
             rows[i].onclick = function () {
                 console.log($(this).find('th')[0].innerHTML);
                 $("#selected_row").val($(this).find('th')[0].innerHTML);

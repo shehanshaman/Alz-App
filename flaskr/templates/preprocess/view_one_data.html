@@ -1,55 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+
+    <title>FYP: {{ data[0] }}</title>
+
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    {#    Table css and js#}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
 
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-    <script type="text/javascript" charset="utf8"
-            src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
 
+    <style>
+        .pagination li.active {
+            background-color: inherit;
+        }
+
+        .content_1 {
+            padding-left: 10%;
+            padding-right: 10%;
+        }
+    </style>
 
 </head>
 <body>
+
 <!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-    <li><a href="#!">one</a></li>
-    <li><a href="#!">two</a></li>
-    <li class="divider"></li>
-    <li><a href="#!">three</a></li>
-</ul>
-<nav>
-    <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Alz</a>
-        <ul class="right hide-on-med-and-down">
-            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
-            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
-            <!-- Dropdown Trigger -->
-            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a>
-                {% if g.user %}
-                    <li><span>{{ g.user['username'] }}</span></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-                {% endif %}
-            </li>
-        </ul>
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="row content_1">
+    <div class="row" id="h5-head-6" class="card__title">
+        <h5>{{ data[0] }}</h5>
     </div>
-</nav>
-{#{{ tables }}#}
-{% for table in tables %}
-    {#    {{ titles[loop.index] }}#}
-    {{ table|safe }}
-{% endfor %}
+
+    <div class="row">
+        <div id="table_div">
+            {% for table in tables %}
+                {{ table|safe }}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 
 </body>
 <!-- Compiled and minified JavaScript -->
@@ -58,7 +67,6 @@
 
 <script>
     $(document).ready(function () {
-        console.log("ready!");
         $(".dropdown-trigger").dropdown();
     });
 </script>
@@ -67,4 +75,5 @@
         $('#table_id').DataTable();
     });
 </script>
+
 </html>

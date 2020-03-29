@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, session
+from flask import Blueprint, session, g
 from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
@@ -12,26 +12,46 @@ from .auth import UserResult
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
-bp = Blueprint("fs", __name__, url_prefix="/fs")
+from pathlib import Path
 
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-USER_PATH = ROOT_PATH + "\\upload\\users\\"
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+
+bp = Blueprint("fs", __name__, url_prefix="/fs")
 
 @bp.route("/")
 def index():
-    return render_template("fs/index.html")
+    list_names = []
+    path = USER_PATH / str(g.user["id"])
+    # path = USER_PATH + str(g.user["id"]) + "\\"
+    if not os.path.exists(path):
+        os.makedirs(path)
+        path_tmp = path / "tmp"
+        os.makedirs(path_tmp)
+    for filename in os.listdir(path):
+        list_names.append(filename)
+    list_names.remove("tmp")
+
+    return render_template("fs/index.html", list_names=list_names)
 
 #Get columns of 3 different feature selection methods
 @bp.route("/" , methods=['POST'])
 def get_val():
     fs_methods = request.form["fs_methods"]
+    is_change = request.form["is_change"]
     user_id = session.get("user_id")
+
+    if is_change == 'true':
+        change_file = request.form["change_file"]
+        UserResult.update_result(user_id, 'filename', change_file)
+
     UserResult.update_result(user_id,'fs_methods', fs_methods)
 
     fs_methods = fs_methods.split(',')
     result = UserResult.get_user_results(user_id)
     filename = result['filename']
-    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    file_to_open = USER_PATH / str(user_id) / filename
+    df = PreProcess.getDF(file_to_open)
 
     selected_col = [None] * 3
     len = int(fs_methods[3])
@@ -61,7 +81,8 @@ def result():
     user_id = session.get("user_id")
     r = UserResult.get_user_results(user_id)
     filename = r['filename']
-    df = PreProcess.getDF(USER_PATH + str(user_id) + "\\" + filename)
+    file_to_open = USER_PATH / str(user_id) / filename
+    df = PreProcess.getDF(file_to_open)
 
     # df_50F_PCA, df_50F_FI, df_50F_RF
     col_m1 = r['col_method1'].split(',')
@@ -85,8 +106,16 @@ def result():
 def get_summary_plot(results_testing, results_training):
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14, 5))
 
-    axes[0].set_ylim([75, 100])
-    axes[1].set_ylim([75, 100])
+    min_limit_test = int(results_testing.min().min() / 10) * 10
+    min_limit_train = int(results_training.min().min() / 10) * 10
+
+    if min_limit_test > min_limit_train:
+        min_limit = min_limit_train
+    else:
+        min_limit = min_limit_test
+
+    axes[0].set_ylim([min_limit, 100])
+    axes[1].set_ylim([min_limit, 100])
     axes[0].set_ylabel("Accuracy %")
     axes[1].set_ylabel("Accuracy %")
     axes[0].set_title("Testing Accuracy")

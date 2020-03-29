@@ -7,14 +7,14 @@
 
     <title>FYP: Modeling</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
@@ -24,66 +24,7 @@
 <body style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-    <li><a href="#!">one</a></li>
-    <li><a href="#!">two</a></li>
-    <li class="divider"></li>
-    <li><a href="#!">three</a></li>
-</ul>
-<nav>
-    <div class="nav-wrapper">
-        <a href="#!" class="brand-logo">Alz</a>
-        <ul class="right hide-on-med-and-down">
-            <li><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a></li>
-            <li><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a></li>
-            <!-- Dropdown Trigger -->
-            <li><a class="dropdown-trigger" href="{{ url_for('preprocess.index') }}" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a>
-                {% if g.user %}
-                    <li><span>{{ g.user['username'] }}</span></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-                {% endif %}
-            </li>
-        </ul>
-    </div>
-</nav>
-
-{#<div class="nav">#}
-{##}
-{#    <div class="nav-header">#}
-{#        <div class="nav-title">Alz</div>#}
-{#    </div>#}
-{##}
-{#    <div class="nav-links">#}
-{#        <div>#}
-{#            <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>#}
-{#            <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visulization</a>#}
-{#            <div><a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a></div>#}
-{#            <div class="dropdown">#}
-{#                <a class="" id="menu1" data-toggle="dropdown">Tutorials</a>#}
-{#                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">#}
-{#                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">HTML</a></li>#}
-{#                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">CSS</a></li>#}
-{#                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">JavaScript</a></li>#}
-{#                    <li role="presentation" class="divider"></li>#}
-{#                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">About Us</a></li>#}
-{#                </ul>#}
-{#            </div>#}
-{#        </div>#}
-{##}
-{#{% if g.user %}#}
-{#    <span>{{ g.user['username'] }}</span>#}
-{#    <a href="{{ url_for('auth.logout') }}">Log Out</a>#}
-{#{% else %}#}
-{#    <a href="{{ url_for('auth.register') }}">Register</a>#}
-{#    <a href="{{ url_for('auth.login') }}">Log In</a>#}
-{#{% endif %}#}
-{##}
-{#    </div>#}
-{#</div>#}
+{% include 'horizontal_nav_bar.html' %}
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
