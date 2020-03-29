@@ -23,7 +23,7 @@ bp = Blueprint("fs", __name__, url_prefix="/fs")
 def index():
     list_names = []
     path = USER_PATH / str(g.user["id"])
-    # path = USER_PATH + str(g.user["id"]) + "\\"
+
     if not os.path.exists(path):
         os.makedirs(path)
         path_tmp = path / "tmp"
@@ -32,7 +32,11 @@ def index():
         list_names.append(filename)
     list_names.remove("tmp")
 
-    return render_template("fs/index.html", list_names=list_names)
+    user_id = session.get("user_id")
+    result = UserResult.get_user_results(user_id)
+    filename = result['filename']
+
+    return render_template("fs/index.html", list_names=list_names, filename= filename)
 
 #Get columns of 3 different feature selection methods
 @bp.route("/" , methods=['POST'])

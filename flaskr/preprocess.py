@@ -79,7 +79,7 @@ def view():
         else:
             df = PreProcess.getDF(x.merge_df)
 
-        return render_template("preprocess/step-2.html", tables=[df.head(15).to_html(classes='data')], titles=df.head().columns.values)
+        return render_template("preprocess/step-2.html", tables=[df.head(15).to_html(classes='data')])
 
     return redirect('/pre')
 
@@ -105,7 +105,7 @@ def norm():
                 PreProcess.saveDF(df, path)
                 x.setSymbolDF(path_str)
                 df2session(x, 'user')
-            #return render_template("preprocess/index2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+
             return redirect('/pre/probe2symbol')
 
     return redirect('/pre')
@@ -193,7 +193,14 @@ def get_reduce_features_from_pvalues():
     df_y = PreProcess.getDF(x.path)
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
-    return render_template("preprocess/step-6.html", split_array = split_array, fs_fig_hash = fs_fig_hash)
+    # Get classification Results
+    df_y = PreProcess.getDF(x.path)
+    y = df_y['class']
+    y = pd.to_numeric(y)
+    classification_result_df = FeatureReduction.get_classification_results(df, y)
+
+    return render_template("preprocess/step-6.html", split_array = split_array, fs_fig_hash = fs_fig_hash,
+                           tables=[classification_result_df.to_html(classes='data')])
 
 
 @bp.route("/fr/pf/", methods=['GET'])

@@ -73,8 +73,12 @@
             </div>
 
             <div class="row">
+                <div class="row">
+                    <span class="col-sm-6" style="text-align: center;">Selected File</span>
+                    <label class="col-sm-6" style="text-align: left;">{{ filename }}</label>
+                </div>
                 <div class="switch">
-                    <div class="col-sm-12">
+                    <div class="row">
                         <span class="col-sm-6" style="text-align: center;">Change File</span>
                         <label class="col-sm-6" onclick="update_checkbox(event)">
                             Off
@@ -102,7 +106,8 @@
             </div>
 
             <div class="row">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Select Three Feature Selection Methods</h5>
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Select Three Feature Selection
+                    Methods</h5>
             </div>
 
             <div class="row">
@@ -116,7 +121,7 @@
                                     <li data-id="3" class="active" data-value="Extra Tree Classifier">Extra Tree
                                         Classifier
                                     </li>
-{#                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>#}
+                                    {#                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>#}
                                 </ul>
                             </div>
                             <div class="col-sm-6">
@@ -205,7 +210,7 @@
 
         var conceptName = $('#file_tbl').find(":selected").text();
         $("#change_file").val(conceptName);
-{#        console.log(conceptName);#}
+        {#        console.log(conceptName);#}
     });
 
     function update_checkbox(event) {

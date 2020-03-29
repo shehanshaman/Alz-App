@@ -107,15 +107,10 @@ def predict():
         if is_map == "true":
             annotation_file = request.form["anno_tbl"]
             df = PreProcess.mergeDF(df_path, ANNOTATION_TBL / annotation_file)
-            PreProcess.saveDF(df, 'abc_1.pkl')
             df = PreProcess.step3(df, 'sklearn', 'drop')
-            PreProcess.saveDF(df, 'abc_2.pkl')
             df = PreProcess.probe2Symbol(df)
-            PreProcess.saveDF(df, 'abc_3.pkl')
             df = df.set_index(['Gene Symbol'])
-            PreProcess.saveDF(df, 'abc_4.pkl')
             df = df.T
-            PreProcess.saveDF(df, 'abc_5.pkl')
 
         elif is_norm == "true":
             df = get_norm_df(df)
