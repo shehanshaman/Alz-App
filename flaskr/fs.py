@@ -8,7 +8,7 @@ from flask import redirect
 import base64
 import io
 
-from .auth import UserResult
+from .auth import UserResult, login_required
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
@@ -20,6 +20,7 @@ USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 bp = Blueprint("fs", __name__, url_prefix="/fs")
 
 @bp.route("/")
+@login_required
 def index():
     list_names = []
     path = USER_PATH / str(g.user["id"])
@@ -40,6 +41,7 @@ def index():
 
 #Get columns of 3 different feature selection methods
 @bp.route("/" , methods=['POST'])
+@login_required
 def get_val():
     fs_methods = request.form["fs_methods"]
     is_change = request.form["is_change"]
@@ -81,6 +83,7 @@ def get_val():
     return redirect('/fs/result')
 
 @bp.route("/result")
+@login_required
 def result():
     user_id = session.get("user_id")
     r = UserResult.get_user_results(user_id)

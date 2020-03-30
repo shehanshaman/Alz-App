@@ -54,6 +54,8 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        given_name = request.form["given_name"]
+
         db = get_db()
         error = None
 
@@ -71,8 +73,9 @@ def register():
             # the name is available, store it in the database and go to
             # the login page
 
-            create_user_db(db, username, password, '', '')
-
+            create_user_db(db, username, password, given_name, '')
+            message  = given_name + ", Your account created."
+            flash(message)
             return redirect(url_for("auth.login"))
 
         flash(error)

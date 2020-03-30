@@ -9,7 +9,7 @@ from flask import redirect
 import base64
 import io
 
-from .auth import UserResult
+from .auth import UserResult, login_required
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
@@ -21,6 +21,7 @@ USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 bp = Blueprint("analyze", __name__, url_prefix="/an")
 
 @bp.route("/")
+@login_required
 def index():
     user_id = session.get("user_id")
     r = UserResult.get_user_results(user_id)
@@ -65,6 +66,7 @@ def index():
 
 
 @bp.route("/step2", methods = ['GET', 'POST'])
+@login_required
 def selected_method():
     user_id = session.get("user_id")
 
@@ -118,6 +120,7 @@ def selected_method():
                            max_clasify = max_corr_df['Maximum Accuracy'].idxmax(), corr_score = corr_score_pic_hash)
 
 @bp.route("/step3")
+@login_required
 def final_result():
     user_id = session.get("user_id")
     r = UserResult.get_user_results(user_id)

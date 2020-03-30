@@ -19,11 +19,54 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
+    {#    Google Login#}
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id"
+          content="429466987596-0fs00nq9idiuee5qq04tng8pvb0224je.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
     <style>
         .center {
             margin: auto;
             width: 50%;
             padding: 10px;
+        }
+
+        .separator {
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .separator::before, .separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #000;
+        }
+
+        .separator::before {
+            margin-right: .25em;
+        }
+
+        .separator::after {
+            margin-left: .25em;
+        }
+
+        .g_login {
+            padding: 5% 10% 5% 10%;
+        }
+
+        .border {
+            border: 2px solid #bcbaba;
+            border-radius: 30px;
+            padding: 5px;
+        }
+
+        .flash {
+            margin: 1em 0;
+            padding: 1em;
+            background: #cae6f6;
+            border: 1px solid #377ba8;
         }
     </style>
 </head>
@@ -42,18 +85,39 @@
         </div>
     </div>
 
-    <div class="row">
-        <form method="post">
-            <label for="username">Username</label>
-            <input name="username" id="username" required>
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required>
-            <input type="submit" value="Log In" class="waves-effect waves-dark btn">
-        </form>
+    <div>
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
     </div>
 
+    <div class="row">
+        <div class="border">
+            <form method="post" class="center">
+                <label for="username" style="float: left">Username</label>
+                <input name="username" id="username" required>
+                <label for="password" style="float: left">Password</label>
+                <input type="password" name="password" id="password" required>
+                <input type="submit" value="Log In" class="waves-effect waves-dark btn">
+            </form>
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="separator"> OR</div>
+
     <div class="row center">
-        <div class="g-signin2 center" data-onsuccess="onSignIn" data-theme="dark"></div>
+        <div class="g_login">
+            <div class="row">
+                <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" data-width="auto"></div>
+            </div>
+            <div class="">
+                <label>Don't have an Account? <a href="{{ url_for('auth.register') }}">Sign Up</a></label>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -104,9 +168,9 @@
 
         // The ID token you need to pass to your backend:
         var id_token = googleUser.getAuthResponse().id_token;
-{#        console.log("ID Token: " + id_token);#}
+        {#        console.log("ID Token: " + id_token);#}
 
-        if(id_token !== null && id_token !== '') {
+        if (id_token !== null && id_token !== '') {
             $("#given_name").val(given_name);
             $("#image_url").val(image_url);
             $("#email").val(email);

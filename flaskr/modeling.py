@@ -11,7 +11,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.svm import SVC
 import pickle
 
-from flaskr.auth import UserResult
+from flaskr.auth import UserResult, login_required
 from flaskr.classes.preProcessClass import PreProcess
 
 from pathlib import Path
@@ -27,6 +27,7 @@ bp = Blueprint("modeling", __name__, url_prefix="/mod")
 
 
 @bp.route("/", methods=["GET"])
+@login_required
 def index():
     s = 2
     if request.method == "GET":
@@ -61,6 +62,7 @@ def index():
 
 
 @bp.route("/", methods=["POST"])
+@login_required
 def create_model():
     user_id = session.get("user_id")
 
@@ -80,6 +82,7 @@ def create_model():
 
 
 @bp.route("/predict/", methods=["GET", "POST"])
+@login_required
 def predict():
     user_id = session.get("user_id")
 

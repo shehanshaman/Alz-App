@@ -6,7 +6,7 @@ from flask import render_template
 from flask import redirect
 
 from flaskr.classes.preProcessClass import PreProcess
-from .auth import UserResult
+from .auth import UserResult, login_required
 
 from pathlib import Path
 
@@ -16,6 +16,7 @@ GENE_CARD = ROOT_PATH / "flaskr" / "upload" / "Validation" / "GeneCards-SearchRe
 bp = Blueprint("validation", __name__, url_prefix="/val")
 
 @bp.route("/")
+@login_required
 def index():
     user_id = session.get("user_id")
     r = UserResult.get_user_results(user_id)

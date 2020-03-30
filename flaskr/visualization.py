@@ -37,6 +37,7 @@ def index():
 
 
 @bp.route("/", methods=['POST'])
+@login_required
 def update_col():
     file_name = request.form['available_files']
     feature = request.form['features']
