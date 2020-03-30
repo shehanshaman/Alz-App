@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Upload</title>
+    <title>FYP: Modeling</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -19,57 +19,42 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-</head>
+    <style>
+        img {
+            padding: 5px;
+            width: 30%;
+        }
+    </style>
 
+</head>
 
 <body style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
-    <form method="post" action="/pre/upload/" enctype="multipart/form-data">
+    <div class="step-content">
+        <div class="row head-word">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;">Error: {{ errors[0] }}</h3>
+        </div>
 
-        <div class="step-content row">
-            <div class="head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose your dataset</h3>
+        <br>
+    
+        <div class="row">
+            <div class="col-sm-6">
+                {% for error in errors[1] %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </div>
+
+            <div class="col-sm-6 center">
+                <img src="{{ url_for('static', filename='images/error/not_found.png') }}" alt="error">
             </div>
         </div>
 
-        <div class="row" style="margin-top: 40px;">
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">DATASET:</h5>
-                </div>
-                <div class="col-sm-6">
-                    <div class="file-upload">
-                        <div class="file-select">
-                            <div class="file-select-button" id="fileName">Choose File</div>
-                            <div class="file-select-name" id="noFile">No file choosen...</div>
-                            <input type="file" name="chooseFile" id="chooseFile" required>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <br>
-
-            <hr class="line-hr">
-
-            <br>
-
-            <div class="row center">
-                <div class="step-actions">
-                    <input class="waves-effect waves-dark btn" type="submit" value="Submit">
-                </div>
-            </div>
-
-        </div>
-
-    </form>
+    </div>
 
 </div>
 
@@ -86,8 +71,6 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
 
 <!-- Compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/upload_fs.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>

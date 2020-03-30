@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP</title>
+    <title>FYP: Pre-Process</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -81,6 +81,8 @@
 
 </div>
 
+{% include 'footer.html' %}
+
 </body>
 </html>
 
@@ -97,11 +99,4 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-
-<script>
-    $(document).ready(function () {
-        console.log("ready!");
-        $(".dropdown-trigger").dropdown();
-    });
-</script>
-
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>

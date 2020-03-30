@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Preprocess</title>
+    <title>FYP: Pre-Process</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -78,6 +78,19 @@
                 </div>
 
                 <div class=" col-sm-4" style="margin-top: 30px;">
+
+                    <div class="row">
+                        <div class="row">
+                            <label><b>Classification Results</b></label>
+                        </div>
+
+                        <div class="row">
+                            {% for table in tables %}
+                                {{ table|safe }}
+                            {% endfor %}
+                        </div>
+                    </div>
+
                     <div class="row md-form">
                         <label><b>SELECT FEATURE COUNT</b></label>
                         <div class="dropdown">
@@ -110,6 +123,8 @@
 
 </div>
 
+{% include 'footer.html' %}
+
 </body>
 </html>
 
@@ -125,3 +140,4 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>

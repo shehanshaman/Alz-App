@@ -162,6 +162,8 @@
 
 </div>
 
+{% include 'footer.html' %}
+
 </body>
 </html>
 
@@ -175,12 +177,7 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script>
-    $(document).ready(function () {
-        console.log("ready!");
-        $(".dropdown-trigger").dropdown();
-    });
-</script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script>
     // Get the elements with class="column"

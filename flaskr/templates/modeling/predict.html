@@ -47,9 +47,17 @@
             font-size: 8px;
         }
 
-        #modal_create > button > a{
-            text-decoration:none;
+        #modal_create > button > a {
+            text-decoration: none;
             color: inherit;
+        }
+
+        .button {
+            margin-top: inherit;
+        }
+
+        #progress_bar {
+            visibility: hidden;
         }
     </style>
 
@@ -75,7 +83,8 @@
                     <h5>Details</h5>
                 </div>
                 <div class="col-sm-4" id="modal_create">
-                    <button type="button" class="btn btn-warning"><a href="{{ url_for('modeling.index') }}">Customize Model</a></button>
+                    <button type="button" class="btn btn-warning"><a href="{{ url_for('modeling.index') }}">Customize
+                        Model</a></button>
                 </div>
 
             </div>
@@ -96,7 +105,7 @@
                 </table>
             </div>
 
-            <form method="post" action="/mod/predict/" enctype="multipart/form-data">
+            <form method="post" action="/mod/predict/" id="predict-result" enctype="multipart/form-data">
 
                 <br>
 
@@ -168,8 +177,12 @@
                     </div>
                 </div>
 
+                <div class="row progress" id="progress_bar">
+                    <div class="indeterminate"></div>
+                </div>
+
                 <div class="submit">
-                    <button class="waves-effect waves-dark btn next-step step-6-click" onclick="">SUBMIT</button>
+                    <button class="waves-effect waves-dark btn next-step step-6-click" id="btn-submit">SUBMIT</button>
                 </div>
 
             </form>
@@ -209,23 +222,19 @@
     </form>
 </div>
 
+{% include 'footer.html' %}
+
 </body>
 </html>
 
 <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/upload_fs.js') }}"></script>
 
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-
-<script>
-    $(document).ready(function () {
-        console.log("ready!");
-        $(".dropdown-trigger").dropdown();
-    });
-</script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script>
     $(document).ready(function () {
@@ -251,5 +260,12 @@
 
         $("#selected_file").val(conceptName);
         $("#form").submit();
+    });
+
+    $('#btn-submit').click(function () {
+
+        document.getElementById("progress_bar").style.visibility = "visible";
+        document.getElementById("btn-submit").disabled = true;
+        $("#predict-result").submit();
     });
 </script>

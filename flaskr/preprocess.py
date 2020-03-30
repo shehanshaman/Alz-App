@@ -64,6 +64,7 @@ def index():
 
 #step 2
 @bp.route("/view")
+@login_required
 def view():
     x = json2df('user')
     if x is not None:
@@ -79,12 +80,13 @@ def view():
         else:
             df = PreProcess.getDF(x.merge_df)
 
-        return render_template("preprocess/step-2.html", tables=[df.head(15).to_html(classes='data')], titles=df.head().columns.values)
+        return render_template("preprocess/step-2.html", tables=[df.head(15).to_html(classes='data')])
 
     return redirect('/pre')
 
 #normalization and null remove
 @bp.route("/step-3", methods=['POST'])
+@login_required
 def norm():
     x = json2df('user')
 
@@ -105,13 +107,14 @@ def norm():
                 PreProcess.saveDF(df, path)
                 x.setSymbolDF(path_str)
                 df2session(x, 'user')
-            #return render_template("preprocess/index2.html", tables=[df.head().to_html(classes='data')], titles=df.head().columns.values)
+
             return redirect('/pre/probe2symbol')
 
     return redirect('/pre')
 
 #step 3
 @bp.route("/step-2")
+@login_required
 def indexstep1():
     x = json2df('user')
     if x is not None:
@@ -123,6 +126,7 @@ def indexstep1():
 
 #step 4 to 5
 @bp.route("/probe2symbol")
+@login_required
 def probe2symbol():
     x = json2df('user')
     if x is not None:
@@ -143,6 +147,7 @@ def probe2symbol():
 
 #step 4
 @bp.route("/step-5")
+@login_required
 def feature_reduction():
 
     x = json2df('user')
@@ -166,6 +171,7 @@ def feature_reduction():
 
 #step 6
 @bp.route("/step-6/", methods=['POST'])
+@login_required
 def get_reduce_features_from_pvalues():
     x = json2df('user')
 
@@ -193,10 +199,18 @@ def get_reduce_features_from_pvalues():
     df_y = PreProcess.getDF(x.path)
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
-    return render_template("preprocess/step-6.html", split_array = split_array, fs_fig_hash = fs_fig_hash)
+    # Get classification Results
+    df_y = PreProcess.getDF(x.path)
+    y = df_y['class']
+    y = pd.to_numeric(y)
+    classification_result_df = FeatureReduction.get_classification_results(df, y)
+
+    return render_template("preprocess/step-6.html", split_array = split_array, fs_fig_hash = fs_fig_hash,
+                           tables=[classification_result_df.to_html(classes='data')])
 
 
 @bp.route("/fr/pf/", methods=['GET'])
+@login_required
 def get_feature_count_pval():
     x = json2df('user')
     pvalue = request.args.get("pvalue")
@@ -209,6 +223,7 @@ def get_feature_count_pval():
     return str(count)
 
 @bp.route("/fr/save/", methods=['POST'])
+@login_required
 def save_reduced_df():
     features_count = request.form['features_count']
     x = json2df('user')
@@ -226,6 +241,7 @@ def save_reduced_df():
 
 
 @bp.route('/', methods=['POST'])
+@login_required
 def create_object():
     if request.method == 'POST':
         anno_tbl = request.form["anno_tbl"]
@@ -245,11 +261,13 @@ def create_object():
     return redirect('/pre/')
 
 @bp.route('/upload')
+@login_required
 def upload_file_view():
     return render_template("preprocess/step-0.html")
 
 # file upload
 @bp.route('/upload/', methods=['POST'])
+@login_required
 def upload_file():
     if request.method == 'POST':
 

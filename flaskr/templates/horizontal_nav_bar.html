@@ -1,3 +1,29 @@
+{#    Google Login#}
+<meta name="google-signin-scope" content="profile email">
+<meta name="google-signin-client_id"
+      content="429466987596-0fs00nq9idiuee5qq04tng8pvb0224je.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<style>
+    #user_img {
+        border-radius: 50%;
+        width: 40px;
+        margin-right: 6px;
+        margin-left: 6px;
+    }
+
+    .vertical {
+        border-left: 3px solid white;
+        height: 40px;
+        margin-top: 12px;
+        margin-right: 5px;
+    }
+
+    #mainDataInterface-id {
+        min-height: 405px;
+    }
+</style>
+
 <!-- Dropdown Structure -->
 <ul id="dropdown1" class="dropdown-content">
     <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
@@ -9,18 +35,24 @@
     <div class="nav-wrapper">
         <a href="#!" class="brand-logo">Alz</a>
         <ul class="right hide-on-med-and-down">
-            <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
-            </li>
-            <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
-            </li>
-            <!-- Dropdown Trigger -->
-            <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1">Framework<i
-                    class="material-icons right">arrow_drop_down</i></a></li>
-            <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
-            </li>
             {% if g.user %}
-                <li><span>{{ g.user['username'] }}</span></li>
-                <li class="nav_link"><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                <li class="nav_link"><a href="{{ url_for('index') }}"><span class=""></span>Home</a>
+                </li>
+                <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
+                </li>
+                <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+                </li>
+                <!-- Dropdown Trigger -->
+                <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1">Framework<i
+                        class="material-icons right">arrow_drop_down</i></a></li>
+                <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
+                </li>
+                <li><span> <div class="vertical"></div>  </span></li>
+                {% if g.user['image_url'] %}
+                    <li><img src="{{ g.user['image_url'] }}" alt="Avatar" id="user_img"></li>
+                {% endif %}
+                <li><span>{{ g.user['given_name'] }}</span></li>
+                <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
             {% else %}
                 <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
                 <li class="nav_link"><a href="{{ url_for('auth.login') }}">Log In</a></li>
@@ -28,3 +60,16 @@
         </ul>
     </div>
 </nav>
+
+<div class="row"></div>
+
+<script>
+
+    //Google Login
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            window.location.replace('/auth/logout');
+        });
+    }
+</script>

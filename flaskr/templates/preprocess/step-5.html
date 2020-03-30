@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Preprocess</title>
+    <title>FYP: Pre-Process</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -142,6 +142,8 @@
 
 </div>
 
+{% include 'footer.html' %}
+
 </body>
 </html>
 
@@ -157,10 +159,9 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 <script>
-    $(document).ready(function () {
-        $(".dropdown-trigger").dropdown();
-    });
 
     $('#btn-calculate').click(function () {
         var fold_range = $('#fold-range').find(":selected").text();
