@@ -32,6 +32,8 @@
         <a href="#!" class="brand-logo">Alz</a>
         <ul class="right hide-on-med-and-down">
             {% if g.user %}
+                <li class="nav_link"><a href="{{ url_for('index') }}"><span class=""></span>Home</a>
+                </li>
                 <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
                 </li>
                 <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
