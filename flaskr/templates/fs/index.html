@@ -177,17 +177,12 @@
 <!--main navbar-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/upload_fs.js') }}"></script>
 
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script>
-    $(document).ready(function () {
-        $(".dropdown-trigger").dropdown();
-        console.log("ready");
-    });
-</script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script>
     function myFunction() {

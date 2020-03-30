@@ -157,10 +157,9 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 <script>
-    $(document).ready(function () {
-        $(".dropdown-trigger").dropdown();
-    });
 
     $('#btn-calculate').click(function () {
         var fold_range = $('#fold-range').find(":selected").text();

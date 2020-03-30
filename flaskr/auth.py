@@ -1,5 +1,6 @@
 import functools
 
+from datetime import datetime
 from flask import Blueprint
 from flask import flash
 from flask import g
@@ -69,26 +70,8 @@ def register():
         if error is None:
             # the name is available, store it in the database and go to
             # the login page
-            db.execute(
-                "INSERT INTO user (username, password) VALUES (?, ?)",
-                (username, generate_password_hash(password)),
-            )
-            db.commit()
 
-            # Adding user to results
-            user_id = UserResult.get_user_id(username)
-            db.execute(
-                "INSERT INTO results (user_id, filename) VALUES (?, ?)",
-                (user_id,'GSE5281_DE_200.plk'),
-            )
-            db.commit()
-
-            # Adding user to modeling
-            db.execute(
-                "INSERT INTO modeling (user_id, trained_file) VALUES (?, ?)",
-                (user_id, ''),
-            )
-            db.commit()
+            create_user_db(db, username, password, '', '')
 
             return redirect(url_for("auth.login"))
 
@@ -130,6 +113,67 @@ def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
     return redirect(url_for("index"))
+
+@bp.route("/glogin/", methods=["POST"])
+def glogin():
+    email = request.form["email"]
+    given_name = request.form["given_name"]
+    profile_id = request.form["profile_id"]
+    image_url = request.form["image_url"]
+
+    db = get_db()
+    user = db.execute(
+        "SELECT * FROM user WHERE username = ?", (email,)
+    ).fetchone()
+
+    if user is None:
+        # Register User
+        create_user_db(db, email, profile_id, given_name, image_url)
+        user = db.execute(
+            "SELECT * FROM user WHERE username = ?", (email,)
+        ).fetchone()
+
+    else:
+        # Update user last login
+        update_last_login(db, user["id"])
+
+    session.clear()
+    session["user_id"] = user["id"]
+
+    return redirect(url_for("index"))
+
+
+def create_user_db(db, username, password, given_name, image_url ):
+    db.execute(
+        "INSERT INTO user (username, password, given_name, image_url, last_login) VALUES (?, ?, ?, ?, ?)",
+        (username, generate_password_hash(password), given_name, image_url, datetime.now()),
+    )
+    db.commit()
+
+    # Adding user to results
+    user_id = UserResult.get_user_id(username)
+    db.execute(
+        "INSERT INTO results (user_id, filename) VALUES (?, ?)",
+        (user_id, ''),
+    )
+    db.commit()
+
+    # Adding user to modeling
+    db.execute(
+        "INSERT INTO modeling (user_id, trained_file) VALUES (?, ?)",
+        (user_id, ''),
+    )
+    db.commit()
+
+    return True
+
+def update_last_login(db, user_id):
+    db.execute(
+        "UPDATE user SET last_login = ? WHERE id = ?",
+        (datetime.now(), user_id),
+    )
+    db.commit()
+
 
 class UserResult:
 
