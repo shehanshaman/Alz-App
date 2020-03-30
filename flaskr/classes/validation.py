@@ -6,15 +6,22 @@ class ValidateUser:
             content = "This user entry couldn't find."
             out = [heading, [content]]
             return out
+
+        s = 0
+        content_array = []
         for col in columns:
             if user[col] is None:
-                heading = "Data Not Found"
+                s = 1
                 content = col + " is None."
-                out = [heading, [content]]
+                content_array.append(content)
 
-                return out
+        heading = "Data Not Found"
+        out = [heading, content_array]
 
-        return None
+        if s == 1:
+            return out
+        else:
+            return None
 
     def has_col(columns, features):
         columns = columns.to_list()

@@ -49,6 +49,12 @@ def index():
     classifier_list = ["svmLinear", "svmGaussian", "randomForest"]
 
     r = UserResult.get_user_results(user_id)
+
+    e = ValidateUser.has_data(r, ['col_overlapped', 'col_selected_method'])
+
+    if e is not None:
+        return render_template("error.html", errors=e)
+
     col_overlapped = r['col_overlapped'].split(',')
     col_selected_method = r['col_selected_method'].split(',')
     col_mo = list(dict.fromkeys(col_overlapped + col_selected_method))

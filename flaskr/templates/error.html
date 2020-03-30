@@ -19,6 +19,13 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
+    <style>
+        img {
+            padding: 5px;
+            width: 30%;
+        }
+    </style>
+
 </head>
 
 <body style="background-color: #f3f6f9;">
@@ -28,17 +35,26 @@
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
-        <div class="step-content">
-            <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Error: {{ errors[0] }}</h3>
-            </div>
+    <div class="step-content">
+        <div class="row head-word">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;">Error: {{ errors[0] }}</h3>
+        </div>
 
-            <div class="row">
+        <br>
+    
+        <div class="row">
+            <div class="col-sm-6">
                 {% for error in errors[1] %}
-                    {{ error }}
+                    <li>{{ error }}</li>
                 {% endfor %}
             </div>
+
+            <div class="col-sm-6 center">
+                <img src="{{ url_for('static', filename='images/error/not_found.png') }}" alt="error">
+            </div>
         </div>
+
+    </div>
 
 </div>
 
