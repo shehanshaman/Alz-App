@@ -40,7 +40,7 @@
 
             <div class="alert alert-success alert-dismissible fade in">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>Success!</strong> Your predictive model created successfully. <a href="">Lets Try</a>
+                <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b> <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
             </div>
 
         {% elif state == '0' %}
@@ -103,6 +103,8 @@
 
 </div>
 
+{% include 'footer.html' %}
+
 </body>
 </html>
 
@@ -116,10 +118,4 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-
-<script>
-    $(document).ready(function () {
-        console.log("ready!");
-        $(".dropdown-trigger").dropdown();
-    });
-</script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>

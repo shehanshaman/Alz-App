@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <style>
-        .button{
+        .button {
             margin-top: inherit;
         }
     </style>
@@ -141,6 +141,8 @@
     </form>
 </div>
 
+{% include 'footer.html' %}
+
 </body>
 </html>
 
@@ -154,12 +156,9 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script>
-    $(document).ready(function () {
-        console.log("ready!");
-        $(".dropdown-trigger").dropdown();
-    });
 
     $(".button").click(function () {
         var conceptName = $('#available_files').find(":selected").text();
@@ -167,5 +166,6 @@
         $("#selected_file").val(conceptName);
         $("#form").submit();
     });
+
 </script>
 

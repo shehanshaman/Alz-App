@@ -7,13 +7,16 @@ from flask import redirect
 from flask import g
 from sklearn import svm, preprocessing
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
 from sklearn.svm import SVC
 import pickle
 
-from flaskr.auth import UserResult
+from flaskr.auth import UserResult, login_required
 from flaskr.classes.preProcessClass import PreProcess
 
 from pathlib import Path
+
+from flaskr.classes.validation import *
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
@@ -24,10 +27,12 @@ bp = Blueprint("modeling", __name__, url_prefix="/mod")
 
 
 @bp.route("/", methods=["GET"])
+@login_required
 def index():
     s = 2
     if request.method == "GET":
         s = request.args.get('s')
+        a = request.args.get('a')
 
     user_id = session.get("user_id")
 
@@ -44,6 +49,12 @@ def index():
     classifier_list = ["svmLinear", "svmGaussian", "randomForest"]
 
     r = UserResult.get_user_results(user_id)
+
+    e = ValidateUser.has_data(r, ['col_overlapped', 'col_selected_method'])
+
+    if e is not None:
+        return render_template("error.html", errors=e)
+
     col_overlapped = r['col_overlapped'].split(',')
     col_selected_method = r['col_selected_method'].split(',')
     col_mo = list(dict.fromkeys(col_overlapped + col_selected_method))
@@ -53,10 +64,11 @@ def index():
     UserResult.update_modeling(user_id, 'features', col_mo_str)
 
     return render_template("modeling/index.html", available_list=list_names, classifier_list=classifier_list,
-                           features=col_mo, state=s)
+                           features=col_mo, state=s, accuracy = a)
 
 
 @bp.route("/", methods=["POST"])
+@login_required
 def create_model():
     user_id = session.get("user_id")
 
@@ -66,12 +78,17 @@ def create_model():
     UserResult.update_modeling(user_id, 'trained_file', available_file)
     UserResult.update_modeling(user_id, 'clasifier', classifier)
 
-    is_model = create_model_pkl(user_id, available_file, classifier)
+    score = create_model_pkl(user_id, available_file, classifier)
 
-    return redirect('/mod/?s=' + str(is_model))
+    if score is None:
+        return redirect('/mod/?s=0')
+    else:
+        return redirect('/mod/?s=1&a='+str(score * 100))
+
 
 
 @bp.route("/predict/", methods=["GET", "POST"])
+@login_required
 def predict():
     user_id = session.get("user_id")
 
@@ -90,6 +107,12 @@ def predict():
         annotation_list.append(filename)
 
     r = UserResult.get_user_model(user_id)
+
+    e = ValidateUser.has_data(r, ['features', 'trained_file', 'clasifier', 'model_path_name'])
+
+    if e is not None:
+        return render_template("error.html", errors = e)
+
     features = r['features'].split(',')
     trained_file = r['trained_file']
     clasifier = r['clasifier']
@@ -107,26 +130,25 @@ def predict():
         if is_map == "true":
             annotation_file = request.form["anno_tbl"]
             df = PreProcess.mergeDF(df_path, ANNOTATION_TBL / annotation_file)
-            PreProcess.saveDF(df, 'abc_1.pkl')
             df = PreProcess.step3(df, 'sklearn', 'drop')
-            PreProcess.saveDF(df, 'abc_2.pkl')
             df = PreProcess.probe2Symbol(df)
-            PreProcess.saveDF(df, 'abc_3.pkl')
             df = df.set_index(['Gene Symbol'])
-            PreProcess.saveDF(df, 'abc_4.pkl')
             df = df.T
-            PreProcess.saveDF(df, 'abc_5.pkl')
 
         elif is_norm == "true":
             df = get_norm_df(df)
 
         model_name = r['model_path_name']
 
+        e = ValidateUser.has_col(df.columns, features)
+        if e is not None:
+            return render_template("error.html", errors=e)
+
         result = get_predicted_result_df(user_id, model_name, df[features])
         result = result.astype(str)
         result[result == '0'] = 'Negative'
         result[result == '1'] = 'Positive'
-        # result = result.replace({'0': 'Negative', '1': 'Positive'})
+
         frame = {'ID': df.index, 'Predicted Result': result}
         out_result = pd.DataFrame(frame)
 
@@ -151,6 +173,11 @@ def create_model_pkl(user_id, filename, classifier):
     col_mo = r['features'].split(',')
     file_to_open = USER_PATH / str(user_id) / filename
     df = PreProcess.getDF(file_to_open)
+
+    e = ValidateUser.has_col(df.columns, col_mo)
+    if e is not None:
+        return None
+
     y = df["class"]
     x = df[col_mo]
 
@@ -163,15 +190,20 @@ def create_model_pkl(user_id, filename, classifier):
     elif classifier == "randomForest":
         clf = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=42)
     else:
-        return 0
+        return None
 
     clf.fit(x, y)
+
+    scores = cross_val_score(clf, x, y, cv=3)
+    score = round(scores.mean(), 2)
+    UserResult.update_modeling(user_id, 'accuracy', str(score))
+
     file_to_write = USER_PATH / str(user_id) / "tmp" / "_model.pkl"
     pickle.dump(clf, open(file_to_write , 'wb'))
 
     UserResult.update_modeling(user_id, 'model_path_name', '_model.pkl')
 
-    return 1
+    return score
 
 
 def get_norm_df(df):

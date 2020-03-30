@@ -1,15 +1,119 @@
-{% extends 'base.html' %}
+{#{% extends 'base.html' %}#}
+{##}
+{#{% block header %}#}
+{#  <h1>{% block title %}Register{% endblock %}</h1>#}
+{#{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#  <form method="post">#}
+{#    <label for="username">Username</label>#}
+{#    <input name="username" id="username" required>#}
+{#    <label for="password">Password</label>#}
+{#    <input type="password" name="password" id="password" required>#}
+{#    <input type="submit" value="Register">#}
+{#  </form>#}
+{#{% endblock %}#}
 
-{% block header %}
-  <h1>{% block title %}Register{% endblock %}</h1>
-{% endblock %}
+<!DOCTYPE html>
+<html>
 
-{% block content %}
-  <form method="post">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
-    <input type="submit" value="Register">
-  </form>
-{% endblock %}
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FYP: Register</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+        .center {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+
+        .border {
+            border: 2px solid #bcbaba;
+            border-radius: 30px;
+            padding: 5px;
+        }
+
+        .flash {
+            margin: 1em 0;
+            padding: 1em;
+            background: #cae6f6;
+            border: 1px solid #377ba8;
+        }
+    </style>
+</head>
+
+<body style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+
+    <div class="step-content">
+        <div class="row head-word">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;">Register</h3>
+        </div>
+    </div>
+
+    <div>
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="row">
+        <div class="border">
+            <form method="post" class="center">
+                <label for="username" style="float: left">E-mail</label>
+                <input type="email" name="username" id="username" required>
+                <label for="password" style="float: left">Password</label>
+                <input type="password" name="password" id="password" required>
+                <label for="given_name" style="float: left">Name</label>
+                <input name="given_name" id="given_name" required>
+                <input type="submit" value="Register" class="waves-effect waves-dark btn">
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".dropdown-trigger").dropdown();
+    });
+</script>
+
+
+

@@ -94,8 +94,8 @@
 
         <div class="result_content">
             <div class="row">
-                <h4 id="h4-head-6" class="card__title" style="text-align: center;">Trainig accuracies of genes only
-                    found by each classifier and the overlapped set of genes</h4>
+                <h5 id="h5-head-6" class="card__title" style="text-align: center;">Training accuracies of genes only
+                    found by each classifier and the overlapped set of genes</h5>
             </div>
 
             <div class="row">
@@ -108,8 +108,8 @@
 
         <div class="result_content">
             <div class="row">
-                <h3 id="h4-head-6" class="card__title" style="text-align: center;">Classification accuracy of three
-                    classifiers using incrementally smaller sets of genes</h3>
+                <h5 id="h4-head-6" class="card__title" style="text-align: center;">Classification accuracy of three
+                    classifiers using incrementally smaller sets of genes</h5>
             </div>
 
 
@@ -123,7 +123,7 @@
 
         <div class="result_content">
             <div class="row">
-                <h3 id="h4-head-6" class="card__title" style="text-align: center;"> Correlation matrix</h3>
+                <h5 id="h4-head-6" class="card__title" style="text-align: center;"> Correlation matrix</h5>
             </div>
 
 
@@ -155,6 +155,8 @@
 
 </div>
 
+{% include 'footer.html' %}
+
 </body>
 </html>
 
@@ -171,13 +173,7 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-
-<script>
-    $(document).ready(function () {
-        console.log("ready!");
-        $(".dropdown-trigger").dropdown();
-    });
-</script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script>
     $("button").click(function () {

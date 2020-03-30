@@ -9,7 +9,7 @@ from flask import redirect
 import base64
 import io
 
-from .auth import UserResult
+from .auth import UserResult, login_required
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
@@ -21,6 +21,7 @@ USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 bp = Blueprint("analyze", __name__, url_prefix="/an")
 
 @bp.route("/")
+@login_required
 def index():
     user_id = session.get("user_id")
     r = UserResult.get_user_results(user_id)
@@ -62,10 +63,10 @@ def index():
     small_set_pic_hash = get_small_set_features_fig(m_scores,x_scores, method_names[1:4])
 
     return render_template("analyze/index.html", corr_data = correlation_pic_hash, overlap_data = overlap_pic_hash, small_set= small_set_pic_hash, methods = method_names[1:4])
-    # return render_template("analyze/index.html", corr_data = "", overlap_data = "", small_set= "", methods = method_names[0:3])
 
 
 @bp.route("/step2", methods = ['GET', 'POST'])
+@login_required
 def selected_method():
     user_id = session.get("user_id")
 
@@ -107,7 +108,6 @@ def selected_method():
 
     max_corr_df = FeatureSelection.get_max_corr_scores(corrScore)
 
-    # x = df.drop(["class"], axis=1)
     x = df[col_uni[i]]
     col_selected_method = FeatureSelection.getSelectedDF(x, x.corr(), max_corr_df.loc[max_corr_df['Maximum Accuracy'].idxmax()]['i']).columns.tolist()
     col_selected_str = ','.join(e for e in col_selected_method)
@@ -120,6 +120,7 @@ def selected_method():
                            max_clasify = max_corr_df['Maximum Accuracy'].idxmax(), corr_score = corr_score_pic_hash)
 
 @bp.route("/step3")
+@login_required
 def final_result():
     user_id = session.get("user_id")
     r = UserResult.get_user_results(user_id)
@@ -206,7 +207,9 @@ def get_correlation_fig(X, col, names):
 def get_overlap_result_fig(results,count):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
-    ax1.set_ylim([75, 100])
+    min_limit = int(results.min().min() / 10) * 10
+
+    ax1.set_ylim([min_limit, 100])
     ax1.set_ylabel("Accuracy")
 
     results.T.plot.bar(rot=0, ax=ax1)

@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, session, g
+from flask import Blueprint, session, g, flash
 from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
@@ -8,7 +8,8 @@ from flask import redirect
 import base64
 import io
 
-from .auth import UserResult
+from flaskr.classes.validation import ValidateUser
+from .auth import UserResult, login_required
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
@@ -20,10 +21,11 @@ USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 bp = Blueprint("fs", __name__, url_prefix="/fs")
 
 @bp.route("/")
+@login_required
 def index():
     list_names = []
     path = USER_PATH / str(g.user["id"])
-    # path = USER_PATH + str(g.user["id"]) + "\\"
+
     if not os.path.exists(path):
         os.makedirs(path)
         path_tmp = path / "tmp"
@@ -32,14 +34,28 @@ def index():
         list_names.append(filename)
     list_names.remove("tmp")
 
-    return render_template("fs/index.html", list_names=list_names)
+    user_id = session.get("user_id")
+    result = UserResult.get_user_results(user_id)
+    filename = result['filename']
+
+    if filename is None or filename == '':
+        flash("Error: You don't has pre-processed data-set, start from pre-processing")
+
+    return render_template("fs/index.html", list_names=list_names, filename= filename)
 
 #Get columns of 3 different feature selection methods
 @bp.route("/" , methods=['POST'])
+@login_required
 def get_val():
     fs_methods = request.form["fs_methods"]
     is_change = request.form["is_change"]
     user_id = session.get("user_id")
+
+    a = fs_methods.split(',');
+
+    if '' in a:
+        flash("Error: Select three feature selection methods.")
+        return redirect('/fs')
 
     if is_change == 'true':
         change_file = request.form["change_file"]
@@ -77,9 +93,17 @@ def get_val():
     return redirect('/fs/result')
 
 @bp.route("/result")
+@login_required
 def result():
     user_id = session.get("user_id")
     r = UserResult.get_user_results(user_id)
+
+    e = ValidateUser.has_data(r, ['col_method1', 'col_method2', 'col_method3', 'fs_methods', 'filename'])
+
+    if e is not None:
+        return render_template("error.html", errors=e)
+
+
     filename = r['filename']
     file_to_open = USER_PATH / str(user_id) / filename
     df = PreProcess.getDF(file_to_open)
