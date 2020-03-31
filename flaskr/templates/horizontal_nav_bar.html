@@ -2,7 +2,7 @@
 <meta name="google-signin-scope" content="profile email">
 <meta name="google-signin-client_id"
       content="429466987596-0fs00nq9idiuee5qq04tng8pvb0224je.apps.googleusercontent.com">
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{#<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>#}
 
 <style>
     #user_img {
@@ -62,14 +62,3 @@
 </nav>
 
 <div class="row"></div>
-
-<script>
-
-    //Google Login
-    function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-            window.location.replace('/auth/logout');
-        });
-    }
-</script>

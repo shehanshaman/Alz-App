@@ -236,6 +236,8 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
 <script>
     $(document).ready(function () {
         $('#table_id').DataTable();
@@ -253,8 +255,7 @@
             }
             document.getElementById(id).value = document.getElementById(id).checked;
         }
-    };
-
+    }
     $(".button").click(function () {
         var conceptName = $('#available_files').find(":selected").text();
 
