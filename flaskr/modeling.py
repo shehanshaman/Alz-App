@@ -116,8 +116,9 @@ def predict():
     features = r['features'].split(',')
     trained_file = r['trained_file']
     clasifier = r['clasifier']
+    accuracy = r['accuracy']
 
-    details = [features, trained_file, clasifier]
+    details = [features, trained_file, clasifier, accuracy]
 
     if request.method == "POST":
         selected_file = request.form["available_files"]

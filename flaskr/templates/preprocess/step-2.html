@@ -57,7 +57,36 @@
 
     <div class="step-content">
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;">Dataset Before Pre-Processing</h3>
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;">Step 2: Data-set Before Pre-Processing</h3>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Number of features</td>
+                        <td>{{ details["Number of features"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of samples</td>
+                        <td>{{ details["Number of samples"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Minimum value</td>
+                        <td>{{ details["min"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum value</td>
+                        <td>{{ details["max"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
         </div>
 
         <div style="overflow: auto;">

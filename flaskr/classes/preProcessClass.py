@@ -9,6 +9,8 @@ from scipy import stats
 import statistics
 from scipy.stats import ttest_ind
 
+import json
+
 class PreProcess:
 	
 	def getDF(name):
@@ -81,21 +83,6 @@ class PreProcess:
 
 		return df_avg_symbol
 
-	def getDfDetails(df):
-		# df.set_index('ID', inplace=True)
-		# df = df.T
-		# print(df.head())
-		# x = df.drop("class",1)
-		x =df
-		shape = x.shape
-		min = x.min().min()
-		max = x.max().max()
-		unique_probes = x['ID'].unique().shape
-		null_count = x.isnull().sum()
-
-		ds = {'shape': shape, 'min': min, 'max': max, 'unique_probes': unique_probes, 'null_count':null_count}
-		return jsonify(ds)
-
 	def split_df_by_class(df):
 		df['class'] = df['class'].astype(str).astype(int)
 		df_normal = df[df['class'] == 0]
@@ -151,15 +138,32 @@ class PreProcess:
 
 		return p_fold_df['is_selected'].sum()
 
-	# def get_reduced_df_from_pvalues(df_path, class_path, pvalue, foldChange):
-	# 	df = PreProcess.set_class_to_df(df_path, class_path)
-	# 	df_normal, df_AD = PreProcess.split_df_by_class(df)
-	# 	filtered_index = PreProcess.sort_pValues(df_AD, df_normal, pvalue, foldChange)
-	# 	sorted_dataframe = df.filter(df.columns[filtered_index])
-	# 	return sorted_dataframe
-    #
-	# def get_reduced_feature_count_from_pvalues(df_path, class_path, pvalue, foldChange):
-	# 	df = PreProcess.set_class_to_df(df_path, class_path)
-	# 	df_normal, df_AD = PreProcess.split_df_by_class(df)
-	# 	filtered_index = PreProcess.sort_pValues(df_AD, df_normal, pvalue, foldChange)
-	# 	return len(filtered_index)
+
+	#DF details to json
+	def get_df_details(df, y):
+		d = df.drop(["ID", "Gene Symbol"], axis=1)
+
+		x = '{ "Number of features":' + str(d.shape[0]) + ', "Number of samples": ' + str(d.shape[1]) + ', "min":' + str(
+			round(d.min().min())) + ', "max":' + str(round(d.max().max())) + '}'
+		z = json.loads(x)
+
+		x = {"Number of unique Gene Symbols": str(df['Gene Symbol'].nunique()),
+			 "Number of null values in Gene Symbols": str(df['Gene Symbol'].isnull().sum()),
+			 "Number of null values in data": str(d.isnull().sum().sum())}
+		z.update(x)
+
+		s = y.value_counts()
+		x = {"Positive": str(s[1]), "Negative": str(s[0])}
+		z.update(x)
+
+		return z
+
+	def add_details_json(z, df, r):
+		d = df.drop(["Gene Symbol"], axis=1)
+		x = '{ "Number of features":' + str(d.shape[0]) + ', "Number of samples": ' + str(d.shape[1]) + ', "min":' + str(round(d.min().min(), 3)) + ', "max":' + str(round(d.max().max(),3)) + '}'
+		new_z = json.loads(x)
+		w = {r: new_z}
+		z.update(w)
+
+		return z
+

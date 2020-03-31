@@ -38,7 +38,6 @@ ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 UPLOAD_FOLDER = ROOT_PATH / "flaskr" / "upload"
 ANNOTATION_TBL = UPLOAD_FOLDER / "AnnotationTbls"
-TMP_PATH = UPLOAD_FOLDER / "tmp"
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -57,7 +56,7 @@ def index():
 
     for filename in os.listdir(ANNOTATION_TBL):
         annotation_list.append(filename)
-    # print(list_names)
+
     list_names.remove("tmp")
     return render_template("preprocess/step-1.html", available_list=list_names, annotation_list= annotation_list)
 
@@ -71,7 +70,7 @@ def view():
 
         if x.merge_df is None:
             df = PreProcess.mergeDF(x.path , ANNOTATION_TBL / x.anno_tbl)
-            merge_name = "merge_" + x.file_name
+            merge_name = "merge_.pkl"
             path = USER_PATH / str(g.user["id"]) / "tmp" / merge_name
             path_str = path.as_posix()
             PreProcess.saveDF(df, path)
@@ -80,7 +79,13 @@ def view():
         else:
             df = PreProcess.getDF(x.merge_df)
 
-        return render_template("preprocess/step-2.html", tables=[df.head(15).to_html(classes='data')])
+        y = PreProcess.getDF(x.path)
+        y = y['class']
+        data = PreProcess.get_df_details(df, y)
+
+        session['df-details'] = data
+
+        return render_template("preprocess/step-2.html", tables=[df.head(15).to_html(classes='data')], details = data)
 
     return redirect('/pre')
 
@@ -101,7 +106,7 @@ def norm():
             if x.symbol_df is None:
                 df = PreProcess.step3(PreProcess.getDF(x.merge_df), x.scaling, x.imputation)
                 #create symbol_df
-                symbol_name = "symbol_" + x.file_name
+                symbol_name = "symbol_.pkl"
                 path = USER_PATH / str(g.user["id"]) / "tmp" / symbol_name
                 path_str = path.as_posix()
                 PreProcess.saveDF(df, path)
@@ -119,8 +124,9 @@ def indexstep1():
     x = json2df('user')
     if x is not None:
         if x.merge_df is not None:
+            data = session['df-details']
 
-            return render_template("preprocess/step-3.html", posts="")
+            return render_template("preprocess/step-3.html", details = data)
 
     return redirect('/pre')
 
@@ -133,7 +139,7 @@ def probe2symbol():
         if x.symbol_df is not None:
             if x.avg_symbol_df is None:
                 df = PreProcess.probe2Symbol(PreProcess.getDF(x.symbol_df))
-                avg_symbol_name = "avg_symbol_" + x.file_name
+                avg_symbol_name = "avg_symbol_.pkl"
                 path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
                 path_str = path.as_posix()
                 PreProcess.saveDF(df, path)
@@ -141,7 +147,13 @@ def probe2symbol():
                 df2session(x, 'user')
             else:
                 df = PreProcess.getDF(x.avg_symbol_df)
-            return render_template("preprocess/step-4.html", tablesstep4=[df.head(15).to_html(classes='data')], titlesstep4=df.head().columns.values)
+
+            data = session['df-details']
+            data = PreProcess.add_details_json(data, df, "r1")
+            session['df-details'] = data
+
+            return render_template("preprocess/step-4.html", tablesstep4=[df.head(15).to_html(classes='data')],
+                                   titlesstep4=df.head().columns.values, details = data)
 
     return redirect('/pre')
 
@@ -182,7 +194,7 @@ def get_reduce_features_from_pvalues():
     fold= request.form["fold-range"]
     pvalue = request.form["p-value"]
     df = PreProcess.get_filtered_df_pvalue(p_fold_df, x.avg_symbol_df, float(pvalue), float(fold))
-    fr_df_path = user_tmp_path / ('fr_' + x.file_name)
+    fr_df_path = user_tmp_path / ('fr_.pkl')
     PreProcess.saveDF(df, fr_df_path)
     x.setReduceDF(fr_df_path.as_posix())
     df2session(x, 'user')
@@ -236,6 +248,11 @@ def save_reduced_df():
     PreProcess.saveDF(df_selected, path)
     user_id = session.get("user_id")
     UserResult.update_result(user_id, 'filename', 're_' + x.file_name)
+
+    #remove old files
+    files = ["merge_.pkl", "symbol_.pkl", "avg_symbol_.pkl", "_p_fold.pkl", "fr_.pkl"]
+    folder_path = USER_PATH / str(g.user["id"]) / "tmp"
+    remove_files(folder_path, files)
 
     return redirect('/fs/')
 
@@ -323,3 +340,9 @@ def get_feature_selection_fig(df, df_y, length):
     pic_hash = pic_hash.decode("utf-8")
 
     return pic_hash
+
+def remove_files(path, files):
+    for file in files:
+        f_path = path / file
+        if os.path.exists(f_path):
+            os.remove(f_path)

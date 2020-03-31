@@ -56,7 +56,44 @@
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
     <div class="row">
-        <h5 id="" class="col-sm-12" style="text-align: left;">Step 3</h5>
+        <h3 id="h3-head-2" class="card__title" style="text-align: center;">Step 3: Scaling & Imputation</h3>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <table>
+                <tr>
+                    <td>Number of features</td>
+                    <td>{{ details["Number of features"] }}</td>
+                </tr>
+                <tr>
+                    <td>Number of unique Gene Symbols</td>
+                    <td>{{ details["Number of unique Gene Symbols"] }}</td>
+                </tr>
+                <tr>
+                    <td>Minimum value</td>
+                    <td>{{ details["min"] }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-sm-6">
+            <table>
+                <tr>
+                    <td>Number of null values in data</td>
+                    <td>{{ details["Number of null values in data"] }}</td>
+                </tr>
+                <tr>
+                    <td>Number of null values in Gene Symbols</td>
+                    <td>{{ details["Number of null values in Gene Symbols"] }}</td>
+                </tr>
+                <tr>
+                    <td>Maximum value</td>
+                    <td>{{ details["max"] }}</td>
+                </tr>
+            </table>
+        </div>
+
     </div>
 
     <form method="post" action="/pre/step-3" enctype="multipart/form-data">

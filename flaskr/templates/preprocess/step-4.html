@@ -58,15 +58,45 @@
 
     <div class="step-content">
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;">Dataset After Mapping</h3>
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;">Step 4: Data-set After Mapping</h3>
         </div>
 
-        <div style="overflow: auto;">
-            {% for table in tablesstep4 %}
-                {{ table|safe }}
-            {% endfor %}
+        <div class="row">
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Number of features</td>
+                        <td>{{ details["r1"]["Number of features"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of samples</td>
+                        <td>{{ details["r1"]["Number of samples"] }}</td>
+                    </tr>
+                </table>
+            </div>
 
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Minimum value</td>
+                        <td>{{ details["r1"]["min"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum value</td>
+                        <td>{{ details["r1"]["max"] }}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
+
+        <div class="row">
+            <div style="overflow: auto;">
+                {% for table in tablesstep4 %}
+                    {{ table|safe }}
+                {% endfor %}
+            </div>
+        </div>
+
     </div>
 
     <hr class="line-hr">
