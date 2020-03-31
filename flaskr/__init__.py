@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from flask import Flask, render_template, session, request
 
-from .classes.app_alz import alz
+from .classes.app_alz import Alz
 from flaskr.classes.preProcessClass import PreProcess
 
 from pathlib import Path
@@ -20,8 +20,7 @@ def create_app(test_config=None):
         # store the database in the instance folder
         DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
 
-        APP_ALZ = alz(),
-
+        APP_ALZ = Alz(),
     )
 
     if test_config is None:
@@ -68,10 +67,25 @@ def create_app(test_config=None):
         data = [file_name + ": " + id]
         return render_template('preprocess/view_one_data.html', tables=[out_result.to_html(classes='display" id = "table_id')], data=data)
 
-    # register the database commands
+    # register the database and mail commands
     from flaskr import db
+    from flask_mail import Mail
 
     db.init_app(app)
+
+    mail = Mail()
+    mail_settings = {
+        "MAIL_SERVER": 'smtp.gmail.com',
+        "MAIL_PORT": 465,
+        "MAIL_USE_TLS": False,
+        "MAIL_USE_SSL": True,
+        "MAIL_USERNAME": '',
+        "MAIL_PASSWORD": ''
+    }
+    app.config.update(mail_settings)
+    mail.init_app(app)
+
+    app.config["APP_ALZ"].mail = mail
 
     # apply the blueprints to the app
     from flaskr import auth, blog, preprocess, visualization, fs, analze, validation, modeling, home

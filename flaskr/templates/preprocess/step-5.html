@@ -75,7 +75,7 @@
     <form method="post" action="/pre/step-6/" enctype="multipart/form-data">
         <div class="step-content">
             <div class="row">
-                <h3 id="h3-head-4" class="card__title" style="text-align: center;">FEATURE REDUCTION</h3>
+                <h3 id="h3-head-4" class="card__title" style="text-align: center;">Step 5: Feature Reduction</h3>
             </div>
 
             <div class="row">
@@ -161,6 +161,8 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
 <script>
 
     $('#btn-calculate').click(function () {
@@ -171,7 +173,7 @@
         $.get("./fr/pf/", {pvalue: p_value, foldChange: fold_range}, function (data, status) {
             console.log(data);
             document.getElementById("result_div").style.visibility = "visible";
-            document.getElementById("selected_features_count").innerHTML = data
+            document.getElementById("selected_features_count").innerHTML = data;
             document.getElementById("progress_bar").style.visibility = "hidden";
             document.getElementById("btn-calculate").disabled = false;
         });

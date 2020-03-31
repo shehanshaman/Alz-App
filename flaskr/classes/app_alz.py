@@ -1,5 +1,3 @@
-class alz:
-
-	def __init__(self):
-	    self.df = None
-	    
+class Alz:
+    def __init__(self):
+        self.mail = None

@@ -119,6 +119,9 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
 <script>
     $(document).ready(function () {
         $('#submit_button').prop('disabled', true);
@@ -136,7 +139,7 @@
             data = data.split(",");
             for (i = 0; i < data.length; i++) {
                 console.log('.');
-                f = data[i]
+                f = data[i];
                 $('#features').append("<option value=" + f + "> " + f + "</option>");
             }
         });
