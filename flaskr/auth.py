@@ -1,7 +1,9 @@
 import functools
 
 from datetime import datetime
-from flask import Blueprint
+from flask_mail import Message
+
+from flask import Blueprint, current_app
 from flask import flash
 from flask import g
 from flask import redirect
@@ -13,6 +15,8 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
 from flaskr.db import get_db
+import random
+import string
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -73,8 +77,19 @@ def register():
             # the name is available, store it in the database and go to
             # the login page
 
-            create_user_db(db, username, password, given_name, '')
-            message  = given_name + ", Your account created."
+            create_user_db(db, username, password, given_name, '', 0)
+            if "@" in username:
+                user_id = UserResult.get_user_id(username)
+                verify_key = randomString()
+                db.execute(
+                    "INSERT INTO verify (user_id, subject, verify_key) VALUES (?, ?, ?)",
+                    (user_id, 'verify', verify_key),
+                )
+                db.commit()
+                url = "http://" + str(request.host) + "/auth/verify/?id=" + str(user_id) + "&key=" + verify_key
+                send_mail("verify", url, username)
+
+            message  = given_name + ", Your account created. Verify your email"
             flash(message)
             return redirect(url_for("auth.login"))
 
@@ -99,6 +114,8 @@ def login():
             error = "Incorrect username."
         elif not check_password_hash(user["password"], password):
             error = "Incorrect password."
+        elif user["is_verified"] == 0:
+            error = "Your account not verified, check email."
 
         if error is None:
             # store the user id in a new session and return to the index
@@ -131,7 +148,7 @@ def glogin():
 
     if user is None:
         # Register User
-        create_user_db(db, email, profile_id, given_name, image_url)
+        create_user_db(db, email, profile_id, given_name, image_url, 2)
         user = db.execute(
             "SELECT * FROM user WHERE username = ?", (email,)
         ).fetchone()
@@ -146,10 +163,69 @@ def glogin():
     return redirect(url_for("index"))
 
 
-def create_user_db(db, username, password, given_name, image_url ):
+@bp.route("/verify/", methods=["GET"])
+def verify():
+    user_id = request.args.get('id')
+    verify_key = request.args.get('key')
+
+    db = get_db()
+    verify_data = db.execute(
+        "SELECT * FROM verify WHERE user_id = ? AND subject = 'verify'", (user_id,)
+    ).fetchone()
+
+    e = ["Not Found",[]]
+
+    if verify_data is None:
+        e[1].append("Not registered user.")
+
+    elif verify_key == verify_data['verify_key']:
+        db.execute(
+            "UPDATE user SET is_verified = ? WHERE id = ?",
+            (1, user_id),
+        )
+        db.commit()
+
+        db.execute(
+            "DELETE FROM verify WHERE user_id = ? AND subject = 'verify'",
+            (user_id),
+        )
+        db.commit()
+        flash("Your email has been verified.")
+        return redirect(url_for("auth.login"))
+
+    else:
+        e[1].append("Wrong Key.")
+
+    return render_template("error.html", errors=e)
+
+def send_mail(subject, url, recipient):
+    msg = Message("Verify email address",
+                  sender="no-reply@alz.com",
+                  recipients=[recipient])
+
+    message = get_mail_message(subject)
+    message = message.replace("{{action_url}}", url)
+    msg.html = message
+    mail = current_app.config["APP_ALZ"].mail
+    mail.send(msg)
+
+def get_mail_message(subject):
+    db = get_db()
+    m = db.execute(
+        "SELECT message FROM mail_template WHERE subject = ?",
+        (subject,),
+    ).fetchone()
+    return m['message']
+
+def randomString(stringLength=10):
+    """Generate a random string of fixed length """
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
+
+def create_user_db(db, username, password, given_name, image_url, is_verified):
     db.execute(
-        "INSERT INTO user (username, password, given_name, image_url, last_login) VALUES (?, ?, ?, ?, ?)",
-        (username, generate_password_hash(password), given_name, image_url, datetime.now()),
+        "INSERT INTO user (username, password, given_name, image_url, last_login, is_verified) VALUES (?, ?, ?, ?, ?,?)",
+        (username, generate_password_hash(password), given_name, image_url, datetime.now(), is_verified),
     )
     db.commit()
 
@@ -176,6 +252,7 @@ def update_last_login(db, user_id):
         (datetime.now(), user_id),
     )
     db.commit()
+
 
 
 class UserResult:
