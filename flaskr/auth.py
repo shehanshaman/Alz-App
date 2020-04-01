@@ -87,7 +87,7 @@ def register():
                 )
                 db.commit()
                 url = "http://" + str(request.host) + "/auth/verify/?id=" + str(user_id) + "&key=" + verify_key
-                send_mail("verify", url, username)
+                send_mail("verify", url, username, "Verify email address")
 
             message  = given_name + ", Your account created. Verify your email"
             flash(message)
@@ -198,8 +198,96 @@ def verify():
 
     return render_template("error.html", errors=e)
 
-def send_mail(subject, url, recipient):
-    msg = Message("Verify email address",
+@bp.route("/reset", methods = ["POST", "GET"])
+def reset_request():
+
+    if request.method == "POST":
+        username = request.form["username"]
+        db = get_db()
+        user = db.execute(
+            "SELECT * FROM user WHERE username = ? AND is_verified = 1", (username,)
+        ).fetchone()
+
+        if user is None:
+            flash("Wrong username.")
+            return render_template("auth/reset_request.html")
+
+        user_id = user["id"]
+
+        verify_key = randomString()
+
+        db.execute(
+            "INSERT INTO verify (user_id, subject, verify_key) VALUES (?, ?, ?)",
+            (user_id, 'reset', verify_key),
+        )
+        db.commit()
+        url = "http://" + str(request.host) + "/auth/reset/?id=" + str(user_id) + "&key=" + verify_key
+        send_mail("reset", url, username, "Reset Password Alz-App")
+
+        message = "Please, check your email."
+        flash(message)
+
+    return render_template("auth/reset_request.html")
+
+
+@bp.route("/reset/", methods = ["GET", "POST"])
+def reset_key_verify():
+
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        db = get_db()
+        db.execute(
+            "UPDATE user SET password = ? WHERE username = ?",
+            (generate_password_hash(password), username),
+        )
+        db.commit()
+
+        flash("Your password has been reset.")
+        return redirect(url_for("auth.login"))
+
+
+    user_id = request.args.get('id')
+    verify_key = request.args.get('key')
+
+    db = get_db()
+    verify_data = db.execute(
+        "SELECT * FROM verify WHERE user_id = ? AND subject = 'reset'", (user_id,)
+    ).fetchone()
+
+    e = ["Not Found", []]
+
+    if verify_data is None:
+        e[1].append("You don't request for reset.")
+
+    elif verify_key == verify_data['verify_key']:
+        db.execute(
+            "DELETE FROM verify WHERE user_id = ? AND subject = 'reset'",
+            (user_id),
+        )
+        db.commit()
+        flash("Your email has been verified, Enter new password.")
+
+        user = db.execute(
+            "SELECT * FROM user WHERE id = ?", (user_id,)
+        ).fetchone()
+
+        return render_template("auth/reset.html", email = user["username"])
+
+    else:
+        db.execute(
+            "DELETE FROM verify WHERE user_id = ? AND subject = 'reset'",
+            (user_id),
+        )
+        db.commit()
+        e[1].append("Wrong Key.")
+
+    return render_template("error.html", errors=e)
+
+
+def send_mail(subject, url, recipient, senders_subject):
+    msg = Message(senders_subject,
                   sender="no-reply@alz.com",
                   recipients=[recipient])
 
@@ -207,7 +295,9 @@ def send_mail(subject, url, recipient):
     message = message.replace("{{action_url}}", url)
     msg.html = message
     mail = current_app.config["APP_ALZ"].mail
-    mail.send(msg)
+    s = mail.send(msg)
+
+    return s
 
 def get_mail_message(subject):
     db = get_db()
