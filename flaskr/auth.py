@@ -1,6 +1,9 @@
 import functools
+import os
 
 from datetime import datetime
+
+import pandas as pd
 from flask_mail import Message
 
 from flask import Blueprint, current_app
@@ -17,6 +20,10 @@ from werkzeug.security import generate_password_hash
 from flaskr.db import get_db
 import random
 import string
+from pathlib import Path
+
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -285,6 +292,34 @@ def reset_key_verify():
 
     return render_template("error.html", errors=e)
 
+@bp.route("/settings")
+def settings():
+    user = g.user
+    user_data = [user['username'], user['given_name']]
+
+    path = USER_PATH / str(user['id'])
+    df_files = get_files_size(path)
+    data = [user_data]
+    return render_template("auth/settings.html", data = data, df_files = df_files)
+
+def get_files_size(path):
+
+    file_names = []
+    file_sizes = []
+
+    files = [f for f in os.listdir(path)]
+    for file in files:
+        filename = os.path.join(path, file)
+        if os.path.isfile(filename):
+            file_names.append(file)
+            file_size = os.path.getsize(filename) / 1024 / 1024
+            file_sizes.append(file_size)
+
+    df = pd.DataFrame(data={"file name": file_names, "file size": file_sizes}, columns=["file name", "file size"])
+    folder_size = df['file size'].sum()
+    df['percentage'] = round(df['file size'] * 100 / folder_size, 2)
+
+    return df
 
 def send_mail(subject, url, recipient, senders_subject):
     msg = Message(senders_subject,
@@ -333,6 +368,11 @@ def create_user_db(db, username, password, given_name, image_url, is_verified):
         (user_id, ''),
     )
     db.commit()
+
+    path = USER_PATH / str(user_id)
+    if not os.path.exists(path):
+        os.makedirs(path)
+        os.makedirs(path / "tmp")
 
     return True
 
@@ -394,3 +434,21 @@ class UserResult:
         if result is not None:
             return result
         return None
+
+    def remove_user(user_id):
+        db = get_db()
+        db.execute(
+            "DELETE FROM user WHERE id = ?",
+            (user_id),
+        )
+        db.commit()
+        db.execute(
+            "DELETE FROM results WHERE user_id = ?",
+            (user_id),
+        )
+        db.commit()
+        db.execute(
+            "DELETE FROM modeling WHERE user_id = ?",
+            (user_id),
+        )
+        db.commit()
