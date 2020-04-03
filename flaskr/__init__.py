@@ -88,7 +88,7 @@ def create_app(test_config=None):
     app.config["APP_ALZ"].mail = mail
 
     # apply the blueprints to the app
-    from flaskr import auth, blog, preprocess, visualization, fs, analze, validation, modeling, home
+    from flaskr import auth, blog, preprocess, visualization, fs, analze, validation, modeling, home, update
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
@@ -99,6 +99,7 @@ def create_app(test_config=None):
     app.register_blueprint(validation.bp)
     app.register_blueprint(modeling.bp)
     app.register_blueprint(home.bp)
+    app.register_blueprint(update.bp)
 
     # make url_for('index') == url_for('blog.index')
     # in another app, you might define a separate main index here with
