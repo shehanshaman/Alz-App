@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: {{ data[0] }}</title>
-
+    <title>GeNet | {{ data[0] }}</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
@@ -47,7 +47,7 @@
 <div id="mainDataInterface-id" class="container mainDataInterface">
     <div class="row">
         <div class="row" id="h3-head-6" class="card__title">
-            <h3>{{ data[0] }}</h3>
+            <h4 style="color: #26a69a;">File Name : {{ data[0] }}</h4>
         </div>
         <div class="row table_view">
             {% for table in tables %}

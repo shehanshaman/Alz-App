@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP</title>
+    <title>GeNet | {{ method }}</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -30,6 +30,7 @@
         }
 
         .result_content {
+            border-color: #26a69a;
             border-style: ridge;
             padding: 15px;
             margin-top: 10px;
@@ -82,7 +83,7 @@
 
             <div class="result_content">
                 <div class="row">
-                    <h3 id="h3-head-6" class="card__title" style="text-align: center;">{{ method }} Selected
+                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">{{ method }} Selected
                         Features </h3>
                 </div>
 
@@ -113,7 +114,7 @@
 
             <div class="result_content">
                 <div class="row">
-                    <h3 id="h3-head-6" class="card__title" style="text-align: center;">{{ method }} + Overlapped
+                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">{{ method }} + Overlapped
                         Features</h3>
                 </div>
 
