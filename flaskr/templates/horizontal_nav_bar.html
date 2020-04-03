@@ -31,6 +31,13 @@
     <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
     <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
 </ul>
+
+<!-- Dropdown Structure User -->
+<ul id="dropdown_user" class="dropdown-content">
+    <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
+    <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
+</ul>
+
 <nav>
     <div class="nav-wrapper">
         <a href="{{ url_for('index') }}" class="brand-logo">Alz</a>
@@ -51,8 +58,8 @@
                 {% if g.user['image_url'] %}
                     <li><img src="{{ g.user['image_url'] }}" alt="Avatar" id="user_img"></li>
                 {% endif %}
-                <li><span>{{ g.user['given_name'] }}</span></li>
-                <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
+                <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown_user">{{ g.user['given_name'] }}<i
+                        class="material-icons right">arrow_drop_down</i></a></li>
             {% else %}
                 <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
                 <li class="nav_link"><a href="{{ url_for('auth.login') }}">Log In</a></li>

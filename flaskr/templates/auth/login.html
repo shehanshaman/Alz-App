@@ -96,6 +96,9 @@
                 <input type="password" name="password" id="password" required>
                 <input type="submit" value="Log In" class="waves-effect waves-dark btn">
             </form>
+            <div class="row center">
+                <label>Forgot Password? <a href="{{ url_for('auth.reset_request') }}">Reset Password</a></label>
+            </div>
         </div>
 
     </div>
