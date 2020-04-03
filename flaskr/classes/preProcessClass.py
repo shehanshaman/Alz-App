@@ -33,6 +33,10 @@ class PreProcess:
 		probes = PreProcess.getProbeDF(probe_path)
 		df_merge = pd.merge(df_T, probes, on='ID')
 
+		cols = df_merge.columns.tolist()
+		cols = cols[-1:] + cols[:-1]
+		df_merge = df_merge[cols]
+
 		return df_merge
 
 	def rmNullRows(df_merge):
@@ -40,7 +44,8 @@ class PreProcess:
 		return df_merge_rm_null
 
 	def df2float(df_merge_rm_null):
-		df_merge_rm_null_float = df_merge_rm_null.iloc[:,1:df_merge_rm_null.columns.shape[0]-1].astype(float)
+		# df_merge_rm_null_float = df_merge_rm_null.iloc[:,1:df_merge_rm_null.columns.shape[0]-1].astype(float)
+		df_merge_rm_null_float = df_merge_rm_null.drop(["Gene Symbol", "ID"], 1).astype(float)
 		return df_merge_rm_null_float
 
 	def dfNormSKlearn(df_merge_rm_null_float, df_merge_rm_null):
