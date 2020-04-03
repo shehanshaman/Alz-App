@@ -319,7 +319,7 @@ div.transbox-like-go p {
     display: block;
     height: 1px;
     border: 0;
-    border-top: 2px solid #ccc;
+    border-top: 2px solid #26a69a;
     margin: 1em 0;
     padding: 0;
 }
@@ -1110,7 +1110,7 @@ div.transbox-like-go p {
 
 /* Zebra striping */
 tr:nth-of-type(odd) {
-    background: #eee;
+    background: #26a69a36;
 }
 
 th {

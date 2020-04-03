@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Pre-processing</title>
+    <title>GeNet | Pre-processing</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -56,7 +56,7 @@
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
     <div class="row">
-        <h3 id="h3-head-2" class="card__title" style="text-align: center;">Step 3: Scaling & Imputation</h3>
+        <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 3: Scaling & Imputation</h3>
     </div>
 
     <div class="row">
@@ -96,11 +96,17 @@
 
     </div>
 
+        <br>
+
+        <hr class="line-hr">
+
+        <br>
+        
     <form method="post" action="/pre/step-3" enctype="multipart/form-data">
 
         <div class="row" style="margin-top: 40px;">
             <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Scaling</h5>
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Scaling :</h5>
             </div>
             <div class="col-sm-6">
                 <div class="md-form">
@@ -113,7 +119,7 @@
 
         <div class="row" style="margin-top: 40px;">
             <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Imputation</h5>
+                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Imputation :</h5>
             </div>
             <div class="col-sm-6">
                 <div class="md-form">
@@ -124,7 +130,7 @@
             </div>
         </div>
 
-        <div class="row" style="margin-top: 40px;">
+<!--         <div class="row" style="margin-top: 40px;">
             <div class="col-sm-5"></div>
             <div class='form-field col-sm-6 step-3-default'>
                 <p><input name='checkbox-3-default' type="checkbox" class="filled-in" id="checkbox-3-default"
@@ -134,7 +140,7 @@
             </div>
             <div class="col-sm-1"></div>
         </div>
-
+ -->
         <br>
 
         <hr class="line-hr">
