@@ -1,9 +1,10 @@
 import os
 from pathlib import Path
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request, send_from_directory, send_file, make_response
 
 from flaskr.auth import UserResult
 from flaskr.db import get_db
+from .classes.preProcessClass import PreProcess
 
 import shutil
 
@@ -54,3 +55,24 @@ def delete_folder(dir_path):
         return True
     except OSError as e:
         return False
+
+@bp.route("/download/df/", methods=["GET"])
+def download_df():
+
+    id = request.args.get('id')
+    name = request.args.get('name')
+    isTmp = request.args.get('is_tmp')
+
+    if isTmp == 1:
+        path = USER_PATH / str(id) / "tmp" / name
+    else:
+        path = USER_PATH / str(id) / name
+
+    df = PreProcess.getDF(path)
+    df_csv = df.to_csv()
+
+    resp = make_response(df.to_csv())
+    resp.headers["Content-Disposition"] = "attachment; filename=" + name.split('.')[0] + ".csv"
+    resp.headers["Content-Type"] = "text/csv"
+
+    return resp
