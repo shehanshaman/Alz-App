@@ -101,10 +101,15 @@
                                     <div class="determinate" style="width: {{ row['percentage'] }}%"></div>
                                 </div>
                             </td>
-                            <td class="col-sm-2">{{ row['percentage'] }} %</td>
+                            <td class="col-sm-1">{{ row['percentage'] }} %</td>
                             <td class="col-sm-1">
                                 <button class="use-address" value="{{ row['file name'] }}">
                                     <i class="fas fa-trash-alt fa-2x"></i>
+                                </button>
+                            </td>
+                            <td class="col-sm-1">
+                                <button class="use-download" value="{{ row['file name'] }}">
+                                    <i class="fas fa-file-download fa-2x"></i>
                                 </button>
                             </td>
                         </tr>
@@ -115,9 +120,15 @@
 
         </div>
         <div class="row">
-            <h5>Delete account</h5>
-            <p></p>
-            <button class="waves-effect waves-dark btn" style="float: left" id="delete_account">Delete</button>
+            <h5 class="row">Delete account</h5>
+            <div class="row">
+                <p class="col-sm-8"><br><b>Please note, </b> If you delete your account, you won't be able to reactive it
+                    later.</p>
+                <button class="col-sm-3 waves-effect waves-dark btn" id="delete_account">Delete
+                    account
+                </button>
+            </div>
+
         </div>
         <div>
 
@@ -160,6 +171,16 @@
         $.get("/update/delete/file/", {id: '{{ g.user['id'] }}', name: $item}, function (data, status) {
             document.getElementById('tr_' + $item).remove();
         });
+
+    });
+
+    $(".use-download").click(function () {
+        var $row = $(this).closest("tr");
+        var $item = $row.find(".use-download").val();
+
+        var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $item + "&is_tmp=0";
+        console.log(url);
+        window.open(url, '_blank');
 
     });
 
