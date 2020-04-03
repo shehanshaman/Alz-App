@@ -85,7 +85,12 @@ def view():
 
         session['df-details'] = data
 
-        return render_template("preprocess/step-2.html", tables=[df.head(15).to_html(classes='data')], details = data)
+        if len(df.columns) > 100:
+            df_view = df.iloc[:, 0:100].head(15)
+        else:
+            df_view = df.head(15)
+
+        return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details = data)
 
     return redirect('/pre')
 
@@ -152,8 +157,12 @@ def probe2symbol():
             data = PreProcess.add_details_json(data, df, "r1")
             session['df-details'] = data
 
-            return render_template("preprocess/step-4.html", tablesstep4=[df.head(15).to_html(classes='data')],
-                                   titlesstep4=df.head().columns.values, details = data)
+            if len(df.columns) > 100:
+                df_view = df.iloc[:,0:100].head(15)
+            else:
+                df_view = df.head(15)
+
+            return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')], details = data)
 
     return redirect('/pre')
 
