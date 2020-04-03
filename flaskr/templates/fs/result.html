@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Feature Selection</title>
+    <title>GeNet | Feature Selection</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -108,7 +108,7 @@
     <div class="step">
         <div class="step-content">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;">RESULTS: Summary</h3>
+                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">RESULTS</h3>
             </div>
 
 
@@ -130,16 +130,16 @@
                 <br>
 
                 <div class="row">
-                    <div class="column" style="background-color:#aaa;">
-                        <h2>{{ methods[1] }}</h2>
+                    <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
+                        <h2 style="color: #ffffff;">{{ methods[1] }}</h2>
                         <p>{{ columns[0] }}</p>
                     </div>
-                    <div class="column" style="background-color:#bbb;">
-                        <h2>{{ methods[2] }}</h2>
+                    <div class="column" style="background-color:rgba(38, 166, 154, 0.91);">
+                        <h2 style="color: #ffffff;">{{ methods[2] }}</h2>
                         <p>{{ columns[1] }}</p>
                     </div>
-                    <div class="column" style="background-color:#cccccc;">
-                        <h2>{{ methods[3] }}</h2>
+                    <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
+                        <h2 style="color: #ffffff;">{{ methods[3] }}</h2>
                         <p>{{ columns[2] }}</p>
                     </div>
                 </div>

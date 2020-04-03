@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP</title>
+    <title>GeNet | {{ method_title }}</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -72,6 +72,7 @@
         }
 
         .result_content {
+            border-color: #26a69a;
             border-style: ridge;
             padding: 15px;
             margin-top: 10px;
@@ -120,7 +121,7 @@
 
     <div class="step-heading">
         <div class="row">
-            <h3 id="h3-head-6" class="card__title" style="text-align: center;">Correlation: {{ method_title }}</h3>
+            <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">Correlation : {{ method_title }}</h3>
         </div>
     </div>
 
@@ -178,12 +179,12 @@
             <br>
 
             <div class="row">
-                <div class="column" style="background-color:#aaa;">
-                    <h2>Overlapped Features</h2>
+                <div class="column" style="background-color:#26a69a8f;">
+                    <h2 style="color: white;">Overlapped Features</h2>
                     <p>{{ overlap }}</p>
                 </div>
-                <div class="column" style="background-color:#bbb;">
-                    <h2>Correlation | {{ max_clasify }}</h2>
+                <div class="column" style="background-color:#26a69a;">
+                    <h2 style="color: white;">Correlation | {{ max_clasify }}</h2>
                     <p>{{ corr_selected }}</p>
                 </div>
             </div>
