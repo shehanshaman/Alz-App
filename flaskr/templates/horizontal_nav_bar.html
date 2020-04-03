@@ -1,5 +1,6 @@
 {#    Google Login#}
 <meta name="google-signin-scope" content="profile email">
+
 <meta name="google-signin-client_id"
       content="429466987596-0fs00nq9idiuee5qq04tng8pvb0224je.apps.googleusercontent.com">
 
@@ -40,7 +41,9 @@
 
 <nav>
     <div class="nav-wrapper">
-        <a href="{{ url_for('index') }}" class="brand-logo">Alz</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" style="width:115px; margin-top: -3px;">
+        </a>        
         <ul class="right hide-on-med-and-down">
             {% if g.user %}
                 <li class="nav_link"><a href="{{ url_for('index') }}"><span class=""></span>Home</a>

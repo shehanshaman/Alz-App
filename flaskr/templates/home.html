@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -54,8 +56,13 @@
         }
 
         .option:hover {
-            color: #ffa502;
-            text-shadow: 0 0 15px #d35400;
+            color: #26a69a;
+            text-shadow: 0 0 15px #26a69a;
+        }
+
+        .limiter{
+            margin-top: 50px;
+            margin-bottom: 50px;
         }
 
     </style>
@@ -65,12 +72,12 @@
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="limiter">
+<div class="container limiter">
     <div class="row head-word">
-        <h3 id="h3-head-1" class="card__title" style="text-align: center;">Alz-App</h3>
+        <h3 id="h3-head-1" class="card__title" style="text-align: center;"></h3>
     </div>
     <div class="row">
-        <div class="row">
+        <div class="row" style="margin-bottom: 80px;">
 
             <div class="option sites col-sm-4 center"><a href="{{ url_for('preprocess.upload_file_view') }}">
                 <div class="">
