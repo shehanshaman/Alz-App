@@ -84,7 +84,7 @@
     <div id="mainDataInterface-id" class="container mainDataInterface">
 
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 3: Scaling & Imputation</h3>
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 3 : SCALING & IMPUTATION</h3>
         </div>
 
         <div class="row">
@@ -176,8 +176,7 @@
             <br>
 
             <div class="step-actions">
-                <button class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">
-                    <input id="btn-submit-step-3" type="submit" value="Submit">
+                <button id="btn-submit-step-3" class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">PRE-PROCESS
                 </button>
                 <button class="waves-effect waves-dark btn-flat previous-step"><a
                         href="{{ url_for('preprocess.view') }}">BACK</a></button>
@@ -193,7 +192,7 @@
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">DATASET PRE-PROCESSING</h5>        
     </div> 
 
 {% include 'footer.html' %}
