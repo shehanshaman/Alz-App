@@ -30,98 +30,129 @@
 
 </head>
 
-
-<body style="background-color: #f3f6f9;">
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
+    
+<body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="card-content">
+<div class="main-div-step6">
+    <div class="card-content">
 
-    <ul data-method="GET" class="stepper linear">
-        <li class="step active">
-            <a href="{{ url_for('preprocess.index') }}">
-                <div class="step-title waves-effect waves-dark">Pre-processing</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('fs.index') }}">
-                <div class="step-title waves-effect waves-dark">Feature selection</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('analyze.index') }}">
-                <div class="step-title waves-effect waves-dark">Analysis</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('validation.index') }}">
-                <div class="step-title waves-effect waves-dark">Validation</div>
-            </a>
-        </li>
-    </ul>
+        <ul data-method="GET" class="stepper linear">
+            <li class="step active">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
 
-</div>
+    </div>
 
-<div id="mainDataInterface-id" class="container mainDataInterface">
-    <form method="post" action="/pre/fr/save/" enctype="multipart/form-data">
-        <div class="step-content">
-            <div class="row">
-                <h3 id="h3-head-5" class="card__title" style="text-align: center;color: #26a69a;">STEP 6: Feature Reduction</h3>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-8">
-                    <div class="fs_plot">
-                        <img src="data:image/png;base64,{{ fs_fig_hash }}" alt="FR">
-                    </div>
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+        <form id="main-form-div-step6" method="post" action="/pre/fr/save/" enctype="multipart/form-data">
+            <div class="step-content">
+                <div class="row">
+                    <h3 id="h3-head-5" class="card__title" style="text-align: center;color: #26a69a;">STEP 6: Feature Reduction</h3>
                 </div>
 
-                <div class=" col-sm-4" style="margin-top: 30px;">
-
-                    <div class="row">
-                        <div class="row">
-                            <label><b>Classification Results</b></label>
-                        </div>
-
-                        <div class="row">
-                            {% for table in tables %}
-                                {{ table|safe }}
-                            {% endfor %}
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="fs_plot">
+                            <img src="data:image/png;base64,{{ fs_fig_hash }}" alt="FR">
                         </div>
                     </div>
 
-                    <div class="row md-form">
-                        <label><b>SELECT FEATURE COUNT</b></label>
-                        <div class="dropdown">
-                            <select class="form-control dropdown-menu-p-value" id="features_count"
-                                    name="features_count">
-                                {% for name in split_array %}
-                                    <option value="{{ name }}">{{ name }}</option>
+                    <div class=" col-sm-4" style="margin-top: 30px;">
+
+                        <div class="row">
+                            <div class="row">
+                                <label><b>Classification Results</b></label>
+                            </div>
+
+                            <div class="row">
+                                {% for table in tables %}
+                                    {{ table|safe }}
                                 {% endfor %}
-                            </select>
+                            </div>
+                        </div>
+
+                        <div class="row md-form">
+                            <label><b>SELECT FEATURE COUNT</b></label>
+                            <div class="dropdown">
+                                <select class="form-control dropdown-menu-p-value" id="features_count"
+                                        name="features_count">
+                                    {% for name in split_array %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class='row form-field step-miami-checkbox' style="margin-top: 30px;">
+                            <p><input name='checkbox-all-features' type="checkbox" class="filled-in"
+                                      id="checkbox-all-features" value='checkbox-all-features'/>
+                                {#                            <label for="checkbox-all-features">SELECT ALL FEATURES</label>#}
+                            </p>
                         </div>
                     </div>
-                    <div class='row form-field step-miami-checkbox' style="margin-top: 30px;">
-                        <p><input name='checkbox-all-features' type="checkbox" class="filled-in"
-                                  id="checkbox-all-features" value='checkbox-all-features'/>
-                            {#                            <label for="checkbox-all-features">SELECT ALL FEATURES</label>#}
-                        </p>
-                    </div>
+                </div>
+
+                <hr class="line-hr">
+
+                <div class="step-actions">
+                    <button id="btn-submit-step-6" class="waves-effect waves-dark btn next-step step-6-click">CONTINUE</button>
+                    <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
                 </div>
             </div>
+        </form>
 
-            <hr class="line-hr">
-
-            <div class="step-actions">
-                <button class="waves-effect waves-dark btn next-step step-6-click">CONTINUE</button>
-                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
-            </div>
-        </div>
-    </form>
-
-
+    </div>
 </div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
+    </div> 
 
 {% include 'footer.html' %}
 
@@ -143,3 +174,14 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-step-6').click(function () {
+        $('.main-div-step6').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-step6").submit();
+    });
+
+</script>

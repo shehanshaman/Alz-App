@@ -160,6 +160,80 @@ def predict():
     return render_template("modeling/predict.html", available_list=list_names, details=details,
                            annotation_list=annotation_list, tables='')
 
+#add new
+@bp.route("/predict/results/", methods=["GET", "POST"])
+@login_required
+def predict_results():
+    user_id = session.get("user_id")
+
+    list_names = []
+    path = USER_PATH / str(g.user["id"])
+    if not os.path.exists(path):
+        os.makedirs(path)
+        os.makedirs(path / "tmp")
+    for filename in os.listdir(path):
+        list_names.append(filename)
+
+    list_names.remove("tmp")
+
+    annotation_list = []
+    for filename in os.listdir(ANNOTATION_TBL):
+        annotation_list.append(filename)
+
+    r = UserResult.get_user_model(user_id)
+
+    e = ValidateUser.has_data(r, ['features', 'trained_file', 'clasifier', 'model_path_name'])
+
+    if e is not None:
+        return render_template("error.html", errors = e)
+
+    features = r['features'].split(',')
+    trained_file = r['trained_file']
+    clasifier = r['clasifier']
+    accuracy = r['accuracy']
+
+    details = [features, trained_file, clasifier, accuracy]
+
+    if request.method == "POST":
+        selected_file = request.form["available_files"]
+        df_path = USER_PATH / str(user_id) / selected_file
+        df = PreProcess.getDF(df_path)
+
+        is_norm = request.form.get("is_norm")
+        is_map = request.form.get("is_map")
+
+        if is_map == "true":
+            annotation_file = request.form["anno_tbl"]
+            df = PreProcess.mergeDF(df_path, ANNOTATION_TBL / annotation_file)
+            df = PreProcess.step3(df, 'sklearn', 'drop')
+            df = PreProcess.probe2Symbol(df)
+            df = df.set_index(['Gene Symbol'])
+            df = df.T
+
+        elif is_norm == "true":
+            df = get_norm_df(df)
+
+        model_name = r['model_path_name']
+
+        e = ValidateUser.has_col(df.columns, features)
+        if e is not None:
+            return render_template("error.html", errors=e)
+
+        result = get_predicted_result_df(user_id, model_name, df[features])
+        result = result.astype(str)
+        result[result == '0'] = 'Negative'
+        result[result == '1'] = 'Positive'
+
+        frame = {'ID': df.index, 'Predicted Result': result}
+        out_result = pd.DataFrame(frame)
+
+        return render_template("modeling/predict-results.html", available_list=list_names, details=details,
+                               annotation_list=annotation_list,
+                               tables=[out_result.to_html(classes='display" id = "table_id')])
+
+    return render_template("modeling/predict-results.html", available_list=list_names, details=details,
+                           annotation_list=annotation_list, tables='')
+#add new
 
 def get_predicted_result_df(user_id, model_name, df):
     model = pickle.load(open(USER_PATH / str(user_id) / "tmp" / model_name, 'rb'))

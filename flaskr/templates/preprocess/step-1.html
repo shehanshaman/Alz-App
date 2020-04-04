@@ -26,117 +26,152 @@
     </style>
 </head>
 
-<body style="background-color: #f3f6f9;">
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
+
+<body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="card-content">
+<div class="main-div-step2">
 
-    <ul data-method="GET" class="stepper linear">
-        <li class="step active">
-            <a href="{{ url_for('preprocess.index') }}">
-                <div class="step-title waves-effect waves-dark">Pre-processing</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('fs.index') }}">
-                <div class="step-title waves-effect waves-dark">Feature selection</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('analyze.index') }}">
-                <div class="step-title waves-effect waves-dark">Analysis</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('validation.index') }}">
-                <div class="step-title waves-effect waves-dark">Validation</div>
-            </a>
-        </li>
-    </ul>
+    <div class="card-content">
 
-</div>
+        <ul data-method="GET" class="stepper linear">
+            <li class="step active">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
 
-<div id="mainDataInterface-id" class="container mainDataInterface">
+    </div>
 
-    <form method="post" action="/pre/" enctype="multipart/form-data">
+    <div id="mainDataInterface-id" class="container mainDataInterface">
 
-        <div class="step-content">
-            <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">STEP 1: Choose Data-set</h3>
-            </div>
-        </div>
+        <form id="main-form-div-step1" method="post" action="/pre/" enctype="multipart/form-data">
 
-        <div class="where-you-like" style="margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
-
-            <div class="row" style="margin-top: 40px;">
-                <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Available Files :</h5>
+            <div class="step-content">
+                <div class="row head-word">
+                    <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">STEP 1: Choose Data-set</h3>
                 </div>
-                <div class="col-sm-5">
-                    <div class="md-form">
-                        <select class="form-control" id="available_files" name="available_files">
-                            {% for name in available_list %}
-                                <option value="{{ name }}">{{ name }}</option>
-                            {% endfor %}
-                        </select>
+            </div>
+
+            <div class="where-you-like" style="margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
+
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">Available Files :</h5>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="md-form">
+                            <select class="form-control" id="available_files" name="available_files">
+                                {% for name in available_list %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="button" class="button btn btn-warning">View</button>
                     </div>
                 </div>
-                <div class="col-sm-1">
-                    <button type="button" class="button btn btn-warning">View</button>
-                </div>
-            </div>
 
-            <div class="row" style="margin-top: 40px;">
-                <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Annotation Table :</h5>
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">Annotation Table :</h5>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="md-form">
+                            <select class="form-control" id="anno_tbl" name="anno_tbl">
+                                {% for name in annotation_list %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="md-form">
-                        <select class="form-control" id="anno_tbl" name="anno_tbl">
-                            {% for name in annotation_list %}
-                                <option value="{{ name }}">{{ name }}</option>
-                            {% endfor %}
-                        </select>
+
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">Probe Selection Method :</h5>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="md-form">
+                            <select class="form-control" id="column_selection" name="column_selection">
+                                <option value="1">Average</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row" style="margin-top: 40px;">
-                <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Probe Selection Method :</h5>
-                </div>
-                <div class="col-sm-6">
-                    <div class="md-form">
-                        <select class="form-control" id="column_selection" name="column_selection">
-                            <option value="1">Average</option>
-                        </select>
-                    </div>
-                </div>
+            <br>
+            <br>
+
+            <div class="step-actions">
+                <button class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">
+                    <input id="btn-submit-step-1" type="submit" value="Submit">
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step"><a
+                        href="{{ url_for('preprocess.upload_file_view') }}">BACK</a></button>
             </div>
-        </div>
 
-        <br>
-        <br>
+        </form>
 
-        <div class="step-actions">
-            <button class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit"><input
-                    class="" type="submit" value="Submit">
-            </button>
-            <button class="waves-effect waves-dark btn-flat previous-step"><a
-                    href="{{ url_for('preprocess.upload_file_view') }}">BACK</a></button>
-        </div>
+    </div>
 
-    </form>
-
+    <div class="row">
+        <form style="display: none" action="/view/" method="POST" id="form" target="_blank">
+            <input type="hidden" id="selected_file" name="selected_file" value=""/>
+        </form>
+    </div>
+        
 </div>
 
-<div class="row">
-    <form style="display: none" action="/view/" method="POST" id="form" target="_blank">
-        <input type="hidden" id="selected_file" name="selected_file" value=""/>
-    </form>
-</div>
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
+    </div> 
 
 {% include 'footer.html' %}
 
@@ -164,6 +199,13 @@
 
         $("#selected_file").val(conceptName);
         $("#form").submit();
+    });
+
+    $('#btn-submit-step-1').click(function () {
+        $('.main-div-step2').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-step1").submit();
     });
 
 </script>

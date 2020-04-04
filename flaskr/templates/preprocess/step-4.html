@@ -21,95 +21,132 @@
 
 </head>
 
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
 
-<body style="background-color: #f3f6f9;">
+
+<body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="card-content">
+<div class="main-div-step4">
 
-    <ul data-method="GET" class="stepper linear">
-        <li class="step active">
-            <a href="{{ url_for('preprocess.index') }}">
-                <div class="step-title waves-effect waves-dark">Pre-processing</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('fs.index') }}">
-                <div class="step-title waves-effect waves-dark">Feature selection</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('analyze.index') }}">
-                <div class="step-title waves-effect waves-dark">Analysis</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('validation.index') }}">
-                <div class="step-title waves-effect waves-dark">Validation</div>
-            </a>
-        </li>
-    </ul>
+    <div class="card-content">
 
-</div>
-
-<div id="mainDataInterface-id" class="container mainDataInterface">
-
-    <div class="step-content">
-        <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 4: Data-Set After Mapping</h3>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-6">
-                <table>
-                    <tr>
-                        <td>Number of features</td>
-                        <td>{{ details["r1"]["Number of features"] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Number of samples</td>
-                        <td>{{ details["r1"]["Number of samples"] }}</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="col-sm-6">
-                <table>
-                    <tr>
-                        <td>Minimum value</td>
-                        <td>{{ details["r1"]["min"] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Maximum value</td>
-                        <td>{{ details["r1"]["max"] }}</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="row">
-            <div style="overflow: auto;">
-                {% for table in tablesstep4 %}
-                    {{ table|safe }}
-                {% endfor %}
-            </div>
-        </div>
+        <ul data-method="GET" class="stepper linear">
+            <li class="step active">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
 
     </div>
 
-    <hr class="line-hr">
+    <div id="mainDataInterface-id" class="container mainDataInterface">
 
-    <div class="step-actions">
-        <button class="waves-effect waves-dark btn next-step step-6-click"><a
-                href="{{ url_for('preprocess.feature_reduction') }}">CONTINUE</a></button>
-        <button class="waves-effect waves-dark btn-flat previous-step"><a
-                href="{{ url_for('preprocess.indexstep1') }}">BACK</a></button>
+        <div class="step-content">
+            <div class="row">
+                <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 4: Data-Set After Mapping</h3>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <table>
+                        <tr>
+                            <td>Number of features</td>
+                            <td>{{ details["r1"]["Number of features"] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Number of samples</td>
+                            <td>{{ details["r1"]["Number of samples"] }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-sm-6">
+                    <table>
+                        <tr>
+                            <td>Minimum value</td>
+                            <td>{{ details["r1"]["min"] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Maximum value</td>
+                            <td>{{ details["r1"]["max"] }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div style="overflow: auto;">
+                    {% for table in tablesstep4 %}
+                        {{ table|safe }}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="line-hr">
+
+        <form id="main-form-div-step4" method="get" action="/pre/step-5" enctype="multipart/form-data">
+
+            <div class="step-actions">
+                <button id="btn-submit-step-4" class="waves-effect waves-dark btn next-step step-6-click"><a>CONTINUE</a></button>
+                <button class="waves-effect waves-dark btn-flat previous-step"><a
+                        href="{{ url_for('preprocess.indexstep1') }}">BACK</a></button>
+            </div>
+
+        </form>
+
     </div>
-
-
+    
 </div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
+    </div> 
 
 {% include 'footer.html' %}
 
@@ -132,3 +169,14 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-step-4').click(function () {
+        $('.main-div-step4').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-step4").submit();
+    });
+
+</script>
