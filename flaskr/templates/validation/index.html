@@ -67,114 +67,149 @@
 
 </head>
 
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
 
-<body style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="card-content">
+<div class="main-div-validation">
+    <div class="card-content">
 
-    <ul data-method="GET" class="stepper linear">
-        <li class="step">
-            <a href="{{ url_for('preprocess.index') }}">
-                <div class="step-title waves-effect waves-dark">Pre-processing</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('fs.index') }}">
-                <div class="step-title waves-effect waves-dark">Feature selection</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('analyze.index') }}">
-                <div class="step-title waves-effect waves-dark">Analysis</div>
-            </a>
-        </li>
-        <li class="step active">
-            <a href="{{ url_for('validation.index') }}">
-                <div class="step-title waves-effect waves-dark">Validation</div>
-            </a>
-        </li>
-    </ul>
+        <ul data-method="GET" class="stepper linear">
+            <li class="step">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step active">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
 
-</div>
-
-
-<div id="mainDataInterface-id" class="container mainDataInterface">
-
-    <div class="step-heading">
-        <div class="row">
-            <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">Validation</h3>
-        </div>
     </div>
 
-    <div class="step-content">
 
-        <div class="alert alert-info">
-            <strong>Info!</strong>
-            <ul>
-                <li>- There are <b> {{ col_gene_card[0] | length }} already identified </b> genes within
-                    the {{ method_names[3] }}
-                    genes selected from <b> {{ method_names[0] }} </b> . <a href="#modal1"
-                                                                            onclick="more_click({param1: {{ col_gene_card[0] }} , param2: '{{ method_names[0] }}', param3: '1'})">more</a>
-                </li>
-                <li>- There are <b>{{ col_gene_card[1] | length }} already identified </b> genes within
-                    the {{ method_names[3] }}
-                    genes selected from <b> {{ method_names[1] }} </b> .<a href="#modal1"
-                                                                           onclick="more_click({param1: {{ col_gene_card[1] }} , param2: '{{ method_names[1] }}', param3: '2'})">more</a>
-                </li>
-                <li>- There are <b>{{ col_gene_card[2] | length }} already identified </b> genes within
-                    the {{ method_names[3] }}
-                    genes selected from <b> {{ method_names[2] }} </b> .<a href="#modal1"
-                                                                           onclick="more_click({param1: {{ col_gene_card[2] }} , param2: '{{ method_names[2] }}', param3: '3'})">more</a>
-                </li>
-            </ul>
-        </div>
+    <div id="mainDataInterface-id" class="container mainDataInterface">
 
-        <!-- Modal Structure -->
-        <div id="modal1" class="modal">
-            <div class="modal-content">
-                <h4 id="method_head">Modal Header</h4>
-                <p style="word-wrap: break-word;" id="feature_list"></p>
-            </div>
-            <div class="modal-footer">
-                <a href="#" class="modal-close waves-effect waves-green btn-flat">Close</a>
-            </div>
-        </div>
-
-        <div class="result_content">
+        <div class="step-heading">
             <div class="row">
-                <h4 id="h4-head-6" class="card__title" style="text-align: center;"></h4>
-            </div>
-
-            <div class="alert alert-danger">
-                <strong>Our Method!</strong> Out of those predicted {{ col_gene_card[3] | length }},
-                {{ col_gene_card[4] | length }} were currently discovered. <a href="#modal1"
-                                                                              onclick="more_click({param1: {{ col_gene_card[3] }} , param2: {{ col_gene_card[4] }}, param3: '4'})">more</a>
-            </div>
-
-            <div style="overflow: auto;">
-                {% for table in tables %}
-                    {{ table|safe }}
-                {% endfor %}
+                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">VALIDATION</h3>
             </div>
         </div>
 
+        <div class="step-content">
 
-        <hr class="line-hr">
+            <div class="alert alert-info">
+                <strong>Info!</strong>
+                <ul>
+                    <li>- There are <b> {{ col_gene_card[0] | length }} already identified </b> genes within
+                        the {{ method_names[3] }}
+                        genes selected from <b> {{ method_names[0] }} </b> . <a href="#modal1"
+                                                                                onclick="more_click({param1: {{ col_gene_card[0] }} , param2: '{{ method_names[0] }}', param3: '1'})">more</a>
+                    </li>
+                    <li>- There are <b>{{ col_gene_card[1] | length }} already identified </b> genes within
+                        the {{ method_names[3] }}
+                        genes selected from <b> {{ method_names[1] }} </b> .<a href="#modal1"
+                                                                               onclick="more_click({param1: {{ col_gene_card[1] }} , param2: '{{ method_names[1] }}', param3: '2'})">more</a>
+                    </li>
+                    <li>- There are <b>{{ col_gene_card[2] | length }} already identified </b> genes within
+                        the {{ method_names[3] }}
+                        genes selected from <b> {{ method_names[2] }} </b> .<a href="#modal1"
+                                                                               onclick="more_click({param1: {{ col_gene_card[2] }} , param2: '{{ method_names[2] }}', param3: '3'})">more</a>
+                    </li>
+                </ul>
+            </div>
 
-        <div class="step-actions">
-            <button class="waves-effect waves-dark btn next-step step-6-click">
-                <a href="{{ url_for('modeling.index') }}">MODELING</a>
-            </button>
-            <button class="waves-effect waves-dark btn-flat previous-step">
-                <a href="{{ url_for('analyze.final_result') }}">BACK</a>
-            </button>
+            <!-- Modal Structure -->
+            <div id="modal1" class="modal">
+                <div class="modal-content">
+                    <h4 id="method_head">Modal Header</h4>
+                    <p style="word-wrap: break-word;" id="feature_list"></p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="modal-close waves-effect waves-green btn-flat">Close</a>
+                </div>
+            </div>
+
+            <div class="result_content">
+                <div class="row">
+                    <h4 id="h4-head-6" class="card__title" style="text-align: center;"></h4>
+                </div>
+
+                <div class="alert alert-danger">
+                    <strong>Our Method!</strong> Out of those predicted {{ col_gene_card[3] | length }},
+                    {{ col_gene_card[4] | length }} were currently discovered. <a href="#modal1"
+                                                                                  onclick="more_click({param1: {{ col_gene_card[3] }} , param2: {{ col_gene_card[4] }}, param3: '4'})">more</a>
+                </div>
+
+                <div style="overflow: auto;">
+                    {% for table in tables %}
+                        {{ table|safe }}
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <hr class="line-hr">
+
+            <div class="step-actions">
+                <button id="btn-submit-model" class="waves-effect waves-dark btn next-step step-6-click">
+                    <a>MODELING</a>
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step">
+                    <a href="{{ url_for('analyze.final_result') }}">BACK</a>
+                </button>
+            </div>
         </div>
+
+        <form id="main-form-div-model" style="display: none" action="/mod" method="get" id="form">
+        </form>
+
     </div>
-
 </div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">MODELING</h5>        
+    </div> 
 
 {% include 'footer.html' %}
 
@@ -217,4 +252,15 @@
         }
         $('#modal1').openModal();
     }
+</script>
+
+<script>
+
+    $('#btn-submit-model').click(function () {
+        $('.main-div-validation').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-model").submit();        
+    });
+
 </script>
