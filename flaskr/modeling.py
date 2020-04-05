@@ -227,6 +227,10 @@ def predict_results():
         frame = {'ID': df.index, 'Predicted Result': result}
         out_result = pd.DataFrame(frame)
 
+        save_path = USER_PATH / str(user_id) / "results.pkl";
+        #out_result.to_csv(save_path, index = False)
+        out_result.to_pickle(save_path);
+        
         return render_template("modeling/predict-results.html", available_list=list_names, details=details,
                                annotation_list=annotation_list,
                                tables=[out_result.to_html(classes='display" id = "table_id')])
