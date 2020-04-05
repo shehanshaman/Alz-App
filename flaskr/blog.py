@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, current_app
 from flask import flash
 from flask import g
 from flask import redirect
@@ -10,7 +10,7 @@ from werkzeug.exceptions import abort
 from flaskr.auth import login_required
 from flaskr.db import get_db
 
-bp = Blueprint("blog", __name__)
+bp = Blueprint("blog", __name__, url_prefix="/blog")
 
 
 @bp.route("/")
@@ -123,3 +123,27 @@ def delete(id):
     db.execute("DELETE FROM post WHERE id = ?", (id,))
     db.commit()
     return redirect(url_for("blog.index"))
+
+from flask_mail import Message
+
+@bp.route("/mail")
+def send_mail():
+    msg = Message("Verify email address",
+                  sender="no-reply@alz.com",
+                  recipients=["shehanshaman@outlook.com"])
+
+    message = get_mail_message('verify')
+    message = message.replace("{{action_url}}", "www.test.com")
+    msg.html = message
+    mail = current_app.config["APP_ALZ"].mail
+    # out = mail.send(msg)
+
+    return str(request.host)
+
+def get_mail_message(subject):
+    db = get_db()
+    m = db.execute(
+        "SELECT message FROM mail_template WHERE subject = ?",
+        (subject,),
+    ).fetchone()
+    return m['message']

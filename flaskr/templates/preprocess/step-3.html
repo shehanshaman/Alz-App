@@ -2,110 +2,204 @@
 <html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>FYP</title>
+    <title>GeNet | Pre-processing</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">  
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
 
-  <!--bootstrap-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">  
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-  <!-- Materializecss compiled and minified CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
-
-  <!--Import Google Icon Font-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
 </head>
 
-<body style="background-color: #f3f6f9;">
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
 
-<div class="nav">
+<body class="main-body" style="background-color: #f3f6f9;">
 
-  <div class="nav-header">
-    <div class="nav-title">Alz</div>
-  </div>
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
 
-  <div class="nav-links">
-    <div>
-        <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
-        <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
-        <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
+<div class="main-div-step3">
+
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li class="step active">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
     </div>
 
-    {% if g.user %}
-        <span>{{ g.user['username'] }}</span>
-        <a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-        <a href="{{ url_for('auth.register') }}">Register</a>
-        <a href="{{ url_for('auth.login') }}">Log In</a>
-    {% endif %}
+    <div id="mainDataInterface-id" class="container mainDataInterface">
 
-  </div>
+        <div class="row">
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 3 : SCALING & IMPUTATION</h3>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Number of features</td>
+                        <td>{{ details["Number of features"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of unique Gene Symbols</td>
+                        <td>{{ details["Number of unique Gene Symbols"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Minimum value</td>
+                        <td>{{ details["min"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Number of null values in data</td>
+                        <td>{{ details["Number of null values in data"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of null values in Gene Symbols</td>
+                        <td>{{ details["Number of null values in Gene Symbols"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum value</td>
+                        <td>{{ details["max"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+            <br>
+
+            <hr class="line-hr">
+
+            <br>
+            
+        <form id="main-form-div-step3" method="post" action="/pre/step-3" enctype="multipart/form-data">
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Scaling :</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <select class="form-control" id="norm_mthd" name="norm_mthd">
+                            <option value="sklearn">Sklearn Normalize</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Imputation :</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <select class="form-control" id="null_rmv" name="null_rmv">
+                            <option value="drop">Drop</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+    <!--         <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-5"></div>
+                <div class='form-field col-sm-6 step-3-default'>
+                    <p><input name='checkbox-3-default' type="checkbox" class="filled-in" id="checkbox-3-default"
+                              value='checkbox-3-default'/>
+                        <label for="checkbox-3-default">DEFAULT METHODS</label>
+                    </p>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+     -->
+            <br>
+
+            <hr class="line-hr">
+
+            <br>
+
+            <div class="step-actions">
+                <button id="btn-submit-step-3" class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">PRE-PROCESS
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step"><a
+                        href="{{ url_for('preprocess.view') }}">BACK</a></button>
+            </div>
+
+        </form>
+
+        <!--end page set 3-->
+
+    </div>
+    
 </div>
-  
-  <div id="mainDataInterface-id" class="container mainDataInterface">
 
-          <form method="post" action="/pre/step-3" enctype="multipart/form-data">
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">DATASET PRE-PROCESSING</h5>        
+    </div> 
 
-            <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">NORMALIZATION METHOD:</h5>
-              </div>
-              <div class="col-sm-6">
-                <div class="md-form">
-                    <select class="form-control" id="norm_mthd" name="norm_mthd">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>            
-                </div>          
-              </div> 
-            </div>
-
-            <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">NULL VALUE REMOVING METHOD:</h5>
-              </div>
-              <div class="col-sm-6">
-                <div class="md-form">
-                    <select class="form-control" id="null_rmv" name="null_rmv">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>             
-                </div>          
-              </div> 
-            </div>
-
-            <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-5"></div>
-              <div class='form-field col-sm-6 step-3-default'>
-                <p><input name='checkbox-3-default' type="checkbox" class="filled-in" id="checkbox-3-default" value='checkbox-3-default'/>
-                  <label for="checkbox-3-default">DEFAULT METHODS</label>
-                </p>
-              </div>
-              <div class="col-sm-1"></div>
-            </div>
-
-            <center>
-            <div class="row" style="margin-top: 40px;">
-              <div class="col-sm-12">
-                <input class="waves-effect waves-dark btn" type="submit" value="Submit">
-              </div>
-            </div>
-            </center>
-
-          </form>
-
-      <!--end page set 3-->
-
-  </div>
+{% include 'footer.html' %}
 
 </body>
 </html>
- 
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
 
 <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
@@ -116,26 +210,20 @@
 <!-- jQueryValidation Plugin -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
 
-<!--dropdown-->
-<script type="text/javascript" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous" src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'></script>
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous" src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-<!--main navbar-->
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
 <script type="text/javascript">
 
-// $('.dropdown-menu-annotation-table li').on('click', function() {
-//   var getValue = $(this).text();
-//   $('.dropdown-select-annotation-table').text(getValue);
-// });
+    $('#btn-submit-step-3').click(function () {
+        $('.main-div-step3').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-step3").submit();
+    });
 
-// $('.dropdown-menu-column-avg li').on('click', function() {
-//   var getValue = $(this).text();
-//   $('.dropdown-select-column-avg').text(getValue);
-// });
 </script>
-

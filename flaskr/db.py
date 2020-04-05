@@ -4,7 +4,10 @@ import click
 from flask import current_app
 from flask import g
 from flask.cli import with_appcontext
+from pathlib import Path
 
+ROOT_PATH = Path.cwd()
+MAIL_PATH = ROOT_PATH / "flaskr" / "mail"
 
 def get_db():
     """Connect to the application's configured database. The connection
@@ -43,8 +46,21 @@ def init_db():
 def init_db_command():
     """Clear existing data and create new tables."""
     init_db()
+    add_mail_templates()
     click.echo("Initialized the database.")
 
+def add_mail_templates():
+    db = get_db()
+    subjects = ["verify", "reset"]
+    for subject in subjects:
+        file_name = MAIL_PATH / (subject + '_mail.html')
+        f = open(file_name, "r")
+        message = f.read()
+        db.execute(
+        "INSERT INTO mail_template (subject, message) VALUES (?, ?)",
+        (subject, message),
+    )
+    db.commit()
 
 def init_app(app):
     """Register database functions with the Flask app. This is called by

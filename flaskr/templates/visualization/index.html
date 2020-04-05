@@ -2,111 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <title>GeNet | Visualization</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_vis.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
-    <title>FYP: Visualization</title>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+        .result > img {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 100%;
+        }
+
+        #gene_symbol_div {
+            visibility: hidden;
+        }
+
+        .form_container {
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+    </style>
+
 </head>
 <body>
-<div class="nav">
 
-  <div class="nav-header">
-    <div class="nav-title">Alz</div>
-  </div>
-
-  <div class="nav-links">
-    <div>
-        <a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
-        <a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
-        <a href="{{ url_for('preprocess.index') }}"><span class=""></span>Framework</a>
-    </div>
-
-    {% if g.user %}
-        <span>{{ g.user['username'] }}</span>
-        <a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-        <a href="{{ url_for('auth.register') }}">Register</a>
-        <a href="{{ url_for('auth.login') }}">Log In</a>
-    {% endif %}
-
-  </div>
-</div>
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
 
 <div class="limiter">
-		<div class="container-login100">
-			<div class="wrap-login100">
-				<form class="login100-form validate-form" method="post" action="/vis/">
-					<span class="login100-form-title p-b-43">
-						Visualization
-					</span>
+    <div class="row head-word">
+        <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">Visualization</h3>
+    </div>
+    <div class="row" style="padding: 10px;">
 
-                    <div class="row" style="margin-top: 40px;">
-                      <div class="col-sm-12">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
-                      </div>
-                      <div class="col-sm-12">
-                        <div class="md-form">
-                          <select class="form-control" id="available_files" name="available_files">
-                              {% for name in available_list %}
-                              <option value="{{ name }}">{{ name }}</option>
-                              {% endfor %}
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-
-                    <div class="row" style="margin-top: 40px;">
-                      <div class="col-sm-12">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">GENE SYMBOLS:</h5>
-                      </div>
-                      <div class="col-sm-12">
-                        <div class="md-form">
-                          <select class="form-control" id="features" name="features">
-                              {% for feature in features_list %}
-                              <option value="{{ feature }}">{{ feature }}</option>
-                              {% endfor %}
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-
-					<div class="container-login100-form-btn">
-						<button class="login100-form-btn">
-							Update
-						</button>
-					</div>
-
-				</form>
-
-                 <div class="result">
+        <div class="col-sm-7 image_container" style="border: 2px solid #26a69a;">
+            {% if image_data %}
+                <div class="result">
                     <img src="data:image/png;base64,{{ image_data }}" alt="my plot">
                 </div>
-			</div>
-		</div>
+            {% endif %}
+
+        </div>
+
+        <div class="col-sm-5 form_container">
+            <form class="login100-form validate-form" method="post" action="/vis/">
+
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-12">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="md-form">
+                            <select class="form-control" id="available_files" name="available_files">
+                                <option disabled="disabled" selected>Pick a choice!</option>
+                                {% for name in available_list %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 40px;" id="gene_symbol_div">
+                    <div class="col-sm-12">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">GENE SYMBOLS:</h5>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="md-form">
+                            <select class="form-control" id="features" name="features">
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="step-actions">
+                    <button class="waves-effect waves-dark btn next-step step-6-click" id="submit_button">
+                        Update
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
 
 </div>
+
+{% include 'footer.html' %}
+
 </body>
-{#<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>#}
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script>
+    $(document).ready(function () {
+        $('#submit_button').prop('disabled', true);
+    });
+</script>
+
 <script>
 
-{#    function fileChangeFun() {#}
-{#        $( "select option:selected" ).each(function() {#}
-{#            var name =  $( this ).text();#}
-{#            var xhttp = new XMLHttpRequest();#}
-{#              xhttp.onreadystatechange=function() {#}
-{#                if (this.readyState == 4 && this.status == 200) {#}
-{#                  console.log(this.responseText);#}
-{#                }#}
-{#              };#}
-{#              xhttp.open("GET", "?available_files=" + name, true);#}
-{#              xhttp.send();#}
-{#        });#}
-{#    }#}
+    $('#available_files').change(function () {
+        document.getElementById("gene_symbol_div").style.visibility = "visible";
 
-{#    onchange="fileChangeFun()"#}
+        var conceptName = $('#available_files').find(":selected").text();
+        $('#submit_button').prop('disabled', false);
+        $.get("./js/", {available_files: conceptName, user_id: {{ g.user['id'] }}}, function (data, status) {
+            data = data.split(",");
+            for (i = 0; i < data.length; i++) {
+                console.log('.');
+                f = data[i];
+                $('#features').append("<option value=" + f + "> " + f + "</option>");
+            }
+        });
+    });
 </script>
 </html>

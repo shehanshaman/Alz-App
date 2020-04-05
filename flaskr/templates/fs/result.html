@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Feature Selection</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create two equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 33%;
+            padding: 10px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Style the buttons */
+        #btnContainer > .btn {
+            border: none;
+            outline: none;
+{#            padding: 12px 16px;#}
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        #btnContainer > .btn:hover {
+            background-color: #ddd;
+        }
+
+        #btnContainer > .btn.active {
+            background-color: #666;
+            color: white;
+        }
+
+        .summary_plot > img {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 100%;
+        }
+    </style>
+
+</head>
+
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
+
+<body class="main-body" style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-fn-2">
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li class="step">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step active">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step">
+            <div class="step-content">
+                <div class="row">
+                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">RESULTS</h3>
+                </div>
+
+
+                <div class="row">
+                    <div class="summary_plot">
+                        <img src="data:image/png;base64,{{ image_data }}" alt="summary">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Selected Features</h5>
+                </div>
+
+                <div class="row">
+                    <div id="btnContainer">
+                        <button class="btn" onclick="listView()"><i class="fa fa-bars"></i> List</button>
+                        <button class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
+                            <h2 style="color: #ffffff;">{{ methods[1] }}</h2>
+                            <p>{{ columns[0] }}</p>
+                        </div>
+                        <div class="column" style="background-color:rgba(38, 166, 154, 0.91);">
+                            <h2 style="color: #ffffff;">{{ methods[2] }}</h2>
+                            <p>{{ columns[1] }}</p>
+                        </div>
+                        <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
+                            <h2 style="color: #ffffff;">{{ methods[3] }}</h2>
+                            <p>{{ columns[2] }}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="line-hr">
+
+                <form id="main-form-div-fn-2" method="get" action="/an" enctype="multipart/form-data">
+
+                    <div class="step-actions">
+                        <button id="btn-submit-fn-2" class="waves-effect waves-dark btn next-step step-6-click"><a>Analyze</a>
+                        </button>
+                        <button class="waves-effect waves-dark btn-flat previous-step"><a
+                                href="{{ url_for('fs.index') }}">BACK</a></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">ANALYSING RESULTS</h5>        
+    </div> 
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script>
+    // Get the elements with class="column"
+    var elements = document.getElementsByClassName("column");
+
+    // Declare a loop variable
+    var i;
+
+    // List View
+    function listView() {
+        for (i = 0; i < elements.length; i++) {
+            elements[i].style.width = "100%";
+        }
+    }
+
+    // Grid View
+    function gridView() {
+        for (i = 0; i < elements.length; i++) {
+            elements[i].style.width = "33%";
+        }
+    }
+
+    /* Optional: Add active class to the current button (highlight it) */
+    var container = document.getElementById("btnContainer");
+    var btns = container.getElementsByClassName("btn");
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function () {
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        });
+    }
+</script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-fn-2').click(function () {
+        $('.main-div-fn-2').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-fn-2").submit();
+    });
+
+</script>

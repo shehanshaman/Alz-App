@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Analysis</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+        .summary_plot > img {
+            padding: 5px;
+            width: 100%;
+        }
+
+        div.centre {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 0;
+            margin-bottom: 0;
+            align-content: center;
+            text-align: center;
+        }
+
+        .result_content {
+            border-color: #26a69a;
+            border-style: ridge;
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 16px;
+        }
+    </style>
+
+</head>
+
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
+
+<body class="main-body" style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-an-1">
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li class="step">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step active">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step-heading">
+            <div class="row">
+                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">ANALYSIS</h3>
+            </div>
+        </div>
+
+        <div class="step-content">
+
+            <div class="result_content">
+                <div class="row">
+                    <h5 id="h5-head-6" class="card__title" style="text-align: center;">Training accuracies of genes only
+                        found by each classifier and the overlapped set of genes</h5>
+                </div>
+
+                <div class="row">
+                    <div class="summary_plot">
+                        <img src="data:image/png;base64,{{ overlap_data }}" alt="overlap">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="result_content">
+                <div class="row">
+                    <h5 id="h4-head-6" class="card__title" style="text-align: center;">Classification accuracy of three
+                        classifiers using incrementally smaller sets of genes</h5>
+                </div>
+
+
+                <div class="row">
+                    <div class="summary_plot">
+                        <img src="data:image/png;base64,{{ small_set }}" alt="small_set">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="result_content">
+                <div class="row">
+                    <h5 id="h4-head-6" class="card__title" style="text-align: center;"> Correlation matrix</h5>
+                </div>
+
+
+                <div class="row">
+                    <div class="summary_plot">
+                        <img src="data:image/png;base64,{{ corr_data }}" alt="correlation">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row centre">
+                <button class="btn-submit-an-1 button waves-effect waves-dark btn" value="{{ methods[0] }}">{{ methods[0] }}</button>
+                <button class="btn-submit-an-1 button waves-effect waves-dark btn" value="{{ methods[1] }}">{{ methods[1] }}</button>
+                <button class="btn-submit-an-1 button waves-effect waves-dark btn" value="{{ methods[2] }}">{{ methods[2] }}</button>
+            </div>
+
+            <hr class="line-hr">
+
+            <div class="step-actions">
+                <button class="waves-effect waves-dark btn-flat previous-step"><a {{ url_for('fs.result') }}>BACK</a>
+                </button>
+            </div>
+        </div>
+
+        <form id="main-form-div-an-1" style="display: none" action="/an/step2" method="POST" id="form">
+            <input type="hidden" id="selected_method" name="selected_method" value=""/>
+        </form>
+
+    </div>
+</div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 class="h5-text" style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;"></h5>
+        <h5 style="margin-top: -12%;text-align: center;color: #26a69a; margin-bottom: 200px;">ANALYSING RESULTS</h5>        
+    </div> 
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<!-- <script>
+    $("button").click(function () {
+        var fired_button = $(this).val();
+
+        $("#selected_method").val(fired_button);
+        $("#form").submit();
+    });
+</script>
+ -->
+<script type="text/javascript">
+
+    $('.btn-submit-an-1').click(function () {
+        $('.main-div-an-1').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+
+        var fired_button = $(this).val();
+
+        $('.h5-text').text(fired_button);
+        $("#selected_method").val(fired_button);
+        $("#main-form-div-an-1").submit();        
+    });
+
+</script>

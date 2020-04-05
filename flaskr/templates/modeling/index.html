@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Modeling</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+</head>
+
+<body style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+    <form method="post" action="/mod/" enctype="multipart/form-data">
+
+        <div class="step-content">
+            <div class="row head-word">
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">MODELING</h3>
+            </div>
+        </div>
+
+        {% if state == '1' %}
+
+            <div class="alert alert-success alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b> <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
+            </div>
+
+        {% elif state == '0' %}
+
+            <div class="alert alert-danger alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Danger!</strong> Something went wrong.
+            </div>
+
+        {% endif %}
+
+        <div class="features">
+            <h5>Extracted Features </h5>
+            <div class="well" style="background-color: #26a69a54; border: 1px solid #26a69a;">{{ features }}</div>
+        </div>
+
+        <br>
+
+        <div class="where-you-like" style="margin-top: 40px;border: 2px solid #26a69a;padding: 30px;">
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Choose File :</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <select class="form-control" id="available_files" name="available_files">
+                            {% for name in available_list %}
+                                <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Classifier :</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <select class="form-control" id="classifier" name="classifier">
+                            {% for name in classifier_list %}
+                                <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-actions">
+                <button class="waves-effect waves-dark btn next-step step-6-click">SUBMIT</button>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
