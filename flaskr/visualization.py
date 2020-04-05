@@ -3,6 +3,8 @@ from flask import render_template
 import os
 from flask import request
 
+from flask import send_file
+
 from flaskr.auth import login_required
 from flask import g
 import matplotlib.pyplot as plt
@@ -80,4 +82,16 @@ def getPlot(file_name, feature):
 
     pic_hash = pic_hash.decode("utf-8")
 
+    save_path = USER_PATH / str(g.user["id"]) / "visualization.pdf";
+    fig.savefig(save_path)
     return pic_hash
+
+@bp.route("/download/img/", methods=["GET"])
+def download_df():
+
+    id = request.args.get('id')
+    name = request.args.get('name')
+
+    path = USER_PATH / str(id) / name
+
+    return send_file(path, attachment_filename='visualization.pdf')
