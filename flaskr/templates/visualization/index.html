@@ -38,6 +38,16 @@
             padding-right: 10px;
             padding-left: 10px;
         }
+        .container-1 {
+          position: relative;
+          text-align: center;
+        }
+
+        .top-right {
+          position: absolute;
+          top: 8px;
+          right: 5px;
+        }
     </style>
 
 </head>
@@ -50,14 +60,27 @@
     <div class="row head-word">
         <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">Visualization</h3>
     </div>
+
     <div class="row" style="padding: 10px;">
 
-        <div class="col-sm-7 image_container" style="border: 2px solid #26a69a;">
-            {% if image_data %}
-                <div class="result">
-                    <img src="data:image/png;base64,{{ image_data }}" alt="my plot">
-                </div>
-            {% endif %}
+        <div class="col-sm-7 image_container">
+
+        <div class="row" id="h3-head-6" class="card__title">
+            <div class="container-1">
+
+                {% if image_data %}
+                    <div class="result">                  
+                        <img  src="data:image/png;base64,{{ image_data }}" alt="my plot">
+                    </div>
+                {% endif %}
+
+              <div class="top-right">
+                <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;" class="use-download" value="">
+                    <i class="fas fa-file-download fa-2x"></i>
+                </button> 
+              </div>
+            </div>       
+        </div>
 
         </div>
 
@@ -124,6 +147,8 @@
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
 <script>
     $(document).ready(function () {
         $('#submit_button').prop('disabled', true);
@@ -134,7 +159,7 @@
 
     $('#available_files').change(function () {
         document.getElementById("gene_symbol_div").style.visibility = "visible";
-
+        $('.top-right').show(0);
         var conceptName = $('#available_files').find(":selected").text();
         $('#submit_button').prop('disabled', false);
         $.get("./js/", {available_files: conceptName, user_id: {{ g.user['id'] }}}, function (data, status) {
@@ -148,3 +173,16 @@
     });
 </script>
 </html>
+
+<script type="text/javascript">
+
+    $(".use-download").click(function () {
+        var $file_name = "visualization.pdf";
+        
+        var url = "../vis/download/img/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name;
+        console.log(url);
+        window.open(url, '_blank');
+
+    });
+
+</script>
