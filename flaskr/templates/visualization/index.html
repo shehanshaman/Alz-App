@@ -38,15 +38,16 @@
             padding-right: 10px;
             padding-left: 10px;
         }
+
         .container-1 {
-          position: relative;
-          text-align: center;
+            position: relative;
+            text-align: center;
         }
 
         .top-right {
-          position: absolute;
-          top: 8px;
-          right: 5px;
+            position: absolute;
+            top: 8px;
+            right: 5px;
         }
     </style>
 
@@ -65,22 +66,24 @@
 
         <div class="col-sm-7 image_container">
 
-        <div class="row" id="h3-head-6" class="card__title">
-            <div class="container-1">
+            <div class="row" id="h3-head-6" class="card__title">
+                <div class="container-1">
 
-                {% if image_data %}
-                    <div class="result">                  
-                        <img  src="data:image/png;base64,{{ image_data }}" alt="my plot">
-                    </div>
-                {% endif %}
+                    {% if image_data %}
+                        <div class="result">
+                            <img id="symbol-vis" src="data:image/png;base64,{{ image_data }}" alt="my plot">
+                        </div>
 
-              <div class="top-right">
-                <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;" class="use-download" value="">
-                    <i class="fas fa-file-download fa-2x"></i>
-                </button> 
-              </div>
-            </div>       
-        </div>
+                        <div class="top-right">
+                            <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                    class="use-download" value="">
+                                <i class="fas fa-file-download fa-2x"></i>
+                            </button>
+                        </div>
+                    {% endif %}
+                
+                </div>
+            </div>
 
         </div>
 
@@ -177,12 +180,13 @@
 <script type="text/javascript">
 
     $(".use-download").click(function () {
-        var $file_name = "visualization.pdf";
-        
-        var url = "../vis/download/img/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name;
-        console.log(url);
-        window.open(url, '_blank');
+        var img = document.getElementById('symbol-vis');
+        var url = img.src;
 
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "Image.png";
+        a.click();
     });
 
 </script>
