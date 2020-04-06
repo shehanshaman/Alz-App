@@ -117,6 +117,7 @@ def predict():
     trained_file = r['trained_file']
     clasifier = r['clasifier']
     accuracy = r['accuracy']
+    accuracy = str(round(float(accuracy) * 100, 2))
 
     details = [features, trained_file, clasifier, accuracy]
 
@@ -227,7 +228,7 @@ def predict_results():
         frame = {'ID': df.index, 'Predicted Result': result}
         out_result = pd.DataFrame(frame)
 
-        save_path = USER_PATH / str(user_id) / "results.pkl";
+        save_path = USER_PATH / str(user_id) / "tmp" / "results.pkl"
         #out_result.to_csv(save_path, index = False)
         out_result.to_pickle(save_path);
         
