@@ -61,7 +61,19 @@
             left: 0; 
             right: 0; 
             margin: auto; 
-        } 
+        }
+
+        .container-1 {
+            position: relative;
+            text-align: center;
+        }
+
+        .top-right {
+            position: absolute;
+            top: 8px;
+            right: 5px;
+        }
+
     </style> 
 
 <body class="main-body" style="background-color: #f3f6f9;">
@@ -106,9 +118,17 @@
 
                 <div class="row">
                     <div class="col-sm-8">
-                        <div class="volcano_plot">
-                            <img src="data:image/png;base64,{{ volcano_hash }}" alt="volcano">
-                        </div>
+                        <div class="container-1">
+                            <div class="volcano_plot">
+                                <img id="fold-p" src="data:image/png;base64,{{ volcano_hash }}" alt="volcano">
+                            </div>
+                            <div class="top-right">
+                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                        class="use-download-fold" value="">
+                                    <i class="fas fa-file-download fa-2x"></i>
+                                </button>
+                            </div>  
+                        </div>                      
                     </div>
 
                     <div class="col-sm-4">
@@ -194,6 +214,8 @@
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
 <script>
 
     $('#btn-calculate').click(function () {
@@ -217,6 +239,16 @@
         $('.loader-div').show(0);
         $('.main-body').click(false);
         $("#main-form-div-step5").submit();
-    });    
+    });  
+
+    $(".use-download-fold").click(function () {
+        var img = document.getElementById('fold-p');
+        var url = img.src;
+
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "fold-p-test.png";
+        a.click();
+    });     
 </script>
 
