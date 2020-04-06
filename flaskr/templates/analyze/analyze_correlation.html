@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>GeNet | {{ method_title }}</title>
+    <title>GeNet | {{ method_title }} | CORRELATION</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -80,6 +80,18 @@
             margin-bottom: 10px;
             border-radius: 16px;
         }
+
+        .container-1 {
+            position: relative;
+            text-align: center;
+        }
+
+        .top-right {
+            position: absolute;
+            top: 8px;
+            right: 5px;
+        } 
+
     </style>
 
 </head>
@@ -175,6 +187,7 @@
         <div class="step-heading">
             <div class="row">
                 <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">CORRELATION : {{ method_title }}</h3>
+                <h3 id="selected-method" style="display: none;">{{ method_title }}</h3>
             </div>
         </div>
 
@@ -182,9 +195,19 @@
 
             <div class="result_content">
                 <div class="row">
-                    <div class="result_plot col-sm-6">
-                        <img src="data:image/png;base64,{{ corr_results }}" alt="overlap">
-                    </div>
+                    <div class="col-sm-6">
+                        <div class="container-1">
+                            <div class="result_plot">
+                                <img id="correlated_features" src="data:image/png;base64,{{ corr_results }}" alt="overlap">
+                            </div>
+                            <div class="top-right" style="right: 31px;">
+                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                                    class="use-download-correlated_features" value="">
+                                    <i class="fas fa-file-download fa-2x"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>                      
                     <div class="col-sm-6 corr_result_text">
                         <p>An interpretation of the number of correlation features with the variation of correlation
                             values</p>
@@ -201,9 +224,17 @@
                 </div>
 
                 <div class="row">
-                    <div class="summary_plot">
-                        <img src="data:image/png;base64,{{ corr_score }}" alt="overlap">
-                    </div>
+                    <div class="container-1">
+                        <div class="summary_plot">
+                            <img id="correlation_coefficients" src="data:image/png;base64,{{ corr_score }}" alt="overlap">
+                        </div>
+                        <div class="top-right">
+                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                                class="use-download-correlation_coefficients" value="">
+                                <i class="fas fa-file-download fa-2x"></i>
+                            </button>
+                        </div>
+                    </div>                    
                 </div>
             </div>
 
@@ -291,6 +322,8 @@
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
 <script>
     // Get the elements with class="column"
     var elements = document.getElementsByClassName("column");
@@ -333,4 +366,26 @@
         $("#main-form-div-an-2-continue").submit();        
     });
 
+
+    selected_method = $('#selected-method').text();
+
+    $(".use-download-correlated_features").click(function () {
+        var img = document.getElementById('correlated_features');
+        var url = img.src;
+
+        var a1 = document.createElement("a");
+        a1.href = url;
+        a1.download = selected_method + "_" + "correlated_features.png";
+        a1.click();
+    });
+
+    $(".use-download-correlation_coefficients").click(function () {
+        var img = document.getElementById('correlation_coefficients');
+        var url = img.src;
+
+        var a2 = document.createElement("a");
+        a2.href = url;
+        a2.download = selected_method + "_" + "correlation_coefficients.png";
+        a2.click();
+    });
 </script>

@@ -93,6 +93,16 @@
             right: 0; 
             margin: auto; 
         } 
+        .container-1 {
+            position: relative;
+            text-align: center;
+        }
+
+        .top-right {
+            position: absolute;
+            top: 8px;
+            right: 5px;
+        }        
     </style> 
 
 <body class="main-body" style="background-color: #f3f6f9;">
@@ -139,9 +149,17 @@
 
 
                 <div class="row">
-                    <div class="summary_plot">
-                        <img src="data:image/png;base64,{{ image_data }}" alt="summary">
-                    </div>
+                    <div class="container-1">
+                        <div class="summary_plot">
+                            <img id="summary_img" src="data:image/png;base64,{{ image_data }}" alt="summary">
+                        </div>
+                        <div class="top-right">
+                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                            class="use-download-summary" value="">
+                                <i class="fas fa-file-download fa-2x"></i>
+                            </button>
+                        </div> 
+                    </div>                           
                 </div>
 
                 <div class="row">
@@ -214,6 +232,8 @@
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
 <script>
     // Get the elements with class="column"
     var elements = document.getElementsByClassName("column");
@@ -256,4 +276,13 @@
         $("#main-form-div-fn-2").submit();
     });
 
+    $(".use-download-summary").click(function () {
+        var img = document.getElementById('summary_img');
+        var url = img.src;
+
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "summary.png";
+        a.click();
+    }); 
 </script>

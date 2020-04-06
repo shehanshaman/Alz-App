@@ -73,6 +73,17 @@
             right: 0; 
             margin: auto; 
         } 
+
+        .container-1 {
+            position: relative;
+            text-align: center;
+        }
+
+        .top-right {
+            position: absolute;
+            top: 8px;
+            right: 5px;
+        }          
     </style> 
 
 <body class="main-body" style="background-color: #f3f6f9;">
@@ -125,9 +136,17 @@
                 </div>
 
                 <div class="row">
-                    <div class="summary_plot">
-                        <img src="data:image/png;base64,{{ overlap_data }}" alt="overlap">
-                    </div>
+                    <div class="container-1">
+                        <div class="summary_plot">
+                            <img id="training_accuracy" src="data:image/png;base64,{{ overlap_data }}" alt="overlap">
+                        </div>
+                        <div class="top-right">
+                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                            class="use-download-training_accuracy" value="">
+                                <i class="fas fa-file-download fa-2x"></i>
+                            </button>
+                        </div> 
+                    </div>                   
                 </div>
             </div>
 
@@ -140,9 +159,17 @@
 
 
                 <div class="row">
-                    <div class="summary_plot">
-                        <img src="data:image/png;base64,{{ small_set }}" alt="small_set">
-                    </div>
+                    <div class="container-1">
+                        <div class="summary_plot">
+                            <img id="classification_accuracy" src="data:image/png;base64,{{ small_set }}" alt="small_set">
+                        </div>
+                        <div class="top-right">
+                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                            class="use-download-classification_accuracy" value="">
+                                <i class="fas fa-file-download fa-2x"></i>
+                            </button>
+                        </div>
+                    </div>                     
                 </div>
             </div>
 
@@ -154,9 +181,17 @@
 
 
                 <div class="row">
-                    <div class="summary_plot">
-                        <img src="data:image/png;base64,{{ corr_data }}" alt="correlation">
-                    </div>
+                    <div class="container-1">
+                        <div class="summary_plot">
+                            <img id="correlation_matrix" src="data:image/png;base64,{{ corr_data }}" alt="correlation">
+                        </div>
+                        <div class="top-right">
+                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                            class="use-download-correlation_matrix" value="">
+                                <i class="fas fa-file-download fa-2x"></i>
+                            </button>
+                        </div>
+                    </div>                    
                 </div>
             </div>
 
@@ -210,6 +245,8 @@
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
 <!-- <script>
     $("button").click(function () {
         var fired_button = $(this).val();
@@ -233,4 +270,33 @@
         $("#main-form-div-an-1").submit();        
     });
 
+    $(".use-download-training_accuracy").click(function () {
+        var img = document.getElementById('training_accuracy');
+        var url = img.src;
+
+        var a1 = document.createElement("a");
+        a1.href = url;
+        a1.download = "training_accuracy.png";
+        a1.click();
+    }); 
+
+    $(".use-download-classification_accuracy").click(function () {
+        var img = document.getElementById('classification_accuracy');
+        var url = img.src;
+
+        var a2 = document.createElement("a");
+        a2.href = url;
+        a2.download = "classification_accuracy.png";
+        a2.click();
+    });
+
+    $(".use-download-correlation_matrix").click(function () {
+        var img = document.getElementById('correlation_matrix');
+        var url = img.src;
+
+        var a3 = document.createElement("a");
+        a3.href = url;
+        a3.download = "correlation_matrix.png";
+        a3.click();
+    });
 </script>
