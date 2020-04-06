@@ -4,6 +4,7 @@ import os
 from flask import request
 
 from flask import send_file
+from flask import Blueprint, current_app, request, send_from_directory, send_file, make_response
 
 from flaskr.auth import login_required
 from flask import g
@@ -95,3 +96,45 @@ def download_df():
     path = USER_PATH / str(id) / name
 
     return send_file(path, attachment_filename='visualization.pdf')
+
+# def encode(data: bytes):
+#     """
+#     Return base-64 encoded value of binary data.
+#     """
+#     return base64.b64encode(data)
+
+
+# def decode(data: str):
+#     """
+#     Return decoded value of a base-64 encoded string.
+#     """
+#     return base64.b64decode(data.encode())
+
+
+# def get_pdf_data(filename):
+#     """
+#     Open pdf file in binary mode,
+#     return a string encoded in base-64.
+#     """
+#     with open(filename, 'rb') as file:
+#         return encode(file.read())
+
+# @bp.route("/download/img/", methods=["GET"])
+# def download_df():
+
+#     id = request.args.get('id')
+#     name = request.args.get('name')
+
+#     path = USER_PATH / str(id) / name
+
+#     # df = PreProcess.getDF(path)
+#     # df_csv = df.to_csv()
+#     data_pdf = get_pdf_data(path)
+#     #data_decode = decode(data_pdf)
+
+#     resp = make_response(data_pdf)
+#     resp.headers["Content-Disposition"] = "attachment; filename=" + name.split('.')[0] + ".pdf"
+#     resp.headers["Content-Type"] = "application/pdf"
+
+#     return resp
+
