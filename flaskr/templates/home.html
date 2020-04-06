@@ -7,7 +7,6 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -24,6 +23,10 @@
     <title>GeNet</title>
 
     <style>
+
+        #tourControls{
+            bottom: 137px !important;
+        }
 
         a, a:hover {
             color: inherit;
@@ -65,12 +68,72 @@
             margin-bottom: 50px;
         }
 
-    </style>
+    .notification-container{
+        position: fixed;
+        left: 10px;
+        width: 255px;
+        max-width: calc(100% - 30px);
+    }
+
+    .notification{
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 0px;
+        line-height: 20px;
+        margin-bottom: 15px;
+        animation: grow 0.5s ease-in forwards;
+    }
+    @keyframes grow{
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .notification.hide{
+        animation: shrink 0.4s ease-out forwards;
+    }
+    @keyframes shrink{
+        to{
+            opacity: 0;
+            transform: scale(0.6);
+        }
+    }
+
+    .notification-info{
+        background-color: #00000096;
+    }
+
+</style>
+
 </head>
 <body>
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
+
+<div class="notification-container" id="notification-container">
+    <div class="notification notification-info">
+        <div class="row">
+            <p style="text-align: center;font-size: 18px;margin-bottom: -10px;">Do you want a trip?</p>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
+            </div>
+            <div class="col-sm-6">
+                <a class="btn btn-primary tour_no">NO</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container limiter">
     <div class="row head-word">
@@ -79,14 +142,14 @@
     <div class="row">
         <div class="row" style="margin-bottom: 80px;">
 
-            <div class="option sites col-sm-4 center"><a href="{{ url_for('preprocess.upload_file_view') }}">
+            <div id="upload_icon" class="option sites col-sm-4 center"><a href="{{ url_for('preprocess.upload_file_view') }}">
                 <div class="">
                     <i class="fas fa-file-upload fa-5x"></i>
                 </div>
                 <h4>Upload File</h4></a>
             </div>
 
-            <div class="option sites col-sm-4 center"><a href="{{ url_for('visualization.index') }}">
+            <div id="visualization_icon" class="option sites col-sm-4 center"><a href="{{ url_for('visualization.index') }}">
                 <div class="">
                     <i class="fas fa-chart-line fa-5x"></i>
                 </div>
@@ -94,7 +157,7 @@
             </a>
             </div>
 
-            <div class="option sites col-sm-4 center"><a href="{{ url_for('preprocess.index') }}">
+            <div id="preprocess_icon" class="option sites col-sm-4 center"><a href="{{ url_for('preprocess.index') }}">
                 <div class="">
                     <i class="fas fa-chalkboard-teacher fa-5x"></i>
                 </div>
@@ -107,7 +170,7 @@
 
         <div class="row">
 
-            <div class="option sites col-sm-4 center"><a href="{{ url_for('fs.index') }}">
+            <div id="feature_icon" class="option sites col-sm-4 center"><a href="{{ url_for('fs.index') }}">
                 <div class="">
                     <i class="far fa-object-group fa-5x"></i>
                 </div>
@@ -115,15 +178,15 @@
             </a>
             </div>
 
-            <div class="option sites col-sm-4 center"><a href="{{ url_for('modeling.index') }}">
+            <div id="modeling_icon" class="option sites col-sm-4 center"><a href="{{ url_for('modeling.index') }}">
                 <div class="">
                     <i class="fas fa-laptop-code fa-5x"></i>
                 </div>
-                <h4>Modeling</h4>
+                <h4>Modelling</h4>
             </a>
             </div>
 
-            <div class="option sites col-sm-4 center"><a href="{{ url_for('modeling.predict') }}">
+            <div id="prediction_icon" class="option sites col-sm-4 center"><a href="{{ url_for('modeling.predict') }}">
                 <div class="">
                     <i class="fas fa-thermometer-full fa-5x"></i>
                 </div>
@@ -155,4 +218,46 @@
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
 </html>
+
+<script>
+    var tour = {
+        data : [
+            { element : '#upload_icon', tooltip : 'Upload yours Files those you want to pre-process!!', text: 'Upload File', files: [{ url : '', name : 'more details' }], position: 'T' },
+            { element : '#visualization_icon', tooltip : 'Visualization your data files!!', text: 'Upload File', position: 'T' },
+            { element : '#preprocess_icon', tooltip : 'Pre-process custom data files!!', text: 'Pre-processing', position: 'T' },
+            { element : '#feature_icon', tooltip : 'Custom feature selection method for data file!!', text: 'Feature Selection', position: 'T' },
+            { element : '#modeling_icon', tooltip : 'Modelling using your data file!!', text: 'Modelling', position: 'T' },
+            { element : '#prediction_icon', tooltip : 'Prediction output for your data file!!', text: 'Prediction', position: 'T' }
+        ],
+        welcomeMessage: 'Lets Start Tour!',
+        controlsPosition : 'BR',
+        buttons: {
+            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
+            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
+            start : { text : 'Start', class: 'btn btn-primary' },
+            end   : { text : 'End', class: 'btn btn-primary' }
+        },
+        controlsCss: {
+            background: 'rgba(187, 178, 48, 0.71)',
+            color: '#1c1d21',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+    $(document).ready(function(){
+        $('.tour').on('click', function(){
+            $.aSimpleTour(tour);
+            $('.notification-container').hide(1000);
+        });
+        $('.tour_no').on('click', function(){
+            $('.notification-container').hide(1000);
+        });
+    });
+</script>
