@@ -8,7 +8,7 @@ from flask import request
 import os
 from werkzeug.utils import secure_filename
 
-from .classes.dfClass import DF #file upload instance
+from .classes.dfClass import DF  # file upload instance
 from .classes.preProcessClass import PreProcess
 from .classes.featureReductionClass import FeatureReduction
 from .classes.featureSelectionClass import FeatureSelection
@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
-ALLOWED_EXTENSIONS = set(['pkl'])
+ALLOWED_EXTENSIONS = set(['pkl', 'csv'])
 
 from pathlib import Path
 
@@ -39,8 +39,10 @@ USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 UPLOAD_FOLDER = ROOT_PATH / "flaskr" / "upload"
 ANNOTATION_TBL = UPLOAD_FOLDER / "AnnotationTbls"
 
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @bp.route("/")
 @login_required
@@ -58,10 +60,10 @@ def index():
         annotation_list.append(filename)
 
     list_names.remove("tmp")
-    return render_template("preprocess/step-1.html", available_list=list_names, annotation_list= annotation_list)
+    return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list)
 
 
-#step 2
+# step 2
 @bp.route("/view")
 @login_required
 def view():
@@ -69,12 +71,12 @@ def view():
     if x is not None:
 
         if x.merge_df is None:
-            df = PreProcess.mergeDF(x.path , ANNOTATION_TBL / x.anno_tbl)
+            df = PreProcess.mergeDF(x.path, ANNOTATION_TBL / x.anno_tbl)
             merge_name = "merge_.pkl"
             path = USER_PATH / str(g.user["id"]) / "tmp" / merge_name
             path_str = path.as_posix()
             PreProcess.saveDF(df, path)
-            x.setMergeDF(path_str) #merge df
+            x.setMergeDF(path_str)  # merge df
             df2session(x, 'user')
         else:
             df = PreProcess.getDF(x.merge_df)
@@ -90,11 +92,12 @@ def view():
         else:
             df_view = df.head(15)
 
-        return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details = data)
+        return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data)
 
     return redirect('/pre')
 
-#normalization and null remove
+
+# normalization and null remove
 @bp.route("/step-3", methods=['POST'])
 @login_required
 def norm():
@@ -110,7 +113,7 @@ def norm():
         if x.merge_df is not None:
             if x.symbol_df is None:
                 df = PreProcess.step3(PreProcess.getDF(x.merge_df), x.scaling, x.imputation)
-                #create symbol_df
+                # create symbol_df
                 symbol_name = "symbol_.pkl"
                 path = USER_PATH / str(g.user["id"]) / "tmp" / symbol_name
                 path_str = path.as_posix()
@@ -122,7 +125,8 @@ def norm():
 
     return redirect('/pre')
 
-#step 3
+
+# step 3
 @bp.route("/step-2")
 @login_required
 def indexstep1():
@@ -131,11 +135,12 @@ def indexstep1():
         if x.merge_df is not None:
             data = session['df-details']
 
-            return render_template("preprocess/step-3.html", details = data)
+            return render_template("preprocess/step-3.html", details=data)
 
     return redirect('/pre')
 
-#step 4 to 5
+
+# step 4 to 5
 @bp.route("/probe2symbol")
 @login_required
 def probe2symbol():
@@ -158,19 +163,20 @@ def probe2symbol():
             session['df-details'] = data
 
             if len(df.columns) > 100:
-                df_view = df.iloc[:,0:100].head(15)
+                df_view = df.iloc[:, 0:100].head(15)
             else:
                 df_view = df.head(15)
 
-            return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')], details = data)
+            return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')],
+                                   details=data)
 
     return redirect('/pre')
 
-#step 4
+
+# step 4
 @bp.route("/step-5")
 @login_required
 def feature_reduction():
-
     x = json2df('user')
     p_fold_df = PreProcess.get_pvalue_fold_df(x.avg_symbol_df, x.path)
     path = USER_PATH / str(g.user["id"]) / 'tmp' / '_p_fold.pkl'
@@ -190,7 +196,8 @@ def feature_reduction():
 
     return render_template("preprocess/step-5.html", data_array=data_array, volcano_hash=volcano_hash)
 
-#step 6
+
+# step 6
 @bp.route("/step-6/", methods=['POST'])
 @login_required
 def get_reduce_features_from_pvalues():
@@ -200,7 +207,7 @@ def get_reduce_features_from_pvalues():
     path = user_tmp_path / '_p_fold.pkl'
     p_fold_df = PreProcess.getDF(path)
 
-    fold= request.form["fold-range"]
+    fold = request.form["fold-range"]
     pvalue = request.form["p-value"]
     df = PreProcess.get_filtered_df_pvalue(p_fold_df, x.avg_symbol_df, float(pvalue), float(fold))
     fr_df_path = user_tmp_path / ('fr_.pkl')
@@ -210,7 +217,7 @@ def get_reduce_features_from_pvalues():
 
     length = len(df.columns)
 
-    if(length < 350 ):
+    if (length < 350):
         split_array = np.linspace(150, int(length / 10) * 10, 21)
     else:
         split_array = np.linspace(150, 350, 21)
@@ -226,7 +233,7 @@ def get_reduce_features_from_pvalues():
     y = pd.to_numeric(y)
     classification_result_df = FeatureReduction.get_classification_results(df, y)
 
-    return render_template("preprocess/step-6.html", split_array = split_array, fs_fig_hash = fs_fig_hash,
+    return render_template("preprocess/step-6.html", split_array=split_array, fs_fig_hash=fs_fig_hash,
                            tables=[classification_result_df.to_html(classes='data')])
 
 
@@ -243,6 +250,7 @@ def get_feature_count_pval():
     count = PreProcess.get_filtered_df_count_pvalue(p_fold_df, float(pvalue), float(foldChange))
     return str(count)
 
+
 @bp.route("/fr/save/", methods=['POST'])
 @login_required
 def save_reduced_df():
@@ -258,7 +266,7 @@ def save_reduced_df():
     user_id = session.get("user_id")
     UserResult.update_result(user_id, 'filename', 're_' + x.file_name)
 
-    #remove old files
+    # remove old files
     files = ["merge_.pkl", "symbol_.pkl", "avg_symbol_.pkl", "_p_fold.pkl", "fr_.pkl"]
     folder_path = USER_PATH / str(g.user["id"]) / "tmp"
     remove_files(folder_path, files)
@@ -286,32 +294,50 @@ def create_object():
 
     return redirect('/pre/')
 
+
 @bp.route('/upload')
 @login_required
 def upload_file_view():
     return render_template("preprocess/step-0.html")
 
+
 # file upload
 @bp.route('/upload/', methods=['POST'])
 @login_required
 def upload_file():
-    if request.method == 'POST':
+    file = request.files['chooseFile']
 
-        file = request.files['chooseFile']
+    if file and allowed_file(file.filename):
 
-        if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        path_csv = USER_PATH / str(g.user["id"]) / filename
+        file.save(path_csv)
 
-            filename = secure_filename(file.filename)
-            path = USER_PATH / str(g.user["id"]) / filename
-            file.save(path)
-            return redirect('/pre')
-        else:
-            return redirect(request.url)
+        name = filename.split('.')
+
+        if name[1] == 'csv':
+            path_pkl = USER_PATH / str(g.user["id"]) / (name[0] + '.pkl')
+            csv2pkl(path_csv, path_pkl)
+            os.remove(path_csv)
+
+        return redirect('/pre')
+    else:
+        return redirect(request.url)
+
+
+def csv2pkl(path_csv, path_pkl):
+    df_save = pd.read_csv(path_csv)
+    df_save = df_save.set_index(["ID"])
+    df_save.index.name = None
+    df_save.columns.name = "ID"
+    df_save.to_pickle(path_pkl)
+    return True
+
 
 def json2df(df_name):
     if session.get(df_name):
         json_data = session[df_name]
-        df = DF( ** json.loads(json_data))
+        df = DF(**json.loads(json_data))
         return df
 
     return None
@@ -320,6 +346,7 @@ def json2df(df_name):
 def df2session(obj, name):
     json_data = json.dumps(obj.__dict__)
     session[name] = json_data
+
 
 def get_volcano_fig(fold_change, pValues):
     fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(14, 8))
@@ -336,6 +363,7 @@ def get_volcano_fig(fold_change, pValues):
 
     return pic_hash
 
+
 def get_feature_selection_fig(df, df_y, length):
     df["class"] = df_y['class']
     selectedFeatures = FeatureReduction.getScoresFromUS(df)
@@ -349,6 +377,7 @@ def get_feature_selection_fig(df, df_y, length):
     pic_hash = pic_hash.decode("utf-8")
 
     return pic_hash
+
 
 def remove_files(path, files):
     for file in files:
