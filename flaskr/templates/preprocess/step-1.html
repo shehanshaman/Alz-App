@@ -19,14 +19,18 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-    <style>
-        .button {
-            margin-top: inherit;
-        }
-    </style>
 </head>
 
     <style> 
+
+        .button {
+            margin-top: inherit;
+        }
+
+        #tourControls{
+            top: 80px !important;
+        }
+
         #loader { 
             border: 12px solid #26a69a66; 
             border-radius: 50%; 
@@ -50,12 +54,72 @@
             right: 0; 
             margin: auto; 
         } 
+
+    .notification-container{
+        position: fixed;
+        left: 10px;
+        width: 255px;
+        max-width: calc(100% - 30px);
+    }
+
+    .notification{
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 0px;
+        line-height: 20px;
+        margin-bottom: 15px;
+        animation: grow 0.5s ease-in forwards;
+    }
+    @keyframes grow{
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .notification.hide{
+        animation: shrink 0.4s ease-out forwards;
+    }
+    @keyframes shrink{
+        to{
+            opacity: 0;
+            transform: scale(0.6);
+        }
+    }
+
+    .notification-info{
+        background-color: #00000096;
+    }
+
     </style> 
 
 <body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
+
+<div class="notification-container" id="notification-container">
+    <div class="notification notification-info">
+        <div class="row">
+            <p style="text-align: center;font-size: 18px;margin-bottom: -10px;">Do you want a trip?</p>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
+            </div>
+            <div class="col-sm-6">
+                <a class="btn btn-primary tour_no">NO</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="main-div-step2">
 
@@ -102,7 +166,7 @@
                     <div class="col-sm-6">
                         <h5 id="h3-head-1" class="card__title" style="text-align: center;">Available Files :</h5>
                     </div>
-                    <div class="col-sm-5">
+                    <div id="available_file_name" class="col-sm-5">
                         <div class="md-form">
                             <select class="form-control" id="available_files" name="available_files">
                                 {% for name in available_list %}
@@ -111,7 +175,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-1">
+                    <div id="view_div" class="col-sm-1">
                         <button type="button" class="button btn btn-warning">View</button>
                     </div>
                 </div>
@@ -120,7 +184,7 @@
                     <div class="col-sm-6">
                         <h5 id="h3-head-1" class="card__title" style="text-align: center;">Annotation Table :</h5>
                     </div>
-                    <div class="col-sm-6">
+                    <div id="annotation_table_name" class="col-sm-6">
                         <div class="md-form">
                             <select class="form-control" id="anno_tbl" name="anno_tbl">
                                 {% for name in annotation_list %}
@@ -135,7 +199,7 @@
                     <div class="col-sm-6">
                         <h5 id="h3-head-1" class="card__title" style="text-align: center;">Probe Selection Method :</h5>
                     </div>
-                    <div class="col-sm-6">
+                    <div id="average_div" class="col-sm-6">
                         <div class="md-form">
                             <select class="form-control" id="column_selection" name="column_selection">
                                 <option value="1">Average</option>
@@ -152,7 +216,7 @@
                 <button id="btn-submit-step-1" class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">
                     <input type="submit" value="Submit">
                 </button>
-                <button class="waves-effect waves-dark btn-flat previous-step"><a
+                <button id="btn-submit-step-back" class="waves-effect waves-dark btn-flat previous-step"><a
                         href="{{ url_for('preprocess.upload_file_view') }}">BACK</a></button>
             </div>
 
@@ -191,6 +255,50 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+</html>
+
+<script>
+    var tour = {
+        data : [
+            { element : '#available_file_name', tooltip : 'Choose a file from the list!!', text: 'Availabe files', files: [{ url : '', name : 'more details' }], position: 'T' },
+            { element : '#view_div', tooltip : 'You can view selected data-set!!', text: 'Data-set', position: 'T' },
+            { element : '#annotation_table_name', tooltip : 'choose annotation table!!', text: 'Annotation table', position: 'T' },
+            { element : '#average_div', tooltip : 'Choose methode for probe mapping!!', text: 'Probe selection method', position: 'T' },
+            { element : '#btn-submit-step-1', tooltip : 'Submit file for pre-process!!', text: 'Submit', position: 'T' },
+            { element : '#btn-submit-step-back', tooltip : 'Back to file upload page!!', text: 'Back', position: 'T' }
+        ],
+        welcomeMessage: 'Lets Start Tour!',
+        controlsPosition : 'TL',
+        buttons: {
+            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
+            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
+            start : { text : 'Start', class: 'btn btn-primary' },
+            end   : { text : 'End', class: 'btn btn-primary' }
+        },
+        controlsCss: {
+            background: 'rgba(187, 178, 48, 0.71)',
+            color: '#1c1d21',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+    $(document).ready(function(){
+        $('.tour').on('click', function(){
+            $.aSimpleTour(tour);
+            $('.notification-container').hide(1000);
+        });
+        $('.tour_no').on('click', function(){
+            $('.notification-container').hide(1000);
+        });
+    });
+</script>
 
 <script>
 
