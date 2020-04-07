@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Upload</title>
-
+    <title>GeNet | Upload</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -21,28 +21,53 @@
 
 </head>
 
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
 
-<body style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
 
-<div id="mainDataInterface-id" class="container mainDataInterface">
+<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 50px; margin-bottom: 50px;">
 
-    <form method="post" action="/pre/upload/" enctype="multipart/form-data">
+    <form id="main-form-div" method="post" action="/pre/upload/" enctype="multipart/form-data">
 
         <div class="step-content row">
             <div class="head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose your dataset</h3>
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;color:#26a69a; ">Choose your dataset</h3>
             </div>
         </div>
 
-        <div class="row" style="margin-top: 40px;">
+        <div class="row" style="margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
 
             <div class="row">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">DATASET:</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">DATASET :</h5>
                 </div>
                 <div class="col-sm-6">
                     <div class="file-upload">
@@ -63,13 +88,18 @@
 
             <div class="row center">
                 <div class="step-actions">
-                    <input class="waves-effect waves-dark btn" type="submit" value="Submit">
+                    <input id="btn-submit-step-0" class="waves-effect waves-dark btn" type="submit" value="Submit">
                 </div>
             </div>
 
         </div>
 
     </form>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 22%;text-align: center;color: #26a69a;">UPLOADING DATASET</h5>        
+    </div> 
 
 </div>
 
@@ -93,3 +123,19 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-step-0').click(function () {
+        
+        if( $('#chooseFile').val() != ''){
+            $('#main-form-div').hide(0);
+            $('.loader-div').show(0);
+            $('.main-body').click(false);
+            $("#main-form-div").submit();
+        }
+        else{
+        }
+    });
+
+</script>

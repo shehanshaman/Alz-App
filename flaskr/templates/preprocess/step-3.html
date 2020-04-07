@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Pre-processing</title>
-
+    <title>GeNet | Pre-processing</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -21,139 +21,246 @@
 
 </head>
 
-<body style="background-color: #f3f6f9;">
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
+
+<style type="text/css">
+
+        #tourControls{
+            top: 80px !important;
+        }
+
+    .notification-container{
+        position: fixed;
+        left: 10px;
+        width: 255px;
+        max-width: calc(100% - 30px);
+    }
+
+    .notification{
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 0px;
+        line-height: 20px;
+        margin-bottom: 15px;
+        animation: grow 0.5s ease-in forwards;
+    }
+    @keyframes grow{
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .notification.hide{
+        animation: shrink 0.4s ease-out forwards;
+    }
+    @keyframes shrink{
+        to{
+            opacity: 0;
+            transform: scale(0.6);
+        }
+    }
+
+    .notification-info{
+        background-color: #00000096;
+    }
+
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="card-content">
-
-    <ul data-method="GET" class="stepper linear">
-        <li class="step active">
-            <a href="{{ url_for('preprocess.index') }}">
-                <div class="step-title waves-effect waves-dark">Pre-processing</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('fs.index') }}">
-                <div class="step-title waves-effect waves-dark">Feature selection</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('analyze.index') }}">
-                <div class="step-title waves-effect waves-dark">Analysis</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('validation.index') }}">
-                <div class="step-title waves-effect waves-dark">Validation</div>
-            </a>
-        </li>
-    </ul>
-
+<div class="notification-container" id="notification-container">
+    <div class="notification notification-info">
+        <div class="row">
+            <p style="text-align: center;font-size: 18px;margin-bottom: -10px;">Do you want a trip?</p>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
+            </div>
+            <div class="col-sm-6">
+                <a class="btn btn-primary tour_no">NO</a>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="mainDataInterface-id" class="container mainDataInterface">
+<div class="main-div-step3">
 
-    <div class="row">
-        <h3 id="h3-head-2" class="card__title" style="text-align: center;">Step 3: Scaling & Imputation</h3>
-    </div>
+    <div class="card-content">
 
-    <div class="row">
-        <div class="col-sm-6">
-            <table>
-                <tr>
-                    <td>Number of features</td>
-                    <td>{{ details["Number of features"] }}</td>
-                </tr>
-                <tr>
-                    <td>Number of unique Gene Symbols</td>
-                    <td>{{ details["Number of unique Gene Symbols"] }}</td>
-                </tr>
-                <tr>
-                    <td>Minimum value</td>
-                    <td>{{ details["min"] }}</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="col-sm-6">
-            <table>
-                <tr>
-                    <td>Number of null values in data</td>
-                    <td>{{ details["Number of null values in data"] }}</td>
-                </tr>
-                <tr>
-                    <td>Number of null values in Gene Symbols</td>
-                    <td>{{ details["Number of null values in Gene Symbols"] }}</td>
-                </tr>
-                <tr>
-                    <td>Maximum value</td>
-                    <td>{{ details["max"] }}</td>
-                </tr>
-            </table>
-        </div>
+        <ul data-method="GET" class="stepper linear">
+            <li class="step active">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
 
     </div>
 
-    <form method="post" action="/pre/step-3" enctype="multipart/form-data">
+    <div id="mainDataInterface-id" class="container mainDataInterface">
 
-        <div class="row" style="margin-top: 40px;">
+        <div class="row">
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 3 : SCALING & IMPUTATION</h3>
+        </div>
+
+        <div class="row">
             <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Scaling</h5>
+                <table>
+                    <tr>
+                        <td>Number of features</td>
+                        <td id="number_features_div">{{ details["Number of features"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of unique Gene Symbols</td>
+                        <td id="number_unique_div">{{ details["Number of unique Gene Symbols"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Minimum value</td>
+                        <td id="min_val_div">{{ details["min"] }}</td>
+                    </tr>
+                </table>
             </div>
+
             <div class="col-sm-6">
-                <div class="md-form">
-                    <select class="form-control" id="norm_mthd" name="norm_mthd">
-                        <option value="sklearn">Sklearn Normalize</option>
-                    </select>
+                <table>
+                    <tr>
+                        <td>Number of null values in data</td>
+                        <td id="number_null_div">{{ details["Number of null values in data"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of null values in Gene Symbols</td>
+                        <td id="number_gene_null_div">{{ details["Number of null values in Gene Symbols"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum value</td>
+                        <td id="max_val_div">{{ details["max"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+            <br>
+
+            <hr class="line-hr">
+
+            <br>
+            
+        <form id="main-form-div-step3" method="post" action="/pre/step-3" enctype="multipart/form-data">
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Scaling :</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div id="scaling_select_div" class="md-form">
+                        <select class="form-control" id="norm_mthd" name="norm_mthd">
+                            <option value="sklearn">Sklearn Normalize</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row" style="margin-top: 40px;">
-            <div class="col-sm-6">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Imputation</h5>
-            </div>
-            <div class="col-sm-6">
-                <div class="md-form">
-                    <select class="form-control" id="null_rmv" name="null_rmv">
-                        <option value="drop">Drop</option>
-                    </select>
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Imputation :</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div id="imputation_select_div"  class="md-form">
+                        <select class="form-control" id="null_rmv" name="null_rmv">
+                            <option value="drop">Drop</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row" style="margin-top: 40px;">
-            <div class="col-sm-5"></div>
-            <div class='form-field col-sm-6 step-3-default'>
-                <p><input name='checkbox-3-default' type="checkbox" class="filled-in" id="checkbox-3-default"
-                          value='checkbox-3-default'/>
-                    <label for="checkbox-3-default">DEFAULT METHODS</label>
-                </p>
+    <!--         <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-5"></div>
+                <div class='form-field col-sm-6 step-3-default'>
+                    <p><input name='checkbox-3-default' type="checkbox" class="filled-in" id="checkbox-3-default"
+                              value='checkbox-3-default'/>
+                        <label for="checkbox-3-default">DEFAULT METHODS</label>
+                    </p>
+                </div>
+                <div class="col-sm-1"></div>
             </div>
-            <div class="col-sm-1"></div>
-        </div>
+     -->
+            <br>
 
-        <br>
+            <hr class="line-hr">
 
-        <hr class="line-hr">
+            <br>
 
-        <br>
+            <div class="step-actions">
+                <button id="btn-submit-step-3" class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">PRE-PROCESS
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step"><a
+                        href="{{ url_for('preprocess.view') }}">BACK</a></button>
+            </div>
 
-        <div class="step-actions">
-            <button class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit"><input
-                    class="" type="submit" value="Submit">
-            </button>
-            <button class="waves-effect waves-dark btn-flat previous-step"><a
-                    href="{{ url_for('preprocess.view') }}">BACK</a></button>
-        </div>
+        </form>
 
-    </form>
+        <!--end page set 3-->
 
-    <!--end page set 3-->
-
+    </div>
+    
 </div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">DATASET PRE-PROCESSING</h5>        
+    </div> 
 
 {% include 'footer.html' %}
 
@@ -176,3 +283,61 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-step-3').click(function () {
+        $('.main-div-step3').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-step3").submit();
+    });
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+</html>
+
+<script>
+    var tour = {
+        data : [
+            { element : '#number_features_div', tooltip : 'features!!', text: 'number of features', position: 'T' },
+            { element : '#number_null_div', tooltip : 'null val!!', text: 'Number of null values', position: 'T' },
+            { element : '#number_unique_div', tooltip : 'unique gene!!', text: 'Number of unique Gene Symbols', position: 'T' },
+            { element : '#number_gene_null_div', tooltip : 'gene null!!', text: 'Number of null values in Gene Symbols', position: 'T' },
+            { element : '#min_val_div', tooltip : 'min val!!', text: 'Minimum value', position: 'T' },
+            { element : '#max_val_div', tooltip : 'max val!!', text: 'Maximum value', position: 'T' },
+            { element : '#scaling_select_div', tooltip : 'scaling!!', text: 'Scaling', position: 'T' },
+            { element : '#imputation_select_div', tooltip : 'impultation!!', text: 'Imputation', position: 'T' },
+            { element : '#btn-submit-step-3', tooltip : 'start preprocess!!', text: 'Pre-process', position: 'T' }
+        ],
+        welcomeMessage: 'Lets Start Tour!',
+        controlsPosition : 'TL',
+        buttons: {
+            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
+            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
+            start : { text : 'Start', class: 'btn btn-primary' },
+            end   : { text : 'End', class: 'btn btn-primary' }
+        },
+        controlsCss: {
+            background: 'rgba(187, 178, 48, 0.71)',
+            color: '#1c1d21',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+    $(document).ready(function(){
+        $('.tour').on('click', function(){
+            $.aSimpleTour(tour);
+            $('.notification-container').hide(1000);
+        });
+        $('.tour_no').on('click', function(){
+            $('.notification-container').hide(1000);
+        });
+    });
+</script>

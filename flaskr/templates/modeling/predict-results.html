@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Predicted Results</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+
+    {#    Table css and js#}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
+
+
+    <style>
+        .pagination li.active {
+            background-color: inherit;
+        }
+    </style>
+
+</head>
+<body>
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+    <div class="row">
+        <div class="row" id="h3-head-6" class="card__title">
+            <div class="col-sm-12">
+                <h4 style="color: #26a69a; display: inline;">File Name : </h4>
+                <h4 class="h4-file-name" style="color: #26a69a; display: inline;">results.pkl</h4>
+                <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;" class="use-download" value="results.pkl">
+                    <i class="fas fa-file-download fa-2x"></i>
+                </button>                              
+            </div>        
+        </div>
+        <div class="row table_view">
+            {% for table in tables %}
+                {{ table|safe }}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<form style="display: none" action="/view/p" method="GET" id="form" target="_blank">
+    <input type="hidden" id="selected_row" name="id" value=""/>
+</form>
+
+{% include 'footer.html' %}
+
+</body>
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#table_id').DataTable();
+    });
+</script>
+
+<script type='text/javascript'>
+    window.onload = function () {<!--   w  w w  .j  a  v a  2 s  .c  om-->
+        var rows = document.getElementsByTagName("tr");
+        for (var i = 0; i < rows.length; i++) {
+            if (i==0){ continue;}
+            rows[i].onclick = function () {
+                console.log($(this).find('th')[0].innerHTML);
+                $("#selected_row").val($(this).find('th')[0].innerHTML);
+                $("#form").submit();
+            };
+        }
+    };
+
+    $(".use-download").click(function () {
+        var $file_name = $('.h4-file-name').text();
+        
+        var url = "../../../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=0";
+        console.log(url);
+        window.open(url, '_blank');
+
+    });
+
+</script>
+</html>

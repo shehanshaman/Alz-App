@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Prediction</title>
-
+    <title>GeNet | Prediction</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -63,160 +63,233 @@
 
 </head>
 
-<body style="background-color: #f3f6f9;">
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style>
+
+<style type="text/css">
+
+/*        #tourControls{
+            bottom: 80px !important;
+        }*/
+
+    .notification-container{
+        position: fixed;
+        left: 10px;
+        width: 255px;
+        max-width: calc(100% - 30px);
+    }
+
+    .notification{
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 0px;
+        line-height: 20px;
+        margin-bottom: 15px;
+        animation: grow 0.5s ease-in forwards;
+    }
+    @keyframes grow{
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .notification.hide{
+        animation: shrink 0.4s ease-out forwards;
+    }
+    @keyframes shrink{
+        to{
+            opacity: 0;
+            transform: scale(0.6);
+        }
+    }
+
+    .notification-info{
+        background-color: #00000096;
+    }
+
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div id="mainDataInterface-id" class="container mainDataInterface">
-
-    <div class="step-content">
-        <div class="row head-word">
-            <h3 id="h3-head-1" class="card__title" style="text-align: center;">PREDICTION</h3>
+<div class="notification-container" id="notification-container">
+    <div class="notification notification-info">
+        <div class="row">
+            <p style="text-align: center;font-size: 18px;margin-bottom: -10px;">Do you want a trip?</p>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
+            </div>
+            <div class="col-sm-6">
+                <a class="btn btn-primary tour_no">NO</a>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="row">
-                <div class="col-sm-2">
-                    <h5>Details</h5>
-                </div>
-                <div class="col-sm-4" id="modal_create">
-                    <button type="button" class="btn btn-warning"><a href="{{ url_for('modeling.index') }}">Customize
-                        Model</a></button>
-                </div>
+<div class="main-div-predict">
+    <div id="mainDataInterface-id" class="container mainDataInterface">
 
+        <div class="step-content">
+            <div class="row head-word">
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">PREDICTION</h3>
             </div>
-            <div class="row">
-                <table>
-                    <tr>
-                        <td>Classifier:</td>
-                        <td>{{ details[2] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Accuracy:</td>
-                        <td>{{ details[3] }} %</td>
-                    </tr>
-                    <tr>
-                        <td>Trained from:</td>
-                        <td>{{ details[1] }}</td>
-                    </tr>
-                    <tr>
-                        <td>Features:</td>
-                        <td>{{ details[0] }}</td>
-                    </tr>
-                </table>
-            </div>
+        </div>
 
-            <form method="post" action="/mod/predict/" id="predict-result" enctype="multipart/form-data">
-
-                <br>
-
-                <div class="where-you-like" style="margin-top: 40px;">
-
-                    <div class="row" style="margin-top: 40px;">
-                        <div class="col-sm-4">
-                            <h5 id="" class="card__title" style="text-align: center;">Choose File:</h5>
-                        </div>
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-5">
-                            <div class="md-form">
-                                <select class="form-control" id="available_files" name="available_files">
-                                    {% for name in available_list %}
-                                        <option value="{{ name }}">{{ name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-1">
-                            <button type="button" class="button btn btn-warning">View</button>
-                        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <h5>Details</h5>
+                    </div>
+                    <div class="col-sm-4" id="modal_create">
+                        <button type="button" class="btn btn-warning"><a style="font-size: 15px;" href="{{ url_for('modeling.index') }}">Customize Model</a></button>
                     </div>
 
-                    <div class="row" style="margin-top: 40px;">
-                        <div class="row">
-                            <h5 id="h5-head-1" class="card__title" style="text-align: center;">Check preprocess
-                                steps</h5>
-                        </div>
-                        <div class="row">
+                </div>
+                <div class="row">
+                    <table>
+                        <tr>
+                            <td>Classifier:</td>
+                            <td>{{ details[2] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Accuracy:</td>
+                            <td>{{ details[3] }} %</td>
+                        </tr>
+                        <tr>
+                            <td>Trained from:</td>
+                            <td>{{ details[1] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Features:</td>
+                            <td>{{ details[0] }}</td>
+                        </tr>
+                    </table>
+                </div>
 
-                            <div class="switch row" id="all">
-                                <span class="col-sm-6">Normalize: </span>
-                                <label class="col-sm-6" onclick="update_checkbox(event)">
-                                    Off
-                                    <input type="checkbox" value="false" id="is_norm" name="is_norm">
-                                    <span class="lever"></span>
-                                    On
-                                </label>
+            </div>
+
+            <div class="col-sm-6" style="">
+                <form id="main-form-div-predict" method="post" action="/mod/predict/results/" id="predict-result" enctype="multipart/form-data">
+
+                    <br>
+
+                    <div class="where-you-like" style="margin-top: 40px;border: 2px solid #26a69a;padding: 20px;">
+
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-sm-4">
+                                <h5 id="" class="card__title" style="text-align: center;">Choose File:</h5>
                             </div>
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-5">
+                                <div id="select_file_div" class="md-form">
+                                    <select class="form-control" id="available_files" name="available_files">
+                                        {% for name in available_list %}
+                                            <option value="{{ name }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="show_file_div" class="col-sm-1">
+                                <button type="button" class="button btn btn-warning">View</button>
+                            </div>
+                        </div>
 
-                            <div class="switch row">
-                                <div class="row">
-                                    <span class="col-sm-6">Annotation Table Mapping </span>
-                                    <label class="col-sm-6" onclick="update_checkbox(event)">
+                        <div class="row" style="margin-top: 10px; margin-bottom: -75px;margin-right: 10px;">
+                            <div class="row">
+                                <h5 id="h5-head-1" class="card__title" style="text-align: center;">Check preprocess
+                                    steps</h5>
+                            </div>
+                            <div class="row">
+
+                                <div class="switch row" id="all">
+                                    <span class="col-sm-6">Normalize: </span>
+                                    <label id="select_normalize_div" class="col-sm-6" onclick="update_checkbox(event)">
                                         Off
-                                        <input type="checkbox" value="false" id="is_map" name="is_map">
+                                        <input type="checkbox" value="false" id="is_norm" name="is_norm">
                                         <span class="lever"></span>
                                         On
                                     </label>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-sm-6"></div>
-                                    <div class="col-sm-6">
-                                        <div class="md-form" id="anno_tbl_div">
-                                            <select class="form-control" id="anno_tbl" name="anno_tbl">
-                                                {% for name in annotation_list %}
-                                                    <option value="{{ name }}">{{ name }}</option>
-                                                {% endfor %}
-                                            </select>
+                                <div class="switch row">
+                                    <div class="row">
+                                        <span class="col-sm-6">Annotation Table Mapping </span>
+                                        <label id="select_annotation_div"   class="col-sm-6" onclick="update_checkbox(event)">
+                                            Off
+                                            <input type="checkbox" value="false" id="is_map" name="is_map">
+                                            <span class="lever"></span>
+                                            On
+                                        </label>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6"></div>
+                                        <div class="col-sm-6">
+                                            <div class="md-form" id="anno_tbl_div">
+                                                <select class="form-control" id="anno_tbl" name="anno_tbl" style="margin-bottom: 20px;">
+                                                    {% for name in annotation_list %}
+                                                        <option value="{{ name }}">{{ name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
-
                             </div>
-                        </div>
 
-                    </div>
-                </div>
-
-                <div class="row progress" id="progress_bar">
-                    <div class="indeterminate"></div>
-                </div>
-
-                <div class="submit">
-                    <button class="waves-effect waves-dark btn next-step step-6-click" id="btn-submit">SUBMIT</button>
-                </div>
-
-            </form>
-        </div>
-
-        <div class="col-sm-2"></div>
-
-        <div class="col-sm-4">
-            <div class="row">
-                {% if tables %}
-                    <div class="row">
-                        <div class="row">
-                            <h5 id="h5-head-12" class="card__title" style="text-align: center;">Predicted
-                                Results</h5>
-                        </div>
-
-                        <div class="row table_view">
-                            {% for table in tables %}
-                                {{ table|safe }}
-                            {% endfor %}
                         </div>
                     </div>
-                {% endif %}
+
+                    <div class="submit">
+                        <button id="btn-submit-predict" class="waves-effect waves-dark btn next-step step-6-click" id="btn-submit">SUBMIT</button>
+                    </div>
+
+                </form>            
             </div>
+
         </div>
-    </div>
 
-    <div class="row">
-        <hr class="line-hr">
+        <div class="row">
+            <hr class="line-hr">
 
+        </div>
     </div>
 </div>
 
@@ -225,6 +298,12 @@
         <input type="hidden" id="selected_file" name="selected_file" value=""/>
     </form>
 </div>
+
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PREDICTING RESULTS</h5>        
+    </div> 
 
 {% include 'footer.html' %}
 
@@ -267,10 +346,58 @@
         $("#form").submit();
     });
 
-    $('#btn-submit').click(function () {
+    $('#btn-submit-predict').click(function () {
+        $('.main-div-predict').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
 
-        document.getElementById("progress_bar").style.visibility = "visible";
-        document.getElementById("btn-submit").disabled = true;
-        $("#predict-result").submit();
+        var conceptName = $('#available_files').find(":selected").text();
+
+        $("#selected_file").val(conceptName);
+                
+        $("#main-form-div-predict").submit();        
     });
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script>
+    var tour = {
+        data : [
+            { element : '#modal_create', tooltip : 'info!!', text: 'Model', position: 'T' },
+            { element : '#select_file_div', tooltip : 'table!!', text: 'Choose File ', position: 'T' },
+            { element : '#select_normalize_div', tooltip : 'table!!', text: 'Normaliz emethod', position: 'T' },
+            { element : '#select_annotation_div', tooltip : 'table!!', text: 'Annotation Mapping', position: 'T' },
+            { element : '#btn-submit-predict', tooltip : 'predict!!', text: 'select', position: 'T' }
+        ],
+        welcomeMessage: 'Lets Start Tour!',
+        controlsPosition : 'BR',
+        buttons: {
+            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
+            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
+            start : { text : 'Start', class: 'btn btn-primary' },
+            end   : { text : 'End', class: 'btn btn-primary' }
+        },
+        controlsCss: {
+            background: 'rgba(187, 178, 48, 0.71)',
+            color: '#1c1d21',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+    $(document).ready(function(){
+        $('.tour').on('click', function(){
+            $.aSimpleTour(tour);
+            $('.notification-container').hide(1000);
+        });
+        $('.tour_no').on('click', function(){
+            $('.notification-container').hide(1000);
+        });
+    });
+
 </script>

@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Feature Selection</title>
-
+    <title>GeNet | Feature Selection | RESULTS</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -69,98 +69,214 @@
 
 </head>
 
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+        .container-1 {
+            position: relative;
+            text-align: center;
+        }
 
-<body style="background-color: #f3f6f9;">
+        .top-right {
+            position: absolute;
+            top: 8px;
+            right: 5px;
+        }        
+    </style> 
+
+<style type="text/css">
+
+        #tourControls{
+            top: 80px !important;
+        }
+
+    .notification-container{
+        position: fixed;
+        left: 10px;
+        width: 255px;
+        max-width: calc(100% - 30px);
+    }
+
+    .notification{
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 0px;
+        line-height: 20px;
+        margin-bottom: 15px;
+        animation: grow 0.5s ease-in forwards;
+    }
+    @keyframes grow{
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .notification.hide{
+        animation: shrink 0.4s ease-out forwards;
+    }
+    @keyframes shrink{
+        to{
+            opacity: 0;
+            transform: scale(0.6);
+        }
+    }
+
+    .notification-info{
+        background-color: #00000096;
+    }
+
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="card-content">
-
-    <ul data-method="GET" class="stepper linear">
-        <li class="step">
-            <a href="{{ url_for('preprocess.index') }}">
-                <div class="step-title waves-effect waves-dark">Pre-processing</div>
-            </a>
-        </li>
-        <li class="step active">
-            <a href="{{ url_for('fs.index') }}">
-                <div class="step-title waves-effect waves-dark">Feature selection</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('analyze.index') }}">
-                <div class="step-title waves-effect waves-dark">Analysis</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('validation.index') }}">
-                <div class="step-title waves-effect waves-dark">Validation</div>
-            </a>
-        </li>
-    </ul>
-
-</div>
-
-
-<div id="mainDataInterface-id" class="container mainDataInterface">
-
-    <div class="step">
-        <div class="step-content">
-            <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;">RESULTS: Summary</h3>
+<div class="notification-container" id="notification-container">
+    <div class="notification notification-info">
+        <div class="row">
+            <p style="text-align: center;font-size: 18px;margin-bottom: -10px;">Do you want a trip?</p>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
             </div>
-
-
-            <div class="row">
-                <div class="summary_plot">
-                    <img src="data:image/png;base64,{{ image_data }}" alt="summary">
-                </div>
-            </div>
-
-            <div class="row">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Selected Features</h5>
-            </div>
-
-            <div class="row">
-                <div id="btnContainer">
-                    <button class="btn" onclick="listView()"><i class="fa fa-bars"></i> List</button>
-                    <button class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
-                </div>
-                <br>
-
-                <div class="row">
-                    <div class="column" style="background-color:#aaa;">
-                        <h2>{{ methods[1] }}</h2>
-                        <p>{{ columns[0] }}</p>
-                    </div>
-                    <div class="column" style="background-color:#bbb;">
-                        <h2>{{ methods[2] }}</h2>
-                        <p>{{ columns[1] }}</p>
-                    </div>
-                    <div class="column" style="background-color:#cccccc;">
-                        <h2>{{ methods[3] }}</h2>
-                        <p>{{ columns[2] }}</p>
-                    </div>
-                </div>
-
-            </div>
-
-
-            <hr class="line-hr">
-
-            <div class="step-actions">
-                <button class="waves-effect waves-dark btn next-step step-6-click"><a
-                        href="{{ url_for('analyze.index') }}">Analyze</a>
-                </button>
-                <button class="waves-effect waves-dark btn-flat previous-step"><a
-                        href="{{ url_for('fs.index') }}">BACK</a></button>
+            <div class="col-sm-6">
+                <a class="btn btn-primary tour_no">NO</a>
             </div>
         </div>
     </div>
-
-
 </div>
+
+<div class="main-div-fn-2">
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li class="step">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step active">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step">
+            <div class="step-content">
+                <div class="row">
+                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">RESULTS</h3>
+                </div>
+
+                <div class="row">
+                    <div id="results_img_div" class="container-1">
+                        <div class="summary_plot">
+                            <img id="summary_img" src="data:image/png;base64,{{ image_data }}" alt="summary">
+                        </div>
+                        <div class="top-right">
+                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                            class="use-download-summary" value="">
+                                <i class="fas fa-file-download fa-2x"></i>
+                            </button>
+                        </div> 
+                    </div>                           
+                </div>
+
+                <div class="row">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Selected Features</h5>
+                </div>
+
+                <div class="row">
+                    <div id="btnContainer">
+                        <button id="list_div_btn" class="btn" onclick="listView()" style="color: black;"><i class="fa fa-bars"></i> List</button>
+                        <button id="grid_div_btn"  class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+                    </div>
+                    <br>
+
+                    <div id="results_gene_div" class="row">
+                        <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
+                            <h2 style="color: #ffffff;">{{ methods[1] }}</h2>
+                            <p>{{ columns[0] }}</p>
+                        </div>
+                        <div class="column" style="background-color:rgba(38, 166, 154, 0.91);">
+                            <h2 style="color: #ffffff;">{{ methods[2] }}</h2>
+                            <p>{{ columns[1] }}</p>
+                        </div>
+                        <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
+                            <h2 style="color: #ffffff;">{{ methods[3] }}</h2>
+                            <p>{{ columns[2] }}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="line-hr">
+
+                <form id="main-form-div-fn-2" method="get" action="/an" enctype="multipart/form-data">
+
+                    <div class="step-actions">
+                        <button id="btn-submit-fn-2" class="waves-effect waves-dark btn next-step step-6-click"><a>Analyze</a>
+                        </button>
+                        <button class="waves-effect waves-dark btn-flat previous-step"><a
+                                href="{{ url_for('fs.index') }}">BACK</a></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">ANALYSING RESULTS</h5>        
+    </div> 
 
 {% include 'footer.html' %}
 
@@ -180,6 +296,8 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
     // Get the elements with class="column"
@@ -212,4 +330,65 @@
             this.className += " active";
         });
     }
+</script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-fn-2').click(function () {
+        $('.main-div-fn-2').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-fn-2").submit();
+    });
+
+    $(".use-download-summary").click(function () {
+        var img = document.getElementById('summary_img');
+        var url = img.src;
+
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "summary.png";
+        a.click();
+    }); 
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script>
+    var tour = {
+        data : [
+            { element : '#results_img_div', tooltip : 'About plot!!', text: 'Results plot', position: 'T' },
+            { element : '#list_div_btn', tooltip : 'list!!', text: 'List layout', position: 'T' },
+            { element : '#grid_div_btn', tooltip : 'grid!!', text: 'Grid layout', position: 'T' },
+            { element : '#results_gene_div', tooltip : 'gene list!!', text: 'Gene list', position: 'T' },
+            { element : '#btn-submit-fn-2', tooltip : 'Result genes!!', text: 'Results', position: 'T' }
+        ],
+        welcomeMessage: 'Lets Start Tour!',
+        controlsPosition : 'TR',
+        buttons: {
+            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
+            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
+            start : { text : 'Start', class: 'btn btn-primary' },
+            end   : { text : 'End', class: 'btn btn-primary' }
+        },
+        controlsCss: {
+            background: 'rgba(187, 178, 48, 0.71)',
+            color: '#1c1d21',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+    $(document).ready(function(){
+        $('.tour').on('click', function(){
+            $.aSimpleTour(tour);
+            $('.notification-container').hide(1000);
+        });
+        $('.tour_no').on('click', function(){
+            $('.notification-container').hide(1000);
+        });
+    });
 </script>

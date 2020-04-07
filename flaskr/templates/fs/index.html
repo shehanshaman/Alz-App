@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Feature Selection</title>
-
+    <title>GeNet | Feature Selection</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -38,143 +38,242 @@
     </style>
 </head>
 
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
 
-<body style="background-color: #f3f6f9;">
+<style type="text/css">
+
+        #tourControls{
+            top: 80px !important;
+        }
+
+    .notification-container{
+        position: fixed;
+        left: 10px;
+        width: 255px;
+        max-width: calc(100% - 30px);
+    }
+
+    .notification{
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 0px;
+        line-height: 20px;
+        margin-bottom: 15px;
+        animation: grow 0.5s ease-in forwards;
+    }
+    @keyframes grow{
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .notification.hide{
+        animation: shrink 0.4s ease-out forwards;
+    }
+    @keyframes shrink{
+        to{
+            opacity: 0;
+            transform: scale(0.6);
+        }
+    }
+
+    .notification-info{
+        background-color: #00000096;
+    }
+
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;">
 
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="card-content">
-
-    <ul data-method="GET" class="stepper linear">
-        <li class="step ">
-            <a href="{{ url_for('preprocess.index') }}">
-                <div class="step-title waves-effect waves-dark">Pre-processing</div>
-            </a>
-        </li>
-        <li class="step active">
-            <a href="{{ url_for('fs.index') }}">
-                <div class="step-title waves-effect waves-dark">Feature selection</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('analyze.index') }}">
-                <div class="step-title waves-effect waves-dark">Analysis</div>
-            </a>
-        </li>
-        <li class="step">
-            <a href="{{ url_for('validation.index') }}">
-                <div class="step-title waves-effect waves-dark">Validation</div>
-            </a>
-        </li>
-    </ul>
-
-</div>
-
-
-<div id="mainDataInterface-id" class="container mainDataInterface">
-
-    <div class="step">
-        <div class="step-content">
-            <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;">Feature Selection</h3>
+<div class="notification-container" id="notification-container">
+    <div class="notification notification-info">
+        <div class="row">
+            <p style="text-align: center;font-size: 18px;margin-bottom: -10px;">Do you want a trip?</p>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
             </div>
-
-            {% for message in get_flashed_messages() %}
-                <div class="flash">{{ message }}</div>
-            {% endfor %}
-
-            <div class="row">
-                <div class="row">
-                    <span class="col-sm-6" style="text-align: center;">Selected File</span>
-                    <label class="col-sm-6" style="text-align: left;">{{ filename }}</label>
-                </div>
-                <div class="switch">
-                    <div class="row">
-                        <span class="col-sm-6" style="text-align: center;">Change File</span>
-                        <label class="col-sm-6" onclick="update_checkbox(event)">
-                            Off
-                            <input type="checkbox" value="false" id="is_map" name="is_map">
-                            <span class="lever"></span>
-                            On
-                        </label>
-                    </div>
-
-                    <div class="col-sm-12">
-                        <div class="col-sm-6"></div>
-                        <div class="col-sm-6">
-                            <div class="md-form" id="file_tbl_div">
-                                <select class="form-control" id="file_tbl" name="file_tbl">
-                                    <option disabled="disabled" selected>Pick a choice!</option>
-                                    {% for name in list_names %}
-                                        <option value="{{ name }}">{{ name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="row">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Select Three Feature Selection
-                    Methods</h5>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <ul id="listFrom" class="nav nav-pills nav-stacked">
-                                    <li data-id="1" class="active" data-value="PCA">PCA</li>
-                                    <li data-id="2" class="active" data-value="Random Forest">Random Forest</li>
-                                    <li data-id="3" class="active" data-value="Extra Tree Classifier">Extra Tree
-                                        Classifier
-                                    </li>
-                                    {#                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>#}
-                                </ul>
-                            </div>
-                            <div class="col-sm-6">
-                                <ul id="listTo" class="nav nav-pills nav-stacked"></ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <h5 id="h3-head-1" class="card__title" style="text-align: center;">Number of Features Selected</h5>
-            </div>
-            <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-6">
-                    <div class="slidecontainer">
-                        <input type="range" min="30" max="100" value="50" class="slider" id="myRange">
-                        <p>Value: <span id="demo"></span></p>
-                    </div>
-                </div>
-                <div class="col-sm-3"></div>
-            </div>
-
-            <hr class="line-hr">
-
-            <div class="step-actions">
-                <button class="waves-effect waves-dark btn next-step step-6-click" onclick="myFunction()">CONTINUE
-                </button>
-                <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+            <div class="col-sm-6">
+                <a class="btn btn-primary tour_no">NO</a>
             </div>
         </div>
     </div>
-
-
 </div>
 
-<form style="display: none" action="/fs/" method="POST" id="form">
-    <input type="hidden" id="fs_methods" name="fs_methods" value=""/>
-    <input type="hidden" id="change_file" name="change_file" value=""/>
-    <input type="hidden" id="is_change" name="is_change" value=""/>
-</form>
+<div class="main-div-fn-1">
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li class="step ">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step active">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step">
+            <div class="step-content">
+                <div class="row">
+                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">FEATURE SELECTION</h3>
+                </div>
+
+                {% for message in get_flashed_messages() %}
+                    <div class="flash">{{ message }}</div>
+                {% endfor %}
+
+                <div class="row">
+                    <div class="row">
+                        <span class="col-sm-6" style="text-align: center;">Selected File :</span>
+                        <label class="col-sm-6" style="text-align: left;">{{ filename }}</label>
+                    </div>
+                    <div class="switch">
+                        <div class="row">
+                            <span class="col-sm-6" style="text-align: center;">Change File :</span>
+                            <label id="change_file_div" class="col-sm-6" onclick="update_checkbox(event)">
+                                Off
+                                <input type="checkbox" value="false" id="is_map" name="is_map">
+                                <span class="lever"></span>
+                                On
+                            </label>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="col-sm-6"></div>
+                            <div class="col-sm-6">
+                                <div class="md-form" id="file_tbl_div">
+                                    <select class="form-control" id="file_tbl" name="file_tbl">
+                                        <option disabled="disabled" selected>Pick a choice!</option>
+                                        {% for name in list_names %}
+                                            <option value="{{ name }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Select Three Feature Selection
+                        Methods</h5>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="container">
+                            <div class="row">
+                                <div id="select_methods_div" class="col-sm-6">
+                                    <ul id="listFrom" class="nav nav-pills nav-stacked">
+                                        <li data-id="1" class="active" data-value="PCA">PCA</li>
+                                        <li data-id="2" class="active" data-value="Random Forest">Random Forest</li>
+                                        <li data-id="3" class="active" data-value="Extra Tree Classifier">
+                                            Extra Tree Classifier
+                                        </li>
+                                        {#                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>#}
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6">
+                                    <ul id="listTo" class="nav nav-pills nav-stacked"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Number of Features Selected</h5>
+                </div>
+                <div id="num_of_features" class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <div class="slidecontainer">
+                            <input type="range" min="30" max="100" value="50" class="slider" id="myRange">
+                            <p>Value: <span id="demo"></span></p>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+
+                <hr class="line-hr">
+
+                <div class="step-actions">
+                    <button id="btn-submit-fn-1" class="waves-effect waves-dark btn next-step step-6-click" onclick="myFunction()">CONTINUE
+                    </button>
+                    <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <form id="main-form-div-fn-1" style="display: none" action="/fs/" method="POST" id="form">
+        <input type="hidden" id="fs_methods" name="fs_methods" value=""/>
+        <input type="hidden" id="change_file" name="change_file" value=""/>
+        <input type="hidden" id="is_change" name="is_change" value=""/>
+    </form>
+</div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING RESULTS</h5>        
+    </div> 
 
 {% include 'footer.html' %}
 
@@ -233,4 +332,54 @@
             console.log(s);
         }
     }
+</script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-fn-1').click(function () {
+        $('.main-div-fn-1').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-fn-1").submit();
+    });
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script>
+    var tour = {
+        data : [
+            { element : '#change_file_div', tooltip : 'Change file!!', text: 'Change file', position: 'T' },
+            { element : '#select_methods_div', tooltip : 'Select feature selectino method!!', text: 'Feature Selection Methods ', position: 'T' },
+            { element : '#num_of_features', tooltip : 'Numof features!!', text: 'Number of Features Selected', position: 'T' }
+        ],
+        welcomeMessage: 'Lets Start Tour!',
+        controlsPosition : 'TL',
+        buttons: {
+            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
+            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
+            start : { text : 'Start', class: 'btn btn-primary' },
+            end   : { text : 'End', class: 'btn btn-primary' }
+        },
+        controlsCss: {
+            background: 'rgba(187, 178, 48, 0.71)',
+            color: '#1c1d21',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+    $(document).ready(function(){
+        $('.tour').on('click', function(){
+            $.aSimpleTour(tour);
+            $('.notification-container').hide(1000);
+        });
+        $('.tour_no').on('click', function(){
+            $('.notification-container').hide(1000);
+        });
+    });
 </script>

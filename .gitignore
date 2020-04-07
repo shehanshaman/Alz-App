@@ -12,4 +12,4 @@ build/
 .idea/
 *.swp
 *~
-flaskr/upload/
+flaskr/upload/users/
