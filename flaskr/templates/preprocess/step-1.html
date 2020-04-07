@@ -55,6 +55,10 @@
             margin: auto; 
         } 
 
+        #tourtip{
+           width: 290px !important; 
+        }
+        
     .notification-container{
         position: fixed;
         left: 10px;
@@ -156,7 +160,7 @@
 
             <div class="step-content">
                 <div class="row head-word">
-                    <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">STEP 1 : CHOOSE DATASET</h3>
+                    <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">STEP 1 : CHOOSE DATA SET</h3>
                 </div>
             </div>
 
@@ -266,12 +270,10 @@
 <script>
     var tour = {
         data : [
-            { element : '#available_file_name', tooltip : 'Choose a file from the list!!', text: 'Availabe files', files: [{ url : '', name : 'more details' }], position: 'T' },
-            { element : '#view_div', tooltip : 'You can view selected data-set!!', text: 'Data-set', position: 'T' },
-            { element : '#annotation_table_name', tooltip : 'choose annotation table!!', text: 'Annotation table', position: 'T' },
-            { element : '#average_div', tooltip : 'Choose methode for probe mapping!!', text: 'Probe selection method', position: 'T' },
-            { element : '#btn-submit-step-1', tooltip : 'Submit file for pre-process!!', text: 'Submit', position: 'T' },
-            { element : '#btn-submit-step-back', tooltip : 'Back to file upload page!!', text: 'Back', position: 'T' }
+            { element : '#available_file_name', tooltip : 'Choose a file from the list !', text: 'Availabe files', files: [{ url : '', name : 'more details' }], position: 'T' },
+            { element : '#view_div', tooltip : 'You can view the selected data set !', text: 'Show Data set', position: 'T' },
+            { element : '#annotation_table_name', tooltip : 'Choose the annotation table corresponding to the chosen data set to map probe ids to gene symbols !', text: 'Annotation table', position: 'T' },
+            { element : '#average_div', tooltip : 'Choose a method to handle multiple probe ids mapping to the same gene symbol !', text: 'Probe selection method', position: 'T' }
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'TL',

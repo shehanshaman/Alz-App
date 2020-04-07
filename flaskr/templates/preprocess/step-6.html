@@ -72,6 +72,10 @@
             top: 80px !important;
         }
 
+        #tourtip{
+           width: 290px !important; 
+        }
+
     .notification-container{
         position: fixed;
         left: 10px;
@@ -290,10 +294,10 @@
 <script>
     var tour = {
         data : [
-            { element : '#img_results_div', tooltip : 'Univarient results plot!!', text: 'plot', position: 'T' },
-            { element : '.use-download-univarient_img', tooltip : 'Download img!!', text: 'Download', position: 'T' },
-            { element : '#table_results_div', tooltip : 'Accuracy table data!!', text: 'Accuracy table', position: 'T' },
-            { element : '#select_num_features_div', tooltip : 'Select num features to extract!!', text: 'Select nu of features', position: 'T' }
+            { element : '#img_results_div', tooltip : 'Uni-variate selection ranks the genes individually, from the most to the least informative. By examining the knee-point of this graph, we can see the number of genes that shows  significant difference !', text: 'Uni-variate selection', position: 'R' },
+            { element : '.use-download-univarient_img', tooltip : 'Download this graph !', text: 'Download image', position: 'T' },
+            { element : '#table_results_div', tooltip : 'Classification is the process of predicting the class of given data points. A classifier is a function that is used to assign the samples to a class. Classification accuracy of the selected genes using 5 classifiers is shown in the table !', text: 'Classification results', position: 'L' },
+            { element : '#select_num_features_div', tooltip : 'The number of features can be reduced by examining the knee-point of the uni-variate selection graph. Select the feature count to proceed to next steps !', text: 'Select feature count', position: 'T' }
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'TL',

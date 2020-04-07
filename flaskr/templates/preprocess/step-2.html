@@ -27,6 +27,10 @@
             top: 80px !important;
         }
 
+        #tourtip{
+           width: 290px !important; 
+        }
+
     .notification-container{
         position: fixed;
         left: 10px;
@@ -204,11 +208,11 @@
 <script>
     var tour = {
         data : [
-            { element : '#number_features_div', tooltip : 'Choose a file from the list!!', text: 'number of features', position: 'T' },
-            { element : '#number_samples_div', tooltip : 'num of samples!!', text: 'Number of samples', position: 'T' },
-            { element : '#min_val_div', tooltip : 'min val of dataset!!', text: 'Minimum value', position: 'T' },
-            { element : '#max_val_div', tooltip : 'max val of dataset!!', text: 'Maximum value', position: 'T' },
-            { element : '#table_div', tooltip : 'view of dataset!!', text: 'Data-set', position: 'T' }
+            { element : '#number_features_div', tooltip : 'Number of probe ids in the data set !', text: 'Number of features', position: 'T' },
+            { element : '#number_samples_div', tooltip : 'Number of samples in the data set !', text: 'Number of samples', position: 'T' },
+            { element : '#min_val_div', tooltip : 'Minimum gene expression data value in all the samples (considering all the features) !', text: 'Minimum value', position: 'T' },
+            { element : '#max_val_div', tooltip : 'Maximum gene expression data value in all the samples (considering all the features) !', text: 'Maximum value', position: 'T' },
+            { element : '#table_div', tooltip : 'You can view a portion of the data set. Scroll right to view more samples !', text: 'Show Data set', position: 'T' }
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'TL',
