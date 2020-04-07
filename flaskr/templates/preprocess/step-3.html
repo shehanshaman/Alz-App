@@ -56,19 +56,19 @@
     .notification-container{
         position: fixed;
         left: 10px;
-        width: 255px;
+        width: 245px;
         max-width: calc(100% - 30px);
     }
 
     .notification{
         background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);
+        /*border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
         color: #fff;
         font-size: 14px;
         padding: 8px 0px;
         line-height: 20px;
-        margin-bottom: 15px;
+        /*margin-bottom: 15px;*/
         animation: grow 0.5s ease-in forwards;
     }
     @keyframes grow{
@@ -106,9 +106,9 @@
 <div class="notification-container" id="notification-container">
     <div class="notification notification-info">
         <div class="row">
-            <p style="text-align: center;font-size: 18px;margin-bottom: -10px;">Do you want a trip?</p>
+            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
         </div>
-        <div class="row">
+        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
             <div class="col-sm-6">
                 <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
             </div>
