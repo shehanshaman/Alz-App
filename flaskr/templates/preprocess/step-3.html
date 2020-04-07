@@ -53,22 +53,26 @@
             top: 80px !important;
         }
 
+        #tourtip{
+           width: 290px !important; 
+        }
+
     .notification-container{
         position: fixed;
         left: 10px;
-        width: 255px;
+        width: 245px;
         max-width: calc(100% - 30px);
     }
 
     .notification{
         background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);
+        /*border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
         color: #fff;
         font-size: 14px;
         padding: 8px 0px;
         line-height: 20px;
-        margin-bottom: 15px;
+        /*margin-bottom: 15px;*/
         animation: grow 0.5s ease-in forwards;
     }
     @keyframes grow{
@@ -106,9 +110,9 @@
 <div class="notification-container" id="notification-container">
     <div class="notification notification-info">
         <div class="row">
-            <p style="text-align: center;font-size: 18px;margin-bottom: -10px;">Do you want a trip?</p>
+            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
         </div>
-        <div class="row">
+        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
             <div class="col-sm-6">
                 <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
             </div>
@@ -305,15 +309,14 @@
 <script>
     var tour = {
         data : [
-            { element : '#number_features_div', tooltip : 'features!!', text: 'number of features', position: 'T' },
-            { element : '#number_null_div', tooltip : 'null val!!', text: 'Number of null values', position: 'T' },
-            { element : '#number_unique_div', tooltip : 'unique gene!!', text: 'Number of unique Gene Symbols', position: 'T' },
-            { element : '#number_gene_null_div', tooltip : 'gene null!!', text: 'Number of null values in Gene Symbols', position: 'T' },
-            { element : '#min_val_div', tooltip : 'min val!!', text: 'Minimum value', position: 'T' },
-            { element : '#max_val_div', tooltip : 'max val!!', text: 'Maximum value', position: 'T' },
-            { element : '#scaling_select_div', tooltip : 'scaling!!', text: 'Scaling', position: 'T' },
-            { element : '#imputation_select_div', tooltip : 'impultation!!', text: 'Imputation', position: 'T' },
-            { element : '#btn-submit-step-3', tooltip : 'start preprocess!!', text: 'Pre-process', position: 'T' }
+            { element : '#number_features_div', tooltip : 'Number of probe ids in the data set !', text: 'Number of features', position: 'T' },
+            { element : '#number_null_div', tooltip : 'A count of all the occurrences where the gene expression value  is missing !', text: 'Number of null values', position: 'T' },
+            { element : '#number_unique_div', tooltip : 'The number of distinct gene symbols after the mapping of probe ids to gene symbols is performed !', text: 'Number of unique Gene Symbols', position: 'T' },
+            { element : '#number_gene_null_div', tooltip : 'The number of probe ids where a corresponding gene symbol is not found in the annotation table !', text: 'Number of null values in Gene Symbols', position: 'T' },
+            { element : '#min_val_div', tooltip : 'Minimum gene expression data value in all the samples (considering all the features) !', text: 'Minimum value', position: 'T' },
+            { element : '#max_val_div', tooltip : 'Maximum gene expression data value in all the samples (considering all the features) !', text: 'Maximum value', position: 'T' },
+            { element : '#scaling_select_div', tooltip : 'Scale the data to a specific range by selecting an appropriate method !', text: 'Scaling', position: 'T' },
+            { element : '#imputation_select_div', tooltip : 'Null values should be handled properly before moving to next steps. Use these techniques to handle null values !', text: 'Imputation', position: 'T' }
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'TL',
