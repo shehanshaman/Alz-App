@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>GeNet | Feature Selection</title>
+    <title>GeNet | Feature Selection | RESULTS</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -105,10 +105,77 @@
         }        
     </style> 
 
+<style type="text/css">
+
+        #tourControls{
+            top: 80px !important;
+        }
+
+    .notification-container{
+        position: fixed;
+        left: 10px;
+        width: 255px;
+        max-width: calc(100% - 30px);
+    }
+
+    .notification{
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 0px;
+        line-height: 20px;
+        margin-bottom: 15px;
+        animation: grow 0.5s ease-in forwards;
+    }
+    @keyframes grow{
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .notification.hide{
+        animation: shrink 0.4s ease-out forwards;
+    }
+    @keyframes shrink{
+        to{
+            opacity: 0;
+            transform: scale(0.6);
+        }
+    }
+
+    .notification-info{
+        background-color: #00000096;
+    }
+
+</style>
+
 <body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
+
+<div class="notification-container" id="notification-container">
+    <div class="notification notification-info">
+        <div class="row">
+            <p style="text-align: center;font-size: 18px;margin-bottom: -10px;">Do you want a trip?</p>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
+            </div>
+            <div class="col-sm-6">
+                <a class="btn btn-primary tour_no">NO</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="main-div-fn-2">
     <div class="card-content">
@@ -138,7 +205,6 @@
 
     </div>
 
-
     <div id="mainDataInterface-id" class="container mainDataInterface">
 
         <div class="step">
@@ -147,9 +213,8 @@
                     <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">RESULTS</h3>
                 </div>
 
-
                 <div class="row">
-                    <div class="container-1">
+                    <div id="results_img_div" class="container-1">
                         <div class="summary_plot">
                             <img id="summary_img" src="data:image/png;base64,{{ image_data }}" alt="summary">
                         </div>
@@ -168,12 +233,12 @@
 
                 <div class="row">
                     <div id="btnContainer">
-                        <button class="btn" onclick="listView()"><i class="fa fa-bars"></i> List</button>
-                        <button class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+                        <button id="list_div_btn" class="btn" onclick="listView()" style="color: black;"><i class="fa fa-bars"></i> List</button>
+                        <button id="grid_div_btn"  class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
                     </div>
                     <br>
 
-                    <div class="row">
+                    <div id="results_gene_div" class="row">
                         <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
                             <h2 style="color: #ffffff;">{{ methods[1] }}</h2>
                             <p>{{ columns[0] }}</p>
@@ -285,4 +350,45 @@
         a.download = "summary.png";
         a.click();
     }); 
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script>
+    var tour = {
+        data : [
+            { element : '#results_img_div', tooltip : 'About plot!!', text: 'Results plot', position: 'T' },
+            { element : '#list_div_btn', tooltip : 'list!!', text: 'List layout', position: 'T' },
+            { element : '#grid_div_btn', tooltip : 'grid!!', text: 'Grid layout', position: 'T' },
+            { element : '#results_gene_div', tooltip : 'gene list!!', text: 'Gene list', position: 'T' },
+            { element : '#btn-submit-fn-2', tooltip : 'Result genes!!', text: 'Results', position: 'T' }
+        ],
+        welcomeMessage: 'Lets Start Tour!',
+        controlsPosition : 'TR',
+        buttons: {
+            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
+            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
+            start : { text : 'Start', class: 'btn btn-primary' },
+            end   : { text : 'End', class: 'btn btn-primary' }
+        },
+        controlsCss: {
+            background: 'rgba(187, 178, 48, 0.71)',
+            color: '#1c1d21',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+    $(document).ready(function(){
+        $('.tour').on('click', function(){
+            $.aSimpleTour(tour);
+            $('.notification-container').hide(1000);
+        });
+        $('.tour_no').on('click', function(){
+            $('.notification-container').hide(1000);
+        });
+    });
 </script>
