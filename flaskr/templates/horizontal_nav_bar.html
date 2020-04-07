@@ -39,12 +39,14 @@
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
 
-<nav>
+<nav class="nav-extended">
     <div class="nav-wrapper">
         <a class="navbar-brand" href="{{ url_for('index') }}">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" style="width:115px; margin-top: -3px;">
-        </a>        
-        <ul class="right hide-on-med-and-down">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo"
+                 style="width:115px; margin-top: -3px;">
+        </a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
             {% if g.user %}
                 <li class="nav_link"><a href="{{ url_for('index') }}"><span class=""></span>Home</a>
                 </li>
@@ -61,7 +63,8 @@
                 {% if g.user['image_url'] %}
                     <li><img src="{{ g.user['image_url'] }}" alt="Avatar" id="user_img"></li>
                 {% endif %}
-                <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown_user">{{ g.user['given_name'] }}<i
+                <li class="nav_link"><a class="dropdown-trigger" href="#"
+                                        data-target="dropdown_user">{{ g.user['given_name'] }}<i
                         class="material-icons right">arrow_drop_down</i></a></li>
             {% else %}
                 <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
@@ -70,5 +73,31 @@
         </ul>
     </div>
 </nav>
+
+<ul class="sidenav" id="mobile-demo">
+    {% if g.user %}
+        <li class="nav_link"><a href="{{ url_for('index') }}"><span class=""></span>Home</a>
+        </li>
+        <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
+        </li>
+        <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+        </li>
+        <!-- Dropdown Trigger -->
+        <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1">Framework<i
+                class="material-icons right">arrow_drop_down</i></a></li>
+        <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
+        </li>
+        <li><span> <div class="vertical"></div>  </span></li>
+        {% if g.user['image_url'] %}
+            <li><img src="{{ g.user['image_url'] }}" alt="Avatar" id="user_img"></li>
+        {% endif %}
+        <li class="nav_link"><a class="dropdown-trigger" href="#"
+                                data-target="dropdown_user">{{ g.user['given_name'] }}<i
+                class="material-icons right">arrow_drop_down</i></a></li>
+    {% else %}
+        <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
+        <li class="nav_link"><a href="{{ url_for('auth.login') }}">Log In</a></li>
+    {% endif %}
+</ul>
 
 <div class="row"></div>
