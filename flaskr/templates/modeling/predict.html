@@ -95,6 +95,10 @@
             bottom: 80px !important;
         }*/
 
+        #tourtip{
+           width: 290px !important; 
+        }
+
     .notification-container{
         position: fixed;
         left: 10px;
@@ -368,11 +372,10 @@
 <script>
     var tour = {
         data : [
-            { element : '#modal_create', tooltip : 'info!!', text: 'Model', position: 'T' },
-            { element : '#select_file_div', tooltip : 'table!!', text: 'Choose File ', position: 'T' },
-            { element : '#select_normalize_div', tooltip : 'table!!', text: 'Normaliz emethod', position: 'T' },
-            { element : '#select_annotation_div', tooltip : 'table!!', text: 'Annotation Mapping', position: 'T' },
-            { element : '#btn-submit-predict', tooltip : 'predict!!', text: 'select', position: 'T' }
+            { element : '#modal_create', tooltip : 'The process of modeling means training a machine learning algorithm to predict the labels from the features. The output from modeling is a trained model that can be used for making predictions on new data sets !', text: 'Custmize model', position: 'T' },
+            { element : '#select_file_div', tooltip : 'Choose the file that you want to predict the target output !', text: 'Choose File ', position: 'T' },
+            { element : '#select_normalize_div', tooltip : 'You can choose to perform the normalization on the selected data set too by turning this feature on !', text: 'Normalize method', position: 'T' },
+            { element : '#select_annotation_div', tooltip : 'You can map the probe ids to gene symbols by performing annotation table mapping. Turn on this feature to proceed with table mapping !', text: 'Annotation mapping', position: 'T' }
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'BR',

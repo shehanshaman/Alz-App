@@ -27,6 +27,10 @@
             bottom: 80px !important;
         }*/
 
+        #tourtip{
+           width: 290px !important; 
+        }
+
     .notification-container{
         position: fixed;
         left: 10px;
@@ -99,7 +103,7 @@
 
         <div class="step-content">
             <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">MODELING</h3>
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">MODELLING</h3>
             </div>
         </div>
 
@@ -194,10 +198,9 @@
 <script>
     var tour = {
         data : [
-            { element : '#extracted_features_div', tooltip : 'info!!', text: 'gene', position: 'T' },
-            { element : '#choose_file_div', tooltip : 'table!!', text: 'Choose File ', position: 'T' },
-            { element : '#classifier_method_div', tooltip : 'table!!', text: 'Classifier', position: 'T' },
-            { element : '.step-6-click', tooltip : 'model!!', text: 'select', position: 'T' }
+            { element : '#extracted_features_div', tooltip : 'These are the final set of features that were extracted from the previous steps !', text: 'Extracted features', position: 'T' },
+            { element : '#choose_file_div', tooltip : 'Choose a final containing the training data to be used in modelling !', text: 'Choose file ', position: 'T' },
+            { element : '#classifier_method_div', tooltip : 'Select a classifier to proceed with developing the model !', text: 'Classifier', position: 'T' }
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'BR',

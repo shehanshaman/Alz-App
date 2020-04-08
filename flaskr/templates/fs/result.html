@@ -101,7 +101,7 @@
         .top-right {
             position: absolute;
             top: 8px;
-            right: 5px;
+            right: 6px;
         }        
     </style> 
 
@@ -109,6 +109,10 @@
 
         #tourControls{
             top: 80px !important;
+        }
+
+        #tourtip{
+           width: 290px !important; 
         }
 
     .notification-container{
@@ -360,11 +364,10 @@
 <script>
     var tour = {
         data : [
-            { element : '#results_img_div', tooltip : 'About plot!!', text: 'Results plot', position: 'T' },
-            { element : '#list_div_btn', tooltip : 'list!!', text: 'List layout', position: 'T' },
-            { element : '#grid_div_btn', tooltip : 'grid!!', text: 'Grid layout', position: 'T' },
-            { element : '#results_gene_div', tooltip : 'gene list!!', text: 'Gene list', position: 'T' },
-            { element : '#btn-submit-fn-2', tooltip : 'Result genes!!', text: 'Results', position: 'T' }
+            { element : '#results_img_div', tooltip : 'These graphs depicts how the training and testing accuracy of the selected features from the previous step varies with different feature selection methods and the classifiers. Accuracy is given by the y- axis. 3 classifiers are used to give a comparison between the feature selection methods. Each feature selection method is performed and trained under all the 3 classifiers !', text: 'Result plot', position: 'T' },
+            { element : '#list_div_btn', tooltip : 'Now you have got a subset of the best features. Click this if you want to view them as a list !', text: 'List layout', position: 'T' },
+            { element : '#grid_div_btn', tooltip : 'Click this to view the features in a grid layout !', text: 'Grid layout', position: 'T' },
+            { element : '#results_gene_div', tooltip : 'View all the gene symbols of the features selected by each feature selection method !', text: 'Result gene list', position: 'T'}
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'TR',

@@ -197,6 +197,10 @@
         background-color: #00000096;
     }
 
+        #tourtip{
+           width: 290px !important; 
+        }
+
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9;">
@@ -276,15 +280,14 @@
                         </div>
                     </div>                      
                     <div class="col-sm-6 corr_result_text">
-                        <p>An interpretation of the number of correlation features with the variation of correlation
-                            values</p>
+                        <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This graph shows the variation of correlation values with the number of correlated features. By examining this graph, the method that gives the least correlated features can be filtered out !</p>
                     </div>
                 </div>
             </div>
 
             <div class="result_content">
                 <div class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;">Variation of the correlation
+                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;">Variation of the correlation
                         coefficients of the genes found only by {{ method_title }} with
                         classification accuracy</h4>
                 </div>
@@ -295,19 +298,22 @@
                             <img id="correlation_coefficients" src="data:image/png;base64,{{ corr_score }}" alt="overlap">
                         </div>
                         <div class="top-right">
-                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
-                                                class="use-download-correlation_coefficients" value="">
+                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;" class="use-download-correlation_coefficients" value="">
                                 <i class="fas fa-file-download fa-2x"></i>
                             </button>
                         </div>
                     </div>                    
                 </div>
+
+                <div class="row">
+                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This graph (right) shows how the correlation coefficients of the genes only found by {{ method_title }} varies with the number of features. The graph(left) shows the variation of correlation coefficients of the genes selected by {{ method_title }} alone varies with the classification accuracy of three classifiers !</p>
+                </div>                
             </div>
 
             <div class="result_content">
                 <div class="row">
 
-                    <h4 id="h4-head-2" class="card__title" style="text-align: center;">Finding features that has minimum
+                    <h4 id="h4-head-2" class="card__title" style="text-align: center;font-size:26px;">Finding features that has minimum
                         correlated and high classification accuracy</h4>
                 </div>
 
@@ -317,6 +323,12 @@
                     {% endfor %}
 
                 </div>
+
+                <br>
+
+                <div class="row">
+                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">By considering the above graphs, you can select the plots where the highest accuracies occur in each classifier. The table shows the instance where the maximum accuracy is obtained, the number of features at that particular point and the range of correlation coefficients of that instance. Out of the 3 models, you can obtain the maximum accuracy to proceed further !</p>
+                </div>  
             </div>
 
             <div class="row list-view">
@@ -461,11 +473,11 @@
 <script>
     var tour = {
         data : [
-            { element : '#results_plot_div1', tooltip : 'plot1!!', text: 'Training accuracies', position: 'T' },
-            { element : '#results_plot_div2', tooltip : 'plot2!!', text: 'Classification accuracy', position: 'T' },
-            { element : '#results_table_div', tooltip : 'table!!', text: 'Correlation matrix', position: 'T' },
-            { element : '#overlapped_features_div', tooltip : 'select!!', text: 'select', position: 'T' },
-            { element : '#correlation_features_div', tooltip : 'select!!', text: 'select', position: 'T' }
+            { element : '#results_plot_div1', tooltip : 'Variation of correlation values with the number of correlated features by considering all the 3 methods !', text: 'Correlated features', position: 'T' },
+            { element : '#results_plot_div2', tooltip : 'Variation of correlation coefficient with number of features and the variation of correlation coefficients with classification accuracy !', text: 'Variation of the correlation coefficients', position: 'T' },
+            { element : '#results_table_div', tooltip : 'Filtering out the least correlated features (to minimize redundancy) with the highest classification accuracy !', text: 'Correlation matrix', position: 'T' },
+            { element : '#overlapped_features_div', tooltip : 'You can view the gene set that was selected by all three feature selection methods. This is the overlap set of genes !', text: 'Overlapped features', position: 'T' },
+            { element : '#correlation_features_div', tooltip : 'You can view the gene set that was obtained by considering the correlation coefficients and the highest accuracy !', text: 'Correlation | {{ max_clasify }}', position: 'T' }
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'BR',

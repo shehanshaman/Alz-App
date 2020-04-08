@@ -70,6 +70,10 @@
             top: 80px !important;
         }
 
+        #tourtip{
+           width: 290px !important; 
+        }
+
     .notification-container{
         position: fixed;
         left: 10px;
@@ -181,17 +185,17 @@
                 {% endfor %}
 
                 <div class="row">
-                    <div class="row">
+                    <div id="selected_file_div" class="row">
                         <span class="col-sm-6" style="text-align: center;">Selected File :</span>
                         <label class="col-sm-6" style="text-align: left;">{{ filename }}</label>
                     </div>
                     <div class="switch">
                         <div class="row">
                             <span class="col-sm-6" style="text-align: center;">Change File :</span>
-                            <label id="change_file_div" class="col-sm-6" onclick="update_checkbox(event)">
+                            <label class="col-sm-6" onclick="update_checkbox(event)">
                                 Off
                                 <input type="checkbox" value="false" id="is_map" name="is_map">
-                                <span class="lever"></span>
+                                <span id="change_file_div" class="lever"></span>
                                 On
                             </label>
                         </div>
@@ -357,9 +361,10 @@
 <script>
     var tour = {
         data : [
-            { element : '#change_file_div', tooltip : 'Change file!!', text: 'Change file', position: 'T' },
-            { element : '#select_methods_div', tooltip : 'Select feature selectino method!!', text: 'Feature Selection Methods ', position: 'T' },
-            { element : '#num_of_features', tooltip : 'Numof features!!', text: 'Number of Features Selected', position: 'T' }
+            { element : '#selected_file_div', tooltip : 'This is the file you will have after going through previous steps. It will be automatically selected. You do not need to change anything, if you wish to proceed with the same file !', text: 'Selected file', position: 'T' },
+            { element : '#change_file_div', tooltip : 'You can also perform feature selection on a separate file without going through the pre-processing steps. Use this feature if you want to select a new file !', text: 'Change file', position: 'T' },
+            { element : '#select_methods_div', tooltip : 'Feature selection is the process of selecting the features that contribute mostly to the target variable.  Different feature selection methods are used for this purpose. In this application, you may select 3 feature selection methods to get the best set of features !', text: 'Feature Selection Methods', position: 'T' },
+            { element : '#num_of_features', tooltip : 'Specify the number of features you want to filter out by the above feature selection methods !', text: 'Number of Features Selected', position: 'T' }
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'TL',
