@@ -77,7 +77,7 @@
                     <li><img src="{{ g.user['image_url'] }}" alt="Avatar" id="user_img"></li>
                 {% endif %}
                 <li class="nav_link"><a class="dropdown-trigger" href="#"
-                                        data-target="dropdown_user_side">{{ g.user['given_name'] }}<i
+                                        data-target="dropdown_user">{{ g.user['given_name'] }}<i
                         class="material-icons right">arrow_drop_down</i></a></li>
             {% else %}
                 <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
