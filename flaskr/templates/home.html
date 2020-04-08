@@ -79,6 +79,12 @@
         max-width: calc(100% - 30px);
     }
 
+    .notification-container-pop{
+        position: fixed;
+        right: 10px;
+        bottom: 10px
+    }
+
     .notification{
         background-color: #fff;
         /*border-radius: 5px;
@@ -219,6 +225,13 @@
 
 </div>
 
+<div class="notification-container-pop">
+    <button type="button" class="notification_pop" style="color: #26a69a;border: none; background-color: white;padding: 10px; border-radius: 10px;">
+        <i class="fas fa-bell-slash fa-2x notification_pop_off"></i>
+        <i class="fas fa-bell fa-2x notification_pop_on" style="width: 35px;"></i>
+    </button> 
+</div>
+
 {% include 'footer.html' %}
 
 </body>
@@ -255,10 +268,11 @@
             { element : '#analize_icon', tooltip : 'Use this feature to dive deeper into the selected features. Analyze the selected set of features with their accuracies, correlation values, and the number of features !', text: 'Analysis', position: 'T' },
             { element : '#validation_icon', tooltip : 'Validate the results obtained by referring to the already published/ accepted data sources !', text: 'Validation', position: 'T' },
             { element : '#modeling_icon', tooltip : 'Develop a model for a data set by using the previously extracted feature set. Select the classifier you want to generate the model !', text: 'Modelling', position: 'T' },
-            { element : '#prediction_icon', tooltip : 'Predict the class of a newly provided sample/samples based on the previous data !', text: 'Prediction', position: 'T' }
+            { element : '#prediction_icon', tooltip : 'Predict the class of a newly provided sample/samples based on the previous data !', text: 'Prediction', position: 'T' },
+            { element : '.notification_pop', tooltip : 'Tour pop-up disable or enable !', text: 'Tour notification', position: 'L' }
         ],
         welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'BR',
+        controlsPosition : 'BL',
         buttons: {
             next  : { text : 'Next &rarr;', class : 'btn btn-default'},
             prev  : { text : '&larr; Previous', class: 'btn btn-default' },
@@ -282,4 +296,33 @@
             $('.notification-container').hide(1000);
         });
     });
+
+    notification_on = true;
+
+    if(notification_on){
+        $('.notification_pop_on').show(0);
+        $('.notification_pop_off').hide(0);
+        $('.notification-container').fadeIn(1000);
+    }
+    else{
+        $('.notification_pop_on').hide(0);
+        $('.notification_pop_off').show(0); 
+        $('.notification-container').hide(0);       
+    }
+
+    $('.notification_pop').click(function(){
+        if(notification_on){
+            notification_on = false;
+            $('.notification_pop_on').hide(0);
+            $('.notification_pop_off').show(0);
+            $('.notification-container').fadeOut(1000);
+        }
+        else{
+            notification_on = true;
+            $('.notification_pop_on').show(0);
+            $('.notification_pop_off').hide(0); 
+            $('.notification-container').fadeIn(1000);           
+        }
+    });
+  
 </script>

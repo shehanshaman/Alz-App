@@ -25,7 +25,7 @@
 </style>
 
 <!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
+<ul id="dropdown1" class="dropdown-content" style="font-family: monospace;">
     <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
     <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
     <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
@@ -41,7 +41,7 @@
 </ul>
 
 <!-- Dropdown Structure User -->
-<ul id="dropdown_user" class="dropdown-content">
+<ul id="dropdown_user" class="dropdown-content" style="font-family: monospace;">
     <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
@@ -52,7 +52,7 @@
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
 
-<nav class="nav-extended">
+<nav class="nav-extended" style="font-family: monospace;">
     <div class="nav-wrapper">
         <a class="navbar-brand" href="{{ url_for('index') }}">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo"

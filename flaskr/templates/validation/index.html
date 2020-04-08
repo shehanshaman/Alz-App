@@ -99,6 +99,10 @@
             bottom: 80px !important;
         }*/
 
+        #tourtip{
+           width: 290px !important; 
+        }
+
     .notification-container{
         position: fixed;
         left: 10px;
@@ -340,9 +344,8 @@
 <script>
     var tour = {
         data : [
-            { element : '#info_results_div', tooltip : 'info!!', text: 'gene', position: 'T' },
-            { element : '#results_table_div1', tooltip : 'table!!', text: 'Training accuracies', position: 'T' },
-            { element : '#btn-submit-model', tooltip : 'model!!', text: 'select', position: 'T' }
+            { element : '#info_results_div', tooltip : 'Now, we need to validate our results to confirm their biological relevance. For this, we use data from https://www.genecards.org/ to compare our results. In GeneCards, they have information on the already identified risk genes for a particular disease!', text: 'Validation', position: 'T' },
+            { element : '#results_table_div1', tooltip : 'This table gives information on the already identified genes !', text: 'Validation', position: 'T' }
         ],
         welcomeMessage: 'Lets Start Tour!',
         controlsPosition : 'BR',
@@ -369,4 +372,13 @@
             $('.notification-container').hide(1000);
         });
     });
+
+    notification_on = true;
+
+    if(notification_on){
+        $('.notification-container').fadeIn(1000);
+    }
+    else{
+        $('.notification-container').hide(0);       
+    }
 </script>
