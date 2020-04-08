@@ -81,10 +81,77 @@
 
     </style> 
 
+<style type="text/css">
+
+/*        #tourControls{
+            bottom: 80px !important;
+        }*/
+
+    .notification-container{
+        position: fixed;
+        left: 10px;
+        width: 255px;
+        max-width: calc(100% - 30px);
+    }
+
+    .notification{
+        background-color: #fff;
+        /*border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 0px;
+        line-height: 20px;
+        /*margin-bottom: 15px;*/
+        animation: grow 0.5s ease-in forwards;
+    }
+    @keyframes grow{
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .notification.hide{
+        animation: shrink 0.4s ease-out forwards;
+    }
+    @keyframes shrink{
+        to{
+            opacity: 0;
+            transform: scale(0.6);
+        }
+    }
+
+    .notification-info{
+        background-color: #00000096;
+    }
+
+</style>
+
 <body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
+
+<div class="notification-container" id="notification-container">
+    <div class="notification notification-info">
+        <div class="row">
+            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
+        </div>
+        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
+            <div class="col-sm-6">
+                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
+            </div>
+            <div class="col-sm-6">
+                <a class="btn btn-primary tour_no">NO</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="main-div-an-3">
     <div class="card-content">
@@ -114,7 +181,6 @@
 
     </div>
 
-
     <div id="mainDataInterface-id" class="container mainDataInterface">
 
         <div class="step">
@@ -127,12 +193,12 @@
                         <h3 id="selected-method" style="display: none;">{{ method }}</h3>
                     </div>
 
-                    <div class="alert alert-info">
+                    <div id="gene_output_div1" class="alert alert-info">
                         <strong>Info!</strong> {{ method }} extracted {{ len[0] }} features. <h6>{{ col[0] }}</h6>
                     </div>
 
                     <div class="row">
-                        <div class="container-1">
+                        <div id="results_plot_div1" class="container-1">
                             <div class="summary_plot">
                                 <img id="selected_features" src="data:image/png;base64,{{ sel_roc }}" alt="overlap">
                             </div>
@@ -151,7 +217,7 @@
                             <h3 id="h3-head-2" class="card__title" style="text-align: center;"></h3>
                         </div>
 
-                        <div style="overflow: auto;">
+                        <div id="results_table_div1"  style="overflow: auto;">
                             {% for table in table_r1 %}
                                 {{ table|safe }}
                             {% endfor %}
@@ -166,13 +232,13 @@
                             Features</h3>
                     </div>
 
-                    <div class="alert alert-info">
+                    <div id="gene_output_div2" class="alert alert-info">
                         <strong>Info!</strong> {{ method }} + overlapped extracted {{ len[1] }} features.
                         <h6>{{ col[1] }}</h6>
                     </div>
 
                     <div class="row">
-                        <div class="container-1">
+                        <div id="results_plot_div2"  class="container-1">
                             <div class="summary_plot">
                                 <img id="overlapped_features" src="data:image/png;base64,{{ all_roc }}" alt="overlap">
                             </div>
@@ -191,7 +257,7 @@
                             <h3 id="h3-head-2" class="card__title" style="text-align: center;"></h3>
                         </div>
 
-                        <div style="overflow: auto;">
+                        <div id="results_table_div2"  style="overflow: auto;">
                             {% for table in table_r2 %}
                                 {{ table|safe }}
                             {% endfor %}
@@ -199,7 +265,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <hr class="line-hr">
 
@@ -289,5 +354,48 @@
         a2.href = url;
         a2.download = selected_method + "_" + "overlapped_features.png";
         a2.click();
+    });
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script>
+    var tour = {
+        data : [
+            { element : '#gene_output_div1', tooltip : 'gene!!', text: 'gene', position: 'T' },
+            { element : '#results_plot_div1', tooltip : 'plot1!!', text: 'Training accuracies', position: 'T' },
+            { element : '#results_table_div1', tooltip : 'table!!', text: 'Correlation matrix', position: 'T' },
+            { element : '#gene_output_div2', tooltip : 'gene!!', text: 'gene', position: 'T' },
+            { element : '#results_plot_div2', tooltip : 'plot2!!', text: 'Classification accuracy', position: 'T' },
+            { element : '#results_table_div2', tooltip : 'table!!', text: 'Correlation matrix', position: 'T' },
+            { element : '#btn-submit-an-3-continue', tooltip : 'validate!!', text: 'select', position: 'T' }
+        ],
+        welcomeMessage: 'Lets Start Tour!',
+        controlsPosition : 'BR',
+        buttons: {
+            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
+            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
+            start : { text : 'Start', class: 'btn btn-primary' },
+            end   : { text : 'End', class: 'btn btn-primary' }
+        },
+        controlsCss: {
+            background: 'rgba(187, 178, 48, 0.71)',
+            color: '#1c1d21',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+    $(document).ready(function(){
+        $('.tour').on('click', function(){
+            $.aSimpleTour(tour);
+            $('.notification-container').hide(1000);
+        });
+        $('.tour_no').on('click', function(){
+            $('.notification-container').hide(1000);
+        });
     });
 </script>

@@ -4,7 +4,6 @@
 <meta name="google-signin-client_id"
       content="429466987596-0fs00nq9idiuee5qq04tng8pvb0224je.apps.googleusercontent.com">
 
-
 <style>
     #user_img {
         border-radius: 50%;
@@ -99,6 +98,7 @@
         <!-- Dropdown Trigger -->
         <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1_side">Framework<i
                 class="material-icons right">arrow_drop_down</i></a></li>
+
         <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
         </li>
         <li><span> <div class="vertical"></div>  </span></li>
@@ -106,7 +106,7 @@
             <li><img src="{{ g.user['image_url'] }}" alt="Avatar" id="user_img"></li>
         {% endif %}
         <li class="nav_link"><a class="dropdown-trigger" href="#"
-                                data-target="dropdown_user">{{ g.user['given_name'] }}<i
+                                data-target="dropdown_user_side">{{ g.user['given_name'] }}<i
                         class="material-icons right">arrow_drop_down</i></a></li>
     {% else %}
         <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>

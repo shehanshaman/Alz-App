@@ -64,9 +64,80 @@
         } 
     </style> 
 
+<style type="text/css">
+
+        #tourControls{
+            top: 80px !important;
+        }
+
+    .notification-container{
+        position: fixed;
+        left: 10px;
+        width: 245px;
+        max-width: calc(100% - 30px);
+    }
+
+    .notification{
+        background-color: #fff;
+        /*border-radius: 5px;
+        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 0px;
+        line-height: 20px;
+        /*margin-bottom: 15px;*/
+        animation: grow 0.5s ease-in forwards;
+    }
+    @keyframes grow{
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .notification.hide{
+        animation: shrink 0.4s ease-out forwards;
+    }
+    @keyframes shrink{
+        to{
+            opacity: 0;
+            transform: scale(0.6);
+        }
+    }
+
+    .notification-info{
+        background-color: #00000096;
+    }
+
+    .thumb{
+        margin-left: 7px !important;
+    }
+
+</style>
+
 <body class="main-body" style="background-color: #f3f6f9;">
 
 {% include 'horizontal_nav_bar.html' %}
+
+<div class="notification-container" id="notification-container">
+    <div class="notification notification-info">
+        <div class="row">
+            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
+        </div>
+        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
+            <div class="col-sm-6">
+                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
+            </div>
+            <div class="col-sm-6">
+                <a class="btn btn-primary tour_no">NO</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="main-div-fn-1">
     <div class="card-content">
@@ -117,7 +188,7 @@
                     <div class="switch">
                         <div class="row">
                             <span class="col-sm-6" style="text-align: center;">Change File :</span>
-                            <label class="col-sm-6" onclick="update_checkbox(event)">
+                            <label id="change_file_div" class="col-sm-6" onclick="update_checkbox(event)">
                                 Off
                                 <input type="checkbox" value="false" id="is_map" name="is_map">
                                 <span class="lever"></span>
@@ -151,12 +222,12 @@
                     <div class="col-sm-12">
                         <div class="container">
                             <div class="row">
-                                <div class="col-sm-6">
+                                <div id="select_methods_div" class="col-sm-6">
                                     <ul id="listFrom" class="nav nav-pills nav-stacked">
                                         <li data-id="1" class="active" data-value="PCA">PCA</li>
                                         <li data-id="2" class="active" data-value="Random Forest">Random Forest</li>
-                                        <li data-id="3" class="active" data-value="Extra Tree Classifier">Extra Tree
-                                            Classifier
+                                        <li data-id="3" class="active" data-value="Extra Tree Classifier">
+                                            Extra Tree Classifier
                                         </li>
                                         {#                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>#}
                                     </ul>
@@ -172,7 +243,7 @@
                 <div class="row">
                     <h5 id="h3-head-1" class="card__title" style="text-align: center;">Number of Features Selected</h5>
                 </div>
-                <div class="row">
+                <div id="num_of_features" class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-6">
                         <div class="slidecontainer">
@@ -276,4 +347,43 @@
         $("#main-form-div-fn-1").submit();
     });
 
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script>
+    var tour = {
+        data : [
+            { element : '#change_file_div', tooltip : 'Change file!!', text: 'Change file', position: 'T' },
+            { element : '#select_methods_div', tooltip : 'Select feature selectino method!!', text: 'Feature Selection Methods ', position: 'T' },
+            { element : '#num_of_features', tooltip : 'Numof features!!', text: 'Number of Features Selected', position: 'T' }
+        ],
+        welcomeMessage: 'Lets Start Tour!',
+        controlsPosition : 'TL',
+        buttons: {
+            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
+            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
+            start : { text : 'Start', class: 'btn btn-primary' },
+            end   : { text : 'End', class: 'btn btn-primary' }
+        },
+        controlsCss: {
+            background: 'rgba(187, 178, 48, 0.71)',
+            color: '#1c1d21',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+    $(document).ready(function(){
+        $('.tour').on('click', function(){
+            $.aSimpleTour(tour);
+            $('.notification-container').hide(1000);
+        });
+        $('.tour_no').on('click', function(){
+            $('.notification-container').hide(1000);
+        });
+    });
 </script>
