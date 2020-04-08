@@ -32,8 +32,22 @@
     <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
 </ul>
 
+<!-- Dropdown side Structure -->
+<ul id="dropdown1_side" class="dropdown-content">
+    <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
+    <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
+    <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
+    <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
+</ul>
+
 <!-- Dropdown Structure User -->
 <ul id="dropdown_user" class="dropdown-content" style="font-family: monospace;">
+    <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
+    <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
+</ul>
+
+<!-- Dropdown side Structure User -->
+<ul id="dropdown_user_side" class="dropdown-content">
     <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
@@ -82,17 +96,18 @@
         <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
         </li>
         <!-- Dropdown Trigger -->
-{#        <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1">Framework<i#}
-{#                class="material-icons right">arrow_drop_down</i></a></li>#}
+        <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1_side">Framework<i
+                class="material-icons right">arrow_drop_down</i></a></li>
+
         <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
         </li>
         <li><span> <div class="vertical"></div>  </span></li>
         {% if g.user['image_url'] %}
             <li><img src="{{ g.user['image_url'] }}" alt="Avatar" id="user_img"></li>
         {% endif %}
-{#        <li class="nav_link"><a class="dropdown-trigger" href="#"#}
-{#                                data-target="dropdown_user">{{ g.user['given_name'] }}<i#}
-{#                class="material-icons right">arrow_drop_down</i></a></li>#}
+        <li class="nav_link"><a class="dropdown-trigger" href="#"
+                                data-target="dropdown_user_side">{{ g.user['given_name'] }}<i
+                        class="material-icons right">arrow_drop_down</i></a></li>
     {% else %}
         <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
         <li class="nav_link"><a href="{{ url_for('auth.login') }}">Log In</a></li>
