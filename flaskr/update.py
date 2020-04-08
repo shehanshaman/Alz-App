@@ -76,3 +76,16 @@ def download_df():
     resp.headers["Content-Type"] = "text/csv"
 
     return resp
+
+@bp.route("/user/tour/", methods=["GET"])
+def update_user_tour():
+
+    id = request.args.get('id')
+    want_tour = request.args.get('tour') # 0 & 1
+
+    db = get_db()
+    db.execute(
+        "UPDATE user SET want_tour = ? WHERE id = ?",
+        (want_tour, id),
+    )
+    db.commit()
