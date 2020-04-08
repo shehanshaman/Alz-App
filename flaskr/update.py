@@ -79,13 +79,18 @@ def download_df():
 
 @bp.route("/user/tour/", methods=["GET"])
 def update_user_tour():
-
+    s = 1
     id = request.args.get('id')
     want_tour = request.args.get('tour') # 0 & 1
+
+    if want_tour == 'false':
+        s = 0
 
     db = get_db()
     db.execute(
         "UPDATE user SET want_tour = ? WHERE id = ?",
-        (want_tour, id),
+        (s, id),
     )
     db.commit()
+
+    return str(want_tour)
