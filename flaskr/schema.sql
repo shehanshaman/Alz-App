@@ -15,7 +15,9 @@ CREATE TABLE user (
   given_name VARCHAR(20) NOT NULL,
   image_url TEXT,
   last_login DATETIME NOT NULL,
-  is_verified INTEGER NOT NULL
+  is_verified INTEGER NOT NULL,
+  want_tour INTEGER DEFAULT 1,
+  is_admin INTEGER DEFAULT 0
 );
 
 CREATE TABLE post (
