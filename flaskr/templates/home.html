@@ -268,10 +268,11 @@
             { element : '#analize_icon', tooltip : 'Use this feature to dive deeper into the selected features. Analyze the selected set of features with their accuracies, correlation values, and the number of features !', text: 'Analysis', position: 'T' },
             { element : '#validation_icon', tooltip : 'Validate the results obtained by referring to the already published/ accepted data sources !', text: 'Validation', position: 'T' },
             { element : '#modeling_icon', tooltip : 'Develop a model for a data set by using the previously extracted feature set. Select the classifier you want to generate the model !', text: 'Modelling', position: 'T' },
-            { element : '#prediction_icon', tooltip : 'Predict the class of a newly provided sample/samples based on the previous data !', text: 'Prediction', position: 'T' }
+            { element : '#prediction_icon', tooltip : 'Predict the class of a newly provided sample/samples based on the previous data !', text: 'Prediction', position: 'T' },
+            { element : '.notification_pop', tooltip : 'Tour pop-up disable or enable !', text: 'Tour notification', position: 'L' }
         ],
         welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'BR',
+        controlsPosition : 'BL',
         buttons: {
             next  : { text : 'Next &rarr;', class : 'btn btn-default'},
             prev  : { text : '&larr; Previous', class: 'btn btn-default' },
@@ -296,11 +297,17 @@
         });
     });
 
-    notification_on = true;
+    notification_on = false;
 
     if(notification_on){
         $('.notification_pop_on').show(0);
         $('.notification_pop_off').hide(0);
+        $('.notification-container').fadeIn(1000);
+    }
+    else{
+        $('.notification_pop_on').hide(0);
+        $('.notification_pop_off').show(0); 
+        $('.notification-container').hide(0);       
     }
 
     $('.notification_pop').click(function(){
@@ -308,11 +315,13 @@
             notification_on = false;
             $('.notification_pop_on').hide(0);
             $('.notification_pop_off').show(0);
+            $('.notification-container').fadeOut(1000);
         }
         else{
             notification_on = true;
             $('.notification_pop_on').show(0);
-            $('.notification_pop_off').hide(0);            
+            $('.notification_pop_off').hide(0); 
+            $('.notification-container').fadeIn(1000);           
         }
     });
   
