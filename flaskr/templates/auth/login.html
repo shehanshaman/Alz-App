@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Login</title>
-
+    <title>GeNet | Login</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -24,20 +24,25 @@
     <style>
         .center {
             margin: auto;
-            width: 50%;
             padding: 10px;
+            width: 50%;
         }
 
+        .form-padding{
+            width: 70%;
+        }
+        
         .separator {
             display: flex;
             align-items: center;
             text-align: center;
+            color: #26a69a;
         }
 
         .separator::before, .separator::after {
             content: '';
             flex: 1;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #26a69a;
         }
 
         .separator::before {
@@ -53,7 +58,7 @@
         }
 
         .border {
-            border: 2px solid #bcbaba;
+            border: 2px solid #26a69a;
             border-radius: 30px;
             padding: 5px;
         }
@@ -77,7 +82,7 @@
 
     <div class="step-content">
         <div class="row head-word">
-            <h3 id="h3-head-1" class="card__title" style="text-align: center;">Log In</h3>
+            <h3 id="h3-head-1" class="card__title" style="text-align: center; color: #26a69a;">Log In</h3>
         </div>
     </div>
 
@@ -88,19 +93,22 @@
     </div>
 
     <div class="row">
-        <div class="border">
-            <form method="post" class="center">
-                <label for="username" style="float: left">Username</label>
-                <input name="username" id="username" required>
-                <label for="password" style="float: left">Password</label>
-                <input type="password" name="password" id="password" required>
-                <input type="submit" value="Log In" class="waves-effect waves-dark btn">
-            </form>
-            <div class="row center">
-                <label>Forgot Password? <a href="{{ url_for('auth.reset_request') }}">Reset Password</a></label>
-            </div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <div class="border">
+                <form method="post" class="center form-padding">
+                    <label for="username" style="float: left">Username</label>
+                    <input name="username" id="username" required>
+                    <label for="password" style="float: left">Password</label>
+                    <input type="password" name="password" id="password" required>
+                    <input type="submit" value="Log In" class="waves-effect waves-dark btn">
+                </form>
+                <div class="row center">
+                    <label>Forgot Password? <a href="{{ url_for('auth.reset_request') }}">Reset Password</a></label>
+                </div>
+            </div>            
         </div>
-
+        <div class="col-sm-3"></div>
     </div>
 
     <br>

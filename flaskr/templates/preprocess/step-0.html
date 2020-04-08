@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: Upload</title>
-
+    <title>GeNet | Upload</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
@@ -21,29 +21,129 @@
 
 </head>
 
+    <style> 
+        #loader { 
+            border: 12px solid #26a69a66; 
+            border-radius: 50%; 
+            border-top: 12px solid #26a69a; 
+            width: 70px; 
+            height: 70px; 
+            animation: spin 1s linear infinite; 
+        } 
+          
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        } 
+          
+        .center-load { 
+            position: absolute; 
+            top: -230px; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            margin: auto; 
+        } 
+    </style> 
 
-<body style="background-color: #f3f6f9;">
+<style>
+
+.modal_pop {
+  position: fixed;
+  z-index: 3000;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4); 
+}
+
+/* Modal_pop Content */
+.modal_pop_content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
+<!-- The Modal_pop -->
+<div id="upload_page_pop" class="modal_pop" style="display: none;">
 
-<div id="mainDataInterface-id" class="container mainDataInterface">
+  <!-- Modal_pop content -->
+  <div class="modal_pop_content">
+        <span class="close close_pop">&times;</span>
+    <div class="row">
+        <div class="col-sm-12">
+            <p class="tip_class_text" style="font-size: 15px; font-family: Monospace; text-align: justify;">tip</p>
+        </div>
+    </div>
+    <div class="row">
+        <center>
+        <div class="col-sm-12">
+            <img class="tip_img_div" src="{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}" alt="slide">
+        </div>
+        </center>
+    </div>    
+    <div class="row">
+        <div class="col-sm-6">
+            <button class="prv_btn_class btn info" style="float: right;">PREV</button>
+        </div>
+        <div class="col-sm-6">
+            <button class="next_btn_class btn info" style="float: left;">NEXT</button>
+        </div>
+    </div>
+  </div>
 
-    <form method="post" action="/pre/upload/" enctype="multipart/form-data">
+</div>
+
+<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 50px; margin-bottom: 50px;">
+
+    <form id="main-form-div" method="post" action="/pre/upload/" enctype="multipart/form-data">
 
         <div class="step-content row">
             <div class="head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;">Choose your dataset</h3>
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;color:#26a69a; ">Choose your data set</h3>
             </div>
         </div>
 
-        <div class="row" style="margin-top: 40px;">
+        <div class="row" style="margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
 
             <div class="row">
+                <center>
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">DATASET:</h5>
+                    <button type="button" class="info_data_set" style="color: #a6268e;border: none; background-color: #f3f6f9;">
+                        <i class="fas fa-info-circle fa-2x"></i>
+                    </button>  
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;display: inline;">DATA SET :</h5>                                                                
                 </div>
+                </center>
                 <div class="col-sm-6">
                     <div class="file-upload">
                         <div class="file-select">
@@ -63,13 +163,18 @@
 
             <div class="row center">
                 <div class="step-actions">
-                    <input class="waves-effect waves-dark btn" type="submit" value="Submit">
+                    <input id="btn-submit-step-0" class="waves-effect waves-dark btn" type="submit" value="Submit">
                 </div>
             </div>
 
         </div>
 
     </form>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 22%;text-align: center;color: #26a69a;">UPLOADING DATASET</h5>        
+    </div> 
 
 </div>
 
@@ -93,3 +198,67 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-step-0').click(function () {
+        
+        if( $('#chooseFile').val() != ''){
+            $('#main-form-div').hide(0);
+            $('.loader-div').show(0);
+            $('.main-body').click(false);
+            $("#main-form-div").submit();
+        }
+        else{
+        }
+    });
+
+</script>
+
+<script type="text/javascript">
+    
+    var i=0;
+    var tip_list = [
+        "tip 1 : A cookie associated with a cross-site resource at http://google.com/ was set without the `SameSite` attribute. A future release of Chrome will only deliver cookies with cross-site requests if they are set with `Sam", 
+        "tip 2 : A cookie associated with a cross-site resource at http://google.com/ was set without the `SameSite` attribute. A future release of Chrome will only deliver cookies with cross-site requests if they are set with `Sam", 
+        "tip 3 : A cookie associated with a cross-site resource at http://google.com/ was set without the `SameSite` attribute. A future release of Chrome will only deliver cookies with cross-site requests if they are set with `Sam."
+        ];
+
+    var tip_img_list = [
+        "{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}", 
+        "{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}", 
+        "{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}"
+    ];
+    $('.tip_class_text').text(tip_list[0]);
+    $(".tip_img_div").attr("src",tip_img_list[0]);
+
+    $('.next_btn_class').click(function(){
+        i++;
+        if( i == tip_list.length){
+            i=0;
+        }
+        $('.tip_class_text').text(tip_list[i]);
+        $(".tip_img_div").attr("src",tip_img_list[i]);
+        console.log(tip_list[i]);
+    });
+
+    $('.prv_btn_class').click(function(){
+        i--;
+        if( i < 0){
+            i=tip_list.length-1;
+        }
+        $('.tip_class_text').text(tip_list[i]);
+        $(".tip_img_div").attr("src",tip_img_list[i]);
+        console.log(tip_list[i]);
+    });
+
+    $('.close_pop').click(function(){
+        $('#upload_page_pop').fadeOut(1000);
+    });
+
+    $('.info_data_set').click(function(){
+        $('#upload_page_pop').fadeIn(1000);
+    });
+</script>

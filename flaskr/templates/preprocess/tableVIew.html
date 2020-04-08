@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FYP: {{ data[0] }}</title>
-
+    <title>GeNet | {{ data[0] }}</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
@@ -47,7 +47,13 @@
 <div id="mainDataInterface-id" class="container mainDataInterface">
     <div class="row">
         <div class="row" id="h3-head-6" class="card__title">
-            <h3>{{ data[0] }}</h3>
+            <div class="col-sm-12">
+                <h4 style="color: #26a69a; display: inline;">File Name : </h4>
+                <h4 class="h4-file-name" style="color: #26a69a; display: inline;">{{ data[0] }}</h4>
+                <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;" class="use-download" value="{{ data[0] }}">
+                    <i class="fas fa-file-download fa-2x"></i>
+                </button>                              
+            </div>        
         </div>
         <div class="row table_view">
             {% for table in tables %}
@@ -72,6 +78,8 @@
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
 <script>
     $(document).ready(function () {
         $('#table_id').DataTable();
@@ -90,5 +98,15 @@
             };
         }
     };
+
+    $(".use-download").click(function () {
+        var $file_name = $('.h4-file-name').text();
+        
+        var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=0";
+        console.log(url);
+        window.open(url, '_blank');
+
+    });
+
 </script>
 </html>

@@ -141,7 +141,7 @@ class FeatureSelection:
 
         # rows = ["classifier", "PCA", "Random Forest", "Extra Tree"]
         rows.insert(0, "classifier")
-        cla = ["SVM + Gaussian kernel", "SVM + linear kerne", "Random forest"]
+        cla = ["SVM + Gaussian kernel", "SVM + Linear kernel", "Random forest"]
 
         data_testing = np.array([cla, m_pca[:, 0], m_fi[:, 0], m_rf[:, 0]])
         results_testing = pd.DataFrame(data=data_testing, index=rows).transpose()
@@ -311,7 +311,7 @@ class FeatureSelection:
 
             i = i - 0.0025
 
-        rows = ["i", "svmLinear", "svmGaussian", "randomForest", "No of features"]
+        rows = ["Correlation coefficient", "svmLinear", "svmGaussian", "randomForest", "No of features"]
 
         data = np.array([lists0, lists1, lists2, lists3, lists4])
         results = pd.DataFrame(data=data, index=rows).transpose()

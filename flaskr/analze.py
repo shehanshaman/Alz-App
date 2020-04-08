@@ -109,7 +109,7 @@ def selected_method():
     max_corr_df = FeatureSelection.get_max_corr_scores(corrScore)
 
     x = df[col_uni[i]]
-    col_selected_method = FeatureSelection.getSelectedDF(x, x.corr(), max_corr_df.loc[max_corr_df['Maximum Accuracy'].idxmax()]['i']).columns.tolist()
+    col_selected_method = FeatureSelection.getSelectedDF(x, x.corr(), max_corr_df.loc[max_corr_df['Maximum Accuracy'].idxmax()]['Correlation coefficient']).columns.tolist()
     col_selected_str = ','.join(e for e in col_selected_method)
 
     UserResult.update_result(user_id, 'col_selected_method', col_selected_str)
@@ -295,15 +295,15 @@ def get_cmp_corr_results_fig(results):
 def get_corr_score_fig(corrScore):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
-    ax1.plot(corrScore['i'], corrScore["svmLinear"], label='linear')
-    ax1.plot(corrScore['i'], corrScore["svmGaussian"], label='linear')
-    ax1.plot(corrScore['i'], corrScore["randomForest"], label='linear')
+    ax1.plot(corrScore['Correlation coefficient'], corrScore["svmLinear"], label='linear')
+    ax1.plot(corrScore['Correlation coefficient'], corrScore["svmGaussian"], label='linear')
+    ax1.plot(corrScore['Correlation coefficient'], corrScore["randomForest"], label='linear')
 
     ax1.legend(['svmLinear', 'svmGaussian', 'randomForest', 'No of features'], loc='lower right')
 
     ax1.set(xlabel='correlation coefficient', ylabel='Classification Accuracy')
 
-    ax2.plot(corrScore['i'], corrScore["No of features"], label='linear')
+    ax2.plot(corrScore['Correlation coefficient'], corrScore["No of features"], label='linear')
     ax2.set(xlabel='correlation coefficient', ylabel='No of features')
 
     fig.subplots_adjust(wspace=0.2)
