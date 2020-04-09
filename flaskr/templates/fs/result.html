@@ -45,7 +45,6 @@
         #btnContainer > .btn {
             border: none;
             outline: none;
-{#            padding: 12px 16px;#}
             background-color: #f1f1f1;
             cursor: pointer;
         }
@@ -245,17 +244,30 @@
 
 <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
 
-<!-- jQueryValidation Plugin -->
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
-
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script>
+
+    var tour = guide_main_call(tip_fs_results, 'BL');
+
+</script>
 
 <script>
     // Get the elements with class="column"
@@ -321,19 +333,4 @@
         $('#tourControls').hide(0);
     }); 
     
-</script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
-
-<script>
-
-    var tour = guide_main_call(tip_fs_results, 'BL');
-
 </script>
