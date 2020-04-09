@@ -104,7 +104,7 @@
 
     </style> 
 
-<body class="main-body" style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
@@ -160,15 +160,15 @@
 
             <div class="step-content">
                 <div class="row head-word">
-                    <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">STEP 1 : CHOOSE DATA SET</h3>
+                    <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 1 : CHOOSE DATA SET</h3>
                 </div>
             </div>
 
-            <div class="where-you-like" style="margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
+            <div class="where-you-like" style="font-family: monospace;margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">Available Files :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Available Files :</h5>
                     </div>
                     <div id="available_file_name" class="col-sm-5">
                         <div class="md-form">
@@ -186,7 +186,7 @@
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">Annotation Table :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Annotation Table :</h5>
                     </div>
                     <div id="annotation_table_name" class="col-sm-6">
                         <div class="md-form">
@@ -201,7 +201,7 @@
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">Probe Selection Method :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Probe Selection Method :</h5>
                     </div>
                     <div id="average_div" class="col-sm-6">
                         <div class="md-form">
@@ -326,6 +326,7 @@
         $('.loader-div').show(0);
         $('.main-body').click(false);
         $("#main-form-div-step1").submit();
+        $('.notification-container').hide(0);
     });
 
 </script>

@@ -1,0 +1,15 @@
+
+<p style="display: none;" id="user_want_tour_p">{{ g.user['want_tour'] }}</p>
+<p style="display: none;" id="user_id_p">{{ g.user['id'] }}</p>
+
+<a style="display: none;" href="javascript:void(0);" class="btn btn-primary tour tour_create"></a>
+
+<div class="notification-container-pop">
+    <button type="button" class="notification_pop"
+            style="color: #26a69a;border: none; background-color: white;padding: 10px; border-radius: 10px;">
+        <i class="fas fa-bell-slash fa-2x notification_pop_off"></i>
+        <i class="fas fa-bell fa-2x notification_pop_on" style="width: 35px;"></i>
+    </button>
+</div>
+
+{% include 'footer.html' %}

@@ -102,7 +102,7 @@
 
 </style>
 
-<body class="main-body" style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
@@ -155,7 +155,7 @@
     <div id="mainDataInterface-id" class="container mainDataInterface">
 
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 3 : SCALING & IMPUTATION</h3>
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 3 : SCALING & IMPUTATION</h3>
         </div>
 
         <div class="row">
@@ -205,7 +205,7 @@
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Scaling :</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Scaling :</h5>
                 </div>
                 <div class="col-sm-6">
                     <div id="scaling_select_div" class="md-form">
@@ -218,7 +218,7 @@
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Imputation :</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Imputation :</h5>
                 </div>
                 <div class="col-sm-6">
                     <div id="imputation_select_div"  class="md-form">
@@ -263,7 +263,7 @@
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">DATASET PRE-PROCESSING</h5>        
+        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">DATA SET PRE-PROCESSING</h5>        
     </div> 
 
 {% include 'footer.html' %}
@@ -295,6 +295,7 @@
         $('.loader-div').show(0);
         $('.main-body').click(false);
         $("#main-form-div-step3").submit();
+        $('.notification-container').hide(0);
     });
 
 </script>
