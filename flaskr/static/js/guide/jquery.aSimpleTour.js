@@ -43,11 +43,13 @@
         html: ''
     }).css({
         'display': 'none',
+        'width': '290px',
         'padding': '10px 20px',
         'position': 'absolute',
-        'font-family': 'sans-serif',
+        'font-family': 'monospace',
         'border-radius': '5px',
         'font-size': '12px',
+        'text-align': 'justify',
         'box-sizing': 'border-box',
         'z-index' : '2000'
     });
