@@ -47,7 +47,9 @@ def index():
 
     UserResult.update_result(user_id, 'col_overlapped', overlap_str)
 
-    results, count = FeatureSelection.getFeatureSummary(df, y, col_uni, overlap, method_names)
+    selected_clfs = r['classifiers'].split(',')
+
+    results, count = FeatureSelection.getFeatureSummary(df, y, col_uni, overlap, method_names, selected_clfs)
     results = results.astype(float)
 
     overlap_pic_hash = get_overlap_result_fig(results, count)
@@ -135,8 +137,10 @@ def final_result():
 
     dis_gene = list(dict.fromkeys(overlap + col_selected_method))
 
-    r1_df = FeatureSelection.getTop3ClassificationResults_by_df(df[col_selected_method], y)
-    r2_df = FeatureSelection.getTop3ClassificationResults_by_df(df[dis_gene], y)
+    selected_clfs = r['classifiers'].split(',')
+
+    r1_df = FeatureSelection.getTop3ClassificationResults_by_df(df[col_selected_method], y, selected_clfs)
+    r2_df = FeatureSelection.getTop3ClassificationResults_by_df(df[dis_gene], y, selected_clfs)
 
     selected_roc_pic_hash = get_heatmap_roc(df[col_selected_method], y)
     all_roc_pic_hash = get_heatmap_roc(df[dis_gene], y)
