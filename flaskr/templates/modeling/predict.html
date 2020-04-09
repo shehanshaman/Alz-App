@@ -91,32 +91,6 @@
 
 <style type="text/css">
 
-/*        #tourControls{
-            bottom: 80px !important;
-        }*/
-
-        #tourtip{
-           width: 290px !important; 
-        }
-
-    .notification-container{
-        position: fixed;
-        left: 10px;
-        width: 255px;
-        max-width: calc(100% - 30px);
-    }
-
-    .notification{
-        background-color: #fff;
-        /*border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
-        color: #fff;
-        font-size: 14px;
-        padding: 8px 0px;
-        line-height: 20px;
-        /*margin-bottom: 15px;*/
-        animation: grow 0.5s ease-in forwards;
-    }
     @keyframes grow{
         from {
             opacity: 0;
@@ -138,32 +112,12 @@
         }
     }
 
-    .notification-info{
-        background-color: #00000096;
-    }
-
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9; font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
-
-<div class="notification-container" id="notification-container">
-    <div class="notification notification-info">
-        <div class="row">
-            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
-        </div>
-        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
-            <div class="col-sm-6">
-                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
-            </div>
-            <div class="col-sm-6">
-                <a class="btn btn-primary tour_no">NO</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="main-div-predict">
     <div id="mainDataInterface-id" class="container mainDataInterface">
@@ -309,7 +263,7 @@
         <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PREDICTING RESULTS</h5>        
     </div> 
 
-{% include 'footer.html' %}
+{% include 'guide_footer.html' %}
 
 </body>
 </html>
@@ -348,6 +302,8 @@
 
         $("#selected_file").val(conceptName);
         $("#form").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
     });
 
     $('#btn-submit-predict').click(function () {
@@ -359,56 +315,24 @@
 
         $("#selected_file").val(conceptName);
                 
-        $("#main-form-div-predict").submit();        
+        $("#main-form-div-predict").submit();  
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);     
     });
 
 </script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
-    var tour = {
-        data : [
-            { element : '#modal_create', tooltip : 'The process of modeling means training a machine learning algorithm to predict the labels from the features. The output from modeling is a trained model that can be used for making predictions on new data sets !', text: 'Custmize model', position: 'T' },
-            { element : '#select_file_div', tooltip : 'Choose the file that you want to predict the target output !', text: 'Choose File ', position: 'T' },
-            { element : '#select_normalize_div', tooltip : 'You can choose to perform the normalization on the selected data set too by turning this feature on !', text: 'Normalize method', position: 'T' },
-            { element : '#select_annotation_div', tooltip : 'You can map the probe ids to gene symbols by performing annotation table mapping. Turn on this feature to proceed with table mapping !', text: 'Annotation mapping', position: 'T' }
-        ],
-        welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'BR',
-        buttons: {
-            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
-            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
-            start : { text : 'Start', class: 'btn btn-primary' },
-            end   : { text : 'End', class: 'btn btn-primary' }
-        },
-        controlsCss: {
-            background: 'rgba(187, 178, 48, 0.71)',
-            color: '#1c1d21',
-            width: '400px',
-            'border-radius': 0
-        }
-    };
 
-    $(document).ready(function(){
-        $('.tour').on('click', function(){
-            $.aSimpleTour(tour);
-            $('.notification-container').hide(1000);
-        });
-        $('.tour_no').on('click', function(){
-            $('.notification-container').hide(1000);
-        });
-    });
+    var tour = guide_main_call(tip_model_predict, 'BL');
 
-    notification_on = true;
-
-    if(notification_on){
-        $('.notification-container').fadeIn(1000);
-    }
-    else{
-        $('.notification-container').hide(0);       
-    }
 </script>
