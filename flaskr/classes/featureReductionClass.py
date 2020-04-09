@@ -1,4 +1,5 @@
 import pandas as pd
+from flaskr.db import get_db
 
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
@@ -16,8 +17,30 @@ from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
-class FeatureReduction:
 
+def get_all_cls_names():
+    db = get_db()
+    cls = db.execute(
+        "SELECT * FROM classifiers",
+    ).fetchall()
+
+    cls_name = [c['clf_name'] for c in cls]
+
+    return cls_name
+
+
+def get_cls_id(selected_clfs):
+    db = get_db()
+    cls = db.execute(
+        "SELECT * FROM classifiers WHERE clf_name IN (?,?,?)", (selected_clfs[0], selected_clfs[1], selected_clfs[2])
+    ).fetchall()
+
+    cls_name = [c['id'] for c in cls]
+
+    return cls_name
+
+
+class FeatureReduction:
     def getScoresFromUS(df):
         X = df.drop("class", 1)  # Feature Matrix
         y = df["class"]  # Target Variable
@@ -30,7 +53,7 @@ class FeatureReduction:
         featureScores = pd.concat([dfcolumns, dfscores], axis=1)
         featureScores.columns = ['Specs', 'Score']
 
-        featureScores = featureScores.nlargest(df.shape[1]-1, 'Score')
+        featureScores = featureScores.nlargest(df.shape[1] - 1, 'Score')
 
         return featureScores
 
@@ -51,7 +74,7 @@ class FeatureReduction:
         axis.set_xlabel('Specs')
         axis.set_title('Univariate Selection: ' + str(length) + " features")
 
-        axis.plot( selectedFeatures["Specs"], selectedFeatures["Score"], label='linear')
+        axis.plot(selectedFeatures["Specs"], selectedFeatures["Score"], label='linear')
         return fig
 
     def get_classification_results(X, y):
@@ -97,11 +120,21 @@ class FeatureReduction:
                    round(metrics.accuracy_score(np.int64(y_test.values), y_pred_RF) * 100, 2)]
 
         training = [round(score_gnb.mean() * 100, 2), round(score_dt.mean() * 100, 2), round(score_knn.mean() * 100, 2),
-                    round(score_svm_rbf.mean() * 100, 2), round(score_svm_li.mean() * 100, 2), round(score_RF.mean() * 100, 2)]
+                    round(score_svm_rbf.mean() * 100, 2), round(score_svm_li.mean() * 100, 2),
+                    round(score_RF.mean() * 100, 2)]
 
-        classifiers = ["Gaussian Naive Bayes", "Decision Tree", "Nearest Neighbors", "SVM + Gaussian kernel", "SVM + linear kernel",
-                       "Random Forest"]
+        classifiers = get_all_cls_names()
 
-        df = pd.DataFrame({"Classifiers": classifiers, "Testing": testing, "Training": training}, columns=["Classifiers", "Testing", "Training"])
+        df = pd.DataFrame({"Classifiers": classifiers, "Testing": testing, "Training": training},
+                          columns=["Classifiers", "Testing", "Training"])
 
         return df
+
+    def get_best_cls(cls_result_df):
+        cls_result_df["avg"] = (cls_result_df['Testing'] + cls_result_df['Training']) / 2
+        cls_name = cls_result_df.nlargest(3, ['avg'])["Classifiers"].tolist()
+        cls_id = get_cls_id(cls_name)
+        cls_id_str = ','.join(str(e) for e in cls_id)
+        cls_name_str = ','.join(e for e in cls_name)
+
+        return cls_id_str, cls_name_str

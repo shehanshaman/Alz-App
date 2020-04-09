@@ -261,21 +261,39 @@ class FeatureSelection:
 
 
 
-    def returnScoreDataFrameModels(dataFrame, y, len):
-        lists1 = []
-        lists2 = []
-        lists3 = []
+    def returnScoreDataFrameModels(dataFrame, y, len, selected_clfs):
+
+        lists = [[], [], []]
 
         for i in FeatureSelection.get_range_array(len):
 
-            lists1.append(FeatureSelection.svmLinear(dataFrame.iloc[:, 0:(i)], y))
-            lists2.append(FeatureSelection.svmGaussian(dataFrame.iloc[:, 0:(i)], y))
-            lists3.append(FeatureSelection.randomForest(dataFrame.iloc[:, 0:(i)], y))
+            if "1" in selected_clfs:
+                j = selected_clfs.index("1")
+                lists[j].append(FeatureSelection.gaussianNB(dataFrame.iloc[:, 0:(i)], y))
 
-        rows = ["svmLinear", "svmGaussian", "randomForest"]
+            if "2" in selected_clfs:
+                j = selected_clfs.index("2")
+                lists[j].append(FeatureSelection.decisionTree(dataFrame.iloc[:, 0:(i)], y))
 
-        data = np.array([lists1, lists2, lists3])
-        modelScore = pd.DataFrame(data=data, index=rows).transpose()
+            if "3" in selected_clfs:
+                j = selected_clfs.index("3")
+                lists[j].append(FeatureSelection.kNeighbors(dataFrame.iloc[:, 0:(i)], y))
+
+            if "4" in selected_clfs:
+                j = selected_clfs.index("4")
+                lists[j].append(FeatureSelection.svmGaussian(dataFrame.iloc[:, 0:(i)], y))
+
+            if "5" in selected_clfs:
+                j = selected_clfs.index("5")
+                lists[j].append(FeatureSelection.svmLinear(dataFrame.iloc[:, 0:(i)], y))
+
+            if "6" in selected_clfs:
+                j = selected_clfs.index("6")
+                lists[j].append(FeatureSelection.randomForest(dataFrame.iloc[:, 0:(i)], y))
+
+        rows = FeatureSelection.get_cls_names(selected_clfs)
+
+        modelScore = pd.DataFrame(data=lists, index=rows).transpose()
 
         return modelScore
 
@@ -283,7 +301,23 @@ class FeatureSelection:
         array = [100, 90, 80, 70, 60, 50, 40, 30, 20, 15, 10, 5, 3, 2, 1]
         return array[array.index(FeatureSelection.roundupten(len)):]
 
+    def gaussianNB(dataFrame, target):
+        clf = GaussianNB()
+        scores = cross_val_score(clf, dataFrame, target, cv=3)
 
+        return scores.mean()
+
+    def decisionTree(dataFrame, target):
+        clf = DecisionTreeClassifier()
+        scores = cross_val_score(clf, dataFrame, target, cv=3)
+
+        return scores.mean()
+
+    def kNeighbors(dataFrame, target):
+        clf = KNeighborsClassifier(n_neighbors=2)
+        scores = cross_val_score(clf, dataFrame, target, cv=3)
+
+        return scores.mean()
 
     def svmLinear(dataFrame, target):
         clf = svm.SVC(kernel='linear')  # Linear Kernel
@@ -354,39 +388,62 @@ class FeatureSelection:
 
         return df_selected
 
-    def returnScoreDataFrame(dataFrame, y):
-        lists0 = []
-        lists1 = []
-        lists2 = []
-        lists3 = []
-        lists4 = []
+    def returnScoreDataFrame(dataFrame, y, selected_clfs):
+
+        lists = [[], [], [], [], []]
 
         i = 1
 
         while i >= 0.6:
-            # for i in range(0,50):
+
             df_tmp = dataFrame
             df_tmp = FeatureSelection.getSelectedDF(df_tmp, df_tmp.corr(), i)
 
-            lists0.append(i)
-            lists1.append(FeatureSelection.svmLinear(df_tmp, y))
-            lists2.append(FeatureSelection.svmGaussian(df_tmp, y))
-            lists3.append(FeatureSelection.randomForest(df_tmp, y))
-            lists4.append(len(df_tmp.columns))
+            lists[0].append(i)
+            lists[4].append(len(df_tmp.columns))
 
-            i = i - 0.0025
+            if "1" in selected_clfs:
+                j = selected_clfs.index("1") + 1
+                lists[j].append(FeatureSelection.gaussianNB(df_tmp, y))
 
-        rows = ["Correlation coefficient", "svmLinear", "svmGaussian", "randomForest", "No of features"]
+            if "2" in selected_clfs:
+                j = selected_clfs.index("2") + 1
+                lists[j].append(FeatureSelection.decisionTree(df_tmp, y))
 
-        data = np.array([lists0, lists1, lists2, lists3, lists4])
-        results = pd.DataFrame(data=data, index=rows).transpose()
+            if "3" in selected_clfs:
+                j = selected_clfs.index("3") + 1
+                lists[j].append(FeatureSelection.kNeighbors(df_tmp, y))
+
+            if "4" in selected_clfs:
+                j = selected_clfs.index("4") + 1
+                lists[j].append(FeatureSelection.svmGaussian(df_tmp, y))
+
+            if "5" in selected_clfs:
+                j = selected_clfs.index("5") + 1
+                lists[j].append(FeatureSelection.svmLinear(df_tmp, y))
+
+            if "6" in selected_clfs:
+                j = selected_clfs.index("6") + 1
+                lists[j].append(FeatureSelection.randomForest(df_tmp, y))
+
+            # i = i - 0.0025
+            i = i - 0.01
+
+        rows = FeatureSelection.get_cls_names(selected_clfs)
+        rows.insert(0, "Correlation coefficient")
+        rows.insert(4, "No of features")
+
+        results = pd.DataFrame(data=lists, index=rows).transpose()
 
         return results
 
-    def get_max_corr_scores(corrScore):
-        w1 = corrScore.loc[corrScore['svmLinear'].idxmax()]
-        w2 = corrScore.loc[corrScore['svmGaussian'].idxmax()]
-        w3 = corrScore.loc[corrScore['randomForest'].idxmax()]
+    def get_max_corr_scores(corrScore, selected_clfs):
+
+        cls = FeatureSelection.get_cls_names(selected_clfs)
+
+        w1 = corrScore.loc[corrScore[cls[0]].idxmax()]
+        w2 = corrScore.loc[corrScore[cls[1]].idxmax()]
+        w3 = corrScore.loc[corrScore[cls[2]].idxmax()]
 
         df_1 = pd.DataFrame(w1).reset_index()
         df_2 = pd.DataFrame(w2).reset_index()
@@ -395,14 +452,16 @@ class FeatureSelection:
         result = pd.merge(df_1, df_2, on='index')
         result = pd.merge(result, df_3, on='index')
 
-        result.columns = ['index', 'svmLinear', 'svmGaussian', 'randomForest']
+        result.columns = ['index', cls[0], cls[1], cls[2]]
         result = result.set_index('index')
         result = result.T
-        max_result = [result.loc[result['svmLinear'].idxmax()]['svmLinear'],
-                      result.loc[result['svmGaussian'].idxmax()]['svmGaussian'],
-                      result.loc[result['randomForest'].idxmax()]['randomForest']]
+        max_result = [result.loc[result[cls[0]].idxmax()][cls[0]],
+                      result.loc[result[cls[1]].idxmax()][cls[1]],
+                      result.loc[result[cls[2]].idxmax()][cls[2]]]
         result["Maximum Accuracy"] = max_result
-        result = result.drop(["svmLinear", "svmGaussian", "randomForest"], axis=1)
+        result = result.drop([cls[0], cls[1], cls[2]], axis=1)
+
+        result.columns.name = None
 
         return result
 
@@ -433,14 +492,5 @@ class FeatureSelection:
         fpr = [fpr_li, fpr_gu, fpr_RF]
         tpr = [tpr_li, tpr_gu, tpr_RF]
         roc_auc = [roc_auc_li, roc_auc_gu, roc_auc_RF]
-
-        # plt.plot(fpr_li, tpr_li, label="SVM linear, auc=" + str(round(roc_auc_li, 2)))
-        # plt.plot(fpr_gu, tpr_gu, label="SVM gaussian, auc=" + str(round(roc_auc_gu, 2)))
-        # plt.plot(fpr_RF, tpr_RF, label="Random forest, auc=" + str(round(roc_auc_RF, 2)))
-        #
-        # plt.ylabel("Sensitivity")
-        # plt.xlabel("1 - Specificity")
-        #
-        # plt.legend(loc="lower right")
 
         return fpr, tpr, roc_auc
