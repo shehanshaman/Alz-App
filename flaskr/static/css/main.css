@@ -1533,3 +1533,11 @@ th {
     text-decoration: none;
     color: inherit;
 }
+
+.pagination li.active {
+    background-color: inherit;
+}
+
+.pagination{
+    width: max-content;
+}
