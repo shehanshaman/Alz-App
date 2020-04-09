@@ -183,12 +183,12 @@ def feature_reduction():
     PreProcess.saveDF(p_fold_df, path)
 
     pvalues_max = p_fold_df['pValues'].max() * 0.1
-    fold_max = p_fold_df['fold'].max() * 0.1
+    fold_max = p_fold_df['fold'].max() * 0.2
 
-    pvalues = np.linspace(0.001, pvalues_max, 20)
-    pvalues = np.around(pvalues, decimals=3)
-    folds = np.linspace(0.001, fold_max, 20)
-    folds = np.around(folds, decimals=3)
+    pvalues = np.linspace(0.001, 0.01, 19)
+    pvalues = np.around(pvalues, decimals=4)
+    folds = np.linspace(0.001, fold_max, 40)
+    folds = np.around(folds, decimals=4)
 
     data_array = [pvalues, folds]
 
@@ -224,14 +224,13 @@ def get_reduce_features_from_pvalues():
 
     split_array = split_array.astype(int)
 
-    df_y = PreProcess.getDF(x.path)
-    fs_fig_hash = get_feature_selection_fig(df, df_y, length)
-
     # Get classification Results
     df_y = PreProcess.getDF(x.path)
     y = df_y['class']
     y = pd.to_numeric(y)
     classification_result_df = FeatureReduction.get_classification_results(df, y)
+
+    fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
     return render_template("preprocess/step-6.html", split_array=split_array, fs_fig_hash=fs_fig_hash,
                            tables=[classification_result_df.to_html(classes='data')])
