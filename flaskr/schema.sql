@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS results;
 DROP TABLE IF EXISTS modeling;
 DROP TABLE IF EXISTS mail_template;
 DROP TABLE IF EXISTS verify;
+DROP TABLE IF EXISTS classifiers;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,6 +33,7 @@ CREATE TABLE post (
 CREATE TABLE results (
   user_id INTEGER PRIMARY KEY,
   filename VARCHAR(100),
+  classifiers VARCHAR(10) DEFAULT '4,5,6',
   fs_methods VARCHAR(100),
   col_method1 TEXT,
   col_method2 TEXT,
@@ -69,6 +71,20 @@ CREATE TABLE verify (
 
   FOREIGN KEY (user_id) REFERENCES user (id)
 );
+
+CREATE TABLE classifiers (
+  id INTEGER PRIMARY KEY,
+  clf_name VARCHAR(50),
+  short_name VARCHAR(10)
+);
+
+INSERT INTO classifiers (id, clf_name, short_name) VALUES
+  (1, 'Gaussian Naive Bayes', 'GNB'),
+  (2, 'Decision Tree', 'DT'),
+  (3, 'Nearest Neighbors', 'NN'),
+  (4, 'SVM + Gaussian kernel', 'GK'),
+  (5, 'SVM + linear kernel', 'LK'),
+  (6, 'Random Forest', 'RF');
 
 INSERT INTO user (username, given_name, password, last_login, is_verified) VALUES ('user', 'user', 'pbkdf2:sha256:150000$LuBMEbIc$f3e7ec7e9061bad12ffb9193a8740722cc96be7e193c520e3aa551dc43c78b7c', '2012-12-25 23:59:59', 3);
 INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2,
