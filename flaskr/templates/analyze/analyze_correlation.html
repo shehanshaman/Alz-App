@@ -173,7 +173,7 @@
 
 </style>
 
-<body class="main-body" style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
@@ -211,7 +211,7 @@
 
         <div class="step-heading">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">CORRELATION : {{ method_title }}</h3>
+                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">CORRELATION : {{ method_title }}</h3>
                 <h3 id="selected-method" style="display: none;">{{ method_title }}</h3>
             </div>
         </div>
@@ -241,7 +241,7 @@
 
             <div class="result_content">
                 <div class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;">Variation of the correlation
+                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Variation of the correlation
                         coefficients of the genes found only by {{ method_title }} with
                         classification accuracy</h4>
                 </div>
@@ -267,7 +267,7 @@
             <div class="result_content">
                 <div class="row">
 
-                    <h4 id="h4-head-2" class="card__title" style="text-align: center;font-size:26px;">Finding features that has minimum
+                    <h4 id="h4-head-2" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Finding features that has minimum
                         correlated and high classification accuracy</h4>
                 </div>
 
@@ -287,18 +287,18 @@
 
             <div class="row list-view">
                 <div id="btnContainer">
-                    <button class="btn" onclick="listView()"><i class="fa fa-bars"></i> List</button>
-                    <button class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+                    <button id="list_div_btn" class="btn" onclick="listView()" style="background-color: white;color: black;"><i class="fa fa-bars"></i> List</button>
+                    <button id="grid_div_btn" class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
                 </div>
                 <br>
 
                 <div class="row">
                     <div id="overlapped_features_div" class="column" style="background-color:#26a69a8f;">
-                        <h2 style="color: white;">Overlapped Features</h2>
+                        <h4 style="color: white;font-family: monospace;">Overlapped Features</h4>
                         <p>{{ overlap }}</p>
                     </div>
                     <div id="correlation_features_div" class="column" style="background-color:#26a69a;">
-                        <h2 style="color: white;">Correlation | {{ max_clasify }}</h2>
+                        <h4 style="color: white;font-family: monospace;">Correlation | {{ max_clasify }}</h4>
                         <p>{{ corr_selected }}</p>
                     </div>
                 </div>
@@ -325,7 +325,7 @@
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">{{ method_title }}</h5>
+        <h5 style="margin-top: 20%;text-align: center;color: #26a69a; margin-bottom: 200px;">{{ method_title }}</h5>
         <h5 style="margin-top: -12%;text-align: center;color: #26a69a; margin-bottom: 200px;">CONTINUE RESULTS ANALYSING</h5>        
     </div> 
 
@@ -365,6 +365,12 @@
         for (i = 0; i < elements.length; i++) {
             elements[i].style.width = "100%";
         }
+
+        $('#tourControls').hide(0);
+        $("#list_div_btn").css("color", "white");
+        $("#list_div_btn").css("background-color", "#666");
+        $("#grid_div_btn").css("color", "black");
+        $("#grid_div_btn").css("background-color", "white");
     }
 
     // Grid View
@@ -372,6 +378,12 @@
         for (i = 0; i < elements.length; i++) {
             elements[i].style.width = "50%";
         }
+
+        $('#tourControls').hide(0);
+        $("#list_div_btn").css("color", "black");
+        $("#list_div_btn").css("background-color", "white");
+        $("#grid_div_btn").css("color", "white");
+        $("#grid_div_btn").css("background-color", "#666");
     }
 
     /* Optional: Add active class to the current button (highlight it) */

@@ -124,7 +124,7 @@
 
         <div class="step-content">
             <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">PREDICTION</h3>
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">PREDICTION</h3>
             </div>
         </div>
 
@@ -135,7 +135,7 @@
                         <h5>Details</h5>
                     </div>
                     <div class="col-sm-4" id="modal_create">
-                        <button type="button" class="btn btn-warning"><a style="font-size: 15px;" href="{{ url_for('modeling.index') }}">Customize Model</a></button>
+                        <button type="button" class="btn btn-warning"><a style="font-size: 15px;font-family: monospace;" href="{{ url_for('modeling.index') }}">Customize Model</a></button>
                     </div>
 
                 </div>
@@ -171,12 +171,12 @@
 
                         <div class="row" style="margin-top: 10px;">
                             <div class="col-sm-4">
-                                <h5 id="" class="card__title" style="text-align: center;">Choose File:</h5>
+                                <h5 id="" class="card__title" style="text-align: center;font-family: monospace;">Choose File:</h5>
                             </div>
                             <div class="col-sm-1"></div>
                             <div class="col-sm-5">
                                 <div id="select_file_div" class="md-form">
-                                    <select class="form-control" id="available_files" name="available_files">
+                                    <select style="font-family: monospace;" class="form-control" id="available_files" name="available_files">
                                         {% for name in available_list %}
                                             <option value="{{ name }}">{{ name }}</option>
                                         {% endfor %}
@@ -190,7 +190,7 @@
 
                         <div class="row" style="margin-top: 10px; margin-bottom: -75px;margin-right: 10px;">
                             <div class="row">
-                                <h5 id="h5-head-1" class="card__title" style="text-align: center;">Check preprocess
+                                <h5 id="h5-head-1" class="card__title" style="text-align: center;font-family: monospace;">Check preprocess
                                     steps</h5>
                             </div>
                             <div class="row">
@@ -220,7 +220,7 @@
                                         <div class="col-sm-6"></div>
                                         <div class="col-sm-6">
                                             <div class="md-form" id="anno_tbl_div">
-                                                <select class="form-control" id="anno_tbl" name="anno_tbl" style="margin-bottom: 20px;">
+                                                <select style="font-family: monospace;" class="form-control" id="anno_tbl" name="anno_tbl" style="margin-bottom: 20px;">
                                                     {% for name in annotation_list %}
                                                         <option value="{{ name }}">{{ name }}</option>
                                                     {% endfor %}
