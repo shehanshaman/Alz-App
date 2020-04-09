@@ -167,7 +167,7 @@
         <div class="step">
             <div class="step-content">
                 <div class="row">
-                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">RESULTS</h3>
+                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">RESULTS</h3>
                 </div>
 
                 <div class="row">
@@ -185,27 +185,27 @@
                 </div>
 
                 <div class="row">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Selected Features</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Selected Features</h5>
                 </div>
 
                 <div class="row">
                     <div id="btnContainer">
-                        <button id="list_div_btn" class="btn" onclick="listView()" style="color: black;"><i class="fa fa-bars"></i> List</button>
-                        <button id="grid_div_btn"  class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+                        <button id="list_div_btn" class="btn" onclick="listView()" style="color: black;font-family: monospace;"><i class="fa fa-bars"></i> List</button>
+                        <button id="grid_div_btn" class="btn active" onclick="gridView()" style="font-family: monospace;"><i class="fa fa-th-large"></i> Grid</button>
                     </div>
                     <br>
 
                     <div id="results_gene_div" class="row">
                         <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
-                            <h2 style="color: #ffffff;">{{ methods[1] }}</h2>
+                            <h4 style="color: #ffffff;font-family: monospace;">{{ methods[1] }}</h4>
                             <p>{{ columns[0] }}</p>
                         </div>
                         <div class="column" style="background-color:rgba(38, 166, 154, 0.91);">
-                            <h2 style="color: #ffffff;">{{ methods[2] }}</h2>
+                            <h4 style="color: #ffffff;font-family: monospace;">{{ methods[2] }}</h4>
                             <p>{{ columns[1] }}</p>
                         </div>
                         <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
-                            <h2 style="color: #ffffff;">{{ methods[3] }}</h2>
+                            <h4 style="color: #ffffff;font-family: monospace;">{{ methods[3] }}</h4>
                             <p>{{ columns[2] }}</p>
                         </div>
                     </div>

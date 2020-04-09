@@ -95,7 +95,7 @@
 
 </style>
 
-<body class="main-body" style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
@@ -132,7 +132,7 @@
         <form id="main-form-div-step6" method="post" action="/pre/fr/save/" enctype="multipart/form-data">
             <div class="step-content">
                 <div class="row">
-                    <h3 id="h3-head-5" class="card__title" style="text-align: center;color: #26a69a;">STEP 6 : FEATURE REDUCTION</h3>
+                    <h3 id="h3-head-5" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 6 : FEATURE REDUCTION</h3>
                 </div>
 
                 <div class="row">
@@ -167,7 +167,7 @@
                         <div class="row md-form">
                             <label><b>SELECT FEATURE COUNT</b></label>
                             <div id="select_num_features_div" class="dropdown">
-                                <select class="form-control dropdown-menu-p-value" id="features_count"
+                                <select style="font-family: monospace;" class="form-control dropdown-menu-p-value" id="features_count"
                                         name="features_count">
                                     {% for name in split_array %}
                                         <option value="{{ name }}">{{ name }}</option>
