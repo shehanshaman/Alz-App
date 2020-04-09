@@ -7,8 +7,8 @@
 
     data = $('#user_want_tour_p').text();
     notification_on = (data == 1);
-
-    if (notification_on) {
+    
+    if (notification_on) {console.log(notification_on);
         $('.notification_pop_on').show(0);
         $('.notification_pop_off').hide(0);
 
@@ -21,7 +21,7 @@
         });
 
     }
-    else {
+    else {console.log(notification_on);
         $('.notification_pop_on').hide(0);
         $('.notification_pop_off').show(0);
 
@@ -38,7 +38,7 @@
 
         $.get("/update/user/tour/", {id: user_id, tour: !notification_on}, function (data, status) {
             notification_on = (data == 'true');
-
+            
             if (notification_on) {
                 $('.notification_pop_on').show(0);
                 $('.notification_pop_off').hide(0);
@@ -55,7 +55,6 @@
         });
 
     });
-
 
 function guide_main_call(tip_data, controls_position){
 

@@ -88,32 +88,6 @@
 
 <style type="text/css">
 
-/*        #tourControls{
-            bottom: 80px !important;
-        }*/
-
-        #tourtip{
-           width: 290px !important; 
-        }
-
-    .notification-container{
-        position: fixed;
-        left: 10px;
-        width: 245px;
-        max-width: calc(100% - 30px);
-    }
-
-    .notification{
-        background-color: #fff;
-        /*border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
-        color: #fff;
-        font-size: 14px;
-        padding: 8px 0px;
-        line-height: 20px;
-        /*margin-bottom: 15px;*/
-        animation: grow 0.5s ease-in forwards;
-    }
     @keyframes grow{
         from {
             opacity: 0;
@@ -135,32 +109,12 @@
         }
     }
 
-    .notification-info{
-        background-color: #00000096;
-    }
-
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
-
-<div class="notification-container" id="notification-container">
-    <div class="notification notification-info">
-        <div class="row">
-            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
-        </div>
-        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
-            <div class="col-sm-6">
-                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
-            </div>
-            <div class="col-sm-6">
-                <a class="btn btn-primary tour_no">NO</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="main-div-an-1">
     <div class="card-content">
@@ -306,7 +260,7 @@
         <h5 style="margin-top: -12%;text-align: center;color: #26a69a; margin-bottom: 200px;">ANALYSING RESULTS</h5>        
     </div> 
 
-{% include 'footer.html' %}
+{% include 'guide_footer.html' %}
 
 </body>
 </html>
@@ -330,15 +284,6 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
-<!-- <script>
-    $("button").click(function () {
-        var fired_button = $(this).val();
-
-        $("#selected_method").val(fired_button);
-        $("#form").submit();
-    });
-</script>
- -->
 <script type="text/javascript">
 
     $('.btn-submit-an-1').click(function () {
@@ -350,7 +295,9 @@
 
         $('.h5-text').text(fired_button);
         $("#selected_method").val(fired_button);
-        $("#main-form-div-an-1").submit();        
+        $("#main-form-div-an-1").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);                
     });
 
     $(".use-download-training_accuracy").click(function () {
@@ -361,6 +308,8 @@
         a1.href = url;
         a1.download = "training_accuracy.png";
         a1.click();
+
+        $('#tourControls').hide(0);
     }); 
 
     $(".use-download-classification_accuracy").click(function () {
@@ -371,6 +320,8 @@
         a2.href = url;
         a2.download = "classification_accuracy.png";
         a2.click();
+
+        $('#tourControls').hide(0);
     });
 
     $(".use-download-correlation_matrix").click(function () {
@@ -381,54 +332,20 @@
         a3.href = url;
         a3.download = "correlation_matrix.png";
         a3.click();
+
+        $('#tourControls').hide(0);
     });
 </script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
-    var tour = {
-        data : [
-            { element : '#result_plot_div1', tooltip : 'Right: Number of features selected by each method only, Left : The variation of accuracy with the features selected by one method trained under 3 classifiers !', text: 'Training accuracies', position: 'T' },
-            { element : '#result_plot_div2', tooltip : 'Variation of accuracy of incrementally smaller sets of genes selected by each feature selection method !', text: 'Classification accuracy', position: 'T' },
-            { element : '#result_plot_div3', tooltip : 'Correlation matrix of the selected features that are only obtained through that method !', text: 'Correlation matrix', position: 'T' },
-            { element : '#select_method_div', tooltip : 'Select one of the feature selection method to proceed further. By doing this, you will be able to filter out the best set of genes given by the selected feature selection method !', text: 'Select one methord', position: 'T' }
-        ],
-        welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'BR',
-        buttons: {
-            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
-            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
-            start : { text : 'Start', class: 'btn btn-primary' },
-            end   : { text : 'End', class: 'btn btn-primary' }
-        },
-        controlsCss: {
-            background: 'rgba(187, 178, 48, 0.71)',
-            color: '#1c1d21',
-            width: '400px',
-            'border-radius': 0
-        }
-    };
 
-    $(document).ready(function(){
-        $('.tour').on('click', function(){
-            $.aSimpleTour(tour);
-            $('.notification-container').hide(1000);
-        });
-        $('.tour_no').on('click', function(){
-            $('.notification-container').hide(1000);
-        });
-    });
+    var tour = guide_main_call(tip_an_index, 'BL');
 
-    notification_on = true;
-
-    if(notification_on){
-        $('.notification-container').fadeIn(1000);
-    }
-    else{
-        $('.notification-container').hide(0);       
-    }
 </script>
