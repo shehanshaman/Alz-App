@@ -121,7 +121,9 @@ def result():
 
     col = [col_m1, col_m2, col_m3]
 
-    results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3,y, method_names)
+    selected_clfs = r['classifiers'].split(',')
+
+    results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3,y, method_names, selected_clfs)
 
     img64 = get_summary_plot(results_testing, results_training)
 
