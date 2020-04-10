@@ -43,12 +43,18 @@
 <!-- Dropdown Structure User -->
 <ul id="dropdown_user" class="dropdown-content" style="font-family: monospace;">
     <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
+    {% if g.user['is_admin'] %}
+        <li class="nav_link"><a href="{{ url_for('auth.admin_panel') }}">Admin Panel</a></li>
+    {% endif %}
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
 
 <!-- Dropdown side Structure User -->
 <ul id="dropdown_user_side" class="dropdown-content">
     <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
+    {% if g.user['is_admin'] %}
+        <li class="nav_link"><a href="{{ url_for('auth.admin_panel') }}">Admin Panel</a></li>
+    {% endif %}
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
 
