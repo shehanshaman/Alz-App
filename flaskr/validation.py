@@ -4,6 +4,7 @@ import pandas as pd
 from flask import Blueprint, session
 from flask import render_template
 from flask import redirect
+from flaskr.classes.featureSelectionClass import FeatureSelection
 
 from flaskr.classes.preProcessClass import PreProcess
 from flaskr.classes.validation import ValidateUser
@@ -52,6 +53,8 @@ def index():
     dis_gene_card = gene_card_df[col_dist_gene_card]
 
     col_gene_card = [col_m1_gene_card, col_m2_gene_card, col_m3_gene_card, col_mo, col_dist_gene_card]
+
+    venn_data = FeatureSelection.venn_diagram_data(col_m1_gene_card, col_m2_gene_card, col_m3_gene_card)
 
     return render_template("validation/index.html", col_gene_card = col_gene_card, method_names = method_names,
                            tables=[dis_gene_card.head().to_html(classes='data')], titles=dis_gene_card.head().columns.values)
