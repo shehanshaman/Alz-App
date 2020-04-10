@@ -353,7 +353,7 @@ def get_infrequent_ids(users):
     for index, row in users.iterrows():
         u_log = datetime.strptime(row['last_login'], '%Y-%m-%d %H:%M:%S.%f')
         delta = n - u_log
-        if delta.days > 1 and row['usage'] > 0:
+        if delta.days > 1 and row['usage'] > 10:
             list.append(row['id'])
 
     return list
