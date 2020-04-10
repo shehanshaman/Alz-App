@@ -51,7 +51,7 @@ def init_db_command():
 
 def add_mail_templates():
     db = get_db()
-    subjects = ["verify", "reset"]
+    subjects = ["verify", "reset", "infrequent"]
     for subject in subjects:
         file_name = MAIL_PATH / (subject + '_mail.html')
         f = open(file_name, "r")
