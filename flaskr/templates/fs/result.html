@@ -239,7 +239,7 @@
 }
 
 /* Modal Content */
-.modal-content {
+.modal-content-1 {
   background-color: #fefefe;
   margin: auto;
   padding: 40px;
@@ -316,17 +316,17 @@
                     <div class="col-sm-3"></div>
                     <div class="col-sm-8 union_div" style="width: 50%;margin-top: auto;">
 
-                        <p class="p_M value_p">10</p>
-                        <p class="p_T value_p">12</p>
-                        <p class="p_L value_p">21</p>
-                        <p class="p_R value_p">14</p>
-                        <p class="p_TLM value_p">15</p>
-                        <p class="p_TRM value_p">16</p>
-                        <p class="p_LRM value_p">17</p>
+                        <p class="p_M value_p">{{venn_data[2] | length}}</p>
+                        <p class="p_T value_p">{{venn_data[0][1] | length}}</p>
+                        <p class="p_L value_p">{{venn_data[0][0] | length}}</p>
+                        <p class="p_R value_p">{{venn_data[0][2] | length}}</p>
+                        <p class="p_TLM value_p">{{venn_data[1][0] | length}}</p>
+                        <p class="p_TRM value_p">{{venn_data[1][1] | length}}</p>
+                        <p class="p_LRM value_p">{{venn_data[1][2] | length}}</p>
 
-                        <p class="value_clf_p clf_T">PCA</p>
-                        <p class="value_clf_p clf_L">RANDOM FOREST</p>
-                        <P class="value_clf_p clf_R">EXTRA TREE CLASSIFFER</P>
+                        <p class="value_clf_p clf_T">{{ methods[2] }}</p>
+                        <p class="value_clf_p clf_L">{{ methods[1] }}</p>
+                        <P class="value_clf_p clf_R">{{ methods[3] }}</P>
 
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                              viewBox="0 84 612 556" enable-background="new 0 84 612 556" xml:space="preserve">
@@ -451,15 +451,27 @@
 
 <!-- The Modal -->
 <div id="popup_gene_list" class="modal_pop" style="display: none;">
-    <div class="modal-content">
+    <div class="modal-content-1">
         <div class="row">
             <span class="close">&times;</span>
         </div>      
         <div class="row">
-            <p class="popup_head_div">Some text in the Modal..</p>          
+            <p style="display: none;" class="popup_head_div T_gene">Only selected genes in {{ methods[2] }} method</p>
+            <p style="display: none;" class="popup_head_div L_gene">Only selected genes in {{ methods[1] }} method</p>
+            <p style="display: none;" class="popup_head_div R_gene">Only selected genes in {{ methods[3] }} method</p>
+            <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ methods[1] }} + {{ methods[2] }} + {{ methods[3] }}</p>
+            <p style="display: none;" class="popup_head_div TL_gene">Gene selected in {{ methods[1] }} and {{ methods[2] }}</p>
+            <p style="display: none;" class="popup_head_div TR_gene">Gene selected in {{ methods[2] }} and {{ methods[3] }}</p>        
+            <p style="display: none;" class="popup_head_div LR_gene">Gene selected in {{ methods[1] }} and {{ methods[3] }}</p>                      
         </div>
         <div class="row">
-            <p class="popup_gene_list_div">['CHN1', 'NGFRAP1', 'TUBA1C', 'TMSB10', 'SYT1', 'USMG5', 'UBB', 'LDHA', 'STXBP1', 'STMN2', 'TUBB2A', 'SOD1', 'SH3GL2', 'UBC', 'GAPDH', 'COPG2IT1', 'ACTB /// ACTG1', 'SPARCL1', 'ATP5B', 'NEFL', 'LDHB', 'INA', 'RTN3', 'NAPB', 'GNAS', 'NAP1L5', 'MTCH1', 'NPTN', 'RTN4', 'LOC728392', 'NME7', 'TCEAL2', 'SARAF', 'TMSB4X', 'MAGED1', 'SNAP91', 'HSPA8 /// SNORD14C /// SNORD14D', 'NDUFS5 /// RPL10', 'MRFAP1', 'TSPAN7', 'RPL41', 'TCEAL3', 'SLC9A6', 'OAT', 'SNAP25', 'PCP4', 'NAP1L3', 'HSP90AA1', 'TUBA1A', 'ATL1']</p>        
+            <p style="display: none;" class="popup_gene_list_div T_gene">{{venn_data[0][1]}}</p>
+            <p style="display: none;" class="popup_gene_list_div L_gene">{{venn_data[0][0]}}</p>
+            <p style="display: none;" class="popup_gene_list_div R_gene">{{venn_data[0][2]}}</p>
+            <p style="display: none;" class="popup_gene_list_div M_gene">{{venn_data[2]}}</p>
+            <p style="display: none;" class="popup_gene_list_div TL_gene">{{venn_data[1][0]}}</p>
+            <p style="display: none;" class="popup_gene_list_div TR_gene">{{venn_data[1][1]}}</p>        
+            <p style="display: none;" class="popup_gene_list_div LR_gene">{{venn_data[1][2]}}</p>
         </div>          
     </div>
 </div>
@@ -603,38 +615,52 @@ hover_white_blue('.p_LRM', '#LRM_clc');
 hover_white_blue('.p_TRM', '#TRM_clc');
 hover_white_blue('.p_TLM', '#TLM_clc');
 
-$('.modal-content .close').click(function(){
-    $('#popup_gene_list').fadeOut(500);
+$('.modal-content-1 .close').click(function(){
+    $('#popup_gene_list').hide(500);
+    $('.M_gene').hide(0);
+    $('.T_gene').hide(0);
+    $('.R_gene').hide(0);
+    $('.L_gene').hide(0);
+    $('.TR_gene').hide(0);
+    $('.TL_gene').hide(0);
+    $('.LR_gene').hide(0);
 });
 
 $('.p_M, #M_clc').click(function(){
     $('#popup_gene_list').fadeIn(500);
+    $('.M_gene').show(0);
 });
 
 $('.p_R, #R_clc').click(function(){
     $('#popup_gene_list').fadeIn(500);
+    $('.R_gene').show(0);
 });
 
 
 $('.p_L, #L_clc').click(function(){
     $('#popup_gene_list').fadeIn(500);
+    $('.L_gene').show(0);
 });
 
 $('.p_T, #T_clc').click(function(){
     $('#popup_gene_list').fadeIn(500);
+    $('.T_gene').show(0);
 });
 
 $('.p_LRM, #LRM_clc').click(function(){
     $('#popup_gene_list').fadeIn(500);
+    $('.LR_gene').show(0);
 });
 
 
 $('.p_TRM, #TRM_clc').click(function(){
     $('#popup_gene_list').fadeIn(500);
+    $('.TR_gene').show(0);
 });
 
 $('.p_TLM, #TLM_clc').click(function(){
     $('#popup_gene_list').fadeIn(500);
+    $('.TL_gene').show(0);
 });
 
 </script>
