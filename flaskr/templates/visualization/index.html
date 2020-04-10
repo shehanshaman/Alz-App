@@ -53,19 +53,66 @@
 
 </head>
 
-<body style="font-family: monospace;">
+<body style="font-family: monospace;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="limiter">
+<div class="limiter" style="min-height: 450px;">
     <div class="row head-word">
-        <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">VISUALIZATION</h3>
+        <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">VISUALIZATION</h3>
+    </div>
+
+    <div class="row" style="padding: 10px;">    
+        <form class="login100-form validate-form" method="post" action="/vis/">
+            <div class="col-sm-5 form_container">        
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-12">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="md-form">
+                            <select style="font-family: monospace;" class="form-control" id="available_files" name="available_files">
+                                <option disabled="disabled" selected>Pick a choice!</option>
+                                {% for name in available_list %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5 form_container">    
+                <div class="row" style="margin-top: 40px;" id="gene_symbol_div">
+                    <div class="col-sm-12">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">GENE SYMBOLS:</h5>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="md-form">
+                            <select style="font-family: monospace;" class="form-control" id="features" name="features">
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+            <div class="col-sm-2 form_container">
+                <div class="row" style="margin-top: 76px;float: left;">
+                    <div class="col-sm-12">
+                        <div class="step-actions">
+                            <button class="waves-effect waves-dark btn next-step step-6-click" id="submit_button">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
     <div class="row" style="padding: 10px;">
-
-        <div class="col-sm-7 image_container">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8 image_container">
 
             <div class="row" id="h3-head-6" class="card__title">
                 <div class="container-1">
@@ -85,51 +132,8 @@
 
                 </div>
             </div>
-
         </div>
-
-        <div class="col-sm-5 form_container">
-            <form class="login100-form validate-form" method="post" action="/vis/">
-
-                <div class="row" style="margin-top: 40px;">
-                    <div class="col-sm-12">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="md-form">
-                            <select class="form-control" id="available_files" name="available_files">
-                                <option disabled="disabled" selected>Pick a choice!</option>
-                                {% for name in available_list %}
-                                    <option value="{{ name }}">{{ name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" style="margin-top: 40px;" id="gene_symbol_div">
-                    <div class="col-sm-12">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">GENE SYMBOLS:</h5>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="md-form">
-                            <select class="form-control" id="features" name="features">
-
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="step-actions">
-                    <button class="waves-effect waves-dark btn next-step step-6-click" id="submit_button">
-                        Update
-                    </button>
-                </div>
-
-            </form>
-        </div>
-
+        <div class="col-sm-2"></div>
     </div>
 
 </div>
