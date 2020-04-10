@@ -72,28 +72,6 @@
             top: 80px !important;
         }
 
-        #tourtip{
-           width: 290px !important; 
-        }
-
-    .notification-container{
-        position: fixed;
-        left: 10px;
-        width: 245px;
-        max-width: calc(100% - 30px);
-    }
-
-    .notification{
-        background-color: #fff;
-        /*border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
-        color: #fff;
-        font-size: 14px;
-        padding: 8px 0px;
-        line-height: 20px;
-        /*margin-bottom: 15px;*/
-        animation: grow 0.5s ease-in forwards;
-    }
     @keyframes grow{
         from {
             opacity: 0;
@@ -115,32 +93,12 @@
         }
     }
 
-    .notification-info{
-        background-color: #00000096;
-    }
-
 </style>
 
-<body class="main-body" style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
-
-<div class="notification-container" id="notification-container">
-    <div class="notification notification-info">
-        <div class="row">
-            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
-        </div>
-        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
-            <div class="col-sm-6">
-                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
-            </div>
-            <div class="col-sm-6">
-                <a class="btn btn-primary tour_no">NO</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="main-div-step6">
     <div class="card-content">
@@ -174,7 +132,7 @@
         <form id="main-form-div-step6" method="post" action="/pre/fr/save/" enctype="multipart/form-data">
             <div class="step-content">
                 <div class="row">
-                    <h3 id="h3-head-5" class="card__title" style="text-align: center;color: #26a69a;">STEP 6 : FEATURE REDUCTION</h3>
+                    <h3 id="h3-head-5" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 6 : FEATURE REDUCTION</h3>
                 </div>
 
                 <div class="row">
@@ -192,7 +150,7 @@
                         </div>                         
                     </div>
 
-                    <div class=" col-sm-4" style="margin-top: 30px;">
+                    <div class=" col-sm-4" style="margin-top: 5px;">
 
                         <div class="row">
                             <div class="row">
@@ -206,10 +164,19 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="row">
+                                <label><b>Selected Classifiers</b></label>
+                            </div>
+                            <div class="row">
+                                <span>{{ cls_names }}</span>
+                            </div>
+                        </div>
+
                         <div class="row md-form">
                             <label><b>SELECT FEATURE COUNT</b></label>
                             <div id="select_num_features_div" class="dropdown">
-                                <select class="form-control dropdown-menu-p-value" id="features_count"
+                                <select style="font-family: monospace;" class="form-control dropdown-menu-p-value" id="features_count"
                                         name="features_count">
                                     {% for name in split_array %}
                                         <option value="{{ name }}">{{ name }}</option>
@@ -243,7 +210,7 @@
         <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">REDUCING FEATURES</h5>        
     </div> 
 
-{% include 'footer.html' %}
+{% include 'guide_footer.html' %}
 
 </body>
 </html>
@@ -258,8 +225,6 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/main.js') }}"></script>
-
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
@@ -273,6 +238,8 @@
         $('.loader-div').show(0);
         $('.main-body').click(false);
         $("#main-form-div-step6").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
     });
 
     $(".use-download-univarient_img").click(function () {
@@ -283,54 +250,19 @@
         a.href = url;
         a.download = "univarient_score.png";
         a.click();
+        $('#tourControls').hide(0);
     }); 
 </script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
-    var tour = {
-        data : [
-            { element : '#img_results_div', tooltip : 'Uni-variate selection ranks the genes individually, from the most to the least informative. By examining the knee-point of this graph, we can see the number of genes that shows  significant difference !', text: 'Uni-variate selection', position: 'R' },
-            { element : '.use-download-univarient_img', tooltip : 'Download this graph !', text: 'Download image', position: 'T' },
-            { element : '#table_results_div', tooltip : 'Classification is the process of predicting the class of given data points. A classifier is a function that is used to assign the samples to a class. Classification accuracy of the selected genes using 5 classifiers is shown in the table !', text: 'Classification results', position: 'L' },
-            { element : '#select_num_features_div', tooltip : 'The number of features can be reduced by examining the knee-point of the uni-variate selection graph. Select the feature count to proceed to next steps !', text: 'Select feature count', position: 'T' }
-        ],
-        welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'TL',
-        buttons: {
-            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
-            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
-            start : { text : 'Start', class: 'btn btn-primary' },
-            end   : { text : 'End', class: 'btn btn-primary' }
-        },
-        controlsCss: {
-            background: 'rgba(187, 178, 48, 0.71)',
-            color: '#1c1d21',
-            width: '400px',
-            'border-radius': 0
-        }
-    };
 
-    $(document).ready(function(){
-        $('.tour').on('click', function(){
-            $.aSimpleTour(tour);
-            $('.notification-container').hide(1000);
-        });
-        $('.tour_no').on('click', function(){
-            $('.notification-container').hide(1000);
-        });
-    });
+    var tour = guide_main_call(tip_step_6, 'TL');
 
-    notification_on = true;
-
-    if(notification_on){
-        $('.notification-container').fadeIn(1000);
-    }
-    else{
-        $('.notification-container').hide(0);       
-    }
 </script>

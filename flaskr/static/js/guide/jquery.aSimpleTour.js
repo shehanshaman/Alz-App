@@ -43,11 +43,13 @@
         html: ''
     }).css({
         'display': 'none',
+        'width': '290px',
         'padding': '10px 20px',
         'position': 'absolute',
-        'font-family': 'sans-serif',
+        'font-family': 'monospace',
         'border-radius': '5px',
         'font-size': '12px',
+        'text-align': 'justify',
         'box-sizing': 'border-box',
         'z-index' : '2000'
     });
@@ -66,7 +68,7 @@
                 options.data.unshift({ element : 'body', tooltip: null, text: options.welcomeMessage });
 
                 controls = '<div id="tourControls">\
-                  <div id="tourText">'+options.welcomeMessage+'</div>\
+                  <div id="tourText" style="font-family:memonospace;">'+options.welcomeMessage+'</div>\
                   <div id="tourButtons">\
                     <button id="tourPrev" style="display:none" class="'+options.buttons.prev.class+'">' + options.buttons.prev.text + '</button>\
                     <button id="tourNext" class="'+options.buttons.start.class+'">' + options.buttons.start.text + '</button>\

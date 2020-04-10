@@ -228,12 +228,16 @@ def get_reduce_features_from_pvalues():
     df_y = PreProcess.getDF(x.path)
     y = df_y['class']
     y = pd.to_numeric(y)
+
     classification_result_df = FeatureReduction.get_classification_results(df, y)
+    cls_id, cls_name = FeatureReduction.get_best_cls(classification_result_df)
+    UserResult.update_result(g.user['id'], 'classifiers', cls_id)
+    classification_result_df = classification_result_df.drop(['avg'], axis=1)
 
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
     return render_template("preprocess/step-6.html", split_array=split_array, fs_fig_hash=fs_fig_hash,
-                           tables=[classification_result_df.to_html(classes='data')])
+                           tables=[classification_result_df.to_html(classes='data')], cls_names = cls_name)
 
 
 @bp.route("/fr/pf/", methods=['GET'])

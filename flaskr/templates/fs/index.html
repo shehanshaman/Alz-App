@@ -70,28 +70,6 @@
             top: 80px !important;
         }
 
-        #tourtip{
-           width: 290px !important; 
-        }
-
-    .notification-container{
-        position: fixed;
-        left: 10px;
-        width: 245px;
-        max-width: calc(100% - 30px);
-    }
-
-    .notification{
-        background-color: #fff;
-        /*border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
-        color: #fff;
-        font-size: 14px;
-        padding: 8px 0px;
-        line-height: 20px;
-        /*margin-bottom: 15px;*/
-        animation: grow 0.5s ease-in forwards;
-    }
     @keyframes grow{
         from {
             opacity: 0;
@@ -123,25 +101,9 @@
 
 </style>
 
-<body class="main-body" style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 {% include 'horizontal_nav_bar.html' %}
-
-<div class="notification-container" id="notification-container">
-    <div class="notification notification-info">
-        <div class="row">
-            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
-        </div>
-        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
-            <div class="col-sm-6">
-                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
-            </div>
-            <div class="col-sm-6">
-                <a class="btn btn-primary tour_no">NO</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="main-div-fn-1">
     <div class="card-content">
@@ -177,7 +139,7 @@
         <div class="step">
             <div class="step-content">
                 <div class="row">
-                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">FEATURE SELECTION</h3>
+                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">FEATURE SELECTION</h3>
                 </div>
 
                 {% for message in get_flashed_messages() %}
@@ -218,7 +180,7 @@
                 </div>
 
                 <div class="row">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Select Three Feature Selection
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Select Three Feature Selection
                         Methods</h5>
                 </div>
 
@@ -233,7 +195,6 @@
                                         <li data-id="3" class="active" data-value="Extra Tree Classifier">
                                             Extra Tree Classifier
                                         </li>
-                                        {#                                    <li data-id="4" class="active" data-value="Kolokithia">Kolokithia</li>#}
                                     </ul>
                                 </div>
                                 <div class="col-sm-6">
@@ -245,7 +206,7 @@
                 </div>
 
                 <div class="row">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Number of Features Selected</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Number of Features Selected</h5>
                 </div>
                 <div id="num_of_features" class="row">
                     <div class="col-sm-3"></div>
@@ -283,7 +244,7 @@
         <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING RESULTS</h5>        
     </div> 
 
-{% include 'footer.html' %}
+{% include 'guide_footer.html' %}
 
 </body>
 </html>
@@ -322,12 +283,13 @@
         $("#fs_methods").val(fs);
         $("#form").submit();
 
+        $('#tourControls').hide(0);
+
     }
     $('#file_tbl').change(function () {
 
         var conceptName = $('#file_tbl').find(":selected").text();
         $("#change_file").val(conceptName);
-        {#        console.log(conceptName);#}
     });
 
     function update_checkbox(event) {
@@ -339,6 +301,7 @@
             $("#is_change").val(s);
             console.log(s);
         }
+        $('#tourControls').hide(0);
     }
 </script>
 
@@ -349,55 +312,26 @@
         $('.loader-div').show(0);
         $('.main-body').click(false);
         $("#main-form-div-fn-1").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
     });
 
+    $('#select_methods_div').click(function(){
+        $('#tourControls').hide(0);
+    });
 </script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
-    var tour = {
-        data : [
-            { element : '#selected_file_div', tooltip : 'This is the file you will have after going through previous steps. It will be automatically selected. You do not need to change anything, if you wish to proceed with the same file !', text: 'Selected file', position: 'T' },
-            { element : '#change_file_div', tooltip : 'You can also perform feature selection on a separate file without going through the pre-processing steps. Use this feature if you want to select a new file !', text: 'Change file', position: 'T' },
-            { element : '#select_methods_div', tooltip : 'Feature selection is the process of selecting the features that contribute mostly to the target variable.  Different feature selection methods are used for this purpose. In this application, you may select 3 feature selection methods to get the best set of features !', text: 'Feature Selection Methods', position: 'T' },
-            { element : '#num_of_features', tooltip : 'Specify the number of features you want to filter out by the above feature selection methods !', text: 'Number of Features Selected', position: 'T' }
-        ],
-        welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'TL',
-        buttons: {
-            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
-            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
-            start : { text : 'Start', class: 'btn btn-primary' },
-            end   : { text : 'End', class: 'btn btn-primary' }
-        },
-        controlsCss: {
-            background: 'rgba(187, 178, 48, 0.71)',
-            color: '#1c1d21',
-            width: '400px',
-            'border-radius': 0
-        }
-    };
 
-    $(document).ready(function(){
-        $('.tour').on('click', function(){
-            $.aSimpleTour(tour);
-            $('.notification-container').hide(1000);
-        });
-        $('.tour_no').on('click', function(){
-            $('.notification-container').hide(1000);
-        });
-    });
+    var tour = guide_main_call(tip_fs_index, 'TL');
 
-    notification_on = true;
-
-    if(notification_on){
-        $('.notification-container').fadeIn(1000);
-    }
-    else{
-        $('.notification-container').hide(0);       
-    }
 </script>
