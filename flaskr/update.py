@@ -145,6 +145,8 @@ def infrequent_files_delete():
     for id in id_array:
         delete_user_all_files(id)
 
+    UserResult.infrequent_users(ids)
+
     return "1"
 
 @bp.route("/infrequent/ntfy/", methods=["GET"])

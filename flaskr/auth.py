@@ -353,7 +353,7 @@ def get_infrequent_ids(users):
     for index, row in users.iterrows():
         u_log = datetime.strptime(row['last_login'], '%Y-%m-%d %H:%M:%S.%f')
         delta = n - u_log
-        if delta.days > 1:
+        if delta.days > 1 and row['usage'] > 0:
             list.append(row['id'])
 
     return list
@@ -385,6 +385,17 @@ def send_mail(subject, url, recipient, senders_subject):
 
     message = get_mail_message(subject)
     message = message.replace("{{action_url}}", url)
+    msg.html = message
+    mail = current_app.config["APP_ALZ"].mail
+    s = mail.send(msg)
+
+    return s
+
+def send_infrequent_mail(recipients):
+    msg = Message("Unavailable uploaded files",
+                  sender="no-reply@alz.com",
+                  recipients=recipients)
+    message = get_mail_message("infrequent")
     msg.html = message
     mail = current_app.config["APP_ALZ"].mail
     s = mail.send(msg)
@@ -509,3 +520,17 @@ class UserResult:
             (user_id),
         )
         db.commit()
+
+    def infrequent_users(ids):
+        db = get_db()
+        query = "SELECT * FROM user WHERE id IN (" + ids + ")"
+        result = db.execute(query).fetchall()
+
+        list = []
+        for user in result:
+            x =user['username']
+            list.append(x)
+
+        send_infrequent_mail(list)
+
+        return list

@@ -37,7 +37,7 @@
             border-radius: 3px;
         }
 
-         #progress_bar {
+        #progress_bar {
             visibility: hidden;
         }
 
@@ -58,25 +58,28 @@
         </div>
     </div>
 
-    <div class="row">
-        <h5>Infrequent Users Details</h5><br>
+    {% if data[1] %}
         <div class="row">
-            <div class="well well-lg">
-                <div class="row">
-                    There has {{ data[1] }} infrequent users and they used {{ data[0] }} MB of storage.
-                </div>
+            <h5>Infrequent Users Details</h5><br>
+            <div class="row">
+                <div class="well well-lg">
+                    <div class="row">
+                        There has {{ data[1] }} infrequent users and they used {{ data[0] }} MB of storage.
+                    </div>
 
-                <div class="row progress" id="progress_bar">
-                    <div class="indeterminate"></div>
-                </div>
+                    <div class="row progress" id="progress_bar">
+                        <div class="indeterminate"></div>
+                    </div>
 
-                <div class="row">
-                    <button id="infrequent_users_file_delete" class="waves-effect waves-dark btn">DELETE FILES</button>
-                    <button id="infrequent_users_ntfy" class="waves-effect waves-dark btn">NOTIFY</button>
+                    <div class="row">
+                        <button id="infrequent_users_file_delete" class="waves-effect waves-dark btn">DELETE FILES
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
+
 
     <div class="row">
         <h5>Users Details</h5><br>
@@ -206,15 +209,6 @@
 
         });
     });
-
-     $('#infrequent_users_ntfy').click(function () {
-         var ids = {{ data[2] }};
-         $.get("../update/infrequent/ntfy/", {ids: ids}, function (data, status) {
-            console.log(ids);
-{#            document.getElementById("progress_bar").style.visibility = "hidden";#}
-
-        });
-     });
 
 </script>
 
