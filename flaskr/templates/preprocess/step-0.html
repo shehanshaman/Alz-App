@@ -21,72 +21,72 @@
 
 </head>
 
-    <style> 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
-    </style> 
+<style>
+    #loader {
+        border: 12px solid #26a69a66;
+        border-radius: 50%;
+        border-top: 12px solid #26a69a;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .center-load {
+        position: absolute;
+        top: -230px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+</style>
 
 <style>
 
-.modal_pop {
-  position: fixed;
-  z-index: 3000;
-  padding-top: 100px;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.4); 
-}
+    .modal_pop {
+        position: fixed;
+        z-index: 3000;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+    }
 
-/* Modal_pop Content */
-.modal_pop_content {
-    min-height: 92%;
-    border-radius: 10px;
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%;
-}
+    /* Modal_pop Content */
+    .modal_pop_content {
+        min-height: 92%;
+        border-radius: 10px;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+    }
 
-/* The Close Button */
-.close {
-  color: #1c1d21;
-  float: right;
-  font-size: 45px;
-  font-weight: bold;
-}
+    /* The Close Button */
+    .close {
+        color: #1c1d21;
+        float: right;
+        font-size: 45px;
+        font-weight: bold;
+    }
 
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
 </style>
 
@@ -98,30 +98,31 @@
 <!-- The Modal_pop -->
 <div id="upload_page_pop" class="modal_pop" style="display: none;">
 
-  <!-- Modal_pop content -->
-  <div class="modal_pop_content">
+    <!-- Modal_pop content -->
+    <div class="modal_pop_content">
         <span class="close close_pop">&times;</span>
-    <div class="row">      
-        <div class="col-sm-12">
-            <p class="tip_class_text" style="font-size: 15px; font-family: Monospace; text-align: justify;">tip</p>
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="tip_class_text" style="font-size: 15px; font-family: Monospace; text-align: justify;">tip</p>
+            </div>
+        </div>
+        <div class="row">
+            <center>
+                <div class="col-sm-12">
+                    <img style="width: 100%;" class="tip_img_div"
+                         src="{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}" alt="slide">
+                </div>
+            </center>
+        </div>
+        <div class="row" style="position: absolute; bottom: 70px; left: 43%;">
+            <div class="col-sm-6">
+                <button class="prv_btn_class btn info" style="float: right;">PREV</button>
+            </div>
+            <div class="col-sm-6">
+                <button class="next_btn_class btn info" style="float: left;">NEXT</button>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <center>
-        <div class="col-sm-12">
-            <img style="width: 100%;" class="tip_img_div" src="{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}" alt="slide">
-        </div>
-        </center>
-    </div>    
-    <div class="row" style="position: absolute; bottom: 70px; left: 43%;">
-        <div class="col-sm-6">
-            <button class="prv_btn_class btn info" style="float: right;">PREV</button>
-        </div>
-        <div class="col-sm-6">
-            <button class="next_btn_class btn info" style="float: left;">NEXT</button>
-        </div>
-    </div>
-  </div>
 
 </div>
 
@@ -131,7 +132,8 @@
 
         <div class="step-content row">
             <div class="head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;color:#26a69a;font-family: monospace;">UPLOAD YOUR DATA SET</h3>
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;color:#26a69a;font-family: monospace;">
+                    UPLOAD YOUR DATA SET</h3>
             </div>
         </div>
 
@@ -139,12 +141,14 @@
 
             <div class="row">
                 <center>
-                <div class="col-sm-6">
-                    <button type="button" class="info_data_set" style="color: #a6268e;border: none; background-color: #f3f6f9;">
-                        <i class="fas fa-info-circle fa-2x"></i>
-                    </button>  
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;display: inline;font-family: monospace;">DATA SET :</h5>                                                                
-                </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="info_data_set"
+                                style="color: #a6268e;border: none; background-color: #f3f6f9;">
+                            <i class="fas fa-info-circle fa-2x"></i>
+                        </button>
+                        <h5 id="h3-head-1" class="card__title"
+                            style="text-align: center;display: inline;font-family: monospace;">DATA SET :</h5>
+                    </div>
                 </center>
                 <div class="col-sm-6">
                     <div class="file-upload">
@@ -161,10 +165,18 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <button type="button" class="btn sample_select_btn" style="background-color: #4c78af;float: right;">SELECT SAMPLE FILE</button>                  
+                    <a href="{{ url_for('preprocess.upload_sample_file') }}">
+                        <button type="button" class="btn sample_select_btn"
+                                style="background-color: #4c78af;float: right;">SELECT SAMPLE FILE
+                        </button>
+                    </a>
                 </div>
                 <div class="col-sm-6">
-                    <button type="button" class="btn download_sample_file" style="background-color: #a94442;">DOWNLOAD SAMPLE FILE</button>                      
+                    <a href="{{ url_for('preprocess.download_sample_file') }}">
+                        <button type="button" class="btn download_sample_file" style="background-color: #a94442;">
+                            DOWNLOAD SAMPLE FILE
+                        </button>
+                    </a>
                 </div>
             </div>
 
@@ -185,9 +197,9 @@
     </form>
 
     <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 22%;text-align: center;color: #26a69a;">UPLOADING DATASET</h5>        
-    </div> 
+        <div id="loader" class="center-load"></div>
+        <h5 style="margin-top: 22%;text-align: center;color: #26a69a;">UPLOADING DATASET</h5>
+    </div>
 
 </div>
 
@@ -217,87 +229,95 @@
 <script type="text/javascript">
 
     $('#btn-submit-step-0').click(function () {
-        
-        if( $('#chooseFile').val() != ''){
+
+        if ($('#chooseFile').val() != '') {
             $('#main-form-div').hide(0);
             $('.loader-div').show(0);
             $('.main-body').click(false);
             $("#main-form-div").submit();
         }
-        else{
+        else {
         }
+    });
+
+    $('.sample_select_btn').click(function () {
+
+        $('#main-form-div').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        window.location.replace("{{ url_for('preprocess.upload_sample_file') }}");
     });
 
 </script>
 
 <script type="text/javascript">
-    
-    var i=0;
+
+    var i = 0;
     var tip_list = [
-        "You can only upload comma-separated value (.csv) files. When uploading the data set, it is necessary that the file should be in the given format. Read the guidelines carefully before uploading the data set. We will guide you through the necessary steps by providing screenshots of a sample data set. GSE5281 contains microarray gene expression data of 161 samples. 87 of these samples are from Alzheimer’s disease patients while 74 of the samples are from the control group. A screenshot of part of the .csv file is shown below.", 
-        "The first column of the file refers to the unique ID of the samples (In here the number of samples is 161). For example, here the IDs are GSM119615, GSM119616, GSM119617, GSM119618, etc. Note that the sample IDs are used only for naming purposes. Therefore, the  IDs can be any unique name.", 
+        "You can only upload comma-separated value (.csv) files. When uploading the data set, it is necessary that the file should be in the given format. Read the guidelines carefully before uploading the data set. We will guide you through the necessary steps by providing screenshots of a sample data set. GSE5281 contains microarray gene expression data of 161 samples. 87 of these samples are from Alzheimer’s disease patients while 74 of the samples are from the control group. A screenshot of part of the .csv file is shown below.",
+        "The first column of the file refers to the unique ID of the samples (In here the number of samples is 161). For example, here the IDs are GSM119615, GSM119616, GSM119617, GSM119618, etc. Note that the sample IDs are used only for naming purposes. Therefore, the  IDs can be any unique name.",
         "The column headers(except the first column) contains the Probe IDs. A probe ID is a unique ID given for a probe/spot in microarray experiments. For example, here the probe IDs are 1007_s_at, 1053_at, 117_at, etc.",
-        "A row represents the gene expression data values of all the probe IDs with respect to a given sample. This highlighted row represents the gene expression data values for every probe ID in the sample GSM119618.", 
-        "The cells in the highlighted area can only contain numerical values.", 
-        "Apart from the data sets that are to be used in the prediction, other data sets should include a class label column as the last column. This should only contain binary values ( 0 and 1). The negatives should be represented by 0 while the positive values should be represented by 1. For example, in the given Alzheimer disease-related data set, 1 corresponds to the samples of patients having the disease. 0 corresponds to the control samples. Note that this column should be named as ‘class’ all in simple letters."        
-        ];
+        "A row represents the gene expression data values of all the probe IDs with respect to a given sample. This highlighted row represents the gene expression data values for every probe ID in the sample GSM119618.",
+        "The cells in the highlighted area can only contain numerical values.",
+        "Apart from the data sets that are to be used in the prediction, other data sets should include a class label column as the last column. This should only contain binary values ( 0 and 1). The negatives should be represented by 0 while the positive values should be represented by 1. For example, in the given Alzheimer disease-related data set, 1 corresponds to the samples of patients having the disease. 0 corresponds to the control samples. Note that this column should be named as ‘class’ all in simple letters."
+    ];
 
     var tip_img_list = [
-        "{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}", 
-        "{{ url_for('static', filename='images/upload_pop/sl2.jpg') }}", 
+        "{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}",
+        "{{ url_for('static', filename='images/upload_pop/sl2.jpg') }}",
         "{{ url_for('static', filename='images/upload_pop/sl3.jpg') }}",
         "{{ url_for('static', filename='images/upload_pop/sl4.jpg') }}",
         "{{ url_for('static', filename='images/upload_pop/sl5.jpg') }}",
         "{{ url_for('static', filename='images/upload_pop/sl6.jpg') }}"
     ];
     $('.tip_class_text').text(tip_list[0]);
-    $(".tip_img_div").attr("src",tip_img_list[0]);
+    $(".tip_img_div").attr("src", tip_img_list[0]);
 
-    $('.next_btn_class').click(function(){
+    $('.next_btn_class').click(function () {
         i++;
-        if( i == tip_list.length){
-            i=0;
+        if (i == tip_list.length) {
+            i = 0;
         }
         $('.tip_class_text').text(tip_list[i]);
-        $(".tip_img_div").attr("src",tip_img_list[i]);
+        $(".tip_img_div").attr("src", tip_img_list[i]);
         console.log(tip_list[i]);
     });
 
-    $('.prv_btn_class').click(function(){
+    $('.prv_btn_class').click(function () {
         i--;
-        if( i < 0){
-            i=tip_list.length-1;
+        if (i < 0) {
+            i = tip_list.length - 1;
         }
         $('.tip_class_text').text(tip_list[i]);
-        $(".tip_img_div").attr("src",tip_img_list[i]);
+        $(".tip_img_div").attr("src", tip_img_list[i]);
         console.log(tip_list[i]);
     });
 
-    $('.close_pop').click(function(){
+    $('.close_pop').click(function () {
         $('#upload_page_pop').fadeOut(1000);
     });
 
-    $('.info_data_set').click(function(){
+    $('.info_data_set').click(function () {
         $('#upload_page_pop').fadeIn(1000);
     });
 
-$(".download_sample_file").hover(function(){
-  $(this).css("background-color", "white");
-  $(this).css("color", "#a94442");
-  $(this).css("border", "1px solid #a94442");
-  }, function(){
-  $(this).css("background-color", "#a94442");
-  $(this).css("color", "white");
-  $(this).css("border", "1px solid #a94442");
-});
+    $(".download_sample_file").hover(function () {
+        $(this).css("background-color", "white");
+        $(this).css("color", "#a94442");
+        $(this).css("border", "1px solid #a94442");
+    }, function () {
+        $(this).css("background-color", "#a94442");
+        $(this).css("color", "white");
+        $(this).css("border", "1px solid #a94442");
+    });
 
-$(".sample_select_btn").hover(function(){
-  $(this).css("background-color", "white");
-  $(this).css("color", "#4c78af");
-  $(this).css("border", "1px solid #4c78af");
-  }, function(){
-  $(this).css("background-color", "#4c78af");
-  $(this).css("color", "white");
-  $(this).css("border", "1px solid #4c78af");
-});
+    $(".sample_select_btn").hover(function () {
+        $(this).css("background-color", "white");
+        $(this).css("color", "#4c78af");
+        $(this).css("border", "1px solid #4c78af");
+    }, function () {
+        $(this).css("background-color", "#4c78af");
+        $(this).css("color", "white");
+        $(this).css("border", "1px solid #4c78af");
+    });
 </script>
