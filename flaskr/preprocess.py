@@ -323,7 +323,8 @@ def upload_file():
 
         return redirect('/pre')
     else:
-        return redirect(request.url)
+        e = ["Wrong file type", ["Please upload csv file."]]
+        return render_template("error.html", errors=e)
 
 @bp.route('/sample/download/')
 @login_required
