@@ -2,7 +2,7 @@
 <meta name="google-signin-scope" content="profile email">
 
 <meta name="google-signin-client_id"
-      content="429466987596-0fs00nq9idiuee5qq04tng8pvb0224je.apps.googleusercontent.com">
+      content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
 
 <style>
     #user_img {
@@ -43,12 +43,18 @@
 <!-- Dropdown Structure User -->
 <ul id="dropdown_user" class="dropdown-content" style="font-family: monospace;">
     <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
+    {% if g.user['is_admin'] %}
+        <li class="nav_link"><a href="{{ url_for('auth.admin_panel') }}">Admin Panel</a></li>
+    {% endif %}
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
 
 <!-- Dropdown side Structure User -->
 <ul id="dropdown_user_side" class="dropdown-content">
     <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
+    {% if g.user['is_admin'] %}
+        <li class="nav_link"><a href="{{ url_for('auth.admin_panel') }}">Admin Panel</a></li>
+    {% endif %}
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
 

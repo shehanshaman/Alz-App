@@ -323,6 +323,21 @@
     </div>
 </div>
 
+<!-- The Modal -->
+<div id="popup_gene_list" class="modal_pop" style="display: none;">
+    <div class="modal-content">
+        <div class="row">
+            <span class="close">&times;</span>
+        </div>      
+        <div class="row">
+            <p class="popup_head_div">Some text in the Modal..</p>          
+        </div>
+        <div class="row">
+            <p class="popup_gene_list_div">['CHN1', 'NGFRAP1', 'TUBA1C', 'TMSB10', 'SYT1', 'USMG5', 'UBB', 'LDHA', 'STXBP1', 'STMN2', 'TUBB2A', 'SOD1', 'SH3GL2', 'UBC', 'GAPDH', 'COPG2IT1', 'ACTB /// ACTG1', 'SPARCL1', 'ATP5B', 'NEFL', 'LDHB', 'INA', 'RTN3', 'NAPB', 'GNAS', 'NAP1L5', 'MTCH1', 'NPTN', 'RTN4', 'LOC728392', 'NME7', 'TCEAL2', 'SARAF', 'TMSB4X', 'MAGED1', 'SNAP91', 'HSPA8 /// SNORD14C /// SNORD14D', 'NDUFS5 /// RPL10', 'MRFAP1', 'TSPAN7', 'RPL41', 'TCEAL3', 'SLC9A6', 'OAT', 'SNAP25', 'PCP4', 'NAP1L3', 'HSP90AA1', 'TUBA1A', 'ATL1']</p>        
+        </div>          
+    </div>
+</div>
+
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div> 
         <h5 style="margin-top: 20%;text-align: center;color: #26a69a; margin-bottom: 200px;">{{ method_title }}</h5>
@@ -447,5 +462,75 @@
 <script>
 
     var tour = guide_main_call(tip_an_correlation, 'BL');
+
+</script>
+
+<script type="text/javascript">
+
+function hover_white(p_div, svg_div){
+  $(svg_div + "," + p_div).hover(function(){
+        $(p_div).css("background-color", "transparent");
+        $(p_div).css("color", "white");
+        $(svg_div).css("fill", "#26a69a");
+    }, function(){
+        $(p_div).css("background-color", "transparent");    
+        $(p_div).css("color", "#26a69a");
+        $(svg_div).css("fill", "white");
+  });   
+}
+
+function hover_white_blue(p_div, svg_div){
+  $(svg_div + "," + p_div).hover(function(){
+        $(p_div).css("background-color", "transparent");
+        $(p_div).css("color", "white");
+        $(svg_div).css("fill", "#26a69a");
+    }, function(){
+        $(p_div).css("background-color", "transparent");    
+        $(p_div).css("color", "#26a69a");
+        $(svg_div).css("fill", "#9df6ed");
+  });   
+}
+
+hover_white('.p_M', '#M_clc');
+hover_white('.p_R', '#R_clc');
+hover_white('.p_L', '#L_clc');
+hover_white('.p_T', '#T_clc');
+hover_white_blue('.p_LRM', '#LRM_clc');
+hover_white_blue('.p_TRM', '#TRM_clc');
+hover_white_blue('.p_TLM', '#TLM_clc');
+
+$('.modal-content .close').click(function(){
+    $('#popup_gene_list').fadeOut(500);
+});
+
+$('.p_M, #M_clc').click(function(){
+    $('#popup_gene_list').fadeIn(500);
+});
+
+$('.p_R, #R_clc').click(function(){
+    $('#popup_gene_list').fadeIn(500);
+});
+
+
+$('.p_L, #L_clc').click(function(){
+    $('#popup_gene_list').fadeIn(500);
+});
+
+$('.p_T, #T_clc').click(function(){
+    $('#popup_gene_list').fadeIn(500);
+});
+
+$('.p_LRM, #LRM_clc').click(function(){
+    $('#popup_gene_list').fadeIn(500);
+});
+
+
+$('.p_TRM, #TRM_clc').click(function(){
+    $('#popup_gene_list').fadeIn(500);
+});
+
+$('.p_TLM, #TLM_clc').click(function(){
+    $('#popup_gene_list').fadeIn(500);
+});
 
 </script>

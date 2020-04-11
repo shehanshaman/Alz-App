@@ -494,3 +494,46 @@ class FeatureSelection:
         roc_auc = [roc_auc_li, roc_auc_gu, roc_auc_RF]
 
         return fpr, tpr, roc_auc
+
+    def venn_diagram_data(col_m1, col_m2, col_m3):
+        col_uni = FeatureSelection.get_unique_columns(col_m1, col_m2, col_m3)
+        overlap = FeatureSelection.get_overlap_features(col_m1, col_m2, col_m3)
+        col_c = FeatureSelection.get_overlap_two(col_m1, col_m2, col_m3, overlap)
+
+        venn_data = [col_uni, col_c, overlap]
+
+        return venn_data
+
+    def checkList(list1, list2):
+        for word in list2:
+            if word in list1:
+                list1.remove(word)
+
+        return list1
+
+    def get_unique_columns(col_m1, col_m2, col_m3):
+        col1_uni = FeatureSelection.checkList(list(col_m1), list(col_m2 + col_m3))
+        col2_uni = FeatureSelection.checkList(list(col_m2), list(col_m1 + col_m3))
+        col3_uni = FeatureSelection.checkList(list(col_m3), list(col_m2 + col_m1))
+
+        col_uni = [col1_uni, col2_uni, col3_uni]
+
+        return col_uni
+
+    def get_overlap_features(col1, col2, col3):
+        t = list(set(col1) & set(col2) & set(col3))
+        return t
+
+    def get_overlap_two(col_m1, col_m2, col_m3, overlap):
+        col_m12 = list(set(col_m1) & set(col_m2))
+        col_m12_uni = FeatureSelection.checkList(list(col_m12), list(overlap))
+
+        col_m23 = list(set(col_m2) & set(col_m3))
+        col_m23_uni = FeatureSelection.checkList(list(col_m23), list(overlap))
+
+        col_m13 = list(set(col_m1) & set(col_m3))
+        col_m13_uni = FeatureSelection.checkList(list(col_m13), list(overlap))
+
+        col_c = [col_m12_uni, col_m23_uni, col_m13_uni]
+
+        return col_c
