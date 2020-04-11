@@ -38,16 +38,13 @@ def index():
 
     return render_template("visualization/index.html")
 
-
-@bp.route("/", methods=['POST'])
-@login_required
-def update_col():
-    file_name = request.form['available_files']
-    feature = request.form['features']
+@bp.route("/img/", methods=['GET'])
+def get_image_src():
+    file_name = request.args.get('available_file')
+    feature = request.args.get('feature').lstrip()
     img64 = getPlot(file_name, feature)
 
-    return render_template("visualization/index.html", available_list=session['files'], image_data=img64)
-
+    return str(img64)
 
 @bp.route("/js/", methods=["GET"])
 def get_col_names_js():
