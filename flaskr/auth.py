@@ -534,3 +534,38 @@ class UserResult:
         send_infrequent_mail(list)
 
         return list
+
+    def is_user_upload_file(id):
+        DIR = USER_PATH / str(id)
+        count = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
+
+        if count > 0:
+            return 1
+        else:
+            return 0
+
+    def get_user_pre_request(id):
+        pre = ['', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled']
+        has_file = UserResult.is_user_upload_file(id)
+        result = UserResult.get_user_results(id)
+        model = UserResult.get_user_model(id)
+
+        if has_file:
+            pre[1] = ''
+            pre[2] = ''
+            pre[3] = ''
+
+        if result['filename'] is not '':
+            pre[3] = ''
+
+        if result['fs_methods'] is not None:
+            pre[4] = ''
+
+        if result['selected_method'] is not None:
+            pre[5] = ''
+            pre[6] = ''
+
+        if model['accuracy'] is not None:
+            pre[7] = ''
+
+        return pre

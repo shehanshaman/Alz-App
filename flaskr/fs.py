@@ -39,7 +39,7 @@ def index():
     filename = result['filename']
 
     if filename is None or filename == '':
-        flash("Error: You don't has pre-processed data-set, start from pre-processing")
+        flash("Error: You don't has pre-processed data-set, start from pre-processing or change file")
 
     return render_template("fs/index.html", list_names=list_names, filename= filename)
 
