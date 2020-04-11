@@ -64,18 +64,19 @@
 
 /* Modal_pop Content */
 .modal_pop_content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 50%;
+    border-radius: 10px;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
 }
 
 /* The Close Button */
 .close {
-  color: #aaaaaa;
+  color: #1c1d21;
   float: right;
-  font-size: 28px;
+  font-size: 45px;
   font-weight: bold;
 }
 
@@ -99,7 +100,7 @@
   <!-- Modal_pop content -->
   <div class="modal_pop_content">
         <span class="close close_pop">&times;</span>
-    <div class="row">
+    <div class="row">      
         <div class="col-sm-12">
             <p class="tip_class_text" style="font-size: 15px; font-family: Monospace; text-align: justify;">tip</p>
         </div>
@@ -107,7 +108,7 @@
     <div class="row">
         <center>
         <div class="col-sm-12">
-            <img class="tip_img_div" src="{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}" alt="slide">
+            <img style="width: 100%;" class="tip_img_div" src="{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}" alt="slide">
         </div>
         </center>
     </div>    
@@ -152,6 +153,17 @@
                             <input type="file" name="chooseFile" id="chooseFile" required>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <button type="button" class="btn sample_select_btn" style="background-color: #4c78af;float: right;">SELECT SAMPLE FILE</button>                  
+                </div>
+                <div class="col-sm-6">
+                    <button type="button" class="btn download_sample_file" style="background-color: #a94442;">DOWNLOAD SAMPLE FILE</button>                      
                 </div>
             </div>
 
@@ -221,15 +233,21 @@
     
     var i=0;
     var tip_list = [
-        "tip 1 : A cookie associated with a cross-site resource at http://google.com/ was set without the `SameSite` attribute. A future release of Chrome will only deliver cookies with cross-site requests if they are set with `Sam", 
-        "tip 2 : A cookie associated with a cross-site resource at http://google.com/ was set without the `SameSite` attribute. A future release of Chrome will only deliver cookies with cross-site requests if they are set with `Sam", 
-        "tip 3 : A cookie associated with a cross-site resource at http://google.com/ was set without the `SameSite` attribute. A future release of Chrome will only deliver cookies with cross-site requests if they are set with `Sam."
+        "You can only upload comma-separated value (.csv) files. When uploading the data set, it is necessary that the file should be in the given format. Read the guidelines carefully before uploading the data set. We will guide you through the necessary steps by providing screenshots of a sample data set. GSE5281 contains microarray gene expression data of 161 samples. 87 of these samples are from Alzheimer’s disease patients while 74 of the samples are from the control group. A screenshot of part of the .csv file is shown below.", 
+        "The first column of the file refers to the unique ID of the samples (In here the number of samples is 161). For example, here the IDs are GSM119615, GSM119616, GSM119617, GSM119618, etc. Note that the sample IDs are used only for naming purposes. Therefore, the  IDs can be any unique name.", 
+        "The column headers(except the first column) contains the Probe IDs. A probe ID is a unique ID given for a probe/spot in microarray experiments. For example, here the probe IDs are 1007_s_at, 1053_at, 117_at, etc.",
+        "A row represents the gene expression data values of all the probe IDs with respect to a given sample. This highlighted row represents the gene expression data values for every probe ID in the sample GSM119618.", 
+        "The cells in the highlighted area can only contain numerical values.", 
+        "Apart from the data sets that are to be used in the prediction, other data sets should include a class label column as the last column. This should only contain binary values ( 0 and 1). The negatives should be represented by 0 while the positive values should be represented by 1. For example, in the given Alzheimer disease-related data set, 1 corresponds to the samples of patients having the disease. 0 corresponds to the control samples. Note that this column should be named as ‘class’ all in simple letters."        
         ];
 
     var tip_img_list = [
         "{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}", 
-        "{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}", 
-        "{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}"
+        "{{ url_for('static', filename='images/upload_pop/sl2.jpg') }}", 
+        "{{ url_for('static', filename='images/upload_pop/sl3.jpg') }}",
+        "{{ url_for('static', filename='images/upload_pop/sl4.jpg') }}",
+        "{{ url_for('static', filename='images/upload_pop/sl5.jpg') }}",
+        "{{ url_for('static', filename='images/upload_pop/sl6.jpg') }}"
     ];
     $('.tip_class_text').text(tip_list[0]);
     $(".tip_img_div").attr("src",tip_img_list[0]);
@@ -261,4 +279,24 @@
     $('.info_data_set').click(function(){
         $('#upload_page_pop').fadeIn(1000);
     });
+
+$(".download_sample_file").hover(function(){
+  $(this).css("background-color", "white");
+  $(this).css("color", "#a94442");
+  $(this).css("border", "1px solid #a94442");
+  }, function(){
+  $(this).css("background-color", "#a94442");
+  $(this).css("color", "white");
+  $(this).css("border", "1px solid #a94442");
+});
+
+$(".sample_select_btn").hover(function(){
+  $(this).css("background-color", "white");
+  $(this).css("color", "#4c78af");
+  $(this).css("border", "1px solid #4c78af");
+  }, function(){
+  $(this).css("background-color", "#4c78af");
+  $(this).css("color", "white");
+  $(this).css("border", "1px solid #4c78af");
+});
 </script>
