@@ -100,6 +100,12 @@ var tip_step_2 =
         position: 'T' 
     },
     { 
+        element : '#number_samples_positive', 
+        tooltip : 'Class positive samples in the data set !', 
+        text: 'Class positive samples', 
+        position: 'T' 
+    },    
+    { 
         element : '#min_val_div', 
         tooltip : 'Minimum gene expression data value in all the samples (considering all the features) !', 
         text: 'Minimum value', 
@@ -112,11 +118,17 @@ var tip_step_2 =
         position: 'T' 
     },
     { 
+        element : '#number_samples_negative', 
+        tooltip : 'Class negative samples in the data set !', 
+        text: 'Class negative samples', 
+        position: 'T' 
+    },
+    { 
         element : '#table_div', 
         tooltip : 'You can view a portion of the data set. Scroll right to view more samples !', 
         text: 'Show Data set', 
         position: 'T' 
-    }
+    }    
 ];
 
 var tip_step_3 =
