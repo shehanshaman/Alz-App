@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>GeNet | Register</title>
+    <title>GeNet | Settings</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -44,7 +44,7 @@
         }
 
         svg:hover {
-            color: red;
+            color: #26a69a;
         }
 
         button, input[type="submit"], input[type="reset"] {
@@ -82,7 +82,7 @@
 
     <div class="row">
         <div class="border row">
-            <div class="col-sm-5">
+            <div class="col-sm-4">
                 <h5>User details</h5><br>
                 <label for="username" style="float: left">E-mail</label>
                 <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
@@ -90,18 +90,18 @@
                 <input name="given_name" id="given_name" value="{{ data[0][1] }}">
                 <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
             </div>
-            <div class="col-sm-7">
+            <div class="col-sm-8">
                 <h5>Files</h5><br>
                 <table>
                     {% for index, row in df_files.iterrows() %}
                         <tr class="row" id="tr_{{ row['file name'] }}">
                             <td class="col-sm-2">{{ row['file name'] }}</td>
-                            <td class="col-sm-7">
+                            <td class="col-sm-6">
                                 <div class="progress">
                                     <div class="determinate" style="width: {{ row['percentage'] }}%"></div>
                                 </div>
                             </td>
-                            <td class="col-sm-1">{{ row['percentage'] }} %</td>
+                            <td class="col-sm-2">{{ row['percentage'] }} %</td>
                             <td class="col-sm-1">
                                 <button class="use-address" value="{{ row['file name'] }}">
                                     <i class="fas fa-trash-alt fa-2x"></i>
@@ -124,7 +124,7 @@
             <div class="row">
                 <p class="col-sm-8"><br><b>Please note, </b> If you delete your account, you won't be able to reactive it
                     later.</p>
-                <button class="col-sm-3 waves-effect waves-dark btn" id="delete_account">Delete
+                <button class="col-sm-3 waves-effect btn" id="delete_account" style="background-color: #e8591b">Delete
                     account
                 </button>
             </div>
