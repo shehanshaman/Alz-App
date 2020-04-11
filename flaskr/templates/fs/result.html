@@ -207,7 +207,7 @@
 
     .clf_L{
       position: absolute;
-      left: -26%;
+      left: -3%;
       top: 60%;
     }   
 
@@ -307,7 +307,7 @@
 
             <div class="result_content" style="padding: 10px; border: 2px solid #26a69a; border-radius: 4px;">
                 <div class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes found by each feature selection method</h4>
+                    <h4 id="results_venn_div" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes found by each feature selection method</h4>
                 </div>
 
                 <br>
@@ -381,13 +381,16 @@
                 </div>
 
                 <div class="row">
-                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">This graph shows the variation of correlation values with the number of correlated features. By examining this graph, the method that gives the least correlated features can be filtered out !</p>
+                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">This Venn diagram shows the number of genes found by each method. The intersections show the number of common genes found by the corresponding methods. You can see the number of overlapped genes through this diagram !</p>
                 </div>                
             </div>
 
             <br>
 
             <div class="result_content" style="padding: 10px; border: 2px solid #26a69a; border-radius: 4px;">
+                <div class="row">
+                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Variation of testing and training accuracies with the features selected by each method with three classifiers</h4>
+                </div>
                 <div class="row">
                     <div id="results_img_div" class="container-1">
                         <div class="summary_plot">
@@ -401,6 +404,10 @@
                         </div> 
                     </div>                           
                 </div>
+
+                <div class="row">
+                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">This graph shows the variation of testing(left) and training(right) accuracies trained with the features selected by each method. In each instance, 3 classifiers are used to compare the results !</p>
+                </div>                 
             </div>
                     
                 <div class="row">
@@ -456,13 +463,13 @@
             <span class="close">&times;</span>
         </div>      
         <div class="row">
-            <p style="display: none;" class="popup_head_div T_gene">Only selected genes in {{ methods[2] }} method</p>
-            <p style="display: none;" class="popup_head_div L_gene">Only selected genes in {{ methods[1] }} method</p>
-            <p style="display: none;" class="popup_head_div R_gene">Only selected genes in {{ methods[3] }} method</p>
+            <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ methods[2] }} method</p>
+            <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ methods[1] }} method</p>
+            <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ methods[3] }} method</p>
             <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ methods[1] }} + {{ methods[2] }} + {{ methods[3] }}</p>
-            <p style="display: none;" class="popup_head_div TL_gene">Gene selected in {{ methods[1] }} and {{ methods[2] }}</p>
-            <p style="display: none;" class="popup_head_div TR_gene">Gene selected in {{ methods[2] }} and {{ methods[3] }}</p>        
-            <p style="display: none;" class="popup_head_div LR_gene">Gene selected in {{ methods[1] }} and {{ methods[3] }}</p>                      
+            <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ methods[1] }} and {{ methods[2] }}</p>
+            <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ methods[2] }} and {{ methods[3] }}</p>        
+            <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ methods[1] }} and {{ methods[3] }}</p>                      
         </div>
         <div class="row">
             <p style="display: none;" class="popup_gene_list_div T_gene">{{venn_data[0][1]}}</p>
@@ -508,6 +515,8 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/venn_diagram.js') }}"></script>
 
 <script>
 
@@ -579,88 +588,4 @@
         $('#tourControls').hide(0);
     }); 
     
-</script>
-
-<script type="text/javascript">
-
-function hover_white(p_div, svg_div){
-  $(svg_div + "," + p_div).hover(function(){
-        $(p_div).css("background-color", "transparent");
-        $(p_div).css("color", "white");
-        $(svg_div).css("fill", "#26a69a");
-    }, function(){
-        $(p_div).css("background-color", "transparent");    
-        $(p_div).css("color", "#26a69a");
-        $(svg_div).css("fill", "white");
-  });   
-}
-
-function hover_white_blue(p_div, svg_div){
-  $(svg_div + "," + p_div).hover(function(){
-        $(p_div).css("background-color", "transparent");
-        $(p_div).css("color", "white");
-        $(svg_div).css("fill", "#26a69a");
-    }, function(){
-        $(p_div).css("background-color", "transparent");    
-        $(p_div).css("color", "#26a69a");
-        $(svg_div).css("fill", "#9df6ed");
-  });   
-}
-
-hover_white('.p_M', '#M_clc');
-hover_white('.p_R', '#R_clc');
-hover_white('.p_L', '#L_clc');
-hover_white('.p_T', '#T_clc');
-hover_white_blue('.p_LRM', '#LRM_clc');
-hover_white_blue('.p_TRM', '#TRM_clc');
-hover_white_blue('.p_TLM', '#TLM_clc');
-
-$('.modal-content-1 .close').click(function(){
-    $('#popup_gene_list').hide(500);
-    $('.M_gene').hide(0);
-    $('.T_gene').hide(0);
-    $('.R_gene').hide(0);
-    $('.L_gene').hide(0);
-    $('.TR_gene').hide(0);
-    $('.TL_gene').hide(0);
-    $('.LR_gene').hide(0);
-});
-
-$('.p_M, #M_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.M_gene').show(0);
-});
-
-$('.p_R, #R_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.R_gene').show(0);
-});
-
-
-$('.p_L, #L_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.L_gene').show(0);
-});
-
-$('.p_T, #T_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.T_gene').show(0);
-});
-
-$('.p_LRM, #LRM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.LR_gene').show(0);
-});
-
-
-$('.p_TRM, #TRM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.TR_gene').show(0);
-});
-
-$('.p_TLM, #TLM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.TL_gene').show(0);
-});
-
 </script>

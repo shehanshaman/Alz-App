@@ -266,6 +266,12 @@ var tip_fs_index =
 var tip_fs_results =
 [
 { 
+    element : '#results_venn_div', 
+    tooltip : 'This shows the Venn diagram of the number of genes found by each feature selection method. Click on different sections of the Venn diagram to view more information on the list of gene symbols !', 
+    text: 'Venn diagram', 
+    position: 'T' 
+},
+{ 
     element : '#results_img_div', 
     tooltip : 'These graphs depicts how the training and testing accuracy of the selected features from the previous step varies with different feature selection methods and the classifiers. Accuracy is given by the y- axis. 3 classifiers are used to give a comparison between the feature selection methods. Each feature selection method is performed and trained under all the 3 classifiers !', 
     text: 'Result plot', 
@@ -374,7 +380,7 @@ var tip_an_final =
     },
     { 
         element : '#gene_output_div2', 
-        tooltip : 'This shows the set of genes selected by considering the least correlation values and the highest accuracy !!', 
+        tooltip : 'This shows the set of genes selected by considering the  union of overlapped genes and the set of genes found by considering correlation values !', 
         text: 'Extracted genes', 
         position: 'T' 
     },
@@ -396,7 +402,16 @@ var tip_validation =
 [
     { 
         element : '#info_results_div', 
-        tooltip : 'Now, we need to validate our results to confirm their biological relevance. For this, we use data from https://www.genecards.org/ to compare our results. In GeneCards, they have information on the already identified risk genes for a particular disease!', text: 'Validation', position: 'T' },
+        tooltip : 'Now, we need to validate our results to confirm their biological relevance. For this, we use data from https://www.genecards.org/ to compare our results. In GeneCards, they have information on the already identified risk genes for a particular disease!', 
+        text: 'Validation', 
+        position: 'T' 
+    },
+    { 
+        element : '#venn_diagram_div', 
+        tooltip : 'This shows the Venn diagram of the number of genes found by each feature selection method which are also validated by other biological sources. Click on different sections of the Venn diagram to view more information on the list of gene symbols !', 
+        text: 'Venn diagram', 
+        position: 'T' 
+    },
     { 
         element : '#results_table_div1', 
         tooltip : 'This table gives information on the already identified genes !', 
