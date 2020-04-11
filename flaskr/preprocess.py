@@ -1,6 +1,6 @@
 import base64
 
-from flask import Blueprint, session
+from flask import Blueprint, session, make_response, send_file, send_from_directory
 from flask import redirect
 from flask import render_template, current_app
 from flask import request
@@ -8,16 +8,13 @@ from flask import request
 import os
 from werkzeug.utils import secure_filename
 
+from shutil import copyfile
+
 from .classes.dfClass import DF  # file upload instance
 from .classes.preProcessClass import PreProcess
 from .classes.featureReductionClass import FeatureReduction
-from .classes.featureSelectionClass import FeatureSelection
 
 import io
-import random
-from flask import Response
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
 
 import json
 import pandas as pd
@@ -301,6 +298,7 @@ def create_object():
 @bp.route('/upload')
 @login_required
 def upload_file_view():
+
     return render_template("preprocess/step-0.html")
 
 
@@ -327,6 +325,21 @@ def upload_file():
     else:
         return redirect(request.url)
 
+@bp.route('/sample/download/')
+@login_required
+def download_sample_file():
+    sample_file = UPLOAD_FOLDER / "sample"
+
+    return send_from_directory(directory=sample_file, filename='GSE5281-GPL570.zip')
+
+@bp.route('/sample/upload/')
+@login_required
+def upload_sample_file():
+    src = UPLOAD_FOLDER / "sample" / 'GSE5281-GPL570.pkl'
+    dst = USER_PATH / str(g.user['id']) / 'GSE5281-GPL570.pkl'
+    copyfile(src, dst)
+
+    return redirect('/pre')
 
 def csv2pkl(path_csv, path_pkl):
     df_save = pd.read_csv(path_csv)
