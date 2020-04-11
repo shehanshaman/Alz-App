@@ -129,7 +129,7 @@ def result():
 
     venn_data = FeatureSelection.venn_diagram_data(col_m1, col_m2, col_m3)
 
-    return render_template("fs/result.html", image_data=img64, methods = method_names, columns = col)
+    return render_template("fs/result.html", image_data=img64, methods = method_names, columns = col, venn_data=venn_data)
 
 
 
