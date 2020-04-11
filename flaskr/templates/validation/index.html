@@ -196,7 +196,7 @@
 
     .clf_L{
       position: absolute;
-      left: -26%;
+      left: -10%;
       top: 60%;
     }   
 
@@ -329,8 +329,8 @@
             </div>
 
             <div class="result_content">
-                <div class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that are already identified and biologically validated as AD related from the 50 genes obtained by each method</h4>
+                <div id="venn_diagram_div" class="row">
+                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that are already identified and biologically validated from the 50 genes obtained by each method</h4>
                 </div>
 
                 <br>
@@ -404,7 +404,7 @@
                 </div>
 
                 <div class="row">
-                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">This graph shows the variation of correlation values with the number of correlated features. By examining this graph, the method that gives the least correlated features can be filtered out !</p>
+                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">GeneCards.org contains information on the already identified risk genes for a particular disease. This diagram shows the number of genes selected by each method which are also identified by GeneCards !</p>
                 </div>                
             </div>
 
@@ -452,13 +452,13 @@
             <span class="close">&times;</span>
         </div>      
         <div class="row">
-            <p style="display: none;" class="popup_head_div T_gene">Only selected genes in {{ method_names[1] }} method</p>
-            <p style="display: none;" class="popup_head_div L_gene">Only selected genes in {{ method_names[0] }} method</p>
-            <p style="display: none;" class="popup_head_div R_gene">Only selected genes in {{ method_names[2] }} method</p>
+            <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }} method</p>
+            <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }} method</p>
+            <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }} method</p>
             <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }} + {{ method_names[1] }} + {{ method_names[2] }}</p>
-            <p style="display: none;" class="popup_head_div TL_gene">Gene selected in {{ method_names[0] }} and {{ method_names[1] }}</p>
-            <p style="display: none;" class="popup_head_div TR_gene">Gene selected in {{ method_names[1] }} and {{ method_names[2] }}</p>        
-            <p style="display: none;" class="popup_head_div LR_gene">Gene selected in {{ method_names[0] }} and {{ method_names[2] }}</p>                      
+            <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }} and {{ method_names[1] }}</p>
+            <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }} and {{ method_names[2] }}</p>        
+            <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }} and {{ method_names[2] }}</p>                      
         </div>
         <div class="row">
             <p style="display: none;" class="popup_gene_list_div T_gene">{{venn_data[0][1]}}</p>
@@ -542,92 +542,10 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/venn_diagram.js') }}"></script>
+
 <script>
 
     var tour = guide_main_call(tip_validation, 'BL');
-
-</script>
-
-<script type="text/javascript">
-
-function hover_white(p_div, svg_div){
-  $(svg_div + "," + p_div).hover(function(){
-        $(p_div).css("background-color", "transparent");
-        $(p_div).css("color", "white");
-        $(svg_div).css("fill", "#26a69a");
-    }, function(){
-        $(p_div).css("background-color", "transparent");    
-        $(p_div).css("color", "#26a69a");
-        $(svg_div).css("fill", "white");
-  });   
-}
-
-function hover_white_blue(p_div, svg_div){
-  $(svg_div + "," + p_div).hover(function(){
-        $(p_div).css("background-color", "transparent");
-        $(p_div).css("color", "white");
-        $(svg_div).css("fill", "#26a69a");
-    }, function(){
-        $(p_div).css("background-color", "transparent");    
-        $(p_div).css("color", "#26a69a");
-        $(svg_div).css("fill", "#9df6ed");
-  });   
-}
-
-hover_white('.p_M', '#M_clc');
-hover_white('.p_R', '#R_clc');
-hover_white('.p_L', '#L_clc');
-hover_white('.p_T', '#T_clc');
-hover_white_blue('.p_LRM', '#LRM_clc');
-hover_white_blue('.p_TRM', '#TRM_clc');
-hover_white_blue('.p_TLM', '#TLM_clc');
-
-$('.modal-content-1 .close').click(function(){
-    $('#popup_gene_list').hide(500);
-    $('.M_gene').hide(0);
-    $('.T_gene').hide(0);
-    $('.R_gene').hide(0);
-    $('.L_gene').hide(0);
-    $('.TR_gene').hide(0);
-    $('.TL_gene').hide(0);
-    $('.LR_gene').hide(0);
-});
-
-$('.p_M, #M_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.M_gene').show(0);
-});
-
-$('.p_R, #R_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.R_gene').show(0);
-});
-
-
-$('.p_L, #L_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.L_gene').show(0);
-});
-
-$('.p_T, #T_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.T_gene').show(0);
-});
-
-$('.p_LRM, #LRM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.LR_gene').show(0);
-});
-
-
-$('.p_TRM, #TRM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.TR_gene').show(0);
-});
-
-$('.p_TLM, #TLM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-    $('.TL_gene').show(0);
-});
 
 </script>
