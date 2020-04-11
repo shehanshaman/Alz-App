@@ -71,18 +71,18 @@ def download_df():
 
     if isTmp == 1:
         path = USER_PATH / str(id) / "tmp" / name
+        df = PreProcess.getDF(path)
     else:
         path = USER_PATH / str(id) / name
+        df = PreProcess.getDF(path)
+        df = df.reset_index()
+        df = df.rename(columns={"index": "ID"})
 
-    df = PreProcess.getDF(path)
-    df_csv = df.to_csv()
-
-    resp = make_response(df.to_csv())
+    resp = make_response(df.to_csv(index=False))
     resp.headers["Content-Disposition"] = "attachment; filename=" + name.split('.')[0] + ".csv"
     resp.headers["Content-Type"] = "text/csv"
 
     return resp
-
 
 @bp.route("/user/tour/", methods=["GET"])
 def update_user_tour():
