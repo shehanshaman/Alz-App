@@ -32,7 +32,7 @@ hover_white_blue('.p_TRM', '#TRM_clc');
 hover_white_blue('.p_TLM', '#TLM_clc');
 
 $('.modal-content-1 .close').click(function(){
-    $('#popup_gene_list').hide(500);
+    $('#popup_gene_list').slideToggle("hide");
     $('.M_gene').hide(0);
     $('.T_gene').hide(0);
     $('.R_gene').hide(0);
@@ -43,52 +43,52 @@ $('.modal-content-1 .close').click(function(){
 });
 
 $('.p_M, #M_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
+    $('#popup_gene_list').slideToggle("show");
     $('.M_gene').show(0);
     $('#tourControls').hide(0);
 });
 
 $('.p_R, #R_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
+    $('#popup_gene_list').slideToggle("show");
     $('.R_gene').show(0);
     $('#tourControls').hide(0);
 });
 
 
 $('.p_L, #L_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
+    $('#popup_gene_list').slideToggle("show");
     $('.L_gene').show(0);
     $('#tourControls').hide(0);
 });
 
 $('.p_T, #T_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
+    $('#popup_gene_list').slideToggle("show");
     $('.T_gene').show(0);
     $('#tourControls').hide(0);
 });
 
 $('.p_LRM, #LRM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
+    $('#popup_gene_list').slideToggle("show");
     $('.LR_gene').show(0);
     $('#tourControls').hide(0);
 });
 
 
 $('.p_TRM, #TRM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
+    $('#popup_gene_list').slideToggle("show");
     $('.TR_gene').show(0);
     $('#tourControls').hide(0);
 });
 
 $('.p_TLM, #TLM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
+    $('#popup_gene_list').slideToggle("show");
     $('.TL_gene').show(0);
     $('#tourControls').hide(0);
 });
 
 $('body').click(function(evt){    
     if($(evt.target).is('#popup_gene_list')) {
-        $('#popup_gene_list').hide(500);
+        $('#popup_gene_list').slideToggle("hide");
         $('.M_gene').hide(0);
         $('.T_gene').hide(0);
         $('.R_gene').hide(0);
