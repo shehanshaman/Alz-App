@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <title>GeNet</title>
+
+</head>
+
+<style>
+
+        a, a:hover {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .option {
+            position: relative;
+            display: block;
+            transition: .5s;
+            color: #889a92;
+        }
+
+        .option:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: .5s;
+            transform: scale(.9);
+            z-index: -1;
+        }
+
+        .option:hover:before {
+            transform: scale(1.2);
+            filter: blur(3px);
+        }
+
+        .option:hover {
+            color: #26a69a;
+            text-shadow: 0 0 15px #26a69a;
+        }
+
+        .limiter {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+</style>
+
+<body>
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="container limiter">
+    <div class="row head-word">
+        <h3 id="h3-head-1" class="card__title" style="text-align: center;"></h3>
+    </div>
+    <div class="row">
+        <div class="row" style="margin-bottom: 80px;">
+
+            <div id="upload_icon" class="option sites col-sm-3 center {{ dis[0] }}"><a
+                    href="{{ url_for('preprocess.upload_file_view') }}">
+                <div class="">
+                    <i class="fas fa-file-upload fa-5x"></i>
+                </div>
+                <h4>Upload File</h4></a>
+            </div>
+
+            <div id="visualization_icon" class="option sites col-sm-3 center {{ dis[1] }}"><a
+                    href="{{ url_for('visualization.index') }}">
+                <div class="">
+                    <i class="fas fa-chart-line fa-5x"></i>
+                </div>
+                <h4>Visualization</h4>
+            </a>
+            </div>
+
+            <div id="preprocess_icon" class="option sites col-sm-3 center {{ dis[2] }}"><a href="{{ url_for('preprocess.index') }}">
+                <div class="">
+                    <i class="fas fa-chalkboard-teacher fa-5x"></i>
+                </div>
+                <h4>Pre-process</h4>
+            </a>
+            </div>
+
+            <div id="feature_icon" class="option sites col-sm-3 center {{ dis[3] }}"><a href="{{ url_for('fs.index') }}">
+                <div class="">
+                    <i class="far fa-object-group fa-5x"></i>
+                </div>
+                <h4>Feature Selection</h4>
+            </a>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div id="analize_icon" class="option sites col-sm-3 center {{ dis[4] }}"><a href="{{ url_for('analyze.index') }}">
+                <div class="">
+                    <i class="fas fa-chart-pie fa-5x"></i>
+                </div>
+                <h4>Analysis</h4>
+            </a>
+            </div>
+
+            <div id="validation_icon" class="option sites col-sm-3 center {{ dis[5] }}"><a href="{{ url_for('validation.index') }}">
+                <div class="">
+                    <i class="fas fa-clipboard-check fa-5x"></i>
+                </div>
+                <h4>Validation</h4>
+            </a>
+            </div>
+
+            <div id="modeling_icon" class="option sites col-sm-3 center {{ dis[6] }}"><a href="{{ url_for('modeling.index') }}">
+                <div class="">
+                    <i class="fas fa-laptop-code fa-5x"></i>
+                </div>
+                <h4>Modelling</h4>
+            </a>
+            </div>
+
+            <div id="prediction_icon" class="option sites col-sm-3 center {{ dis[7] }}"><a href="{{ url_for('modeling.predict') }}">
+                <div class="">
+                    <i class="fas fa-thermometer-full fa-5x"></i>
+                </div>
+                <h4>Prediction</h4>
+            </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% include 'guide_footer.html' %}
+
+</body>
+
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
+<script>
+
+    var tour = guide_main_call(tip_home, 'BL');
+
+</script>
+

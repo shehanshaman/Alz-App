@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Settings</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+        .center {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+
+        .border {
+            border: 2px solid #bcbaba;
+            border-radius: 30px;
+            padding: 35px;
+        }
+
+        .flash {
+            margin: 1em 0;
+            padding: 1em;
+            background: #cae6f6;
+            border: 1px solid #377ba8;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        svg:hover {
+            color: #26a69a;
+        }
+
+        button, input[type="submit"], input[type="reset"] {
+            background: none;
+            color: inherit;
+            border: none;
+            padding: 0;
+            font: inherit;
+            cursor: pointer;
+            outline: inherit;
+        }
+
+    </style>
+</head>
+
+<body style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+
+    <div class="step-content">
+        <div class="row head-word">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a">SETTINGS</h3>
+        </div>
+    </div>
+
+    <div>
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="row">
+        <div class="border row">
+            <div class="col-sm-4">
+                <h5>User details</h5><br>
+                <label for="username" style="float: left">E-mail</label>
+                <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
+                <label for="given_name" style="float: left">Name</label>
+                <input name="given_name" id="given_name" value="{{ data[0][1] }}">
+                <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
+            </div>
+            <div class="col-sm-8">
+                <h5>Files</h5><br>
+                <table>
+                    {% for index, row in df_files.iterrows() %}
+                        <tr class="row" id="tr_{{ row['file name'] }}">
+                            <td class="col-sm-2">{{ row['file name'] }}</td>
+                            <td class="col-sm-6">
+                                <div class="progress">
+                                    <div class="determinate" style="width: {{ row['percentage'] }}%"></div>
+                                </div>
+                            </td>
+                            <td class="col-sm-2">{{ row['percentage'] }} %</td>
+                            <td class="col-sm-1">
+                                <button class="use-address" value="{{ row['file name'] }}">
+                                    <i class="fas fa-trash-alt fa-2x"></i>
+                                </button>
+                            </td>
+                            <td class="col-sm-1">
+                                <button class="use-download" value="{{ row['file name'] }}">
+                                    <i class="fas fa-file-download fa-2x"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            </div>
+
+        </div>
+        <div class="row" style="background-color: #ff00008c; padding: 10px; border: 3px solid red; border-radius: 5px;">
+            <h5 class="row">Delete account</h5>
+            <div class="row">
+                <p class="col-sm-8"><br><b>Please note, </b> If you delete your account, you won't be able to reactive it
+                    later.</p>
+                <button class="col-sm-3 waves-effect btn" id="delete_account" style="background-color: #31708f">Delete
+                    account
+                </button>
+            </div>
+
+        </div>
+        <div>
+
+
+        </div>
+    </div>
+
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script>
+    $(document).ready(function () {
+        $(".dropdown-trigger").dropdown();
+    });
+
+
+    $(".use-address").click(function () {
+        var $row = $(this).closest("tr");
+        var $item = $row.find(".use-address").val();
+        $.get("/update/delete/file/", {id: '{{ g.user['id'] }}', name: $item}, function (data, status) {
+            document.getElementById('tr_' + $item).remove();
+        });
+
+    });
+
+    $(".use-download").click(function () {
+        var $row = $(this).closest("tr");
+        var $item = $row.find(".use-download").val();
+
+        var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $item + "&is_tmp=0";
+        window.open(url, '_blank');
+
+    });
+
+    $("#update_name").click(function () {
+        var given_name = document.getElementById('given_name').value;
+        $.get("/update/user/givenname/", {id: '{{ g.user['id'] }}', name: given_name}, function (data, status) {
+
+        });
+    });
+
+    $("#delete_account").click(function () {
+        $.get("/update/user/delete/", {id: '{{ g.user['id'] }}'}, function (data, status) {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                window.location.replace('/auth/logout');
+            });
+        });
+    });
+</script>
+
+
+

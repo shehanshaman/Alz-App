@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | {{ method_title }} | CORRELATION</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+        <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+</head>
+
+<style>
+        .summary_plot > img {
+            padding: 5px;
+            width: 100%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create two equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 50%;
+            padding: 10px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Style the buttons */
+        #btnContainer > .btn {
+            border: none;
+            outline: none;
+            background-color: #a3a0a0;
+            cursor: pointer;
+        }
+
+        #btnContainer > .btn:hover {
+            background-color: #ddd;
+        }
+
+        #btnContainer > .btn.active {
+            background-color: #666;
+            color: white;
+        }
+
+        .result_plot > img {
+            padding: 5px;
+            width: 90%;
+        }
+
+        .corr_result_text {
+            margin-top: 15%;
+        }
+
+        div.centre {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 0;
+            margin-bottom: 0;
+            align-content: center;
+            text-align: center;
+        }
+
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-an-2">
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li class="step">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step active">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step-heading">
+            <div class="row">
+                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">CORRELATION : {{ method_title }}</h3>
+                <h3 id="selected-method" style="display: none;">{{ method_title }}</h3>
+            </div>
+        </div>
+
+        <div class="step-content">
+
+            <div class="result_content">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div id="results_plot_div1" class="container-1">
+                            <div class="result_plot">
+                                <img id="correlated_features" src="data:image/png;base64,{{ corr_results }}" alt="overlap">
+                            </div>
+                            <div class="top-right" style="right: 31px;">
+                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                                    class="use-download-correlated_features" value="">
+                                    <i class="fas fa-file-download fa-2x"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>                      
+                    <div class="col-sm-6 corr_result_text">
+                        <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This graph shows the variation of correlation values with the number of correlated features. By examining this graph, the method that gives the least correlated features can be filtered out !</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result_content">
+                <div class="row">
+                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Variation of the correlation
+                        coefficients of the genes found only by {{ method_title }} with
+                        classification accuracy</h4>
+                </div>
+
+                <div class="row">
+                    <div id="results_plot_div2"  class="container-1">
+                        <div class="summary_plot">
+                            <img id="correlation_coefficients" src="data:image/png;base64,{{ corr_score }}" alt="overlap">
+                        </div>
+                        <div class="top-right">
+                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;" class="use-download-correlation_coefficients" value="">
+                                <i class="fas fa-file-download fa-2x"></i>
+                            </button>
+                        </div>
+                    </div>                    
+                </div>
+
+                <div class="row">
+                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This graph (right) shows how the correlation coefficients of the genes only found by {{ method_title }} varies with the number of features. The graph(left) shows the variation of correlation coefficients of the genes selected by {{ method_title }} alone varies with the classification accuracy of three classifiers !</p>
+                </div>                
+            </div>
+
+            <div class="result_content">
+                <div class="row">
+
+                    <h4 id="h4-head-2" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Finding features that has minimum
+                        correlated and high classification accuracy</h4>
+                </div>
+
+                <div id="results_table_div" style="overflow: auto;">
+                    {% for table in tables %}
+                        {{ table|safe }}
+                    {% endfor %}
+
+                </div>
+
+                <br>
+
+                <div class="row">
+                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">By considering the above graphs, you can select the plots where the highest accuracies occur in each classifier. The table shows the instance where the maximum accuracy is obtained, the number of features at that particular point and the range of correlation coefficients of that instance. Out of the 3 models, you can obtain the maximum accuracy to proceed further !</p>
+                </div>  
+            </div>
+
+            <div class="row list-view">
+                <div id="btnContainer">
+                    <button id="list_div_btn" class="btn" onclick="listView()" style="background-color: white;color: black;"><i class="fa fa-bars"></i> List</button>
+                    <button id="grid_div_btn" class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+                </div>
+                <br>
+
+                <div class="row">
+                    <div id="overlapped_features_div" class="column" style="background-color:#26a69a8f;">
+                        <h4 style="color: white;font-family: monospace;">Overlapped Features</h4>
+                        <p>{{ overlap }}</p>
+                    </div>
+                    <div id="correlation_features_div" class="column" style="background-color:#26a69a;">
+                        <h4 style="color: white;font-family: monospace;">Correlation | {{ max_clasify }}</h4>
+                        <p>{{ corr_selected }}</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="line-hr">
+
+            <div class="step-actions">
+                <button id="btn-submit-an-2-continue" class="waves-effect waves-dark btn next-step step-6-click">
+                    <a>CONTINUE</a>
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step">
+                    <a href="{{ url_for('analyze.index') }}">BACK</a>
+                </button>
+            </div>
+        </div>
+
+        <form id="main-form-div-an-2-continue" style="display: none" action="/an/step3" method="get" id="form">
+        </form>
+
+    </div>
+</div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 24%;text-align: center;color: #26a69a; margin-bottom: 200px;text-transform: uppercase;">{{ method_title }}</h5>
+        <h5 style="margin-top: -12%;text-align: center;color: #26a69a; margin-bottom: 200px;">CONTINUE RESULTS ANALYSING</h5>        
+    </div> 
+
+{% include 'guide_footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script>
+    // Get the elements with class="column"
+    var elements = document.getElementsByClassName("column");
+
+    // Declare a loop variable
+    var i;
+
+    // List View
+    function listView() {
+        for (i = 0; i < elements.length; i++) {
+            elements[i].style.width = "100%";
+        }
+
+        $('#tourControls').hide(0);
+        $("#list_div_btn").css("color", "white");
+        $("#list_div_btn").css("background-color", "#666");
+        $("#grid_div_btn").css("color", "black");
+        $("#grid_div_btn").css("background-color", "white");
+    }
+
+    // Grid View
+    function gridView() {
+        for (i = 0; i < elements.length; i++) {
+            elements[i].style.width = "50%";
+        }
+
+        $('#tourControls').hide(0);
+        $("#list_div_btn").css("color", "black");
+        $("#list_div_btn").css("background-color", "white");
+        $("#grid_div_btn").css("color", "white");
+        $("#grid_div_btn").css("background-color", "#666");
+    }
+
+    /* Optional: Add active class to the current button (highlight it) */
+    var container = document.getElementById("btnContainer");
+    var btns = container.getElementsByClassName("btn");
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function () {
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        });
+    }
+</script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-an-2-continue').click(function () {
+        $('.main-div-an-2').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-an-2-continue").submit();  
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);              
+    });
+
+
+    selected_method = $('#selected-method').text();
+
+    $(".use-download-correlated_features").click(function () {
+        var img = document.getElementById('correlated_features');
+        var url = img.src;
+
+        var a1 = document.createElement("a");
+        a1.href = url;
+        a1.download = selected_method + "_" + "correlated_features.png";
+        a1.click();
+
+        $('#tourControls').hide(0);
+    });
+
+    $(".use-download-correlation_coefficients").click(function () {
+        var img = document.getElementById('correlation_coefficients');
+        var url = img.src;
+
+        var a2 = document.createElement("a");
+        a2.href = url;
+        a2.download = selected_method + "_" + "correlation_coefficients.png";
+        a2.click();
+
+        $('#tourControls').hide(0);
+    });
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
+<script>
+
+    var tour = guide_main_call(tip_an_correlation, 'BL');
+
+</script>
