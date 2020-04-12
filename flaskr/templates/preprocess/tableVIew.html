@@ -85,7 +85,6 @@
         for (var i = 0; i < rows.length; i++) {
             if (i==0){ continue;}
             rows[i].onclick = function () {
-                console.log($(this).find('th')[0].innerHTML);
                 $("#selected_row").val($(this).find('th')[0].innerHTML);
                 $("#form").submit();
             };
@@ -96,7 +95,6 @@
         var $file_name = $('.h4-file-name').text();
         
         var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=0";
-        console.log(url);
         window.open(url, '_blank');
 
     });

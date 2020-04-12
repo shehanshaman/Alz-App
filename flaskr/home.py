@@ -1,4 +1,4 @@
-from flask import Blueprint, g
+from flask import Blueprint, g, abort
 from flask import render_template
 from flaskr.db import get_db
 
@@ -20,5 +20,7 @@ def index():
     for u in result:
         x = u['prerequest']
         list.append(x)
+
+    # abort(405)
 
     return render_template("home.html", dis = pre, pre_name = list)
