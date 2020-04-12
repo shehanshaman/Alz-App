@@ -21,7 +21,7 @@
         });
 
     }
-    else {console.log(notification_on);
+    else {
         $('.notification_pop_on').hide(0);
         $('.notification_pop_off').show(0);
 

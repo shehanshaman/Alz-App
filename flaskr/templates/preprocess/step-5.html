@@ -247,7 +247,6 @@
         document.getElementById("progress_bar").style.visibility = "visible";
         document.getElementById("btn-calculate").disabled = true;
         $.get("./fr/pf/", {pvalue: p_value, foldChange: fold_range}, function (data, status) {
-            console.log(data);
             document.getElementById("result_div").style.visibility = "visible";
             document.getElementById("selected_features_count").innerHTML = data;
             document.getElementById("progress_bar").style.visibility = "hidden";

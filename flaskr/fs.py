@@ -156,6 +156,11 @@ def get_summary_plot(results_testing, results_training):
     results_testing.plot.bar(rot=0, ax=axes[0])
     results_training.plot.bar(rot=0, ax=axes[1])
 
+    pic_hash = fig_to_b64encode(fig)
+
+    return pic_hash
+
+def fig_to_b64encode(fig):
     pic_IObytes = io.BytesIO()
     fig.savefig(pic_IObytes, format='png')
     pic_IObytes.seek(0)

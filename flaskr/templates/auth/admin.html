@@ -206,7 +206,6 @@
             document.getElementById("progress_bar").style.visibility = "visible";
             document.getElementById("infrequent_users_file_delete").disabled = true;
             $.get("../update/infrequent/files/", {ids: ids}, function (data, status) {
-                console.log(ids);
                 document.getElementById("progress_bar").style.visibility = "hidden";
 
             });

@@ -294,6 +294,7 @@ def reset_key_verify():
     return render_template("error.html", errors=e)
 
 @bp.route("/settings")
+@login_required
 def settings():
     user = g.user
     user_data = [user['username'], user['given_name']]
@@ -332,6 +333,7 @@ def get_folder_size(users_id):
     return df
 
 @bp.route("/admin")
+@login_required
 def admin_panel():
 
     users = get_all_users()
@@ -380,7 +382,7 @@ def get_files_size(path):
 
 def send_mail(subject, url, recipient, senders_subject):
     msg = Message(senders_subject,
-                  sender="no-reply@alz.com",
+                  sender="no-reply@GeNet.com",
                   recipients=[recipient])
 
     message = get_mail_message(subject)
