@@ -26,18 +26,18 @@
 
 <!-- Dropdown Structure -->
 <ul id="dropdown1" class="dropdown-content" style="font-family: monospace;">
-    <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
-    <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
-    <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
-    <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
+    <li class="nav_link {{ dis[2] }}"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
+    <li class="nav_link {{ dis[3] }}"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
+    <li class="nav_link {{ dis[4] }}"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
+    <li class="nav_link {{ dis[5] }}"><a href="{{ url_for('validation.index') }}">Validation</a></li>
 </ul>
 
 <!-- Dropdown side Structure -->
 <ul id="dropdown1_side" class="dropdown-content">
-    <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
-    <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
-    <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
-    <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
+    <li class="nav_link {{ dis[2] }}"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
+    <li class="nav_link {{ dis[3] }}"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
+    <li class="nav_link {{ dis[4] }}"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
+    <li class="nav_link {{ dis[5] }}"><a href="{{ url_for('validation.index') }}">Validation</a></li>
 </ul>
 
 <!-- Dropdown Structure User -->
@@ -69,9 +69,9 @@
             {% if g.user %}
                 <li class="nav_link"><a href="{{ url_for('index') }}"><span class=""></span>Home</a>
                 </li>
-                <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
+                <li class="nav_link {{ dis[0] }}"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
                 </li>
-                <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+                <li class="nav_link {{ dis[1] }}"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
                 </li>
                 <!-- Dropdown Trigger -->
                 <li class="nav_link">
@@ -79,7 +79,7 @@
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
                 </li>
-                <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
+                <li class="nav_link {{ dis[7] }}"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
                 </li>
                 <li><span> <div class="vertical"></div>  </span></li>
                 {% if g.user['image_url'] %}
@@ -100,15 +100,15 @@
     {% if g.user %}
         <li class="nav_link"><a href="{{ url_for('index') }}"><span class=""></span>Home</a>
         </li>
-        <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
+        <li class="nav_link {{ dis[0] }}"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
         </li>
-        <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+        <li class="nav_link {{ dis[1] }}"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
         </li>
         <!-- Dropdown Trigger -->
         <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1_side">Framework<i
                 class="material-icons right">arrow_drop_down</i></a></li>
 
-        <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
+        <li class="nav_link {{ dis[7] }}"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
         </li>
         <li><span> <div class="vertical"></div>  </span></li>
         {% if g.user['image_url'] %}

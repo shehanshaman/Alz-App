@@ -68,7 +68,7 @@
                 options.data.unshift({ element : 'body', tooltip: null, text: options.welcomeMessage });
 
                 controls = '<div id="tourControls">\
-                  <div id="tourText" style="font-family:memonospace;">'+options.welcomeMessage+'</div>\
+                  <div id="tourText" style="font-family:memonospace;font-size:20px">'+options.welcomeMessage+'</div>\
                   <div id="tourButtons">\
                     <button id="tourPrev" style="display:none" class="'+options.buttons.prev.class+'">' + options.buttons.prev.text + '</button>\
                     <button id="tourNext" class="'+options.buttons.start.class+'">' + options.buttons.start.text + '</button>\
