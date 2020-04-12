@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS mail_template;
 DROP TABLE IF EXISTS verify;
 DROP TABLE IF EXISTS classifiers;
 DROP TABLE IF EXISTS prerequest;
+DROP TABLE IF EXISTS preprocess;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,17 +34,16 @@ CREATE TABLE post (
 
 CREATE TABLE preprocess (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER,
-  file_name VARCHAR(40),
-  file_path TEXT,
-  annotation_table VARCHAR(30),
-  col_sel_method VARCHAR(30),
-  merge_df_path TEXT,
-  symbol_df_path TEXT,
-  avg_symbol_df_path TEXT,
-  reduce_df_path TEXT,
-  scaling VARCHAR(30),
-  imputation VARCHAR(30),
+  user_id INTEGER NOT NULL ,
+  file_name VARCHAR(40) NOT NULL ,
+  file_path TEXT NOT NULL ,
+  annotation_table VARCHAR(30) NOT NULL ,
+  col_sel_method VARCHAR(30) NOT NULL ,
+  merge_df_path TEXT DEFAULT NULL ,
+  avg_symbol_df_path TEXT DEFAULT NULL ,
+  reduce_df_path TEXT DEFAULT NULL ,
+  scaling VARCHAR(30) DEFAULT NULL ,
+  imputation VARCHAR(30) DEFAULT NULL ,
 
   FOREIGN KEY (user_id) REFERENCES user (id)
 );

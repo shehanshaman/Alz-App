@@ -46,12 +46,20 @@ def load_logged_in_user():
     """If a user id is stored in the session, load the user object from
     the database into ``g.user``."""
     user_id = session.get("user_id")
+    pre_process_id = session.get("pre_process_id")
 
     if user_id is None:
         g.user = None
     else:
         g.user = (
             get_db().execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
+        )
+
+    if pre_process_id is None:
+        g.pre_process = None
+    else:
+        g.pre_process = (
+            get_db().execute("SELECT * FROM preprocess WHERE id = ?", (pre_process_id,)).fetchone()
         )
 
 
@@ -465,6 +473,51 @@ class UserData:
         if user is not None:
             return user["id"]
         return None
+
+    def get_user_all_preprocess(user_id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM preprocess WHERE user_id = ?", (user_id,)
+        ).fetchall()
+        return result
+
+    def get_user_preprocess(user_id, file_name):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM preprocess WHERE user_id = ? AND file_name = ?", (user_id, file_name)
+        ).fetchone()
+        return result
+
+    def update_preprocess(user_id, file_name, column, value):
+        db = get_db()
+        db.execute(
+            "UPDATE preprocess SET " + column + " = ? WHERE user_id = ? AND file_name = ?", (value, user_id, file_name),
+        )
+        db.commit()
+
+    def add_preprocess(user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path):
+        db = get_db()
+        db.execute(
+            "INSERT INTO preprocess (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path) VALUES (?, ?, ?, ?, ?, ?)",
+            (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path),
+        )
+        db.commit()
+
+    def delete_preprocess_file(user_id, file_name):
+        db = get_db()
+        db.execute(
+            "DELETE FROM preprocess WHERE user_id = ? AND file_name = ?",
+            (user_id, file_name),
+        )
+        db.commit()
+
+    def delete_preprocess_all_file(user_id):
+        db = get_db()
+        db.execute(
+            "DELETE FROM preprocess WHERE user_id = ?",
+            (user_id),
+        )
+        db.commit()
 
     def get_user_results(user_id):
         db = get_db()
