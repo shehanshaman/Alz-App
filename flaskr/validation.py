@@ -8,7 +8,7 @@ from flaskr.classes.featureSelectionClass import FeatureSelection
 
 from flaskr.classes.preProcessClass import PreProcess
 from flaskr.classes.validation import ValidateUser
-from .auth import UserResult, login_required
+from .auth import UserData, login_required
 
 from pathlib import Path
 
@@ -21,7 +21,7 @@ bp = Blueprint("validation", __name__, url_prefix="/val")
 @login_required
 def index():
     user_id = session.get("user_id")
-    r = UserResult.get_user_results(user_id)
+    r = UserData.get_user_results(user_id)
 
     e = ValidateUser.has_data(r, ['col_overlapped', 'col_selected_method', 'col_method1', 'col_method2', 'col_method3'])
 

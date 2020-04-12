@@ -9,7 +9,7 @@ import base64
 import io
 
 from flaskr.classes.validation import ValidateUser
-from .auth import UserResult, login_required
+from .auth import UserData, login_required
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
@@ -35,7 +35,7 @@ def index():
     list_names.remove("tmp")
 
     user_id = session.get("user_id")
-    result = UserResult.get_user_results(user_id)
+    result = UserData.get_user_results(user_id)
     filename = result['filename']
 
     if filename is None or filename == '':
@@ -59,12 +59,12 @@ def get_val():
 
     if is_change == 'true':
         change_file = request.form["change_file"]
-        UserResult.update_result(user_id, 'filename', change_file)
+        UserData.update_result(user_id, 'filename', change_file)
 
-    UserResult.update_result(user_id,'fs_methods', fs_methods)
+    UserData.update_result(user_id, 'fs_methods', fs_methods)
 
     fs_methods = fs_methods.split(',')
-    result = UserResult.get_user_results(user_id)
+    result = UserData.get_user_results(user_id)
     filename = result['filename']
     file_to_open = USER_PATH / str(user_id) / filename
     df = PreProcess.getDF(file_to_open)
@@ -88,7 +88,7 @@ def get_val():
         et_col = FeatureSelection.ExtraTrees(df, len).columns.tolist()
         selected_col[i] = ','.join(e for e in et_col)
 
-    UserResult.update_selected_col(selected_col, user_id)
+    UserData.update_selected_col(selected_col, user_id)
 
     return redirect('/fs/result')
 
@@ -96,7 +96,7 @@ def get_val():
 @login_required
 def result():
     user_id = session.get("user_id")
-    r = UserResult.get_user_results(user_id)
+    r = UserData.get_user_results(user_id)
 
     e = ValidateUser.has_data(r, ['col_method1', 'col_method2', 'col_method3', 'fs_methods', 'filename'])
 

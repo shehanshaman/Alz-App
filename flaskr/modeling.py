@@ -11,7 +11,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.svm import SVC
 import pickle
 
-from flaskr.auth import UserResult, login_required
+from flaskr.auth import UserData, login_required
 from flaskr.classes.preProcessClass import PreProcess
 
 from pathlib import Path
@@ -48,7 +48,7 @@ def index():
 
     classifier_list = ["svmLinear", "svmGaussian", "randomForest"]
 
-    r = UserResult.get_user_results(user_id)
+    r = UserData.get_user_results(user_id)
 
     e = ValidateUser.has_data(r, ['col_overlapped', 'col_selected_method'])
 
@@ -61,7 +61,7 @@ def index():
 
     col_mo_str = ','.join(e for e in col_mo)
 
-    UserResult.update_modeling(user_id, 'features', col_mo_str)
+    UserData.update_modeling(user_id, 'features', col_mo_str)
 
     return render_template("modeling/index.html", available_list=list_names, classifier_list=classifier_list,
                            features=col_mo, state=s, accuracy = a)
@@ -75,8 +75,8 @@ def create_model():
     available_file = request.form["available_files"]
     classifier = request.form["classifier"]
 
-    UserResult.update_modeling(user_id, 'trained_file', available_file)
-    UserResult.update_modeling(user_id, 'clasifier', classifier)
+    UserData.update_modeling(user_id, 'trained_file', available_file)
+    UserData.update_modeling(user_id, 'clasifier', classifier)
 
     score = create_model_pkl(user_id, available_file, classifier)
 
@@ -106,7 +106,7 @@ def predict():
     for filename in os.listdir(ANNOTATION_TBL):
         annotation_list.append(filename)
 
-    r = UserResult.get_user_model(user_id)
+    r = UserData.get_user_model(user_id)
 
     e = ValidateUser.has_data(r, ['features', 'trained_file', 'clasifier', 'model_path_name'])
 
@@ -181,7 +181,7 @@ def predict_results():
     for filename in os.listdir(ANNOTATION_TBL):
         annotation_list.append(filename)
 
-    r = UserResult.get_user_model(user_id)
+    r = UserData.get_user_model(user_id)
 
     e = ValidateUser.has_data(r, ['features', 'trained_file', 'clasifier', 'model_path_name'])
 
@@ -249,7 +249,7 @@ def get_predicted_result_df(user_id, model_name, df):
 
 
 def create_model_pkl(user_id, filename, classifier):
-    r = UserResult.get_user_model(user_id)
+    r = UserData.get_user_model(user_id)
     col_mo = r['features'].split(',')
     file_to_open = USER_PATH / str(user_id) / filename
     df = PreProcess.getDF(file_to_open)
@@ -276,12 +276,12 @@ def create_model_pkl(user_id, filename, classifier):
 
     scores = cross_val_score(clf, x, y, cv=3)
     score = round(scores.mean(), 2)
-    UserResult.update_modeling(user_id, 'accuracy', str(score))
+    UserData.update_modeling(user_id, 'accuracy', str(score))
 
     file_to_write = USER_PATH / str(user_id) / "tmp" / "_model.pkl"
     pickle.dump(clf, open(file_to_write , 'wb'))
 
-    UserResult.update_modeling(user_id, 'model_path_name', '_model.pkl')
+    UserData.update_modeling(user_id, 'model_path_name', '_model.pkl')
 
     return score
 

@@ -4,7 +4,7 @@ from flask import Blueprint, request, make_response
 
 from os.path import isfile, join
 
-from flaskr.auth import UserResult, login_required
+from flaskr.auth import UserData, login_required
 from flaskr.db import get_db
 from .classes.preProcessClass import PreProcess
 
@@ -53,7 +53,7 @@ def update_given_name():
 @login_required
 def delete_user_account():
     id = request.args.get('id')
-    UserResult.remove_user(id)
+    UserData.remove_user(id)
     dir_path = USER_PATH / str(id)
     delete_folder(dir_path)
     return '1'
@@ -156,7 +156,7 @@ def infrequent_files_delete():
     for id in id_array:
         delete_user_all_files(id)
 
-    UserResult.infrequent_users(ids)
+    UserData.infrequent_users(ids)
 
     return "1"
 

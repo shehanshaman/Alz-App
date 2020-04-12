@@ -2,7 +2,7 @@ from flask import Blueprint, g, abort
 from flask import render_template
 from flaskr.db import get_db
 
-from flaskr.auth import login_required, UserResult
+from flaskr.auth import login_required, UserData
 
 bp = Blueprint("home", __name__)
 
@@ -10,7 +10,7 @@ bp = Blueprint("home", __name__)
 @login_required
 def index():
     id = g.user['id']
-    pre = UserResult.get_user_pre_request(id)
+    pre = UserData.get_user_pre_request(id)
 
     db = get_db()
     query = "SELECT * FROM prerequest"

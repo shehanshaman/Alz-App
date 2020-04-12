@@ -86,7 +86,7 @@ def register():
 
             create_user_db(db, username, password, given_name, '', 0)
             if "@" in username:
-                user_id = UserResult.get_user_id(username)
+                user_id = UserData.get_user_id(username)
                 verify_key = randomString()
                 db.execute(
                     "INSERT INTO verify (user_id, subject, verify_key) VALUES (?, ?, ?)",
@@ -425,7 +425,7 @@ def create_user_db(db, username, password, given_name, image_url, is_verified):
     db.commit()
 
     # Adding user to results
-    user_id = UserResult.get_user_id(username)
+    user_id = UserData.get_user_id(username)
     db.execute(
         "INSERT INTO results (user_id, filename) VALUES (?, ?)",
         (user_id, ''),
@@ -455,7 +455,7 @@ def update_last_login(db, user_id):
 
 
 
-class UserResult:
+class UserData:
 
     def get_user_id(username):
         db = get_db()
@@ -548,9 +548,9 @@ class UserResult:
 
     def get_user_pre_request(id):
         pre = ['', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled']
-        has_file = UserResult.is_user_upload_file(id)
-        result = UserResult.get_user_results(id)
-        model = UserResult.get_user_model(id)
+        has_file = UserData.is_user_upload_file(id)
+        result = UserData.get_user_results(id)
+        model = UserData.get_user_model(id)
 
         if has_file:
             pre[1] = ''

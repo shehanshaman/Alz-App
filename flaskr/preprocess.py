@@ -19,7 +19,7 @@ import io
 import json
 import pandas as pd
 
-from flaskr.auth import login_required, UserResult
+from flaskr.auth import login_required, UserData
 from flask import g
 
 import numpy as np
@@ -228,7 +228,7 @@ def get_reduce_features_from_pvalues():
 
     classification_result_df = FeatureReduction.get_classification_results(df, y)
     cls_id, cls_name = FeatureReduction.get_best_cls(classification_result_df)
-    UserResult.update_result(g.user['id'], 'classifiers', cls_id)
+    UserData.update_result(g.user['id'], 'classifiers', cls_id)
     classification_result_df = classification_result_df.drop(['avg'], axis=1)
 
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
@@ -264,7 +264,7 @@ def save_reduced_df():
     path = USER_PATH / str(g.user["id"]) / ('re_' + x.file_name)
     PreProcess.saveDF(df_selected, path)
     user_id = session.get("user_id")
-    UserResult.update_result(user_id, 'filename', 're_' + x.file_name)
+    UserData.update_result(user_id, 'filename', 're_' + x.file_name)
 
     # remove old files
     files = ["merge_.pkl", "symbol_.pkl", "avg_symbol_.pkl", "_p_fold.pkl", "fr_.pkl"]

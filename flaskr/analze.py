@@ -9,7 +9,7 @@ from flask import redirect
 import base64
 import io
 
-from .auth import UserResult, login_required
+from .auth import UserData, login_required
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
@@ -24,7 +24,7 @@ bp = Blueprint("analyze", __name__, url_prefix="/an")
 @login_required
 def index():
     user_id = session.get("user_id")
-    r = UserResult.get_user_results(user_id)
+    r = UserData.get_user_results(user_id)
 
     filename = r['filename']
     file_to_open = USER_PATH / str(user_id) / filename
@@ -45,7 +45,7 @@ def index():
     overlap = get_overlap_features(col_m1, col_m2, col_m3)
     overlap_str = ','.join(e for e in overlap)
 
-    UserResult.update_result(user_id, 'col_overlapped', overlap_str)
+    UserData.update_result(user_id, 'col_overlapped', overlap_str)
 
     selected_clfs = r['classifiers'].split(',')
 
@@ -74,9 +74,9 @@ def selected_method():
 
     if request.method == 'POST':
         selected_method = request.form["selected_method"]
-        UserResult.update_result(user_id, 'selected_method', selected_method)
+        UserData.update_result(user_id, 'selected_method', selected_method)
 
-    r = UserResult.get_user_results(user_id)
+    r = UserData.get_user_results(user_id)
     selected_method = r['selected_method']
 
     if selected_method is None:
@@ -116,7 +116,7 @@ def selected_method():
     col_selected_method = FeatureSelection.getSelectedDF(x, x.corr(), max_corr_df.loc[max_corr_df['Maximum Accuracy'].idxmax()]['Correlation coefficient']).columns.tolist()
     col_selected_str = ','.join(e for e in col_selected_method)
 
-    UserResult.update_result(user_id, 'col_selected_method', col_selected_str)
+    UserData.update_result(user_id, 'col_selected_method', col_selected_str)
 
     return render_template("analyze/analyze_correlation.html", corr_results=cmp_corr_results_pic_hash,
                            tables=[max_corr_df.head().to_html(classes='data')], titles=max_corr_df.head().columns.values,
@@ -127,7 +127,7 @@ def selected_method():
 @login_required
 def final_result():
     user_id = session.get("user_id")
-    r = UserResult.get_user_results(user_id)
+    r = UserData.get_user_results(user_id)
     overlap = r['col_overlapped'].split(',')
     col_selected_method = r['col_selected_method'].split(',')
     selected_method = r['selected_method']

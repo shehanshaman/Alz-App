@@ -31,6 +31,23 @@ CREATE TABLE post (
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
 
+CREATE TABLE preprocess (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  file_name VARCHAR(40),
+  file_path TEXT,
+  annotation_table VARCHAR(30),
+  col_sel_method VARCHAR(30),
+  merge_df_path TEXT,
+  symbol_df_path TEXT,
+  avg_symbol_df_path TEXT,
+  reduce_df_path TEXT,
+  scaling VARCHAR(30),
+  imputation VARCHAR(30),
+
+  FOREIGN KEY (user_id) REFERENCES user (id)
+);
+
 CREATE TABLE results (
   user_id INTEGER PRIMARY KEY,
   filename VARCHAR(100),
