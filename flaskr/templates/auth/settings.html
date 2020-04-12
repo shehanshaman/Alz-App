@@ -179,25 +179,21 @@
         var $item = $row.find(".use-download").val();
 
         var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $item + "&is_tmp=0";
-        console.log(url);
         window.open(url, '_blank');
 
     });
 
     $("#update_name").click(function () {
         var given_name = document.getElementById('given_name').value;
-        console.log(given_name);
         $.get("/update/user/givenname/", {id: '{{ g.user['id'] }}', name: given_name}, function (data, status) {
-            console.log(data);
+
         });
     });
 
     $("#delete_account").click(function () {
         $.get("/update/user/delete/", {id: '{{ g.user['id'] }}'}, function (data, status) {
-            console.log(data);
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
-                console.log("Sign out");
                 window.location.replace('/auth/logout');
             });
         });
