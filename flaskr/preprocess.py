@@ -377,12 +377,7 @@ def get_volcano_fig(fold_change, pValues):
     axes.set_ylabel("-log10(pValue)")
     axes.set_xlabel("fold")
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -392,6 +387,11 @@ def get_feature_selection_fig(df, df_y, length):
     selectedFeatures = FeatureReduction.getScoresFromUS(df)
     fig = FeatureReduction.create_figure(selectedFeatures, length)
 
+    pic_hash = fig_to_b64encode(fig)
+
+    return pic_hash
+
+def fig_to_b64encode(fig):
     pic_IObytes = io.BytesIO()
     fig.savefig(pic_IObytes, format='png')
     pic_IObytes.seek(0)
@@ -400,7 +400,6 @@ def get_feature_selection_fig(df, df_y, length):
     pic_hash = pic_hash.decode("utf-8")
 
     return pic_hash
-
 
 def remove_files(path, files):
     for file in files:
