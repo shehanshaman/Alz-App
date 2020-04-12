@@ -20,35 +20,40 @@ USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 
 bp = Blueprint("fs", __name__, url_prefix="/fs")
 
-@bp.route("/")
+@bp.route("/" , methods=['GET'])
 @login_required
 def index():
-    list_names = []
-    path = USER_PATH / str(g.user["id"])
+    file_name = request.args.get("file_name")
 
-    if not os.path.exists(path):
-        os.makedirs(path)
-        path_tmp = path / "tmp"
-        os.makedirs(path_tmp)
-    for filename in os.listdir(path):
-        list_names.append(filename)
-    list_names.remove("tmp")
+    if file_name is None:
 
-    user_id = session.get("user_id")
-    result = UserData.get_user_results(user_id)
-    filename = result['filename']
+        list_names = []
+        path = USER_PATH / str(g.user["id"])
 
-    if filename is None or filename == '':
-        flash("Error: You don't has pre-processed data-set, start from pre-processing or change file")
+        for filename in os.listdir(path):
+            list_names.append(filename)
+        list_names.remove("tmp")
 
-    return render_template("fs/index.html", list_names=list_names, filename= filename)
+        # user_id = session.get("user_id")
+        # result = UserData.get_user_results(user_id)
+        # filename = result['filename']
+        #
+        #
+        # if filename is None or filename == '':
+        #     flash("Error: You don't has pre-processed data-set, start from pre-processing or change file")
+
+        return render_template("fs/index.html", list_names=list_names, filename=None)
+    else:
+
+        return render_template("fs/index.html", list_names=None, filename= file_name)
 
 #Get columns of 3 different feature selection methods
 @bp.route("/" , methods=['POST'])
 @login_required
 def get_val():
     fs_methods = request.form["fs_methods"]
-    is_change = request.form["is_change"]
+    filename = request.form["change_file"]
+
     user_id = session.get("user_id")
 
     a = fs_methods.split(',');
@@ -57,21 +62,15 @@ def get_val():
         flash("Error: Select three feature selection methods.")
         return redirect('/fs')
 
-    if is_change == 'true':
-        change_file = request.form["change_file"]
-        UserData.update_result(user_id, 'filename', change_file)
-
-    UserData.update_result(user_id, 'fs_methods', fs_methods)
-
     fs_methods = fs_methods.split(',')
-    result = UserData.get_user_results(user_id)
-    filename = result['filename']
+
     file_to_open = USER_PATH / str(user_id) / filename
     df = PreProcess.getDF(file_to_open)
 
     selected_col = [None] * 3
     len = int(fs_methods[3])
 
+    #Feature extraction from following methods
     if "PCA" in fs_methods:
         i = fs_methods.index("PCA")
         pca_col = FeatureSelection.PCA(df, len).columns.tolist()
@@ -88,9 +87,12 @@ def get_val():
         et_col = FeatureSelection.ExtraTrees(df, len).columns.tolist()
         selected_col[i] = ','.join(e for e in et_col)
 
-    UserData.update_selected_col(selected_col, user_id)
+    #Save data to the result table
+    UserData.add_result(user_id, filename, fs_methods, selected_col[0], selected_col[1], selected_col[2])
 
-    return redirect('/fs/result')
+
+
+    return redirect('/fs')
 
 @bp.route("/result")
 @login_required

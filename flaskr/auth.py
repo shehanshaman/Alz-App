@@ -47,6 +47,7 @@ def load_logged_in_user():
     the database into ``g.user``."""
     user_id = session.get("user_id")
     pre_process_id = session.get("pre_process_id")
+    result_id = session.get("result_id")
 
     if user_id is None:
         g.user = None
@@ -60,6 +61,13 @@ def load_logged_in_user():
     else:
         g.pre_process = (
             get_db().execute("SELECT * FROM preprocess WHERE id = ?", (pre_process_id,)).fetchone()
+        )
+
+    if result_id is None:
+        g.result_id = None
+    else:
+        g.result_id = (
+            get_db().execute("SELECT * FROM results WHERE id = ?", (result_id,)).fetchone()
         )
 
 
@@ -519,6 +527,22 @@ class UserData:
         )
         db.commit()
 
+    #result Table
+    def get_result_id(user_id, filename):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM results WHERE user_id = ? AND filename = ?", (user_id, filename)
+        ).fetchone()
+        return result
+
+    def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3):
+        db = get_db()
+        db.execute(
+            "INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2, col_method3) VALUES (?, ?, ?, ?, ?, ?)",
+            (user_id, filename, fs_methods, col_method1, col_method2, col_method3),
+        )
+        db.commit()
+
     def get_user_results(user_id):
         db = get_db()
         result = db.execute(
@@ -527,6 +551,13 @@ class UserData:
         if result is not None:
             return result
         return None
+
+    def get_df_results(user_id, filename):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM results WHERE user_id = ? AND filename = ?", (user_id, filename)
+        ).fetchone()
+        return result
 
     def update_result(user_id, column, value):
         db = get_db()

@@ -331,7 +331,6 @@ def upload_sample_file():
 
     return redirect('/pre')
 
-
 def csv2pkl(path_csv, path_pkl):
     df_save = pd.read_csv(path_csv)
     df_save = df_save.set_index(["ID"])
@@ -339,21 +338,6 @@ def csv2pkl(path_csv, path_pkl):
     df_save.columns.name = "ID"
     df_save.to_pickle(path_pkl)
     return True
-
-
-def json2df(df_name):
-    if session.get(df_name):
-        json_data = session[df_name]
-        df = DF(**json.loads(json_data))
-        return df
-
-    return None
-
-
-def df2session(obj, name):
-    json_data = json.dumps(obj.__dict__)
-    session[name] = json_data
-
 
 def get_volcano_fig(fold_change, pValues):
     fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(14, 8))
@@ -364,7 +348,6 @@ def get_volcano_fig(fold_change, pValues):
     pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
-
 
 def get_feature_selection_fig(df, df_y, length):
     df["class"] = df_y['class']
