@@ -21,33 +21,6 @@
 
 </head>
 
-    <style> 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -14%; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
-    </style> 
-
-
 <body class="main-body" style="background-color: #f3f6f9;">
 
 <!-- Dropdown Structure -->
@@ -144,7 +117,7 @@
 </div>
 
     <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
+        <div id="loader" class="center-load" style="top: -14%;"></div> 
         <h5 style="margin-top: 22%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
     </div> 
 
