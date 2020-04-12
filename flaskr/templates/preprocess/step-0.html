@@ -218,8 +218,6 @@
 <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/upload_fs.js') }}"></script>
-
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
@@ -227,6 +225,19 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script type="text/javascript">
+
+    //csv read
+    $('#chooseFile').bind('change', function () {
+        var filename = $("#chooseFile").val();
+        if (/^\s*$/.test(filename)) {
+            $(".file-upload").removeClass('active');
+            $("#noFile").text("No file chosen...");
+        }
+        else {
+            $(".file-upload").addClass('active');
+            $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+        }
+    });
 
     $('#btn-submit-step-0').click(function () {
 
@@ -280,7 +291,7 @@
         }
         $('.tip_class_text').text(tip_list[i]);
         $(".tip_img_div").attr("src", tip_img_list[i]);
-        console.log(tip_list[i]);
+
     });
 
     $('.prv_btn_class').click(function () {
@@ -290,7 +301,7 @@
         }
         $('.tip_class_text').text(tip_list[i]);
         $(".tip_img_div").attr("src", tip_img_list[i]);
-        console.log(tip_list[i]);
+
     });
 
     $('.close_pop').click(function () {

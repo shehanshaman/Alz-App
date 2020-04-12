@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, session
-from flask import render_template, current_app
+from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -201,12 +201,7 @@ def get_correlation_fig(X, col, names):
     fig.subplots_adjust(wspace=0.5)
     fig.set_figwidth(15)
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -225,13 +220,7 @@ def get_overlap_result_fig(results,count):
     count.plot.bar(x='id', y='val', rot=0, color=(0.2, 0.4, 0.6, 0.6), ax = ax2)
     ax2.get_legend().remove()
 
-
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -274,12 +263,7 @@ def get_small_set_features_fig(m_scores, x_scores, method_names, selected_clfs):
 
     ax3.legend(method_names, loc='lower left')
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -292,12 +276,7 @@ def get_cmp_corr_results_fig(results):
 
     results.plot.line(ax=ax1)
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -321,12 +300,7 @@ def get_corr_score_fig(corrScore, selected_clfs):
     fig.subplots_adjust(wspace=0.2)
     fig.set_figwidth(15)
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -346,6 +320,11 @@ def get_heatmap_roc(df, y):
 
     sns.heatmap(df.corr(), cmap="RdYlGn", ax=ax2)
 
+    pic_hash = fig_to_b64encode(fig)
+
+    return pic_hash
+
+def fig_to_b64encode(fig):
     pic_IObytes = io.BytesIO()
     fig.savefig(pic_IObytes, format='png')
     pic_IObytes.seek(0)

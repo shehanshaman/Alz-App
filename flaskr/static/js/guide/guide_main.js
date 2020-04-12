@@ -8,7 +8,7 @@
     data = $('#user_want_tour_p').text();
     notification_on = (data == 1);
     
-    if (notification_on) {console.log(notification_on);
+    if (notification_on) {
         $('.notification_pop_on').show(0);
         $('.notification_pop_off').hide(0);
 
@@ -21,7 +21,7 @@
         });
 
     }
-    else {console.log(notification_on);
+    else {
         $('.notification_pop_on').hide(0);
         $('.notification_pop_off').show(0);
 

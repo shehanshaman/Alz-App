@@ -38,64 +38,65 @@
     </style>
 </head>
 
-    <style> 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
-    </style> 
+<style>
+    #loader {
+        border: 12px solid #26a69a66;
+        border-radius: 50%;
+        border-top: 12px solid #26a69a;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .center-load {
+        position: absolute;
+        top: -230px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+</style>
 
 <style type="text/css">
 
-        #tourControls{
-            top: 80px !important;
-        }
+    #tourControls {
+        top: 80px !important;
+    }
 
-    @keyframes grow{
+    @keyframes grow {
         from {
             opacity: 0;
             transform: scale(0.5);
         }
-        to{
+        to {
             opacity: 1;
             transform: scale(1);
         }
     }
 
-    .notification.hide{
+    .notification.hide {
         animation: shrink 0.4s ease-out forwards;
     }
-    @keyframes shrink{
-        to{
+
+    @keyframes shrink {
+        to {
             opacity: 0;
             transform: scale(0.6);
         }
     }
 
-    .notification-info{
+    .notification-info {
         background-color: #00000096;
     }
 
-    .thumb{
+    .thumb {
         margin-left: 7px !important;
     }
 
@@ -139,7 +140,8 @@
         <div class="step">
             <div class="step-content">
                 <div class="row">
-                    <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">FEATURE SELECTION</h3>
+                    <h3 id="h3-head-6" class="card__title"
+                        style="text-align: center;color: #26a69a;font-family: monospace;">FEATURE SELECTION</h3>
                 </div>
 
                 {% for message in get_flashed_messages() %}
@@ -180,7 +182,8 @@
                 </div>
 
                 <div class="row">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Select Three Feature Selection
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Select
+                        Three Feature Selection
                         Methods</h5>
                 </div>
 
@@ -206,7 +209,8 @@
                 </div>
 
                 <div class="row">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Number of Features Selected</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Number of
+                        Features Selected</h5>
                 </div>
                 <div id="num_of_features" class="row">
                     <div class="col-sm-3"></div>
@@ -222,7 +226,8 @@
                 <hr class="line-hr">
 
                 <div class="step-actions">
-                    <button id="btn-submit-fn-1" class="waves-effect waves-dark btn next-step step-6-click" onclick="myFunction()">CONTINUE
+                    <button id="btn-submit-fn-1" class="waves-effect waves-dark btn next-step step-6-click"
+                            onclick="myFunction()">CONTINUE
                     </button>
                     <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
                 </div>
@@ -239,10 +244,10 @@
     </form>
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING RESULTS</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING RESULTS</h5>
+</div>
 
 {% include 'guide_footer.html' %}
 
@@ -258,8 +263,6 @@
 
 <!--main navbar-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/upload_fs.js') }}"></script>
 
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
@@ -299,7 +302,6 @@
             var s = document.getElementById(id).checked;
             document.getElementById(id).value = s;
             $("#is_change").val(s);
-            console.log(s);
         }
         $('#tourControls').hide(0);
     }
@@ -316,7 +318,7 @@
         $('.notification-container-pop').hide(0);
     });
 
-    $('#select_methods_div').click(function(){
+    $('#select_methods_div').click(function () {
         $('#tourControls').hide(0);
     });
 </script>
@@ -331,6 +333,25 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
+    $(function () {
+        $("#listTo").sortable();
+        $("#listTo").disableSelection();
+
+        $(document).on("click", "#listFrom li", function () {
+            $(this).unbind("click").appendTo("#listTo");
+        });
+        $(document).on("click", "#listTo li", function () {
+            $(this).unbind("click").appendTo("#listFrom");
+        });
+    });
+
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function () {
+        output.innerHTML = this.value;
+    };
 
     var tour = guide_main_call(tip_fs_index, 'TL');
 
