@@ -21,65 +21,6 @@
 
 </head>
 
-    <style> 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
-    </style> 
-
-<style type="text/css">
-
-        #tourControls{
-            top: 80px !important;
-        }
-
-        #tourtip{
-           width: 290px !important; 
-        }
-
-    @keyframes grow{
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to{
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    .notification.hide{
-        animation: shrink 0.4s ease-out forwards;
-    }
-    @keyframes shrink{
-        to{
-            opacity: 0;
-            transform: scale(0.6);
-        }
-    }
-
-</style>
-
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
@@ -212,7 +153,7 @@
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">DATA SET PRE-PROCESSING</h5>        
+        <h5 style="margin-top: 19%;text-align: center;color: #26a69a; margin-bottom: 200px;">DATA SET PRE-PROCESSING</h5>        
     </div> 
 
 {% include 'guide_footer.html' %}
@@ -261,6 +202,6 @@
 
 <script>
 
-    var tour = guide_main_call(tip_step_3, 'TL');
+    var tour = guide_main_call(tip_step_3, 'BL');
 
 </script>

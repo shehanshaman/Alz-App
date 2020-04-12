@@ -22,13 +22,9 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
-    <script type="text/javascript"
-            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
-    <script type="text/javascript"
-            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
+</head>
 
-    <style>
+<style>
         .pagination li.active {
             background-color: inherit;
         }
@@ -37,10 +33,9 @@
             padding-left: 10%;
             padding-right: 10%;
         }
-    </style>
+</style>
 
-</head>
-<body>
+<body style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
@@ -62,6 +57,15 @@
 {% include 'footer.html' %}
 
 </body>
+
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+<script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
+
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
@@ -74,5 +78,3 @@
         $('#table_id').DataTable();
     });
 </script>
-
-</html>

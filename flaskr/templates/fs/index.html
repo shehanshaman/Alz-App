@@ -19,7 +19,10 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-    <style>
+</head>
+
+
+<style>
         .slider {
             height: inherit;
         }
@@ -34,67 +37,6 @@
             background: #cae6f6;
             border: 1px solid #377ba8;
         }
-
-    </style>
-</head>
-
-<style>
-    #loader {
-        border: 12px solid #26a69a66;
-        border-radius: 50%;
-        border-top: 12px solid #26a69a;
-        width: 70px;
-        height: 70px;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    .center-load {
-        position: absolute;
-        top: -230px;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-    }
-</style>
-
-<style type="text/css">
-
-    #tourControls {
-        top: 80px !important;
-    }
-
-    @keyframes grow {
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    .notification.hide {
-        animation: shrink 0.4s ease-out forwards;
-    }
-
-    @keyframes shrink {
-        to {
-            opacity: 0;
-            transform: scale(0.6);
-        }
-    }
-
-    .notification-info {
-        background-color: #00000096;
-    }
 
     .thumb {
         margin-left: 7px !important;
@@ -246,7 +188,7 @@
 
 <div class="loader-div" style="display: none;">
     <div id="loader" class="center-load"></div>
-    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING RESULTS</h5>
+    <h5 style="margin-top: 19%;text-align: center;color: #26a69a; margin-bottom: 10%;">PROCESSING RESULTS</h5>
 </div>
 
 {% include 'guide_footer.html' %}
@@ -353,6 +295,6 @@
         output.innerHTML = this.value;
     };
 
-    var tour = guide_main_call(tip_fs_index, 'TL');
+    var tour = guide_main_call(tip_fs_index, 'BL');
 
 </script>
