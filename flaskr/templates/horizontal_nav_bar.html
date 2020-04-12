@@ -22,6 +22,12 @@
     #mainDataInterface-id {
         min-height: 405px;
     }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+
 </style>
 
 <!-- Dropdown Structure -->
@@ -74,7 +80,7 @@
                 <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
                 </li>
                 <!-- Dropdown Trigger -->
-                <li class="nav_link">
+                <li class="nav_link disabled">
                     <a class="dropdown-trigger" href="#" data-target="dropdown1">Framework
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
@@ -105,7 +111,7 @@
         <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
         </li>
         <!-- Dropdown Trigger -->
-        <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1_side">Framework<i
+        <li class="nav_link disabled"><a class="dropdown-trigger" href="#" data-target="dropdown1_side">Framework<i
                 class="material-icons right">arrow_drop_down</i></a></li>
 
         <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
