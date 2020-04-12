@@ -10,7 +10,6 @@ from werkzeug.utils import secure_filename
 
 from shutil import copyfile
 
-from .classes.dfClass import DF
 from .classes.preProcessClass import PreProcess
 from .classes.featureReductionClass import FeatureReduction
 
@@ -273,28 +272,9 @@ def save_reduced_df():
     # folder_path = USER_PATH / str(g.user["id"]) / "tmp"
     # remove_files(folder_path, files)
 
+    session[file_name] = ''
+
     return redirect('/fs/')
-
-
-@bp.route('/', methods=['POST'])
-@login_required
-def create_object():
-    if request.method == 'POST':
-        anno_tbl = request.form["anno_tbl"]
-        column_selection = request.form["column_selection"]
-        available_file = request.form["available_files"]
-
-        path = USER_PATH / str(g.user["id"])
-
-        if anno_tbl and column_selection and available_file:
-            df_obj = DF(file_name=available_file, path=os.path.join(path, available_file), anno_tbl=anno_tbl,
-                        col_sel_method=column_selection, merge_df=None,
-                        symbol_df=None, avg_symbol_df=None, reduce_df=None, scaling=None, imputation=None)
-            json_data = json.dumps(df_obj.__dict__)
-            session['user'] = json_data
-            return redirect('/pre/view')
-
-    return redirect('/pre/')
 
 
 @bp.route('/upload')
