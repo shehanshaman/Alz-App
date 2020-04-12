@@ -1,8 +1,8 @@
 import base64
 
-from flask import Blueprint, session, make_response, send_file, send_from_directory
+from flask import Blueprint, session, send_from_directory
 from flask import redirect
-from flask import render_template, current_app
+from flask import render_template
 from flask import request
 
 import os
@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 
 from shutil import copyfile
 
-from .classes.dfClass import DF  # file upload instance
+from .classes.dfClass import DF
 from .classes.preProcessClass import PreProcess
 from .classes.featureReductionClass import FeatureReduction
 

@@ -1,10 +1,10 @@
 import os
 from pathlib import Path
-from flask import Blueprint, current_app, request, send_from_directory, send_file, make_response
+from flask import Blueprint, request, make_response
 
 from os.path import isfile, join
 
-from flaskr.auth import UserResult
+from flaskr.auth import UserResult, login_required
 from flaskr.db import get_db
 from .classes.preProcessClass import PreProcess
 
@@ -17,6 +17,7 @@ bp = Blueprint("update", __name__, url_prefix="/update")
 
 
 @bp.route("/delete/file/", methods=["GET"])
+@login_required
 def delete_file():
     id = request.args.get('id')
     name = request.args.get('name')
@@ -32,7 +33,9 @@ def delete_file():
 
 
 @bp.route("/user/givenname/", methods=["GET"])
+@login_required
 def update_given_name():
+
     id = request.args.get('id')
     name = request.args.get('name')
 
@@ -47,6 +50,7 @@ def update_given_name():
 
 
 @bp.route("/user/delete/", methods=["GET"])
+@login_required
 def delete_user_account():
     id = request.args.get('id')
     UserResult.remove_user(id)
@@ -64,6 +68,7 @@ def delete_folder(dir_path):
 
 
 @bp.route("/download/df/", methods=["GET"])
+@login_required
 def download_df():
     id = request.args.get('id')
     name = request.args.get('name')
@@ -85,6 +90,7 @@ def download_df():
     return resp
 
 @bp.route("/user/tour/", methods=["GET"])
+@login_required
 def update_user_tour():
     s = 1
     id = request.args.get('id')
@@ -104,6 +110,7 @@ def update_user_tour():
 
 
 @bp.route("/user/admin/", methods=["GET"])
+@login_required
 def update_user_admin():
     id = request.args.get('id')
     is_admin = request.args.get('is_admin')
@@ -119,7 +126,9 @@ def update_user_admin():
 
 
 @bp.route("/delete/files/", methods=["GET"])
+@login_required
 def delete_user_files():
+
     id = request.args.get('id')
     delete_user_all_files(id)
 
@@ -138,7 +147,9 @@ def delete_files_in_dir(path):
             os.remove(file)
 
 @bp.route("/infrequent/files/", methods=["GET"])
+@login_required
 def infrequent_files_delete():
+
     ids = request.args.get('ids')
     id_array = ids.split(',')
 
@@ -150,7 +161,9 @@ def infrequent_files_delete():
     return "1"
 
 @bp.route("/infrequent/ntfy/", methods=["GET"])
+@login_required
 def infrequent_user_ntfy():
+
     ids = request.args.get('ids')
     id_array = ids.split(',')
 

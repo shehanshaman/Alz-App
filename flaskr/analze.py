@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, session
-from flask import render_template, current_app
+from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
 import seaborn as sns
