@@ -18,6 +18,13 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import roc_auc_score
 
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+
+from flaskr.db import get_db
+
+
 class FeatureSelection:
 
     def PCA(df_200F, len):
@@ -92,56 +99,111 @@ class FeatureSelection:
 
         return df_50F_FI
 
-    def getTop3ClassificationResults(X_train, X_test, y_train, y_test):
-        svm_li_clf = svm.SVC(kernel='linear')  # Linear Kernel
-        score_svm_li = cross_val_score(svm_li_clf, X_train, y_train, cv=3)
-        svm_li_clf.fit(X_train, y_train)
+    def getTop3ClassificationResults(X_train, X_test, y_train, y_test, selected_clfs):
 
-        svm_rbf_clf = SVC(kernel="rbf", gamma="auto", C=1)
-        score_svm_rbf = cross_val_score(svm_rbf_clf, X_train, y_train, cv=3)
-        svm_rbf_clf.fit(X_train, y_train)
+        clf = [None] * 3
+        score = [None] * 3
 
-        RF_clf = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=42)
-        score_RF = cross_val_score(RF_clf, X_train, y_train, cv=3)
-        RF_clf.fit(X_train, y_train)
+        if "1" in selected_clfs:
+            i = selected_clfs.index("1")
+            gnb_clf = GaussianNB()
+            score_gnb = cross_val_score(gnb_clf, X_train, y_train, cv=3)
+            gnb_clf.fit(X_train, y_train)
+            clf[i] = gnb_clf
+            score[i] = score_gnb
 
-        y_pred_svm_li = svm_li_clf.predict(X_test)
-        y_pred_svm_rbf = svm_rbf_clf.predict(X_test)
-        y_pred_RF = RF_clf.predict(X_test)
+        if "2" in selected_clfs:
+            i = selected_clfs.index("2")
+            dt_clf = DecisionTreeClassifier()
+            score_dt = cross_val_score(dt_clf, X_train, y_train, cv=3)
+            dt_clf.fit(X_train, y_train)
+            clf[i] = dt_clf
+            score[i] = score_dt
 
-        m = np.array([[round(metrics.accuracy_score(np.int64(y_test.values), y_pred_svm_rbf) * 100, 2),
-                       round(score_svm_rbf.mean() * 100, 2)],
-                      [round(metrics.accuracy_score(np.int64(y_test.values), y_pred_svm_li) * 100, 2),
-                       round(score_svm_li.mean() * 100, 2)],
-                      [round(metrics.accuracy_score(np.int64(y_test.values), y_pred_RF) * 100, 2),
-                       round(score_svm_li.mean() * 100, 2)]])
+        if "3" in selected_clfs:
+            i = selected_clfs.index("3")
+            knn_clf = KNeighborsClassifier(n_neighbors=2)
+            score_knn = cross_val_score(knn_clf, X_train, y_train, cv=3)
+            knn_clf.fit(X_train, y_train)
+            clf[i] = knn_clf
+            score[i] = score_knn
+
+        if "4" in selected_clfs:
+            i = selected_clfs.index("4")
+            svm_rbf_clf = SVC(kernel="rbf", gamma="auto", C=1)
+            score_svm_rbf = cross_val_score(svm_rbf_clf, X_train, y_train, cv=3)
+            svm_rbf_clf.fit(X_train, y_train)
+            clf[i] = svm_rbf_clf
+            score[i] = score_svm_rbf
+
+        if "5" in selected_clfs:
+            i = selected_clfs.index("5")
+            svm_li_clf = svm.SVC(kernel='linear')  # Linear Kernel
+            score_svm_li = cross_val_score(svm_li_clf, X_train, y_train, cv=3)
+            svm_li_clf.fit(X_train, y_train)
+            clf[i] = svm_li_clf
+            score[i] = score_svm_li
+
+        if "6" in selected_clfs:
+            i = selected_clfs.index("6")
+            RF_clf = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=42)
+            score_RF = cross_val_score(RF_clf, X_train, y_train, cv=3)
+            RF_clf.fit(X_train, y_train)
+            clf[i] = RF_clf
+            score[i] = score_RF
+
+        y_pred = [None] * 3
+        y_pred[0] = clf[0].predict(X_test)
+        y_pred[1] = clf[1].predict(X_test)
+        y_pred[2] = clf[2].predict(X_test)
+
+        m = np.array([[round(metrics.accuracy_score(np.int64(y_test.values), y_pred[0]) * 100, 2),
+                       round(score[0].mean() * 100, 2)],
+                      [round(metrics.accuracy_score(np.int64(y_test.values), y_pred[1]) * 100, 2),
+                       round(score[1].mean() * 100, 2)],
+                      [round(metrics.accuracy_score(np.int64(y_test.values), y_pred[2]) * 100, 2),
+                       round(score[2].mean() * 100, 2)]])
 
         return m
 
-    def getTop3ClassificationResults_by_df(df, y):
+    def getTop3ClassificationResults_by_df(df, y, selected_clfs):
         X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.3, random_state=42)
-        m = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)
+        m = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test, selected_clfs)
         classifier_result_df = pd.DataFrame(m, columns=["Testing", "Training"])
-        classifiers = ["SVM + Gaussian kernel", "SVM + Linear kernel", "Random Forest"]
+        classifiers = FeatureSelection.get_cls_names(selected_clfs)
         classifier_result_df["index"] = classifiers
         classifier_result_df = classifier_result_df.set_index('index')
         classifier_result_df.index.name = None
 
         return classifier_result_df
 
-    def getSummaryFeatureSelection(df_50F_PCA, df_50F_FI, df_50F_RF, y, rows):
+    def get_cls_names(selected_clfs):
+        db = get_db()
+        cls = db.execute(
+            "SELECT * FROM classifiers WHERE id IN (?,?,?)", (selected_clfs[0], selected_clfs[1], selected_clfs[2])
+        ).fetchall()
+
+
+        cls_name = [c['clf_name'] for c in cls]
+
+        return cls_name
+
+    def getSummaryFeatureSelection(df_50F_PCA, df_50F_FI, df_50F_RF, y, rows, selected_clfs):
+
+        cla = FeatureSelection.get_cls_names(selected_clfs)
+
         X_train, X_test, y_train, y_test = train_test_split(df_50F_PCA, y, test_size=0.3, random_state=42)
-        m_pca = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)
+        m_pca = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test, selected_clfs)
 
         X_train, X_test, y_train, y_test = train_test_split(df_50F_FI, y, test_size=0.3, random_state=42)
-        m_fi = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)
+        m_fi = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test, selected_clfs)
 
         X_train, X_test, y_train, y_test = train_test_split(df_50F_RF, y, test_size=0.3, random_state=42)
-        m_rf = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)
+        m_rf = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test, selected_clfs)
 
         # rows = ["classifier", "PCA", "Random Forest", "Extra Tree"]
         rows.insert(0, "classifier")
-        cla = ["SVM + Gaussian kernel", "SVM + linear kerne", "Random forest"]
+        # cla = ["SVM + Gaussian kernel", "SVM + Linear kernel", "Random forest"]
 
         data_testing = np.array([cla, m_pca[:, 0], m_fi[:, 0], m_rf[:, 0]])
         results_testing = pd.DataFrame(data=data_testing, index=rows).transpose()
@@ -157,30 +219,31 @@ class FeatureSelection:
 
         return results_testing, results_training
 
-    def getFeatureSummary(df, y, col_uni, overlap, rows):
-        list0 = ["SVM + Gaussian kernel", "SVM + Linear kernel", "Random forest"]
+    def getFeatureSummary(df, y, col_uni, overlap, rows, selected_clfs):
+
+        list0 = FeatureSelection.get_cls_names(selected_clfs)
 
         count = [len(col_uni[0]), len(col_uni[1]), len(col_uni[2]), len(overlap)]
 
         diff_df = df[col_uni[0]]
 
         X_train, X_test, y_train, y_test = train_test_split(diff_df, y, test_size=0.3, random_state=42)
-        list1 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)[:, 0]  # same dataset
+        list1 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test, selected_clfs)[:, 0]  # same dataset
 
         diff_df = df[col_uni[1]]
 
         X_train, X_test, y_train, y_test = train_test_split(diff_df, y, test_size=0.3, random_state=42)
-        list2 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)[:, 0]  # same dataset
+        list2 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test, selected_clfs)[:, 0]  # same dataset
 
         diff_df = df[col_uni[2]]
 
         X_train, X_test, y_train, y_test = train_test_split(diff_df, y, test_size=0.3, random_state=42)
-        list3 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)[:, 0]  # same dataset
+        list3 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test, selected_clfs)[:, 0]  # same dataset
 
         diff_df = df[overlap]
 
         X_train, X_test, y_train, y_test = train_test_split(diff_df, y, test_size=0.3, random_state=42)
-        list4 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test)[:, 0]  # same dataset
+        list4 = FeatureSelection.getTop3ClassificationResults(X_train, X_test, y_train, y_test, selected_clfs)[:, 0]  # same dataset
 
         rows.insert(0, "classifier")
         rows.insert(4, "Overlap")
@@ -198,27 +261,63 @@ class FeatureSelection:
 
 
 
-    def returnScoreDataFrameModels(dataFrame, y, len):
-        lists1 = []
-        lists2 = []
-        lists3 = []
+    def returnScoreDataFrameModels(dataFrame, y, len, selected_clfs):
+
+        lists = [[], [], []]
 
         for i in FeatureSelection.get_range_array(len):
 
-            lists1.append(FeatureSelection.svmLinear(dataFrame.iloc[:, 0:(i)], y))
-            lists2.append(FeatureSelection.svmGaussian(dataFrame.iloc[:, 0:(i)], y))
-            lists3.append(FeatureSelection.randomForest(dataFrame.iloc[:, 0:(i)], y))
+            if "1" in selected_clfs:
+                j = selected_clfs.index("1")
+                lists[j].append(FeatureSelection.gaussianNB(dataFrame.iloc[:, 0:(i)], y))
 
-        rows = ["svmLinear", "svmGaussian", "randomForest"]
+            if "2" in selected_clfs:
+                j = selected_clfs.index("2")
+                lists[j].append(FeatureSelection.decisionTree(dataFrame.iloc[:, 0:(i)], y))
 
-        data = np.array([lists1, lists2, lists3])
-        modelScore = pd.DataFrame(data=data, index=rows).transpose()
+            if "3" in selected_clfs:
+                j = selected_clfs.index("3")
+                lists[j].append(FeatureSelection.kNeighbors(dataFrame.iloc[:, 0:(i)], y))
+
+            if "4" in selected_clfs:
+                j = selected_clfs.index("4")
+                lists[j].append(FeatureSelection.svmGaussian(dataFrame.iloc[:, 0:(i)], y))
+
+            if "5" in selected_clfs:
+                j = selected_clfs.index("5")
+                lists[j].append(FeatureSelection.svmLinear(dataFrame.iloc[:, 0:(i)], y))
+
+            if "6" in selected_clfs:
+                j = selected_clfs.index("6")
+                lists[j].append(FeatureSelection.randomForest(dataFrame.iloc[:, 0:(i)], y))
+
+        rows = FeatureSelection.get_cls_names(selected_clfs)
+
+        modelScore = pd.DataFrame(data=lists, index=rows).transpose()
 
         return modelScore
 
     def get_range_array(len):
         array = [100, 90, 80, 70, 60, 50, 40, 30, 20, 15, 10, 5, 3, 2, 1]
         return array[array.index(FeatureSelection.roundupten(len)):]
+
+    def gaussianNB(dataFrame, target):
+        clf = GaussianNB()
+        scores = cross_val_score(clf, dataFrame, target, cv=3)
+
+        return scores.mean()
+
+    def decisionTree(dataFrame, target):
+        clf = DecisionTreeClassifier()
+        scores = cross_val_score(clf, dataFrame, target, cv=3)
+
+        return scores.mean()
+
+    def kNeighbors(dataFrame, target):
+        clf = KNeighborsClassifier(n_neighbors=2)
+        scores = cross_val_score(clf, dataFrame, target, cv=3)
+
+        return scores.mean()
 
     def svmLinear(dataFrame, target):
         clf = svm.SVC(kernel='linear')  # Linear Kernel
@@ -289,39 +388,62 @@ class FeatureSelection:
 
         return df_selected
 
-    def returnScoreDataFrame(dataFrame, y):
-        lists0 = []
-        lists1 = []
-        lists2 = []
-        lists3 = []
-        lists4 = []
+    def returnScoreDataFrame(dataFrame, y, selected_clfs):
+
+        lists = [[], [], [], [], []]
 
         i = 1
 
         while i >= 0.6:
-            # for i in range(0,50):
+
             df_tmp = dataFrame
             df_tmp = FeatureSelection.getSelectedDF(df_tmp, df_tmp.corr(), i)
 
-            lists0.append(i)
-            lists1.append(FeatureSelection.svmLinear(df_tmp, y))
-            lists2.append(FeatureSelection.svmGaussian(df_tmp, y))
-            lists3.append(FeatureSelection.randomForest(df_tmp, y))
-            lists4.append(len(df_tmp.columns))
+            lists[0].append(i)
+            lists[4].append(len(df_tmp.columns))
 
-            i = i - 0.0025
+            if "1" in selected_clfs:
+                j = selected_clfs.index("1") + 1
+                lists[j].append(FeatureSelection.gaussianNB(df_tmp, y))
 
-        rows = ["i", "svmLinear", "svmGaussian", "randomForest", "No of features"]
+            if "2" in selected_clfs:
+                j = selected_clfs.index("2") + 1
+                lists[j].append(FeatureSelection.decisionTree(df_tmp, y))
 
-        data = np.array([lists0, lists1, lists2, lists3, lists4])
-        results = pd.DataFrame(data=data, index=rows).transpose()
+            if "3" in selected_clfs:
+                j = selected_clfs.index("3") + 1
+                lists[j].append(FeatureSelection.kNeighbors(df_tmp, y))
+
+            if "4" in selected_clfs:
+                j = selected_clfs.index("4") + 1
+                lists[j].append(FeatureSelection.svmGaussian(df_tmp, y))
+
+            if "5" in selected_clfs:
+                j = selected_clfs.index("5") + 1
+                lists[j].append(FeatureSelection.svmLinear(df_tmp, y))
+
+            if "6" in selected_clfs:
+                j = selected_clfs.index("6") + 1
+                lists[j].append(FeatureSelection.randomForest(df_tmp, y))
+
+            # i = i - 0.0025
+            i = i - 0.01
+
+        rows = FeatureSelection.get_cls_names(selected_clfs)
+        rows.insert(0, "Correlation coefficient")
+        rows.insert(4, "No of features")
+
+        results = pd.DataFrame(data=lists, index=rows).transpose()
 
         return results
 
-    def get_max_corr_scores(corrScore):
-        w1 = corrScore.loc[corrScore['svmLinear'].idxmax()]
-        w2 = corrScore.loc[corrScore['svmGaussian'].idxmax()]
-        w3 = corrScore.loc[corrScore['randomForest'].idxmax()]
+    def get_max_corr_scores(corrScore, selected_clfs):
+
+        cls = FeatureSelection.get_cls_names(selected_clfs)
+
+        w1 = corrScore.loc[corrScore[cls[0]].idxmax()]
+        w2 = corrScore.loc[corrScore[cls[1]].idxmax()]
+        w3 = corrScore.loc[corrScore[cls[2]].idxmax()]
 
         df_1 = pd.DataFrame(w1).reset_index()
         df_2 = pd.DataFrame(w2).reset_index()
@@ -330,14 +452,16 @@ class FeatureSelection:
         result = pd.merge(df_1, df_2, on='index')
         result = pd.merge(result, df_3, on='index')
 
-        result.columns = ['index', 'svmLinear', 'svmGaussian', 'randomForest']
+        result.columns = ['index', cls[0], cls[1], cls[2]]
         result = result.set_index('index')
         result = result.T
-        max_result = [result.loc[result['svmLinear'].idxmax()]['svmLinear'],
-                      result.loc[result['svmGaussian'].idxmax()]['svmGaussian'],
-                      result.loc[result['randomForest'].idxmax()]['randomForest']]
+        max_result = [result.loc[result[cls[0]].idxmax()][cls[0]],
+                      result.loc[result[cls[1]].idxmax()][cls[1]],
+                      result.loc[result[cls[2]].idxmax()][cls[2]]]
         result["Maximum Accuracy"] = max_result
-        result = result.drop(["svmLinear", "svmGaussian", "randomForest"], axis=1)
+        result = result.drop([cls[0], cls[1], cls[2]], axis=1)
+
+        result.columns.name = None
 
         return result
 
@@ -369,13 +493,47 @@ class FeatureSelection:
         tpr = [tpr_li, tpr_gu, tpr_RF]
         roc_auc = [roc_auc_li, roc_auc_gu, roc_auc_RF]
 
-        # plt.plot(fpr_li, tpr_li, label="SVM linear, auc=" + str(round(roc_auc_li, 2)))
-        # plt.plot(fpr_gu, tpr_gu, label="SVM gaussian, auc=" + str(round(roc_auc_gu, 2)))
-        # plt.plot(fpr_RF, tpr_RF, label="Random forest, auc=" + str(round(roc_auc_RF, 2)))
-        #
-        # plt.ylabel("Sensitivity")
-        # plt.xlabel("1 - Specificity")
-        #
-        # plt.legend(loc="lower right")
-
         return fpr, tpr, roc_auc
+
+    def venn_diagram_data(col_m1, col_m2, col_m3):
+        col_uni = FeatureSelection.get_unique_columns(col_m1, col_m2, col_m3)
+        overlap = FeatureSelection.get_overlap_features(col_m1, col_m2, col_m3)
+        col_c = FeatureSelection.get_overlap_two(col_m1, col_m2, col_m3, overlap)
+
+        venn_data = [col_uni, col_c, overlap]
+
+        return venn_data
+
+    def checkList(list1, list2):
+        for word in list2:
+            if word in list1:
+                list1.remove(word)
+
+        return list1
+
+    def get_unique_columns(col_m1, col_m2, col_m3):
+        col1_uni = FeatureSelection.checkList(list(col_m1), list(col_m2 + col_m3))
+        col2_uni = FeatureSelection.checkList(list(col_m2), list(col_m1 + col_m3))
+        col3_uni = FeatureSelection.checkList(list(col_m3), list(col_m2 + col_m1))
+
+        col_uni = [col1_uni, col2_uni, col3_uni]
+
+        return col_uni
+
+    def get_overlap_features(col1, col2, col3):
+        t = list(set(col1) & set(col2) & set(col3))
+        return t
+
+    def get_overlap_two(col_m1, col_m2, col_m3, overlap):
+        col_m12 = list(set(col_m1) & set(col_m2))
+        col_m12_uni = FeatureSelection.checkList(list(col_m12), list(overlap))
+
+        col_m23 = list(set(col_m2) & set(col_m3))
+        col_m23_uni = FeatureSelection.checkList(list(col_m23), list(overlap))
+
+        col_m13 = list(set(col_m1) & set(col_m3))
+        col_m13_uni = FeatureSelection.checkList(list(col_m13), list(overlap))
+
+        col_c = [col_m12_uni, col_m23_uni, col_m13_uni]
+
+        return col_c

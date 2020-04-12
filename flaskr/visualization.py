@@ -1,10 +1,8 @@
-from flask import Blueprint, session
+from flask import session
 from flask import render_template
 import os
-from flask import request
 
-from flask import send_file
-from flask import Blueprint, current_app, request, send_from_directory, send_file, make_response
+from flask import Blueprint, request
 
 from flaskr.auth import login_required
 from flask import g
@@ -38,18 +36,17 @@ def index():
 
     return render_template("visualization/index.html")
 
-
-@bp.route("/", methods=['POST'])
+@bp.route("/img/", methods=['GET'])
 @login_required
-def update_col():
-    file_name = request.form['available_files']
-    feature = request.form['features']
+def get_image_src():
+    file_name = request.args.get('available_file')
+    feature = request.args.get('feature').lstrip()
     img64 = getPlot(file_name, feature)
 
-    return render_template("visualization/index.html", available_list=session['files'], image_data=img64)
-
+    return str(img64)
 
 @bp.route("/js/", methods=["GET"])
+@login_required
 def get_col_names_js():
     file_name = request.args.get('available_files')
     user_id = request.args.get('user_id')

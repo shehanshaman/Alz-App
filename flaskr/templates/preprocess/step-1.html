@@ -21,109 +21,18 @@
 
 </head>
 
-    <style> 
+<style> 
 
-        .button {
-            margin-top: inherit;
-        }
-
-        #tourControls{
-            top: 80px !important;
-        }
-
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
-
-        #tourtip{
-           width: 290px !important; 
-        }
-        
-    .notification-container{
-        position: fixed;
-        left: 10px;
-        width: 255px;
-        max-width: calc(100% - 30px);
+    .button {
+        margin-top: inherit;
     }
 
-    .notification{
-        background-color: #fff;
-        /*border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
-        color: #fff;
-        font-size: 14px;
-        padding: 8px 0px;
-        line-height: 20px;
-        /*margin-bottom: 15px;*/
-        animation: grow 0.5s ease-in forwards;
-    }
-    @keyframes grow{
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to{
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
+</style> 
 
-    .notification.hide{
-        animation: shrink 0.4s ease-out forwards;
-    }
-    @keyframes shrink{
-        to{
-            opacity: 0;
-            transform: scale(0.6);
-        }
-    }
-
-    .notification-info{
-        background-color: #00000096;
-    }
-
-    </style> 
-
-<body class="main-body" style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
-
-<div class="notification-container" id="notification-container">
-    <div class="notification notification-info">
-        <div class="row">
-            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
-        </div>
-        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
-            <div class="col-sm-6">
-                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
-            </div>
-            <div class="col-sm-6">
-                <a class="btn btn-primary tour_no">NO</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="main-div-step2">
 
@@ -160,19 +69,19 @@
 
             <div class="step-content">
                 <div class="row head-word">
-                    <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">STEP 1 : CHOOSE DATA SET</h3>
+                    <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 1 : CHOOSE DATA SET</h3>
                 </div>
             </div>
 
-            <div class="where-you-like" style="margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
+            <div class="where-you-like" style="font-family: monospace;margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">Available Files :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Available Files :</h5>
                     </div>
                     <div id="available_file_name" class="col-sm-5">
                         <div class="md-form">
-                            <select class="form-control" id="available_files" name="available_files">
+                            <select style="font-family: monospace;" class="form-control" id="available_files" name="available_files">
                                 {% for name in available_list %}
                                     <option value="{{ name }}">{{ name }}</option>
                                 {% endfor %}
@@ -186,11 +95,11 @@
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">Annotation Table :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Annotation Table :</h5>
                     </div>
                     <div id="annotation_table_name" class="col-sm-6">
                         <div class="md-form">
-                            <select class="form-control" id="anno_tbl" name="anno_tbl">
+                            <select style="font-family: monospace;" class="form-control" id="anno_tbl" name="anno_tbl">
                                 {% for name in annotation_list %}
                                     <option value="{{ name }}">{{ name }}</option>
                                 {% endfor %}
@@ -201,11 +110,11 @@
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">Probe Selection Method :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Probe Selection Method :</h5>
                     </div>
                     <div id="average_div" class="col-sm-6">
                         <div class="md-form">
-                            <select class="form-control" id="column_selection" name="column_selection">
+                            <select style="font-family: monospace;" class="form-control" id="column_selection" name="column_selection">
                                 <option value="1">Average</option>
                             </select>
                         </div>
@@ -238,10 +147,10 @@
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
+        <h5 style="margin-top: 22%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
     </div> 
 
-{% include 'footer.html' %}
+{% include 'guide_footer.html' %}
 
 </body>
 </html>
@@ -260,48 +169,6 @@
 
 <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-</html>
-
-<script>
-    var tour = {
-        data : [
-            { element : '#available_file_name', tooltip : 'Choose a file from the list !', text: 'Availabe files', files: [{ url : '', name : 'more details' }], position: 'T' },
-            { element : '#view_div', tooltip : 'You can view the selected data set !', text: 'Show Data set', position: 'T' },
-            { element : '#annotation_table_name', tooltip : 'Choose the annotation table corresponding to the chosen data set to map probe ids to gene symbols !', text: 'Annotation table', position: 'T' },
-            { element : '#average_div', tooltip : 'Choose a method to handle multiple probe ids mapping to the same gene symbol !', text: 'Probe selection method', position: 'T' }
-        ],
-        welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'TL',
-        buttons: {
-            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
-            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
-            start : { text : 'Start', class: 'btn btn-primary' },
-            end   : { text : 'End', class: 'btn btn-primary' }
-        },
-        controlsCss: {
-            background: 'rgba(187, 178, 48, 0.71)',
-            color: '#1c1d21',
-            width: '400px',
-            'border-radius': 0
-        }
-    };
-
-    $(document).ready(function(){
-        $('.tour').on('click', function(){
-            $.aSimpleTour(tour);
-            $('.notification-container').hide(1000);
-        });
-        $('.tour_no').on('click', function(){
-            $('.notification-container').hide(1000);
-        });
-    });
-</script>
-
 <script>
 
     $(".button").click(function () {
@@ -309,6 +176,8 @@
 
         $("#selected_file").val(conceptName);
         $("#form").submit();
+
+        $('#tourControls').hide(0);
     });
 
     $('#btn-submit-step-1').click(function () {
@@ -316,7 +185,24 @@
         $('.loader-div').show(0);
         $('.main-body').click(false);
         $("#main-form-div-step1").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
     });
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
+<script>
+
+    var tour = guide_main_call(tip_step_1, 'BL');
 
 </script>
 

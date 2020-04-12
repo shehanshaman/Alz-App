@@ -39,7 +39,7 @@ def index():
     filename = result['filename']
 
     if filename is None or filename == '':
-        flash("Error: You don't has pre-processed data-set, start from pre-processing")
+        flash("Error: You don't has pre-processed data-set, start from pre-processing or change file")
 
     return render_template("fs/index.html", list_names=list_names, filename= filename)
 
@@ -121,11 +121,17 @@ def result():
 
     col = [col_m1, col_m2, col_m3]
 
-    results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3,y, method_names)
+    selected_clfs = r['classifiers'].split(',')
+
+    results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3,y, method_names, selected_clfs)
 
     img64 = get_summary_plot(results_testing, results_training)
 
-    return render_template("fs/result.html", image_data=img64, methods = method_names, columns = col)
+    venn_data = FeatureSelection.venn_diagram_data(col_m1, col_m2, col_m3)
+
+    return render_template("fs/result.html", image_data=img64, methods = method_names, columns = col, venn_data=venn_data)
+
+
 
 def get_summary_plot(results_testing, results_training):
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14, 5))
@@ -150,6 +156,11 @@ def get_summary_plot(results_testing, results_training):
     results_testing.plot.bar(rot=0, ax=axes[0])
     results_training.plot.bar(rot=0, ax=axes[1])
 
+    pic_hash = fig_to_b64encode(fig)
+
+    return pic_hash
+
+def fig_to_b64encode(fig):
     pic_IObytes = io.BytesIO()
     fig.savefig(pic_IObytes, format='png')
     pic_IObytes.seek(0)

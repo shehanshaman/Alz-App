@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, session
-from flask import render_template, current_app
+from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -47,20 +47,22 @@ def index():
 
     UserResult.update_result(user_id, 'col_overlapped', overlap_str)
 
-    results, count = FeatureSelection.getFeatureSummary(df, y, col_uni, overlap, method_names)
+    selected_clfs = r['classifiers'].split(',')
+
+    results, count = FeatureSelection.getFeatureSummary(df, y, col_uni, overlap, method_names, selected_clfs)
     results = results.astype(float)
 
     overlap_pic_hash = get_overlap_result_fig(results, count)
 
     # Reducing features and plot accuracies
-    m1_score = FeatureSelection.returnScoreDataFrameModels(df[col_m1], y, len)
-    m2_score = FeatureSelection.returnScoreDataFrameModels(df[col_m2], y, len)
-    m3_score = FeatureSelection.returnScoreDataFrameModels(df[col_m3], y, len)
+    m1_score = FeatureSelection.returnScoreDataFrameModels(df[col_m1], y, len, selected_clfs)
+    m2_score = FeatureSelection.returnScoreDataFrameModels(df[col_m2], y, len, selected_clfs)
+    m3_score = FeatureSelection.returnScoreDataFrameModels(df[col_m3], y, len, selected_clfs)
     x_scores = list(map(str, FeatureSelection.get_range_array(len)))
 
     m_scores = [m1_score, m2_score, m3_score]
 
-    small_set_pic_hash = get_small_set_features_fig(m_scores,x_scores, method_names[1:4])
+    small_set_pic_hash = get_small_set_features_fig(m_scores,x_scores, method_names[1:4], selected_clfs)
 
     return render_template("analyze/index.html", corr_data = correlation_pic_hash, overlap_data = overlap_pic_hash, small_set= small_set_pic_hash, methods = method_names[1:4])
 
@@ -102,14 +104,16 @@ def selected_method():
     cmp_corr_results = FeatureSelection.compareCorrelatedFeatures(cmp_corr_1, cmp_corr_2, cmp_corr_3)
     cmp_corr_results_pic_hash = get_cmp_corr_results_fig(cmp_corr_results)
 
-    # Corr scores and select
-    corrScore = FeatureSelection.returnScoreDataFrame(df[col_uni[i]], y) #0 tobe change according to the user
-    corr_score_pic_hash = get_corr_score_fig(corrScore)
+    selected_clfs = r['classifiers'].split(',')
 
-    max_corr_df = FeatureSelection.get_max_corr_scores(corrScore)
+    # Corr scores and select
+    corrScore = FeatureSelection.returnScoreDataFrame(df[col_uni[i]], y, selected_clfs) #0 tobe change according to the user
+    corr_score_pic_hash = get_corr_score_fig(corrScore, selected_clfs)
+
+    max_corr_df = FeatureSelection.get_max_corr_scores(corrScore, selected_clfs)
 
     x = df[col_uni[i]]
-    col_selected_method = FeatureSelection.getSelectedDF(x, x.corr(), max_corr_df.loc[max_corr_df['Maximum Accuracy'].idxmax()]['i']).columns.tolist()
+    col_selected_method = FeatureSelection.getSelectedDF(x, x.corr(), max_corr_df.loc[max_corr_df['Maximum Accuracy'].idxmax()]['Correlation coefficient']).columns.tolist()
     col_selected_str = ','.join(e for e in col_selected_method)
 
     UserResult.update_result(user_id, 'col_selected_method', col_selected_str)
@@ -135,8 +139,10 @@ def final_result():
 
     dis_gene = list(dict.fromkeys(overlap + col_selected_method))
 
-    r1_df = FeatureSelection.getTop3ClassificationResults_by_df(df[col_selected_method], y)
-    r2_df = FeatureSelection.getTop3ClassificationResults_by_df(df[dis_gene], y)
+    selected_clfs = r['classifiers'].split(',')
+
+    r1_df = FeatureSelection.getTop3ClassificationResults_by_df(df[col_selected_method], y, selected_clfs)
+    r2_df = FeatureSelection.getTop3ClassificationResults_by_df(df[dis_gene], y, selected_clfs)
 
     selected_roc_pic_hash = get_heatmap_roc(df[col_selected_method], y)
     all_roc_pic_hash = get_heatmap_roc(df[dis_gene], y)
@@ -195,12 +201,7 @@ def get_correlation_fig(X, col, names):
     fig.subplots_adjust(wspace=0.5)
     fig.set_figwidth(15)
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -219,58 +220,50 @@ def get_overlap_result_fig(results,count):
     count.plot.bar(x='id', y='val', rot=0, color=(0.2, 0.4, 0.6, 0.6), ax = ax2)
     ax2.get_legend().remove()
 
-
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
-def get_small_set_features_fig(m_scores, x_scores, method_names):
+def get_small_set_features_fig(m_scores, x_scores, method_names, selected_clfs):
+
+    cls = FeatureSelection.get_cls_names(selected_clfs)
+
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 5))
 
     ax1.set_ylim(0.6, 1)
     ax1.set_xlabel('Number of genes')
     ax1.set_ylabel('Classification Accuracy')
-    ax1.set_title('SVM with Linear Kernal')
+    ax1.set_title(cls[0])
 
-    ax1.plot(x_scores, m_scores[0]["svmLinear"], label='linear')
-    ax1.plot(x_scores, m_scores[1]["svmLinear"], label='linear')
-    ax1.plot(x_scores, m_scores[2]["svmLinear"], label='linear')
+    ax1.plot(x_scores, m_scores[0][cls[0]], label='linear')
+    ax1.plot(x_scores, m_scores[1][cls[0]], label='linear')
+    ax1.plot(x_scores, m_scores[2][cls[0]], label='linear')
 
     ax1.legend(method_names, loc='lower left')
 
     ax2.set_ylim(0.6, 1)
     ax2.set_xlabel('Number of genes')
     ax2.set_ylabel('Classification Accuracy')
-    ax2.set_title('SVM with Gaussian Kernal')
+    ax2.set_title(cls[1])
 
-    ax2.plot(x_scores, m_scores[0]["svmGaussian"], label='linear')
-    ax2.plot(x_scores, m_scores[1]["svmGaussian"], label='linear')
-    ax2.plot(x_scores, m_scores[2]["svmGaussian"], label='linear')
+    ax2.plot(x_scores, m_scores[0][cls[1]], label='linear')
+    ax2.plot(x_scores, m_scores[1][cls[1]], label='linear')
+    ax2.plot(x_scores, m_scores[2][cls[1]], label='linear')
 
     ax2.legend(method_names, loc='lower left')
 
     ax3.set_ylim(0.6, 1)
     ax3.set_xlabel('Number of genes')
     ax3.set_ylabel('Classification Accuracy')
-    ax3.set_title('Random Forest')
+    ax3.set_title(cls[2])
 
-    ax3.plot(x_scores, m_scores[0]["randomForest"], label='linear')
-    ax3.plot(x_scores, m_scores[1]["randomForest"], label='linear')
-    ax3.plot(x_scores, m_scores[2]["randomForest"], label='linear')
+    ax3.plot(x_scores, m_scores[0][cls[2]], label='linear')
+    ax3.plot(x_scores, m_scores[1][cls[2]], label='linear')
+    ax3.plot(x_scores, m_scores[2][cls[2]], label='linear')
 
     ax3.legend(method_names, loc='lower left')
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -283,38 +276,31 @@ def get_cmp_corr_results_fig(results):
 
     results.plot.line(ax=ax1)
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
-def get_corr_score_fig(corrScore):
+def get_corr_score_fig(corrScore, selected_clfs):
+
+    cls = FeatureSelection.get_cls_names(selected_clfs)
+
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
-    ax1.plot(corrScore['i'], corrScore["svmLinear"], label='linear')
-    ax1.plot(corrScore['i'], corrScore["svmGaussian"], label='linear')
-    ax1.plot(corrScore['i'], corrScore["randomForest"], label='linear')
+    ax1.plot(corrScore['Correlation coefficient'], corrScore[cls[0]], label='linear')
+    ax1.plot(corrScore['Correlation coefficient'], corrScore[cls[1]], label='linear')
+    ax1.plot(corrScore['Correlation coefficient'], corrScore[cls[2]], label='linear')
 
-    ax1.legend(['svmLinear', 'svmGaussian', 'randomForest', 'No of features'], loc='lower right')
+    ax1.legend([cls[0], cls[1], cls[2], 'No of features'], loc='lower right')
 
     ax1.set(xlabel='correlation coefficient', ylabel='Classification Accuracy')
 
-    ax2.plot(corrScore['i'], corrScore["No of features"], label='linear')
+    ax2.plot(corrScore['Correlation coefficient'], corrScore["No of features"], label='linear')
     ax2.set(xlabel='correlation coefficient', ylabel='No of features')
 
     fig.subplots_adjust(wspace=0.2)
     fig.set_figwidth(15)
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -334,6 +320,11 @@ def get_heatmap_roc(df, y):
 
     sns.heatmap(df.corr(), cmap="RdYlGn", ax=ax2)
 
+    pic_hash = fig_to_b64encode(fig)
+
+    return pic_hash
+
+def fig_to_b64encode(fig):
     pic_IObytes = io.BytesIO()
     fig.savefig(pic_IObytes, format='png')
     pic_IObytes.seek(0)

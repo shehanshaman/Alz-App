@@ -128,6 +128,7 @@ def login():
             # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = user["id"]
+            update_last_login(db, user["id"])
             return redirect(url_for("index"))
 
         flash(error)
@@ -293,6 +294,7 @@ def reset_key_verify():
     return render_template("error.html", errors=e)
 
 @bp.route("/settings")
+@login_required
 def settings():
     user = g.user
     user_data = [user['username'], user['given_name']]
@@ -301,6 +303,63 @@ def settings():
     df_files = get_files_size(path)
     data = [user_data]
     return render_template("auth/settings.html", data = data, df_files = df_files)
+
+def get_all_users():
+    db = get_db()
+    users = db.execute(
+        "SELECT * FROM user",
+    ).fetchall()
+
+    col = ["id", "username", "given_name", "last_login", "is_verified", "is_admin"]
+
+    df = pd.DataFrame(columns=col)
+
+    for user in users:
+        df2 = pd.DataFrame([[user['id'], user['username'], user['given_name'], user['last_login'], user['is_verified'], user['is_admin']]], columns=col)
+        df = df.append(df2)
+
+    return df
+
+def get_folder_size(users_id):
+    col = ["id", "usage"]
+    df = pd.DataFrame(columns=col)
+
+    for user_id in users_id:
+        root_directory = USER_PATH / str(user_id)
+        folder_size = round(sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file()) / 1024 / 1024 , 2)
+        df2 = pd.DataFrame([[user_id, folder_size]], columns=col)
+        df = df.append(df2, ignore_index=True)
+
+    return df
+
+@bp.route("/admin")
+@login_required
+def admin_panel():
+
+    users = get_all_users()
+    host_usage = get_folder_size(users["id"].tolist())
+
+    users = pd.merge(users, host_usage, on='id')
+
+    infrequent_ids = get_infrequent_ids(users)
+    select_users = users[(users['id'].isin(infrequent_ids))]
+    ids_str = ','.join(str(e) for e in select_users['id'].tolist())
+
+    data = [round(select_users['usage'].sum(), 2) , select_users.shape[0], ids_str]
+
+    return render_template("auth/admin.html", select_users=select_users, users=users, data=data)
+
+def get_infrequent_ids(users):
+    n = datetime.now()
+    list = []
+    for index, row in users.iterrows():
+        u_log = datetime.strptime(row['last_login'], '%Y-%m-%d %H:%M:%S.%f')
+        delta = n - u_log
+        if delta.days > 1 and row['usage'] > 10:
+            list.append(row['id'])
+
+    return list
+
 
 def get_files_size(path):
 
@@ -323,11 +382,22 @@ def get_files_size(path):
 
 def send_mail(subject, url, recipient, senders_subject):
     msg = Message(senders_subject,
-                  sender="no-reply@alz.com",
+                  sender="no-reply@GeNet.com",
                   recipients=[recipient])
 
     message = get_mail_message(subject)
     message = message.replace("{{action_url}}", url)
+    msg.html = message
+    mail = current_app.config["APP_ALZ"].mail
+    s = mail.send(msg)
+
+    return s
+
+def send_infrequent_mail(recipients):
+    msg = Message("Unavailable uploaded files",
+                  sender="no-reply@alz.com",
+                  recipients=recipients)
+    message = get_mail_message("infrequent")
     msg.html = message
     mail = current_app.config["APP_ALZ"].mail
     s = mail.send(msg)
@@ -452,3 +522,52 @@ class UserResult:
             (user_id),
         )
         db.commit()
+
+    def infrequent_users(ids):
+        db = get_db()
+        query = "SELECT * FROM user WHERE id IN (" + ids + ")"
+        result = db.execute(query).fetchall()
+
+        list = []
+        for user in result:
+            x =user['username']
+            list.append(x)
+
+        send_infrequent_mail(list)
+
+        return list
+
+    def is_user_upload_file(id):
+        DIR = USER_PATH / str(id)
+        count = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
+
+        if count > 0:
+            return 1
+        else:
+            return 0
+
+    def get_user_pre_request(id):
+        pre = ['', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled']
+        has_file = UserResult.is_user_upload_file(id)
+        result = UserResult.get_user_results(id)
+        model = UserResult.get_user_model(id)
+
+        if has_file:
+            pre[1] = ''
+            pre[2] = ''
+            pre[3] = ''
+
+        if result['filename'] is not '':
+            pre[3] = ''
+
+        if result['fs_methods'] is not None:
+            pre[4] = ''
+
+        if result['selected_method'] is not None:
+            pre[5] = ''
+            pre[6] = ''
+
+        if model['accuracy'] is not None:
+            pre[7] = ''
+
+        return pre

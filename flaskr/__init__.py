@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from flask import Flask, render_template, session, request
 
+from flaskr.auth import login_required
 from .classes.app_alz import Alz
 from flaskr.classes.preProcessClass import PreProcess
 
@@ -38,6 +39,7 @@ def create_app(test_config=None):
 
     # View DF
     @app.route("/view/", methods = ["POST"])
+    @login_required
     def view_df():
         user_id = session.get("user_id")
         selected_file = request.form["selected_file"]
@@ -52,6 +54,7 @@ def create_app(test_config=None):
         return render_template('preprocess/tableVIew.html', tables=[df.to_html(classes = 'display" id = "table_id')], data=data)
 
     @app.route("/view/p/", methods=["GET"])
+    @login_required
     def view_one_data():
         file_name = session.get('view_df_name')
         user_id = session.get("user_id")

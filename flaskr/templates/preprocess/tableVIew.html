@@ -7,11 +7,12 @@
 
     <title>GeNet | {{ data[0] }}</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
@@ -21,8 +22,6 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-
-    {#    Table css and js#}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
 
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
@@ -31,15 +30,9 @@
     <script type="text/javascript"
             src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
 
-
-    <style>
-        .pagination li.active {
-            background-color: inherit;
-        }
-    </style>
-
 </head>
-<body>
+
+<body style="font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
@@ -48,8 +41,8 @@
     <div class="row">
         <div class="row" id="h3-head-6" class="card__title">
             <div class="col-sm-12">
-                <h4 style="color: #26a69a; display: inline;">File Name : </h4>
-                <h4 class="h4-file-name" style="color: #26a69a; display: inline;">{{ data[0] }}</h4>
+                <h4 style="color: #26a69a; display: inline;font-size: 20px;">File Name : </h4>
+                <h4 class="h4-file-name" style="color: #26a69a; display: inline;font-size: 20px;">{{ data[0] }}</h4>
                 <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;" class="use-download" value="{{ data[0] }}">
                     <i class="fas fa-file-download fa-2x"></i>
                 </button>                              
@@ -92,7 +85,6 @@
         for (var i = 0; i < rows.length; i++) {
             if (i==0){ continue;}
             rows[i].onclick = function () {
-                console.log($(this).find('th')[0].innerHTML);
                 $("#selected_row").val($(this).find('th')[0].innerHTML);
                 $("#form").submit();
             };
@@ -103,7 +95,6 @@
         var $file_name = $('.h4-file-name').text();
         
         var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=0";
-        console.log(url);
         window.open(url, '_blank');
 
     });

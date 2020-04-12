@@ -2,7 +2,7 @@
 <meta name="google-signin-scope" content="profile email">
 
 <meta name="google-signin-client_id"
-      content="429466987596-0fs00nq9idiuee5qq04tng8pvb0224je.apps.googleusercontent.com">
+      content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
 
 <style>
     #user_img {
@@ -22,10 +22,16 @@
     #mainDataInterface-id {
         min-height: 405px;
     }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+
 </style>
 
 <!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
+<ul id="dropdown1" class="dropdown-content" style="font-family: monospace;">
     <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
     <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
     <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
@@ -41,18 +47,24 @@
 </ul>
 
 <!-- Dropdown Structure User -->
-<ul id="dropdown_user" class="dropdown-content">
+<ul id="dropdown_user" class="dropdown-content" style="font-family: monospace;">
     <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
+    {% if g.user['is_admin'] %}
+        <li class="nav_link"><a href="{{ url_for('auth.admin_panel') }}">Admin Panel</a></li>
+    {% endif %}
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
 
 <!-- Dropdown side Structure User -->
 <ul id="dropdown_user_side" class="dropdown-content">
     <li class="nav_link"><a href="{{ url_for('auth.settings') }}">Settings</a></li>
+    {% if g.user['is_admin'] %}
+        <li class="nav_link"><a href="{{ url_for('auth.admin_panel') }}">Admin Panel</a></li>
+    {% endif %}
     <li class="nav_link"><a href="#" onclick="signOut()">Log Out</a></li>
 </ul>
 
-<nav class="nav-extended">
+<nav class="nav-extended" style="font-family: monospace;">
     <div class="nav-wrapper">
         <a class="navbar-brand" href="{{ url_for('index') }}">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo"
@@ -68,8 +80,11 @@
                 <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
                 </li>
                 <!-- Dropdown Trigger -->
-                <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1">Framework<i
-                        class="material-icons right">arrow_drop_down</i></a></li>
+                <li class="nav_link disabled">
+                    <a class="dropdown-trigger" href="#" data-target="dropdown1">Framework
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
                 <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
                 </li>
                 <li><span> <div class="vertical"></div>  </span></li>
@@ -96,7 +111,7 @@
         <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
         </li>
         <!-- Dropdown Trigger -->
-        <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1_side">Framework<i
+        <li class="nav_link disabled"><a class="dropdown-trigger" href="#" data-target="dropdown1_side">Framework<i
                 class="material-icons right">arrow_drop_down</i></a></li>
 
         <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>

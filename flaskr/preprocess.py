@@ -1,23 +1,20 @@
 import base64
 
-from flask import Blueprint, session
+from flask import Blueprint, session, send_from_directory
 from flask import redirect
-from flask import render_template, current_app
+from flask import render_template
 from flask import request
 
 import os
 from werkzeug.utils import secure_filename
 
-from .classes.dfClass import DF  # file upload instance
+from shutil import copyfile
+
+from .classes.dfClass import DF
 from .classes.preProcessClass import PreProcess
 from .classes.featureReductionClass import FeatureReduction
-from .classes.featureSelectionClass import FeatureSelection
 
 import io
-import random
-from flask import Response
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
 
 import json
 import pandas as pd
@@ -183,12 +180,12 @@ def feature_reduction():
     PreProcess.saveDF(p_fold_df, path)
 
     pvalues_max = p_fold_df['pValues'].max() * 0.1
-    fold_max = p_fold_df['fold'].max() * 0.1
+    fold_max = p_fold_df['fold'].max() * 0.2
 
-    pvalues = np.linspace(0.001, pvalues_max, 20)
-    pvalues = np.around(pvalues, decimals=3)
-    folds = np.linspace(0.001, fold_max, 20)
-    folds = np.around(folds, decimals=3)
+    pvalues = np.linspace(0.001, 0.01, 19)
+    pvalues = np.around(pvalues, decimals=4)
+    folds = np.linspace(0.001, fold_max, 40)
+    folds = np.around(folds, decimals=4)
 
     data_array = [pvalues, folds]
 
@@ -224,17 +221,20 @@ def get_reduce_features_from_pvalues():
 
     split_array = split_array.astype(int)
 
-    df_y = PreProcess.getDF(x.path)
-    fs_fig_hash = get_feature_selection_fig(df, df_y, length)
-
     # Get classification Results
     df_y = PreProcess.getDF(x.path)
     y = df_y['class']
     y = pd.to_numeric(y)
+
     classification_result_df = FeatureReduction.get_classification_results(df, y)
+    cls_id, cls_name = FeatureReduction.get_best_cls(classification_result_df)
+    UserResult.update_result(g.user['id'], 'classifiers', cls_id)
+    classification_result_df = classification_result_df.drop(['avg'], axis=1)
+
+    fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
     return render_template("preprocess/step-6.html", split_array=split_array, fs_fig_hash=fs_fig_hash,
-                           tables=[classification_result_df.to_html(classes='data')])
+                           tables=[classification_result_df.to_html(classes='data')], cls_names = cls_name)
 
 
 @bp.route("/fr/pf/", methods=['GET'])
@@ -298,6 +298,7 @@ def create_object():
 @bp.route('/upload')
 @login_required
 def upload_file_view():
+
     return render_template("preprocess/step-0.html")
 
 
@@ -322,8 +323,30 @@ def upload_file():
 
         return redirect('/pre')
     else:
-        return redirect(request.url)
+        e = ["Wrong file type", ["Please upload csv file."]]
+        return render_template("error.html", errors=e)
 
+@bp.route('/sample/download/')
+@login_required
+def download_sample_file():
+    sample_file = UPLOAD_FOLDER / "sample"
+
+    return send_from_directory(directory=sample_file, filename='GSE5281-GPL570.zip')
+
+@bp.route('/sample/upload/')
+@login_required
+def upload_sample_file():
+    src = UPLOAD_FOLDER / "sample" / 'GSE5281-GPL570.zip'
+    dst = USER_PATH / str(g.user['id']) / 'GSE5281-GPL570.pkl'
+    # copyfile(src, dst)
+
+    df = pd.read_csv(src)
+    df = df.set_index(["ID"])
+    df.index.name = None
+    df.columns.name = "ID"
+    df.to_pickle(dst)
+
+    return redirect('/pre')
 
 def csv2pkl(path_csv, path_pkl):
     df_save = pd.read_csv(path_csv)
@@ -354,12 +377,7 @@ def get_volcano_fig(fold_change, pValues):
     axes.set_ylabel("-log10(pValue)")
     axes.set_xlabel("fold")
 
-    pic_IObytes = io.BytesIO()
-    fig.savefig(pic_IObytes, format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-
-    pic_hash = pic_hash.decode("utf-8")
+    pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
 
@@ -369,6 +387,11 @@ def get_feature_selection_fig(df, df_y, length):
     selectedFeatures = FeatureReduction.getScoresFromUS(df)
     fig = FeatureReduction.create_figure(selectedFeatures, length)
 
+    pic_hash = fig_to_b64encode(fig)
+
+    return pic_hash
+
+def fig_to_b64encode(fig):
     pic_IObytes = io.BytesIO()
     fig.savefig(pic_IObytes, format='png')
     pic_IObytes.seek(0)
@@ -377,7 +400,6 @@ def get_feature_selection_fig(df, df_y, length):
     pic_hash = pic_hash.decode("utf-8")
 
     return pic_hash
-
 
 def remove_files(path, files):
     for file in files:
