@@ -20,7 +20,8 @@ USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 
 bp = Blueprint("fs", __name__, url_prefix="/fs")
 
-@bp.route("/" , methods=['GET'])
+
+@bp.route("/", methods=['GET'])
 @login_required
 def index():
     file_name = request.args.get("file_name")
@@ -45,10 +46,11 @@ def index():
         return render_template("fs/index.html", list_names=list_names, filename=None)
     else:
 
-        return render_template("fs/index.html", list_names=None, filename= file_name)
+        return render_template("fs/index.html", list_names=None, filename=file_name)
 
-#Get columns of 3 different feature selection methods
-@bp.route("/" , methods=['POST'])
+
+# Get columns of 3 different feature selection methods
+@bp.route("/", methods=['POST'])
 @login_required
 def get_val():
     fs_methods_str = request.form["fs_methods"]
@@ -68,12 +70,11 @@ def get_val():
     selected_col = [None] * 3
     len = int(fs_methods[3])
 
-    #Feature extraction from following methods
+    # Feature extraction from following methods
     if "PCA" in fs_methods:
         i = fs_methods.index("PCA")
         pca_col = FeatureSelection.PCA(df, len).columns.tolist()
         selected_col[i] = ','.join(e for e in pca_col)
-
 
     if "Random Forest" in fs_methods:
         i = fs_methods.index("Random Forest")
@@ -85,17 +86,11 @@ def get_val():
         et_col = FeatureSelection.ExtraTrees(df, len).columns.tolist()
         selected_col[i] = ','.join(e for e in et_col)
 
-    #Check data already filled in database
+    # Check data already filled in database
     if UserData.get_result(user_id, filename):
         UserData.delete_result(user_id, filename)
 
-    #Save data to the result table
-    UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2])
-    #Save result id on session
-    result_id = UserData.get_result(user_id, filename)['id']
-    session['result_id'] = result_id
-
-    #calculate results
+    # calculate results
     col_m1 = selected_col[0].split(',')
     df_m1 = df[col_m1]
     col_m2 = selected_col[1].split(',')
@@ -111,8 +106,16 @@ def get_val():
     if g.pre_process:
         selected_clfs_str = g.pre_process['classifiers']
         classifiers = selected_clfs_str.split(',')
+        session['pre_process_id'] = None
     else:
-        classifiers = [4,5,6]
+        classifiers = ['4', '5', '6']
+        selected_clfs_str = ','.join(e for e in classifiers)
+
+    # Save data to the result table
+    UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2], selected_clfs_str)
+    # Save result id on session
+    result_id = UserData.get_result(user_id, filename)['id']
+    session['result_id'] = result_id
 
     results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3, y,
                                                                                     fs_methods, classifiers)
@@ -150,6 +153,7 @@ def get_summary_plot(results_testing, results_training):
     pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
+
 
 def fig_to_b64encode(fig):
     pic_IObytes = io.BytesIO()

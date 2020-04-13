@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>GeNet | Validation</title>
+    <title>GeNet</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!-- Materializecss compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
@@ -75,8 +75,13 @@
             <!-- Modal Structure -->
             <div id="modal1" class="modal">
                 <div class="modal-content">
-                    <h4 id="method_head">Modal Header</h4>
-                    <p style="word-wrap: break-word;" id="feature_list"></p>
+                    <div class="header">
+                        <h4 id="method_head">Select File</h4>
+                    </div>
+                    <div class="content">
+                        <p style="word-wrap: break-word;" id=""></p>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="modal-close waves-effect waves-green btn-flat">Close</a>
@@ -120,7 +125,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
-    $('#modal1').openModal();
+    $('#modal1').openModal({dismissible:false});
     function more_click(event) {
         $('#modal1').openModal();
     }

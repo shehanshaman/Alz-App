@@ -527,11 +527,11 @@ class UserData:
         ).fetchone()
         return result
 
-    def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3):
+    def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers):
         db = get_db()
         db.execute(
-            "INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2, col_method3) VALUES (?, ?, ?, ?, ?, ?)",
-            (user_id, filename, fs_methods, col_method1, col_method2, col_method3),
+            "INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers),
         )
         db.commit()
 
