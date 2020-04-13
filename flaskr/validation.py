@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-from flask import Blueprint, session
+from flask import Blueprint, session, g
 from flask import render_template
 from flask import redirect
 from flaskr.classes.featureSelectionClass import FeatureSelection
@@ -20,8 +20,8 @@ bp = Blueprint("validation", __name__, url_prefix="/val")
 @bp.route("/")
 @login_required
 def index():
-    user_id = session.get("user_id")
-    r = UserData.get_user_results(user_id)
+    r = g.result
+    user_id = r['user_id']
 
     e = ValidateUser.has_data(r, ['col_overlapped', 'col_selected_method', 'col_method1', 'col_method2', 'col_method3'])
 
