@@ -527,6 +527,14 @@ class UserData:
         ).fetchone()
         return result
 
+    def get_result_to_validation(user_id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM results WHERE user_id = ? AND selected_method != '' ", (user_id,)
+        ).fetchall()
+
+        return result
+
     def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers):
         db = get_db()
         db.execute(

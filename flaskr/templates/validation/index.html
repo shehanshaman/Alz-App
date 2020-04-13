@@ -67,50 +67,51 @@
 
 </head>
 
-    <style> 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
-    </style> 
+<style>
+    #loader {
+        border: 12px solid #26a69a66;
+        border-radius: 50%;
+        border-top: 12px solid #26a69a;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .center-load {
+        position: absolute;
+        top: -230px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+</style>
 
 <style type="text/css">
 
-    @keyframes grow{
+    @keyframes grow {
         from {
             opacity: 0;
             transform: scale(0.5);
         }
-        to{
+        to {
             opacity: 1;
             transform: scale(1);
         }
     }
 
-    .notification.hide{
+    .notification.hide {
         animation: shrink 0.4s ease-out forwards;
     }
-    @keyframes shrink{
-        to{
+
+    @keyframes shrink {
+        to {
             opacity: 0;
             transform: scale(0.6);
         }
@@ -119,13 +120,13 @@
 </style>
 
 <style type="text/css">
-    
-    .union_div path{
+
+    .union_div path {
         stroke: #26a69a;
         stroke-width: 4px;
     }
 
-    .value_p{
+    .value_p {
         font-size: 34px;
         font-family: monospace;
         font-weight: bold;
@@ -133,7 +134,7 @@
         cursor: pointer;
     }
 
-    .value_clf_p{
+    .value_clf_p {
         font-size: 26px;
         font-family: monospace;
         font-weight: bold;
@@ -141,115 +142,115 @@
     }
 
     .p_M {
-      position: absolute;
-      left: 48%;
-      top: 47%;
+        position: absolute;
+        left: 48%;
+        top: 47%;
     }
 
     .p_T {
-      position: absolute;
-      left: 49%;
-      top: 17%;
+        position: absolute;
+        left: 49%;
+        top: 17%;
     }
 
     .p_L {
-      position: absolute;
-      left: 26%;
-      top: 62%;
+        position: absolute;
+        left: 26%;
+        top: 62%;
     }
 
     .p_R {
-      position: absolute;
-      left: 72%;
-      top: 62%;
+        position: absolute;
+        left: 72%;
+        top: 62%;
     }
 
     .p_TLM {
-      position: absolute;
-      left: 38%;
-      top: 40%;
+        position: absolute;
+        left: 38%;
+        top: 40%;
     }
 
     .p_TRM {
-      position: absolute;
-      left: 60%;
-      top: 40%;
+        position: absolute;
+        left: 60%;
+        top: 40%;
     }
 
     .p_LRM {
-      position: absolute;
-      left: 49%;
-      top: 64%;
+        position: absolute;
+        left: 49%;
+        top: 64%;
     }
 
-    .clf_T{
-      position: absolute;
-      left: 47%;
-      top: -6%;
+    .clf_T {
+        position: absolute;
+        left: 47%;
+        top: -6%;
     }
 
-    .clf_R{
-      position: absolute;
-      left: 97%;
-      top: 56%;
+    .clf_R {
+        position: absolute;
+        left: 97%;
+        top: 56%;
     }
 
-    .clf_L{
-      position: absolute;
-      left: -10%;
-      top: 60%;
-    }   
+    .clf_L {
+        position: absolute;
+        left: -10%;
+        top: 60%;
+    }
 
-    .popup_head_div{
+    .popup_head_div {
         font-size: 20px;
         font-family: monospace;
         color: #26a69a;
     }
 
-    .popup_gene_list_div{
+    .popup_gene_list_div {
         font-size: 17px;
         font-family: monospace;
         color: gray;
         text-align: justify;
     }
 
-/* The Modal (background) */
-.modal_pop {
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
+    /* The Modal (background) */
+    .modal_pop {
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    }
 
-/* Modal Content */
-.modal-content-1 {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 40px;
-  border: 1px solid #888;
-  width: 50%;
-}
+    /* Modal Content */
+    .modal-content-1 {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 40px;
+        border: 1px solid #888;
+        width: 50%;
+    }
 
-/* The Close Button */
-.close {
-  color: #000000;
-  float: right;
-  font-size: 45px;
-  font-weight: bold;
-}
+    /* The Close Button */
+    .close {
+        color: #000000;
+        float: right;
+        font-size: 45px;
+        font-weight: bold;
+    }
 
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
 </style>
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
@@ -290,7 +291,12 @@
 
         <div class="step-heading">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">VALIDATION</h3>
+                <h3 id="h3-head-6" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">VALIDATION</h3>
+            </div>
+            <div class="row">
+                <label style="float: left"><b>Selected File: </b> {{ filename }}</label>
+                <a href="../fs/val/config" style="float: right"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
             </div>
         </div>
 
@@ -330,7 +336,9 @@
 
             <div class="result_content">
                 <div id="venn_diagram_div" class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that are already identified and biologically validated from the 50 genes obtained by each method</h4>
+                    <h4 id="h4-head-6" class="card__title"
+                        style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that
+                        are already identified and biologically validated from the 50 genes obtained by each method</h4>
                 </div>
 
                 <br>
@@ -339,13 +347,13 @@
                     <div class="col-sm-3"></div>
                     <div class="col-sm-8 union_div" style="width: 50%;margin-top: auto;">
 
-                        <p class="p_M value_p">{{venn_data[2] | length}}</p>
-                        <p class="p_T value_p">{{venn_data[0][1] | length}}</p>
-                        <p class="p_L value_p">{{venn_data[0][0] | length}}</p>
-                        <p class="p_R value_p">{{venn_data[0][2] | length}}</p>
-                        <p class="p_TLM value_p">{{venn_data[1][0] | length}}</p>
-                        <p class="p_TRM value_p">{{venn_data[1][1] | length}}</p>
-                        <p class="p_LRM value_p">{{venn_data[1][2] | length}}</p>
+                        <p class="p_M value_p">{{ venn_data[2] | length }}</p>
+                        <p class="p_T value_p">{{ venn_data[0][1] | length }}</p>
+                        <p class="p_L value_p">{{ venn_data[0][0] | length }}</p>
+                        <p class="p_R value_p">{{ venn_data[0][2] | length }}</p>
+                        <p class="p_TLM value_p">{{ venn_data[1][0] | length }}</p>
+                        <p class="p_TRM value_p">{{ venn_data[1][1] | length }}</p>
+                        <p class="p_LRM value_p">{{ venn_data[1][2] | length }}</p>
 
                         <p class="value_clf_p clf_T">{{ method_names[1] }}</p>
                         <p class="value_clf_p clf_L">{{ method_names[0] }}</p>
@@ -400,12 +408,15 @@
                         </svg>
                     </div>
                     <div class="col-sm-1"></div>
- 
+
                 </div>
 
                 <div class="row">
-                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">GeneCards.org contains information on the already identified risk genes for a particular disease. This diagram shows the number of genes selected by each method which are also identified by GeneCards !</p>
-                </div>                
+                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">
+                        GeneCards.org contains information on the already identified risk genes for a particular
+                        disease. This diagram shows the number of genes selected by each method which are also
+                        identified by GeneCards !</p>
+                </div>
             </div>
 
             <div class="result_content">
@@ -450,33 +461,40 @@
     <div class="modal-content-1">
         <div class="row">
             <span class="close">&times;</span>
-        </div>      
-        <div class="row">
-            <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }} method</p>
-            <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }} method</p>
-            <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }} method</p>
-            <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }} + {{ method_names[1] }} + {{ method_names[2] }}</p>
-            <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }} and {{ method_names[1] }}</p>
-            <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }} and {{ method_names[2] }}</p>        
-            <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }} and {{ method_names[2] }}</p>                      
         </div>
         <div class="row">
-            <p style="display: none;" class="popup_gene_list_div T_gene">{{venn_data[0][1]}}</p>
-            <p style="display: none;" class="popup_gene_list_div L_gene">{{venn_data[0][0]}}</p>
-            <p style="display: none;" class="popup_gene_list_div R_gene">{{venn_data[0][2]}}</p>
-            <p style="display: none;" class="popup_gene_list_div M_gene">{{venn_data[2]}}</p>
-            <p style="display: none;" class="popup_gene_list_div TL_gene">{{venn_data[1][0]}}</p>
-            <p style="display: none;" class="popup_gene_list_div TR_gene">{{venn_data[1][1]}}</p>        
-            <p style="display: none;" class="popup_gene_list_div LR_gene">{{venn_data[1][2]}}</p>
-        </div>          
+            <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }}
+                method</p>
+            <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }}
+                method</p>
+            <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }}
+                method</p>
+            <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }}
+                + {{ method_names[1] }} + {{ method_names[2] }}</p>
+            <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }}
+                and {{ method_names[1] }}</p>
+            <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }}
+                and {{ method_names[2] }}</p>
+            <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }}
+                and {{ method_names[2] }}</p>
+        </div>
+        <div class="row">
+            <p style="display: none;" class="popup_gene_list_div T_gene">{{ venn_data[0][1] }}</p>
+            <p style="display: none;" class="popup_gene_list_div L_gene">{{ venn_data[0][0] }}</p>
+            <p style="display: none;" class="popup_gene_list_div R_gene">{{ venn_data[0][2] }}</p>
+            <p style="display: none;" class="popup_gene_list_div M_gene">{{ venn_data[2] }}</p>
+            <p style="display: none;" class="popup_gene_list_div TL_gene">{{ venn_data[1][0] }}</p>
+            <p style="display: none;" class="popup_gene_list_div TR_gene">{{ venn_data[1][1] }}</p>
+            <p style="display: none;" class="popup_gene_list_div LR_gene">{{ venn_data[1][2] }}</p>
+        </div>
     </div>
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">MODELING</h5>        
-    </div> 
-    
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">MODELING</h5>
+</div>
+
 {% include 'guide_footer.html' %}
 
 </body>
@@ -527,9 +545,9 @@
         $('.main-div-validation').hide(0);
         $('.loader-div').show(0);
         $('.main-body').click(false);
-        $("#main-form-div-model").submit();   
+        $("#main-form-div-model").submit();
         $('#tourControls').hide(0);
-        $('.notification-container-pop').hide(0);     
+        $('.notification-container-pop').hide(0);
     });
 
 </script>

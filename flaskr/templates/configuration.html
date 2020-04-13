@@ -34,15 +34,6 @@
             text-align: center;
         }
 
-        .result_content {
-            border-color: #26a69a;
-            border-style: ridge;
-            padding: 15px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-radius: 16px;
-        }
-
         ul {
             list-style-type: circle;
         }
@@ -57,6 +48,10 @@
             border-radius: inherit;
             border: inherit;
         }
+
+        #result_view {
+            display: none;
+        }
     </style>
 
 </head>
@@ -66,7 +61,7 @@
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="main-div-validation">
+<div class="main-div-config">
 
     <div id="mainDataInterface-id" class="container mainDataInterface">
 
@@ -75,30 +70,61 @@
             <!-- Modal Structure -->
             <div id="modal1" class="modal">
                 <div class="modal-content">
-                    <div class="header">
-                        <h4 id="method_head">Select File</h4>
+                    <div class="row">
+                        <h4 id="h3-head-1" class="card__title"
+                            style="text-align: center;font-family: monospace;">Choose File to {{ title }}:</h4>
+
                     </div>
                     <div class="content">
-                        <p style="word-wrap: break-word;" id=""></p>
-                    </div>
+                        <form method="post" action="/fs/config/" enctype="multipart/form-data" id="main-form">
 
+                            <div class="md-form">
+                                <select style="font-family: monospace;" class="form-control" id="available_result"
+                                        name="available_result">
+                                    <option disabled="disabled" selected>Pick a choice!</option>
+                                    {% for name in all_result %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" id="url" name="url" value="{{ url }}"/>
+                            </div>
+
+                            <div class="row" class="well" id="result_view"
+                                 style="padding: 10px;">
+                                <div class="row">
+                                    <h6>Feature Selection Methods</h6>
+                                    <div id="fs_methods"></div>
+                                </div>
+                                <div class="row">
+                                    <h6>Number of Features</h6>
+                                    <div id="fs_methods_len"></div>
+                                </div>
+
+                                <div class="row centre">
+                                    <button class="waves-effect waves-dark btn"
+                                            id="submit_button">
+                                        Select
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="modal-close waves-effect waves-green btn-flat">Close</a>
+                    <a href="{{ url_for('home.index') }}"
+                       class="modal-close waves-effect waves-green btn-flat">Close</a>
                 </div>
             </div>
 
-
-            <hr class="line-hr">
-
-            <div class="step-actions">
-                <button id="btn-submit-model" class="waves-effect waves-dark btn next-step step-6-click" onclick="more_click()">
-                    <a>MODELING</a>
-                </button>
-            </div>
         </div>
 
     </div>
+</div>
+
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>
 </div>
 
 {% include 'footer.html' %}
@@ -125,9 +151,26 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
-    $('#modal1').openModal({dismissible:false});
-    function more_click(event) {
-        $('#modal1').openModal();
-    }
+    $('#modal1').openModal({dismissible: false});
+
+    $('#available_result').change(function () {
+        var filename = $('#available_result').find(":selected").text();
+        $.get("{{ url_for('modeling.get_results_for_modeling') }}", {filename: filename}, function (data, status) {
+            data = data.split("|");
+            methods = data['4'].split(',');
+            len = methods.pop()
+            $('#fs_methods_len').text(len);
+            $('#fs_methods').text(methods);
+
+            document.getElementById('result_view').style.display = "block";
+        });
+    });
+
+    $('#submit_button').click(function () {
+        $('.main-div-config').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form").submit();
+    });
 </script>
 

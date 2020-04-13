@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, session, g, flash
+from flask import Blueprint, session, g, flash, url_for
 from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
@@ -7,6 +7,8 @@ from flask import redirect
 
 import base64
 import io
+
+from flaskr.db import get_db
 
 from flaskr.classes.validation import ValidateUser
 from .auth import UserData, login_required
@@ -103,7 +105,7 @@ def get_val():
 
     col = [col_m1, col_m2, col_m3]
 
-    if g.pre_process:
+    if g.pre_process and g.pre_process['classifiers']:
         selected_clfs_str = g.pre_process['classifiers']
         classifiers = selected_clfs_str.split(',')
         session['pre_process_id'] = None
@@ -125,6 +127,36 @@ def get_val():
     venn_data = FeatureSelection.venn_diagram_data(col_m1, col_m2, col_m3)
 
     return render_template("fs/result.html", image_data=img64, methods=fs_methods, columns=col, venn_data=venn_data)
+
+
+@bp.route("/<method>/config")
+def result_config(method):
+    user_id = g.user['id']
+
+    if method == 'an':
+        all_result = UserData.get_user_results(user_id)
+        url = url_for('analyze.index')
+        title = "Analysis"
+
+    else:
+        all_result = UserData.get_result_to_validation(user_id)
+        url = url_for('validation.index')
+        title = "Validation"
+
+    all_result = [r['filename'] for r in all_result]
+
+    return render_template("configuration.html", title=title, url=url, all_result=all_result)
+
+
+@bp.route("/config/", methods=['POST'])
+def result_config_apply():
+    url = request.form["url"]
+    available_result = request.form["available_result"]
+    user_id = g.user['id']
+    session['result_id'] = UserData.get_result(user_id, available_result)['id']
+
+    return redirect(url)
+
 
 
 def get_summary_plot(results_testing, results_training):

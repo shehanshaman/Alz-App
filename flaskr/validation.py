@@ -20,15 +20,18 @@ bp = Blueprint("validation", __name__, url_prefix="/val")
 @bp.route("/")
 @login_required
 def index():
+
+    if session.get("result_id") is None:
+        return redirect('../fs/val/config')
+
     r = g.result
 
-    e = ValidateUser.has_data(r, ['col_overlapped', 'col_selected_method', 'col_method1', 'col_method2', 'col_method3'])
-
-    if e is not None:
-        return render_template("error.html", errors=e)
+    if r['col_selected_method'] is None:
+        return redirect('../fs/val/config')
 
     col_overlapped = r['col_overlapped'].split(',')
     col_selected_method = r['col_selected_method'].split(',')
+    filename = r['filename']
 
     if col_overlapped is None and col_selected_method is None:
         return redirect('/an')
@@ -56,7 +59,7 @@ def index():
     venn_data = FeatureSelection.venn_diagram_data(col_m1_gene_card, col_m2_gene_card, col_m3_gene_card)
 
     return render_template("validation/index.html", col_gene_card = col_gene_card, method_names = method_names,
-                           tables=[dis_gene_card.head().to_html(classes='data')], venn_data=venn_data)
+                           tables=[dis_gene_card.head().to_html(classes='data')], venn_data=venn_data, filename=filename)
 
 def get_overlap_features(col1, col2):
     t = list(set(col1) & set(col2))

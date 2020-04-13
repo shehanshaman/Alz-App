@@ -43,68 +43,69 @@
 
 </head>
 
-    <style> 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
+<style>
+    #loader {
+        border: 12px solid #26a69a66;
+        border-radius: 50%;
+        border-top: 12px solid #26a69a;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
 
-        .container-1 {
-            position: relative;
-            text-align: center;
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
         }
+    }
 
-        .top-right {
-            position: absolute;
-            top: 8px;
-            right: 5px;
-        } 
+    .center-load {
+        position: absolute;
+        top: -230px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
 
-    </style> 
+    .container-1 {
+        position: relative;
+        text-align: center;
+    }
+
+    .top-right {
+        position: absolute;
+        top: 8px;
+        right: 5px;
+    }
+
+</style>
 
 <style type="text/css">
 
-    @keyframes grow{
+    @keyframes grow {
         from {
             opacity: 0;
             transform: scale(0.5);
         }
-        to{
+        to {
             opacity: 1;
             transform: scale(1);
         }
     }
 
-    .notification.hide{
+    .notification.hide {
         animation: shrink 0.4s ease-out forwards;
     }
-    @keyframes shrink{
-        to{
+
+    @keyframes shrink {
+        to {
             opacity: 0;
             transform: scale(0.6);
         }
     }
 
-    .notification-info{
+    .notification-info {
         background-color: #00000096;
     }
 
@@ -147,11 +148,16 @@
 
         <div class="step">
             <div class="step-content">
+                <div class="row">
+                    <label style="float: left"><b>Selected File: </b> {{ filename }}</label>
+                    <a href="../fs/an/config" style="float: right"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
+                </div>
 
                 <div class="result_content">
                     <div class="row">
-                        <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">
-                        {{ method }} Selected Features </h3>
+                        <h3 id="h3-head-6" class="card__title"
+                            style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">
+                            {{ method }} Selected Features </h3>
                         <h3 id="selected-method" style="display: none;">{{ method }}</h3>
                     </div>
 
@@ -165,12 +171,13 @@
                                 <img id="selected_features" src="data:image/png;base64,{{ sel_roc }}" alt="overlap">
                             </div>
                             <div class="top-right">
-                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
-                                                class="use-download-selected_features" value="">
+                                <button type="button"
+                                        style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                        class="use-download-selected_features" value="">
                                     <i class="fas fa-file-download fa-2x"></i>
                                 </button>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
 
                     <div>
@@ -180,13 +187,21 @@
                         </div>
 
                         <div class="row">
-                            <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">A ROC curve is constructed by plotting the true positive rate (TPR) against the false positive rate (FPR). The true positive rate is the proportion of observations that were correctly predicted to be positive out of all positive observations (TP/(TP + FN)). Similarly, the false positive rate is the proportion of observations that are incorrectly predicted to be positive out of all negative observations (FP/(TN + FP)). This graph shows the ROC curve consideing the genes obtained through considering least correlation !</p>
-                            <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">The correlation matrix of the genes selected by {{ method }} only !</p>
-                        </div> 
+                            <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">
+                                A ROC curve is constructed by plotting the true positive rate (TPR) against the false
+                                positive rate (FPR). The true positive rate is the proportion of observations that were
+                                correctly predicted to be positive out of all positive observations (TP/(TP + FN)).
+                                Similarly, the false positive rate is the proportion of observations that are
+                                incorrectly predicted to be positive out of all negative observations (FP/(TN + FP)).
+                                This graph shows the ROC curve consideing the genes obtained through considering least
+                                correlation !</p>
+                            <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">
+                                The correlation matrix of the genes selected by {{ method }} only !</p>
+                        </div>
 
                         <br>
 
-                        <div id="results_table_div1"  style="overflow: auto;">
+                        <div id="results_table_div1" style="overflow: auto;">
                             {% for table in table_r1 %}
                                 {{ table|safe }}
                             {% endfor %}
@@ -197,7 +212,9 @@
 
                 <div class="result_content">
                     <div class="row">
-                        <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;text-transform: uppercase;">{{ method }} + Overlapped
+                        <h3 id="h3-head-6" class="card__title"
+                            style="text-align: center;color: #26a69a;text-transform: uppercase;">{{ method }} +
+                            Overlapped
                             Features</h3>
                     </div>
 
@@ -207,17 +224,18 @@
                     </div>
 
                     <div class="row">
-                        <div id="results_plot_div2"  class="container-1">
+                        <div id="results_plot_div2" class="container-1">
                             <div class="summary_plot">
                                 <img id="overlapped_features" src="data:image/png;base64,{{ all_roc }}" alt="overlap">
                             </div>
                             <div class="top-right">
-                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
-                                                class="use-download-overlapped_features" value="">
+                                <button type="button"
+                                        style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                        class="use-download-overlapped_features" value="">
                                     <i class="fas fa-file-download fa-2x"></i>
                                 </button>
-                            </div> 
-                        </div>                       
+                            </div>
+                        </div>
                     </div>
 
                     <div>
@@ -227,12 +245,17 @@
                         </div>
 
                         <div class="row">
-                            <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">The graph(left) shows the ROC curve of all the genes selected.That is, the set of overlapped genes plus the genes filtered out by {{ method }} considering the least correlation, The graph(right) shows the correlation matrix of all the genes selected. That is, the set of overlapped genes plus the genes filtered out by considering the least correlation !</p>
-                        </div> 
+                            <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">
+                                The graph(left) shows the ROC curve of all the genes selected.That is, the set of
+                                overlapped genes plus the genes filtered out by {{ method }} considering the least
+                                correlation, The graph(right) shows the correlation matrix of all the genes selected.
+                                That is, the set of overlapped genes plus the genes filtered out by considering the
+                                least correlation !</p>
+                        </div>
 
                         <br>
 
-                        <div id="results_table_div2"  style="overflow: auto;">
+                        <div id="results_table_div2" style="overflow: auto;">
                             {% for table in table_r2 %}
                                 {{ table|safe }}
                             {% endfor %}
@@ -260,10 +283,10 @@
     </div>
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">VALIDATING</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">VALIDATING</h5>
+</div>
 
 {% include 'guide_footer.html' %}
 
@@ -299,10 +322,10 @@
 
         $("#selected_method").val(fired_button);
 
-        $("#main-form-div-an-3-continue").submit();   
+        $("#main-form-div-an-3-continue").submit();
 
         $('#tourControls').hide(0);
-        $('.notification-container-pop').hide(0); 
+        $('.notification-container-pop').hide(0);
 
     });
 

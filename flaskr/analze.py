@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, session, g
+from flask import Blueprint, session, g, url_for
 from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
@@ -23,6 +23,10 @@ bp = Blueprint("analyze", __name__, url_prefix="/an")
 @bp.route("/")
 @login_required
 def index():
+
+    if session.get("result_id") is None:
+        return redirect('../fs/an/config')
+
     r = g.result
     user_id = r['user_id']
 
@@ -63,7 +67,8 @@ def index():
 
     small_set_pic_hash = get_small_set_features_fig(m_scores,x_scores, method_names[1:4], selected_clfs)
 
-    return render_template("analyze/index.html", corr_data = correlation_pic_hash, overlap_data = overlap_pic_hash, small_set= small_set_pic_hash, methods = method_names[1:4])
+    return render_template("analyze/index.html", corr_data = correlation_pic_hash, overlap_data = overlap_pic_hash,
+                           small_set= small_set_pic_hash, methods = method_names[1:4], filename=filename)
 
 
 @bp.route("/step2", methods = ['POST'])
@@ -111,9 +116,9 @@ def selected_method():
     UserData.update_result_column(user_id, filename, 'col_selected_method', col_selected_str)
 
     return render_template("analyze/analyze_correlation.html", corr_results=cmp_corr_results_pic_hash,
-                           tables=[max_corr_df.head().to_html(classes='data')], titles=max_corr_df.head().columns.values,
+                           tables=[max_corr_df.head().to_html(classes='data')],
                            method_title = selected_method, overlap = overlap, corr_selected = col_selected_method,
-                           max_clasify = max_corr_df['Maximum Accuracy'].idxmax(), corr_score = corr_score_pic_hash)
+                           max_clasify = max_corr_df['Maximum Accuracy'].idxmax(), corr_score = corr_score_pic_hash, filename=filename)
 
 @bp.route("/step3")
 @login_required
@@ -146,7 +151,7 @@ def final_result():
 
     return render_template("analyze/final_result.html", sel_roc=selected_roc_pic_hash, table_r1 = [r1_df.to_html(classes='data')],
                            title_r1 = r1_df.head().columns.values, all_roc=all_roc_pic_hash, table_r2 = [r2_df.to_html(classes='data')],
-                           title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col)
+                           title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col, filename = filename)
 
 def checkList(list1, list2):
     for word in list2:

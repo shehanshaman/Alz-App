@@ -45,7 +45,7 @@ def index():
 
     classifier_list = ["svmLinear", "svmGaussian", "randomForest"]
 
-    all_result = UserData.get_user_results(user_id)
+    all_result = UserData.get_result_to_validation(user_id)
     all_result = [r['filename'] for r in all_result]
 
     return render_template("modeling/index.html", available_list=list_names, classifier_list=classifier_list,

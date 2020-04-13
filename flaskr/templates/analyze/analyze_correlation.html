@@ -19,7 +19,7 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-        <!-- Compiled and minified CSS -->
+    <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
     <style>
@@ -90,82 +90,83 @@
             position: absolute;
             top: 8px;
             right: 5px;
-        } 
+        }
 
     </style>
 
 </head>
 
-    <style>
-        .summary_plot > img {
-            padding: 5px;
-            width: 100%;
-        }
+<style>
+    .summary_plot > img {
+        padding: 5px;
+        width: 100%;
+    }
 
-        div.centre {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 0;
-            margin-bottom: 0;
-            align-content: center;
-            text-align: center;
-        }
+    div.centre {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0;
+        margin-bottom: 0;
+        align-content: center;
+        text-align: center;
+    }
 
-        .result_content {
-            border-color: #26a69a;
-            border-style: ridge;
-            padding: 15px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-radius: 16px;
-        }
-    </style>
+    .result_content {
+        border-color: #26a69a;
+        border-style: ridge;
+        padding: 15px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 16px;
+    }
+</style>
 
-    <style> 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
-    </style> 
+<style>
+    #loader {
+        border: 12px solid #26a69a66;
+        border-radius: 50%;
+        border-top: 12px solid #26a69a;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .center-load {
+        position: absolute;
+        top: -230px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+</style>
 
 <style type="text/css">
 
-    @keyframes grow{
+    @keyframes grow {
         from {
             opacity: 0;
             transform: scale(0.5);
         }
-        to{
+        to {
             opacity: 1;
             transform: scale(1);
         }
     }
 
-    .notification.hide{
+    .notification.hide {
         animation: shrink 0.4s ease-out forwards;
     }
-    @keyframes shrink{
-        to{
+
+    @keyframes shrink {
+        to {
             opacity: 0;
             transform: scale(0.6);
         }
@@ -211,8 +212,14 @@
 
         <div class="step-heading">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">CORRELATION : {{ method_title }}</h3>
+                <h3 id="h3-head-6" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">
+                    CORRELATION : {{ method_title }}</h3>
                 <h3 id="selected-method" style="display: none;">{{ method_title }}</h3>
+            </div>
+            <div class="row">
+                <label style="float: left"><b>Selected File: </b> {{ filename }}</label>
+                <a href="../fs/an/config" style="float: right"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
             </div>
         </div>
 
@@ -223,51 +230,66 @@
                     <div class="col-sm-6">
                         <div id="results_plot_div1" class="container-1">
                             <div class="result_plot">
-                                <img id="correlated_features" src="data:image/png;base64,{{ corr_results }}" alt="overlap">
+                                <img id="correlated_features" src="data:image/png;base64,{{ corr_results }}"
+                                     alt="overlap">
                             </div>
                             <div class="top-right" style="right: 31px;">
-                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
-                                                    class="use-download-correlated_features" value="">
+                                <button type="button"
+                                        style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                        class="use-download-correlated_features" value="">
                                     <i class="fas fa-file-download fa-2x"></i>
                                 </button>
                             </div>
                         </div>
-                    </div>                      
+                    </div>
                     <div class="col-sm-6 corr_result_text">
-                        <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This graph shows the variation of correlation values with the number of correlated features. By examining this graph, the method that gives the least correlated features can be filtered out !</p>
+                        <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This
+                            graph shows the variation of correlation values with the number of correlated features. By
+                            examining this graph, the method that gives the least correlated features can be filtered
+                            out !</p>
                     </div>
                 </div>
             </div>
 
             <div class="result_content">
                 <div class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Variation of the correlation
+                    <h4 id="h4-head-6" class="card__title"
+                        style="text-align: center;font-size:26px;font-family: monospace;">Variation of the correlation
                         coefficients of the genes found only by {{ method_title }} with
                         classification accuracy</h4>
                 </div>
 
                 <div class="row">
-                    <div id="results_plot_div2"  class="container-1">
+                    <div id="results_plot_div2" class="container-1">
                         <div class="summary_plot">
-                            <img id="correlation_coefficients" src="data:image/png;base64,{{ corr_score }}" alt="overlap">
+                            <img id="correlation_coefficients" src="data:image/png;base64,{{ corr_score }}"
+                                 alt="overlap">
                         </div>
                         <div class="top-right">
-                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;" class="use-download-correlation_coefficients" value="">
+                            <button type="button"
+                                    style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                    class="use-download-correlation_coefficients" value="">
                                 <i class="fas fa-file-download fa-2x"></i>
                             </button>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
 
                 <div class="row">
-                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This graph (right) shows how the correlation coefficients of the genes only found by {{ method_title }} varies with the number of features. The graph(left) shows the variation of correlation coefficients of the genes selected by {{ method_title }} alone varies with the classification accuracy of three classifiers !</p>
-                </div>                
+                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This
+                        graph (right) shows how the correlation coefficients of the genes only found
+                        by {{ method_title }} varies with the number of features. The graph(left) shows the variation of
+                        correlation coefficients of the genes selected by {{ method_title }} alone varies with the
+                        classification accuracy of three classifiers !</p>
+                </div>
             </div>
 
             <div class="result_content">
                 <div class="row">
 
-                    <h4 id="h4-head-2" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Finding features that has minimum
+                    <h4 id="h4-head-2" class="card__title"
+                        style="text-align: center;font-size:26px;font-family: monospace;">Finding features that has
+                        minimum
                         correlated and high classification accuracy</h4>
                 </div>
 
@@ -281,14 +303,22 @@
                 <br>
 
                 <div class="row">
-                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">By considering the above graphs, you can select the plots where the highest accuracies occur in each classifier. The table shows the instance where the maximum accuracy is obtained, the number of features at that particular point and the range of correlation coefficients of that instance. Out of the 3 models, you can obtain the maximum accuracy to proceed further !</p>
-                </div>  
+                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">By
+                        considering the above graphs, you can select the plots where the highest accuracies occur in
+                        each classifier. The table shows the instance where the maximum accuracy is obtained, the number
+                        of features at that particular point and the range of correlation coefficients of that instance.
+                        Out of the 3 models, you can obtain the maximum accuracy to proceed further !</p>
+                </div>
             </div>
 
             <div class="row list-view">
                 <div id="btnContainer">
-                    <button id="list_div_btn" class="btn" onclick="listView()" style="background-color: white;color: black;"><i class="fa fa-bars"></i> List</button>
-                    <button id="grid_div_btn" class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+                    <button id="list_div_btn" class="btn" onclick="listView()"
+                            style="background-color: white;color: black;"><i class="fa fa-bars"></i> List
+                    </button>
+                    <button id="grid_div_btn" class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i>
+                        Grid
+                    </button>
                 </div>
                 <br>
 
@@ -328,21 +358,27 @@
     <div class="modal-content">
         <div class="row">
             <span class="close">&times;</span>
-        </div>      
-        <div class="row">
-            <p class="popup_head_div">Some text in the Modal..</p>          
         </div>
         <div class="row">
-            <p class="popup_gene_list_div">['CHN1', 'NGFRAP1', 'TUBA1C', 'TMSB10', 'SYT1', 'USMG5', 'UBB', 'LDHA', 'STXBP1', 'STMN2', 'TUBB2A', 'SOD1', 'SH3GL2', 'UBC', 'GAPDH', 'COPG2IT1', 'ACTB /// ACTG1', 'SPARCL1', 'ATP5B', 'NEFL', 'LDHB', 'INA', 'RTN3', 'NAPB', 'GNAS', 'NAP1L5', 'MTCH1', 'NPTN', 'RTN4', 'LOC728392', 'NME7', 'TCEAL2', 'SARAF', 'TMSB4X', 'MAGED1', 'SNAP91', 'HSPA8 /// SNORD14C /// SNORD14D', 'NDUFS5 /// RPL10', 'MRFAP1', 'TSPAN7', 'RPL41', 'TCEAL3', 'SLC9A6', 'OAT', 'SNAP25', 'PCP4', 'NAP1L3', 'HSP90AA1', 'TUBA1A', 'ATL1']</p>        
-        </div>          
+            <p class="popup_head_div">Some text in the Modal..</p>
+        </div>
+        <div class="row">
+            <p class="popup_gene_list_div">['CHN1', 'NGFRAP1', 'TUBA1C', 'TMSB10', 'SYT1', 'USMG5', 'UBB', 'LDHA',
+                'STXBP1', 'STMN2', 'TUBB2A', 'SOD1', 'SH3GL2', 'UBC', 'GAPDH', 'COPG2IT1', 'ACTB /// ACTG1', 'SPARCL1',
+                'ATP5B', 'NEFL', 'LDHB', 'INA', 'RTN3', 'NAPB', 'GNAS', 'NAP1L5', 'MTCH1', 'NPTN', 'RTN4', 'LOC728392',
+                'NME7', 'TCEAL2', 'SARAF', 'TMSB4X', 'MAGED1', 'SNAP91', 'HSPA8 /// SNORD14C /// SNORD14D', 'NDUFS5 ///
+                RPL10', 'MRFAP1', 'TSPAN7', 'RPL41', 'TCEAL3', 'SLC9A6', 'OAT', 'SNAP25', 'PCP4', 'NAP1L3', 'HSP90AA1',
+                'TUBA1A', 'ATL1']</p>
+        </div>
     </div>
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 20%;text-align: center;color: #26a69a; margin-bottom: 200px;text-transform: uppercase;">{{ method_title }}</h5>
-        <h5 style="margin-top: -12%;text-align: center;color: #26a69a; margin-bottom: 200px;">CONTINUE RESULTS ANALYSING</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 20%;text-align: center;color: #26a69a; margin-bottom: 200px;text-transform: uppercase;">{{ method_title }}</h5>
+    <h5 style="margin-top: -12%;text-align: center;color: #26a69a; margin-bottom: 200px;">CONTINUE RESULTS
+        ANALYSING</h5>
+</div>
 
 {% include 'guide_footer.html' %}
 
@@ -419,9 +455,9 @@
         $('.main-div-an-2').hide(0);
         $('.loader-div').show(0);
         $('.main-body').click(false);
-        $("#main-form-div-an-2-continue").submit();  
+        $("#main-form-div-an-2-continue").submit();
         $('#tourControls').hide(0);
-        $('.notification-container-pop').hide(0);              
+        $('.notification-container-pop').hide(0);
     });
 
 
@@ -467,70 +503,70 @@
 
 <script type="text/javascript">
 
-function hover_white(p_div, svg_div){
-  $(svg_div + "," + p_div).hover(function(){
-        $(p_div).css("background-color", "transparent");
-        $(p_div).css("color", "white");
-        $(svg_div).css("fill", "#26a69a");
-    }, function(){
-        $(p_div).css("background-color", "transparent");    
-        $(p_div).css("color", "#26a69a");
-        $(svg_div).css("fill", "white");
-  });   
-}
+    function hover_white(p_div, svg_div) {
+        $(svg_div + "," + p_div).hover(function () {
+            $(p_div).css("background-color", "transparent");
+            $(p_div).css("color", "white");
+            $(svg_div).css("fill", "#26a69a");
+        }, function () {
+            $(p_div).css("background-color", "transparent");
+            $(p_div).css("color", "#26a69a");
+            $(svg_div).css("fill", "white");
+        });
+    }
 
-function hover_white_blue(p_div, svg_div){
-  $(svg_div + "," + p_div).hover(function(){
-        $(p_div).css("background-color", "transparent");
-        $(p_div).css("color", "white");
-        $(svg_div).css("fill", "#26a69a");
-    }, function(){
-        $(p_div).css("background-color", "transparent");    
-        $(p_div).css("color", "#26a69a");
-        $(svg_div).css("fill", "#9df6ed");
-  });   
-}
+    function hover_white_blue(p_div, svg_div) {
+        $(svg_div + "," + p_div).hover(function () {
+            $(p_div).css("background-color", "transparent");
+            $(p_div).css("color", "white");
+            $(svg_div).css("fill", "#26a69a");
+        }, function () {
+            $(p_div).css("background-color", "transparent");
+            $(p_div).css("color", "#26a69a");
+            $(svg_div).css("fill", "#9df6ed");
+        });
+    }
 
-hover_white('.p_M', '#M_clc');
-hover_white('.p_R', '#R_clc');
-hover_white('.p_L', '#L_clc');
-hover_white('.p_T', '#T_clc');
-hover_white_blue('.p_LRM', '#LRM_clc');
-hover_white_blue('.p_TRM', '#TRM_clc');
-hover_white_blue('.p_TLM', '#TLM_clc');
+    hover_white('.p_M', '#M_clc');
+    hover_white('.p_R', '#R_clc');
+    hover_white('.p_L', '#L_clc');
+    hover_white('.p_T', '#T_clc');
+    hover_white_blue('.p_LRM', '#LRM_clc');
+    hover_white_blue('.p_TRM', '#TRM_clc');
+    hover_white_blue('.p_TLM', '#TLM_clc');
 
-$('.modal-content .close').click(function(){
-    $('#popup_gene_list').fadeOut(500);
-});
+    $('.modal-content .close').click(function () {
+        $('#popup_gene_list').fadeOut(500);
+    });
 
-$('.p_M, #M_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-});
+    $('.p_M, #M_clc').click(function () {
+        $('#popup_gene_list').fadeIn(500);
+    });
 
-$('.p_R, #R_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-});
-
-
-$('.p_L, #L_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-});
-
-$('.p_T, #T_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-});
-
-$('.p_LRM, #LRM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-});
+    $('.p_R, #R_clc').click(function () {
+        $('#popup_gene_list').fadeIn(500);
+    });
 
 
-$('.p_TRM, #TRM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-});
+    $('.p_L, #L_clc').click(function () {
+        $('#popup_gene_list').fadeIn(500);
+    });
 
-$('.p_TLM, #TLM_clc').click(function(){
-    $('#popup_gene_list').fadeIn(500);
-});
+    $('.p_T, #T_clc').click(function () {
+        $('#popup_gene_list').fadeIn(500);
+    });
+
+    $('.p_LRM, #LRM_clc').click(function () {
+        $('#popup_gene_list').fadeIn(500);
+    });
+
+
+    $('.p_TRM, #TRM_clc').click(function () {
+        $('#popup_gene_list').fadeIn(500);
+    });
+
+    $('.p_TLM, #TLM_clc').click(function () {
+        $('#popup_gene_list').fadeIn(500);
+    });
 
 </script>
