@@ -26,3 +26,7 @@ def index():
     # abort(405)
 
     return render_template("home.html", dis = pre, pre_name = list)
+
+@bp.route("/test")
+def test():
+    return render_template("configuration.html")
