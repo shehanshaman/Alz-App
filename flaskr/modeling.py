@@ -34,11 +34,10 @@ def index():
         s = request.args.get('s')
         a = request.args.get('a')
 
-    r = g.result
-    user_id = r['user_id']
+    user_id = g.user['id']
 
     list_names = []
-    path = USER_PATH / str(g.user["id"])
+    path = USER_PATH / str(user_id)
 
     for filename in os.listdir(path):
         list_names.append(filename)
