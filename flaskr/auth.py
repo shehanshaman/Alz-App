@@ -440,18 +440,10 @@ def create_user_db(db, username, password, given_name, image_url, is_verified):
     )
     db.commit()
 
-    # Adding user to results
     user_id = UserData.get_user_id(username)
-    # db.execute(
-    #     "INSERT INTO results (user_id, filename) VALUES (?, ?)",
-    #     (user_id, ''),
-    # )
-    # db.commit()
-
-    # Adding user to modeling
     db.execute(
         "INSERT INTO modeling (user_id, trained_file) VALUES (?, ?)",
-        (user_id, ''),
+        (user_id, None),
     )
     db.commit()
 
@@ -528,7 +520,7 @@ class UserData:
         db.commit()
 
     #result Table
-    def get_result_id(user_id, filename):
+    def get_result(user_id, filename):
         db = get_db()
         result = db.execute(
             "SELECT * FROM results WHERE user_id = ? AND filename = ?", (user_id, filename)
@@ -570,10 +562,9 @@ class UserData:
         db = get_db()
         result = db.execute(
             "SELECT * FROM results WHERE user_id = ?", (user_id,)
-        ).fetchone()
-        if result is not None:
-            return result
-        return None
+        ).fetchall()
+
+        return result
 
     def get_df_results(user_id, filename):
         db = get_db()

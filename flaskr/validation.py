@@ -21,7 +21,6 @@ bp = Blueprint("validation", __name__, url_prefix="/val")
 @login_required
 def index():
     r = g.result
-    user_id = r['user_id']
 
     e = ValidateUser.has_data(r, ['col_overlapped', 'col_selected_method', 'col_method1', 'col_method2', 'col_method3'])
 

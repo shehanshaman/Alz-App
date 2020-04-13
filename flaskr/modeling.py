@@ -34,26 +34,25 @@ def index():
         s = request.args.get('s')
         a = request.args.get('a')
 
-    user_id = session.get("user_id")
+    r = g.result
+    user_id = r['user_id']
 
     list_names = []
     path = USER_PATH / str(g.user["id"])
-    if not os.path.exists(path):
-        os.makedirs(path)
-        os.makedirs(path / "tmp")
+
     for filename in os.listdir(path):
         list_names.append(filename)
-
     list_names.remove("tmp")
 
     classifier_list = ["svmLinear", "svmGaussian", "randomForest"]
-
-    r = UserData.get_user_results(user_id)
 
     e = ValidateUser.has_data(r, ['col_overlapped', 'col_selected_method'])
 
     if e is not None:
         return render_template("error.html", errors=e)
+
+    all_result = UserData.get_user_results(user_id)
+    all_result = [r['filename'] for r in all_result]
 
     col_overlapped = r['col_overlapped'].split(',')
     col_selected_method = r['col_selected_method'].split(',')
@@ -64,7 +63,7 @@ def index():
     UserData.update_modeling(user_id, 'features', col_mo_str)
 
     return render_template("modeling/index.html", available_list=list_names, classifier_list=classifier_list,
-                           features=col_mo, state=s, accuracy = a)
+                           features=col_mo, state=s, accuracy = a, all_result = all_result)
 
 
 @bp.route("/", methods=["POST"])
@@ -239,6 +238,17 @@ def predict_results():
     return render_template("modeling/predict-results.html", available_list=list_names, details=details,
                            annotation_list=annotation_list, tables='')
 #add new
+
+@bp.route("/results/", methods=["GET"])
+@login_required
+def get_results_for_modeling():
+    filename = request.args.get('filename')
+    user_id = g.user['id']
+
+    result = UserData.get_result(user_id, filename)
+    result = '|'.join(str(r) for r in result)
+
+    return result
 
 def get_predicted_result_df(user_id, model_name, df):
     model = pickle.load(open(USER_PATH / str(user_id) / "tmp" / model_name, 'rb'))

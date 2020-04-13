@@ -23,22 +23,23 @@
 
 <style type="text/css">
 
-    @keyframes grow{
+    @keyframes grow {
         from {
             opacity: 0;
             transform: scale(0.5);
         }
-        to{
+        to {
             opacity: 1;
             transform: scale(1);
         }
     }
 
-    .notification.hide{
+    .notification.hide {
         animation: shrink 0.4s ease-out forwards;
     }
-    @keyframes shrink{
-        to{
+
+    @keyframes shrink {
+        to {
             opacity: 0;
             transform: scale(0.6);
         }
@@ -57,7 +58,8 @@
 
         <div class="step-content">
             <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">MODELLING</h3>
+                <h3 id="h3-head-1" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">MODELLING</h3>
             </div>
         </div>
 
@@ -65,7 +67,8 @@
 
             <div class="alert alert-success alert-dismissible fade in">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b> <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
+                <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b>
+                <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
             </div>
 
         {% elif state == '0' %}
@@ -77,22 +80,60 @@
 
         {% endif %}
 
-        <div class="features">
-            <h5>Extracted Features </h5>
-            <div id="extracted_features_div" class="well" style="background-color: #26a69a54; border: 1px solid #26a69a;">{{ features }}</div>
+        <div class="select-model">
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
+                        Analysed File :</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div id="choose_result_div" class="md-form">
+                        <select style="font-family: monospace;" class="form-control" id="available_result"
+                                name="available_result">
+                            <option disabled="disabled" selected>Pick a choice!</option>
+                            {% for name in all_result %}
+                                <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="result_view">
+
+                <div class="features" class="well"
+                     style="background-color: #26a69a54; border: 1px solid #26a69a; padding: 10px;">
+                    <div class="row">
+                        <h5>Feature Selection Methods</h5>
+                        <div id="fs_methods_div"></div>
+                    </div>
+                    <div class="row">
+                        <h5>Overlapped Features </h5>
+                        <div id="overlapped_features_div">{{ features }}</div>
+                    </div>
+                    <div class="row">
+                        <h5 id="selected_method"></h5>
+                        <div id="extracted_features_div">{{ features }}</div>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
         <br>
 
-        <div class="where-you-like" style="margin-top: 40px;border: 2px solid #26a69a;padding: 30px;">
+        <div class="where-you-like" style="margin-top: 5px;border: 2px solid #26a69a;padding: 30px;">
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose File :</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
+                        File :</h5>
                 </div>
                 <div class="col-sm-6">
-                    <div id="choose_file_div"  class="md-form">
-                        <select style="font-family: monospace;" class="form-control" id="available_files" name="available_files">
+                    <div id="choose_file_div" class="md-form">
+                        <select style="font-family: monospace;" class="form-control" id="available_files"
+                                name="available_files">
                             {% for name in available_list %}
                                 <option value="{{ name }}">{{ name }}</option>
                             {% endfor %}
@@ -101,12 +142,13 @@
                 </div>
             </div>
 
-            <div class="row" style="margin-top: 40px;">
+            <div class="row" style="margin-top: 5px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Classifier :</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Classifier
+                        :</h5>
                 </div>
                 <div class="col-sm-6">
-                    <div id="classifier_method_div"  class="md-form">
+                    <div id="classifier_method_div" class="md-form">
                         <select style="font-family: monospace;" class="form-control" id="classifier" name="classifier">
                             {% for name in classifier_list %}
                                 <option value="{{ name }}">{{ name }}</option>
@@ -155,7 +197,25 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
- 
-    var tour = guide_main_call(tip_model_index, 'BL');
 
+    var tour = guide_main_call(tip_model_index, 'BL');
+    document.getElementById('result_view').style.display = "none";
+
+</script>
+
+<script>
+    $('#available_result').change(function () {
+        var filename = $('#available_result').find(":selected").text();
+        $.get("./results/", {filename: filename}, function (data, status) {
+            data = data.split("|");
+            methods = data['4'].split(',');
+            methods.pop()
+            $('#overlapped_features_div').text(data[8]);
+            $('#extracted_features_div').text(data[9]);
+            $('#selected_method').text(data[10] + " Extracted Features");
+            $('#fs_methods_div').text(methods);
+
+            document.getElementById('result_view').style.display = "block";
+        });
+    });
 </script>

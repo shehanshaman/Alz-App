@@ -86,13 +86,13 @@ def get_val():
         selected_col[i] = ','.join(e for e in et_col)
 
     #Check data already filled in database
-    if UserData.get_result_id(user_id, filename):
+    if UserData.get_result(user_id, filename):
         UserData.delete_result(user_id, filename)
 
     #Save data to the result table
     UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2])
     #Save result id on session
-    result_id = UserData.get_result_id(user_id, filename)['id']
+    result_id = UserData.get_result(user_id, filename)['id']
     session['result_id'] = result_id
 
     #calculate results
