@@ -57,7 +57,7 @@ def index():
     venn_data = FeatureSelection.venn_diagram_data(col_m1_gene_card, col_m2_gene_card, col_m3_gene_card)
 
     return render_template("validation/index.html", col_gene_card = col_gene_card, method_names = method_names,
-                           tables=[dis_gene_card.head().to_html(classes='data')], titles=dis_gene_card.head().columns.values, venn_data=venn_data)
+                           tables=[dis_gene_card.head().to_html(classes='data')], venn_data=venn_data)
 
 def get_overlap_features(col1, col2):
     t = list(set(col1) & set(col2))
