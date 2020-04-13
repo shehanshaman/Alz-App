@@ -66,7 +66,7 @@ def load_logged_in_user():
     if result_id is None:
         g.result_id = None
     else:
-        g.result_id = (
+        g.result = (
             get_db().execute("SELECT * FROM results WHERE id = ?", (result_id,)).fetchone()
         )
 
@@ -556,6 +556,13 @@ class UserData:
         db.execute(
             "DELETE FROM results WHERE user_id = ?",
             (user_id,),
+        )
+        db.commit()
+
+    def update_result_column(user_id, filename, column, value):
+        db = get_db()
+        db.execute(
+            "UPDATE results SET " + column +" = ? WHERE user_id = ? AND filename = ?",( value, user_id, filename),
         )
         db.commit()
 
