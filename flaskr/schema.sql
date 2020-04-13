@@ -71,8 +71,8 @@ CREATE TABLE modeling (
   clasifier VARCHAR(50),
   features TEXT,
   model_path_name VARCHAR(100),
-  accuracy VARCHAR(10),
-  has_model INTEGER,
+  accuracy VARCHAR(10) DEFAULT NULL,
+  has_model INTEGER DEFAULT 1,
 
   FOREIGN KEY (user_id) REFERENCES user (id)
 );

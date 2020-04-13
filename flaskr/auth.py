@@ -587,22 +587,23 @@ class UserData:
         )
         db.commit()
 
-    def update_modeling(user_id, column, value):
+    #Medeling Table
+    def update_model(user_id, trained_file, clasifier, features, model_path_name, accuracy):
         db = get_db()
         db.execute(
-            "UPDATE modeling SET " + column +" = ? WHERE user_id = ?",( value, user_id),
+            "UPDATE modeling SET trained_file = ?, clasifier = ?, features = ?, model_path_name = ?, "
+            "accuracy = ?  WHERE user_id = ?", (trained_file, clasifier, features, model_path_name, accuracy, user_id),
         )
         db.commit()
 
-    def get_user_model(user_id):
+    def get_model(user_id):
         db = get_db()
         result = db.execute(
             "SELECT * FROM modeling WHERE user_id = ?", (user_id,)
         ).fetchone()
-        if result is not None:
-            return result
-        return None
+        return result
 
+    #remove user from the app
     def remove_user(user_id):
         db = get_db()
         db.execute(
