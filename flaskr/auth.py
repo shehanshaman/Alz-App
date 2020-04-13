@@ -442,11 +442,11 @@ def create_user_db(db, username, password, given_name, image_url, is_verified):
 
     # Adding user to results
     user_id = UserData.get_user_id(username)
-    db.execute(
-        "INSERT INTO results (user_id, filename) VALUES (?, ?)",
-        (user_id, ''),
-    )
-    db.commit()
+    # db.execute(
+    #     "INSERT INTO results (user_id, filename) VALUES (?, ?)",
+    #     (user_id, ''),
+    # )
+    # db.commit()
 
     # Adding user to modeling
     db.execute(
@@ -543,6 +543,22 @@ class UserData:
         )
         db.commit()
 
+    def delete_result(user_id, filename):
+        db = get_db()
+        db.execute(
+            "DELETE FROM results WHERE user_id = ? AND filename = ?",
+            (user_id, filename),
+        )
+        db.commit()
+
+    def delete_results(user_id):
+        db = get_db()
+        db.execute(
+            "DELETE FROM results WHERE user_id = ?",
+            (user_id,),
+        )
+        db.commit()
+
     def get_user_results(user_id):
         db = get_db()
         result = db.execute(
@@ -632,26 +648,27 @@ class UserData:
 
     def get_user_pre_request(id):
         pre = ['', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled']
-        has_file = UserData.is_user_upload_file(id)
-        result = UserData.get_user_results(id)
-        model = UserData.get_user_model(id)
-
-        if has_file:
-            pre[1] = ''
-            pre[2] = ''
-            pre[3] = ''
-
-        if result['filename'] is not '':
-            pre[3] = ''
-
-        if result['fs_methods'] is not None:
-            pre[4] = ''
-
-        if result['selected_method'] is not None:
-            pre[5] = ''
-            pre[6] = ''
-
-        if model['accuracy'] is not None:
-            pre[7] = ''
+        pre = ['','','','','','','','']
+        # has_file = UserData.is_user_upload_file(id)
+        # result = UserData.get_user_results(id)
+        # model = UserData.get_user_model(id)
+        #
+        # if has_file:
+        #     pre[1] = ''
+        #     pre[2] = ''
+        #     pre[3] = ''
+        #
+        # if result['filename'] != '':
+        #     pre[3] = ''
+        #
+        # if result['fs_methods'] is not None:
+        #     pre[4] = ''
+        #
+        # if result['selected_method'] is not None:
+        #     pre[5] = ''
+        #     pre[6] = ''
+        #
+        # if model['accuracy'] is not None:
+        #     pre[7] = ''
 
         return pre

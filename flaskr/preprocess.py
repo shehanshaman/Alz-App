@@ -223,12 +223,13 @@ def get_reduce_features_from_pvalues():
 
     classification_result_df = FeatureReduction.get_classification_results(df, y)
     cls_id, cls_name = FeatureReduction.get_best_cls(classification_result_df)
-    UserData.update_result(g.user['id'], 'classifiers', cls_id)
+
     classification_result_df = classification_result_df.drop(['avg'], axis=1)
 
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
     UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'reduce_df_path', fr_df_path.as_posix() )
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'classifiers', cls_id)
 
     return render_template("preprocess/step-6.html", split_array=split_array, fs_fig_hash=fs_fig_hash,
                            tables=[classification_result_df.to_html(classes='data')], cls_names=cls_name)
@@ -274,7 +275,7 @@ def save_reduced_df():
 
     session[file_name] = ''
 
-    return redirect('/fs/')
+    return redirect('/fs/?file_name=re_' + file_name)
 
 
 @bp.route('/upload')

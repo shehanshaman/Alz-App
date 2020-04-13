@@ -51,18 +51,16 @@ def index():
 @bp.route("/" , methods=['POST'])
 @login_required
 def get_val():
-    fs_methods = request.form["fs_methods"]
+    fs_methods_str = request.form["fs_methods"]
     filename = request.form["change_file"]
 
     user_id = session.get("user_id")
 
-    a = fs_methods.split(',');
+    fs_methods = fs_methods_str.split(',');
 
-    if '' in a:
+    if '' in fs_methods:
         flash("Error: Select three feature selection methods.")
         return redirect('/fs')
-
-    fs_methods = fs_methods.split(',')
 
     file_to_open = USER_PATH / str(user_id) / filename
     df = PreProcess.getDF(file_to_open)
@@ -87,52 +85,43 @@ def get_val():
         et_col = FeatureSelection.ExtraTrees(df, len).columns.tolist()
         selected_col[i] = ','.join(e for e in et_col)
 
+    #Check data already filled in database
+    if UserData.get_result_id(user_id, filename):
+        UserData.delete_result(user_id, filename)
+
     #Save data to the result table
-    UserData.add_result(user_id, filename, fs_methods, selected_col[0], selected_col[1], selected_col[2])
+    UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2])
+    #Save result id on session
+    result_id = UserData.get_result_id(user_id, filename)['id']
+    session['result_id'] = result_id
 
-
-
-    return redirect('/fs')
-
-@bp.route("/result")
-@login_required
-def result():
-    user_id = session.get("user_id")
-    r = UserData.get_user_results(user_id)
-
-    e = ValidateUser.has_data(r, ['col_method1', 'col_method2', 'col_method3', 'fs_methods', 'filename'])
-
-    if e is not None:
-        return render_template("error.html", errors=e)
-
-
-    filename = r['filename']
-    file_to_open = USER_PATH / str(user_id) / filename
-    df = PreProcess.getDF(file_to_open)
-
-    # df_50F_PCA, df_50F_FI, df_50F_RF
-    col_m1 = r['col_method1'].split(',')
+    #calculate results
+    col_m1 = selected_col[0].split(',')
     df_m1 = df[col_m1]
-    col_m2 = r['col_method2'].split(',')
+    col_m2 = selected_col[1].split(',')
     df_m2 = df[col_m2]
-    col_m3 = r['col_method3'].split(',')
+    col_m3 = selected_col[2].split(',')
     df_m3 = df[col_m3]
     y = df["class"]
-    method_names = r['fs_methods'].split(',')
-    method_names.pop()
+
+    fs_methods.pop()
 
     col = [col_m1, col_m2, col_m3]
 
-    selected_clfs = r['classifiers'].split(',')
+    if g.pre_process:
+        selected_clfs_str = g.pre_process['classifiers']
+        classifiers = selected_clfs_str.split(',')
+    else:
+        classifiers = [4,5,6]
 
-    results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3,y, method_names, selected_clfs)
+    results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3, y,
+                                                                                    fs_methods, classifiers)
 
     img64 = get_summary_plot(results_testing, results_training)
 
     venn_data = FeatureSelection.venn_diagram_data(col_m1, col_m2, col_m3)
 
-    return render_template("fs/result.html", image_data=img64, methods = method_names, columns = col, venn_data=venn_data)
-
+    return render_template("fs/result.html", image_data=img64, methods=fs_methods, columns=col, venn_data=venn_data)
 
 
 def get_summary_plot(results_testing, results_training):

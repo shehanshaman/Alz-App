@@ -44,6 +44,7 @@ CREATE TABLE preprocess (
   reduce_df_path TEXT DEFAULT NULL ,
   scaling VARCHAR(30) DEFAULT NULL ,
   imputation VARCHAR(30) DEFAULT NULL ,
+  classifiers VARCHAR(10) DEFAULT NULL ,
 
   FOREIGN KEY (user_id) REFERENCES user (id)
 );

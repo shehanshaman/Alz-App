@@ -1,4 +1,6 @@
-from flask import Blueprint, g, abort
+from random import randint
+
+from flask import Blueprint, g, abort, session
 from flask import render_template
 from flaskr.db import get_db
 
