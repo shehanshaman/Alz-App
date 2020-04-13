@@ -23,6 +23,10 @@
 
 <style type="text/css">
 
+    #result_view{
+        display: none;
+    }
+
     @keyframes grow {
         from {
             opacity: 0;
@@ -76,6 +80,12 @@
             <div class="alert alert-danger alert-dismissible fade in">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <strong>Danger!</strong> Something went wrong.
+            </div>
+
+        {% elif state == '2' %}
+            <div class="alert alert-danger alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Danger!</strong> You don't have configured model.
             </div>
 
         {% endif %}
@@ -199,7 +209,7 @@
 <script>
 
     var tour = guide_main_call(tip_model_index, 'BL');
-    document.getElementById('result_view').style.display = "none";
+{#    document.getElementById('result_view').style.display = "none";#}
     $('#submit_button').prop('disabled', true);
 
 </script>

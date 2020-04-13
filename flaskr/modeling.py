@@ -29,7 +29,7 @@ bp = Blueprint("modeling", __name__, url_prefix="/mod")
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
-    s = 2
+    s = -1
     if request.method == "GET":
         s = request.args.get('s')
         a = request.args.get('a')
@@ -71,7 +71,7 @@ def create_model():
         return redirect('/mod/?s=1&a=' + str(score))
 
 
-@bp.route("/predict/", methods=["GET", "POST"])
+@bp.route("/predict/")
 @login_required
 def predict():
     user_id = g.user['id']
@@ -89,7 +89,7 @@ def predict():
     r = UserData.get_model(user_id)
 
     if r['accuracy'] is None:
-        return redirect(url_for('modeling.index'))
+        return redirect(url_for('modeling.index') + "?s=2")
 
     features = r['features'].split(',')
     trained_file = r['trained_file']
