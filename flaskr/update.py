@@ -22,6 +22,9 @@ def delete_file():
     id = request.args.get('id')
     name = request.args.get('name')
 
+    UserData.delete_preprocess_file(id, name)
+    UserData.delete_result(id, name)
+
     f_path = USER_PATH / id / name
 
     if os.path.exists(f_path):
