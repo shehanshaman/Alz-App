@@ -27,8 +27,11 @@
         .flash {
             margin: 1em 0;
             padding: 1em;
-            background: #cae6f6;
-            border: 1px solid #377ba8;
+            background: #f6ac8f;
+            border: 1px solid #5c0202;
+            text-align: center;
+            margin-left: 10%;
+            margin-right: 10%;
         }
 
     </style>
@@ -141,11 +144,13 @@
                 </div>
 
                 {% for message in get_flashed_messages() %}
-                    <div class="flash">{{ message }}</div>
+                    <div class="row">
+                        <div class="flash">{{ message }}</div>
+                    </div>
                 {% endfor %}
 
                 <div class="row">
-                    {% if list_names %}
+                    {% if list_names | length > 0 %}
                         <div id="selected_file_div" class="row"></div>
                         <div class="row center">
                             <span class="col-sm-6" style="text-align: center;">Select File :</span>
@@ -160,11 +165,13 @@
                                 </div>
                             </div>
                         </div>
-                    {% else %}
+                    {% elif list_names %}
                         <div id="selected_file_div" class="row">
                             <span class="col-sm-6" style="text-align: center;">Selected File :</span>
                             <label class="col-sm-6" style="text-align: left;">{{ filename }}</label>
                         </div>
+                    {% else %}
+                        <div id="selected_file_div" class="row"></div>
                     {% endif %}
 
 
@@ -216,7 +223,7 @@
 
                 <div class="step-actions">
                     <button id="btn-submit-fn-1" class="waves-effect waves-dark btn next-step step-6-click"
-                            onclick="myFunction()">CONTINUE
+                            onclick="myFunction()" {% if list_names | length == 0 %} disabled {% endif %}>CONTINUE
                     </button>
                     <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
                 </div>

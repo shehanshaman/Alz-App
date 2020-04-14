@@ -21,66 +21,75 @@
 
 </head>
 
-    <style> 
+<style>
 
-        .button {
-            margin-top: inherit;
+    .button {
+        margin-top: inherit;
+    }
+
+    #tourControls {
+        top: 80px !important;
+    }
+
+    #loader {
+        border: 12px solid #26a69a66;
+        border-radius: 50%;
+        border-top: 12px solid #26a69a;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
         }
+    }
 
-        #tourControls{
-            top: 80px !important;
-        }
+    .center-load {
+        position: absolute;
+        top: -230px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
+    #tourtip {
+        width: 290px !important;
+    }
 
-        #tourtip{
-           width: 290px !important; 
-        }
-
-    @keyframes grow{
+    @keyframes grow {
         from {
             opacity: 0;
             transform: scale(0.5);
         }
-        to{
+        to {
             opacity: 1;
             transform: scale(1);
         }
     }
 
-    .notification.hide{
+    .notification.hide {
         animation: shrink 0.4s ease-out forwards;
     }
-    @keyframes shrink{
-        to{
+
+    @keyframes shrink {
+        to {
             opacity: 0;
             transform: scale(0.6);
         }
     }
 
-    </style> 
+    .flash {
+        margin: 1em 0;
+        padding: 1em;
+        background: #f6ac8f;
+        border: 1px solid #5c0202;
+        text-align: center;
+    }
+
+</style>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
@@ -122,19 +131,29 @@
 
             <div class="step-content">
                 <div class="row head-word">
-                    <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 1 : CHOOSE DATA SET</h3>
+                    <h3 id="h3-head-1" class="card__title"
+                        style="text-align: center;color: #26a69a;font-family: monospace;">STEP 1 : CHOOSE DATA SET</h3>
                 </div>
             </div>
 
-            <div class="where-you-like" style="font-family: monospace;margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
+            <div class="where-you-like"
+                 style="font-family: monospace;margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
+
+                {% for message in get_flashed_messages() %}
+                    <div class="row">
+                        <div class="flash">{{ message }}</div>
+                    </div>
+                {% endfor %}
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Available Files :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">
+                            Available Files :</h5>
                     </div>
                     <div id="available_file_name" class="col-sm-5">
                         <div class="md-form">
-                            <select style="font-family: monospace;" class="form-control" id="available_files" name="available_files">
+                            <select style="font-family: monospace;" class="form-control" id="available_files"
+                                    name="available_files">
                                 {% for name in available_list %}
                                     <option value="{{ name }}">{{ name }}</option>
                                 {% endfor %}
@@ -142,13 +161,14 @@
                         </div>
                     </div>
                     <div id="view_div" class="col-sm-1">
-                        <button type="button" class="button btn btn-warning">View</button>
+                        <button type="button" class="button btn btn-warning" {% if available_list | length == 0 %} disabled {% endif %}>View</button>
                     </div>
                 </div>
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Annotation Table :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">
+                            Annotation Table :</h5>
                     </div>
                     <div id="annotation_table_name" class="col-sm-6">
                         <div class="md-form">
@@ -163,11 +183,13 @@
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Probe Selection Method :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Probe
+                            Selection Method :</h5>
                     </div>
                     <div id="average_div" class="col-sm-6">
                         <div class="md-form">
-                            <select style="font-family: monospace;" class="form-control" id="column_selection" name="column_selection">
+                            <select style="font-family: monospace;" class="form-control" id="column_selection"
+                                    name="column_selection">
                                 <option value="1">Average</option>
                             </select>
                         </div>
@@ -179,7 +201,8 @@
             <br>
 
             <div class="step-actions">
-                <button id="btn-submit-step-1" class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">
+                <button id="btn-submit-step-1" class="waves-effect waves-dark btn next-step step-6-click" type="submit"
+                        value="Submit" {% if available_list | length == 0 %} disabled {% endif %}>
                     <input type="submit" value="Submit">
                 </button>
                 <button id="btn-submit-step-back" class="waves-effect waves-dark btn-flat previous-step"><a
@@ -195,13 +218,13 @@
             <input type="hidden" id="selected_file" name="selected_file" value=""/>
         </form>
     </div>
-        
+
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>
+</div>
 
 {% include 'guide_footer.html' %}
 

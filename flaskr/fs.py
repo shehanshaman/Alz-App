@@ -36,6 +36,9 @@ def index():
             list_names.append(filename)
         list_names.remove("tmp")
 
+        if len(list_names) == 0:
+            flash("Error: You don't have pre-processed or uploaded file.")
+
         return render_template("fs/index.html", list_names=list_names, filename=None, pre_process_id = None)
 
     else:

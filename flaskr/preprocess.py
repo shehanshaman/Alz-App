@@ -1,6 +1,6 @@
 import base64
 
-from flask import Blueprint, session, send_from_directory, url_for
+from flask import Blueprint, session, send_from_directory, url_for, flash
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -55,6 +55,10 @@ def index():
         annotation_list.append(filename)
 
     list_names.remove("tmp")
+
+    if len(list_names) == 0:
+        flash("Error: You don't have uploaded file.")
+
     return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list)
 
 

@@ -75,6 +75,12 @@
                             style="text-align: center;font-family: monospace;">Choose File to {{ title }}:</h4>
 
                     </div>
+                    {% if all_result | length == 0 %}
+                        <div class="alert alert-danger">
+                            <strong>Danger!</strong> You don't have done feature selection. <a href="{{ url_for('fs.index') }}">Lets start</a>
+                        </div>
+                    {% endif %}
+
                     <div class="content">
                         <form method="post" action="/fs/config/" enctype="multipart/form-data" id="main-form">
 
