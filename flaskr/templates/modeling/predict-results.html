@@ -24,12 +24,6 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
 
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
-    <script type="text/javascript"
-            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
-    <script type="text/javascript"
-            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
-
 </head>
 
 <body style="font-family: monospace;">
@@ -64,6 +58,15 @@
 {% include 'footer.html' %}
 
 </body>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+
+<script type="text/javascript"
+            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
+
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 

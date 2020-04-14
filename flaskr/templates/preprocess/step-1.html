@@ -21,64 +21,10 @@
 
 </head>
 
-<style>
+<style> 
 
     .button {
         margin-top: inherit;
-    }
-
-    #tourControls {
-        top: 80px !important;
-    }
-
-    #loader {
-        border: 12px solid #26a69a66;
-        border-radius: 50%;
-        border-top: 12px solid #26a69a;
-        width: 70px;
-        height: 70px;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    .center-load {
-        position: absolute;
-        top: -230px;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-    }
-
-    #tourtip {
-        width: 290px !important;
-    }
-
-    @keyframes grow {
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    .notification.hide {
-        animation: shrink 0.4s ease-out forwards;
-    }
-
-    @keyframes shrink {
-        to {
-            opacity: 0;
-            transform: scale(0.6);
-        }
     }
 
     .flash {
@@ -282,7 +228,7 @@
 
 <script>
 
-    var tour = guide_main_call(tip_step_1, 'TL');
+    var tour = guide_main_call(tip_step_1, 'BL');
 
 </script>
 

@@ -5,6 +5,11 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta name="google-signin-scope" content="profile email">
+
+    <meta name="google-signin-client_id"
+      content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+
     <title>GeNet | Login</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
@@ -79,11 +84,7 @@
 
 <body style="background-color: #f3f6f9;">
 
-<!-- Dropdown Structure -->
-{% include 'horizontal_nav_bar.html' %}
-
-<div id="mainDataInterface-id" class="container mainDataInterface">
-
+<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 6%;">
 
     <div class="step-content">
         <div class="row head-word">
@@ -139,8 +140,6 @@
     <input type="hidden" id="image_url" name="image_url" value=""/>
     <input type="hidden" id="profile_id" name="profile_id" value=""/>
 </form>
-
-{% include 'footer.html' %}
 
 </body>
 </html>

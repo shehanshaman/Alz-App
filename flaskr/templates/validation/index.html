@@ -20,11 +20,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/venn_diagram.css') }}">
+    
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-    <style>
+</head>
+
+<style>
         .summary_plot > img {
             padding: 5px;
             width: 100%;
@@ -38,15 +41,6 @@
             margin-bottom: 0;
             align-content: center;
             text-align: center;
-        }
-
-        .result_content {
-            border-color: #26a69a;
-            border-style: ridge;
-            padding: 15px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-radius: 16px;
         }
 
         ul {
@@ -63,196 +57,9 @@
             border-radius: inherit;
             border: inherit;
         }
-    </style>
-
-</head>
-
-<style>
-    #loader {
-        border: 12px solid #26a69a66;
-        border-radius: 50%;
-        border-top: 12px solid #26a69a;
-        width: 70px;
-        height: 70px;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    .center-load {
-        position: absolute;
-        top: -230px;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-    }
-</style>
-
-<style type="text/css">
-
-    @keyframes grow {
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    .notification.hide {
-        animation: shrink 0.4s ease-out forwards;
-    }
-
-    @keyframes shrink {
-        to {
-            opacity: 0;
-            transform: scale(0.6);
-        }
-    }
 
 </style>
 
-<style type="text/css">
-
-    .union_div path {
-        stroke: #26a69a;
-        stroke-width: 4px;
-    }
-
-    .value_p {
-        font-size: 34px;
-        font-family: monospace;
-        font-weight: bold;
-        color: #26a69a;
-        cursor: pointer;
-    }
-
-    .value_clf_p {
-        font-size: 26px;
-        font-family: monospace;
-        font-weight: bold;
-        color: #26a69a;
-    }
-
-    .p_M {
-        position: absolute;
-        left: 48%;
-        top: 47%;
-    }
-
-    .p_T {
-        position: absolute;
-        left: 49%;
-        top: 17%;
-    }
-
-    .p_L {
-        position: absolute;
-        left: 26%;
-        top: 62%;
-    }
-
-    .p_R {
-        position: absolute;
-        left: 72%;
-        top: 62%;
-    }
-
-    .p_TLM {
-        position: absolute;
-        left: 38%;
-        top: 40%;
-    }
-
-    .p_TRM {
-        position: absolute;
-        left: 60%;
-        top: 40%;
-    }
-
-    .p_LRM {
-        position: absolute;
-        left: 49%;
-        top: 64%;
-    }
-
-    .clf_T {
-        position: absolute;
-        left: 47%;
-        top: -6%;
-    }
-
-    .clf_R {
-        position: absolute;
-        left: 97%;
-        top: 56%;
-    }
-
-    .clf_L {
-        position: absolute;
-        left: -10%;
-        top: 60%;
-    }
-
-    .popup_head_div {
-        font-size: 20px;
-        font-family: monospace;
-        color: #26a69a;
-    }
-
-    .popup_gene_list_div {
-        font-size: 17px;
-        font-family: monospace;
-        color: gray;
-        text-align: justify;
-    }
-
-    /* The Modal (background) */
-    .modal_pop {
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0, 0, 0); /* Fallback color */
-        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-    }
-
-    /* Modal Content */
-    .modal-content-1 {
-        background-color: #fefefe;
-        margin: auto;
-        padding: 40px;
-        border: 1px solid #888;
-        width: 50%;
-    }
-
-    /* The Close Button */
-    .close {
-        color: #000000;
-        float: right;
-        font-size: 45px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-</style>
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
@@ -307,18 +114,18 @@
                 <ul>
                     <li>- There are <b> {{ col_gene_card[0] | length }} already identified </b> genes within
                         the {{ method_names[3] }}
-                        genes selected from <b> {{ method_names[0] }} </b> . <a href="#modal1"
-                                                                                onclick="more_click({param1: {{ col_gene_card[0] }} , param2: '{{ method_names[0] }}', param3: '1'})">more</a>
+                        genes selected from <b> {{ method_names[0] }} </b> . 
+                        <a href="#modal1" onclick="more_click({param1: {{ col_gene_card[0] }} , param2: '{{ method_names[0] }}', param3: '1'})">more</a>
                     </li>
                     <li>- There are <b>{{ col_gene_card[1] | length }} already identified </b> genes within
                         the {{ method_names[3] }}
-                        genes selected from <b> {{ method_names[1] }} </b> .<a href="#modal1"
-                                                                               onclick="more_click({param1: {{ col_gene_card[1] }} , param2: '{{ method_names[1] }}', param3: '2'})">more</a>
+                        genes selected from <b> {{ method_names[1] }} </b> .
+                        <a href="#modal1" onclick="more_click({param1: {{ col_gene_card[1] }} , param2: '{{ method_names[1] }}', param3: '2'})">more</a>
                     </li>
                     <li>- There are <b>{{ col_gene_card[2] | length }} already identified </b> genes within
                         the {{ method_names[3] }}
-                        genes selected from <b> {{ method_names[2] }} </b> .<a href="#modal1"
-                                                                               onclick="more_click({param1: {{ col_gene_card[2] }} , param2: '{{ method_names[2] }}', param3: '3'})">more</a>
+                        genes selected from <b> {{ method_names[2] }} </b> .
+                        <a href="#modal1" onclick="more_click({param1: {{ col_gene_card[2] }} , param2: '{{ method_names[2] }}', param3: '3'})">more</a>
                     </li>
                 </ul>
             </div>
@@ -426,8 +233,8 @@
 
                 <div class="alert alert-danger">
                     <strong>Our Method!</strong> Out of those predicted {{ col_gene_card[3] | length }},
-                    {{ col_gene_card[4] | length }} were currently discovered. <a href="#modal1"
-                                                                                  onclick="more_click({param1: {{ col_gene_card[3] }} , param2: {{ col_gene_card[4] }}, param3: '4'})">more</a>
+                    {{ col_gene_card[4] | length }} were currently discovered. 
+                    <a href="#modal1" onclick="more_click({param1: {{ col_gene_card[3] }} , param2: {{ col_gene_card[4] }}, param3: '4'})">more</a>
                 </div>
 
                 <div id="results_table_div1" style="overflow: auto;">
