@@ -81,10 +81,10 @@ class PreProcess:
 		return df_symbol
 
 	def probe2Symbol(df_symbol):
-		df_avg_symbol = df_symbol.groupby(['Gene Symbol']).agg([np.average])
+		# df_avg_symbol = df_symbol.groupby(['Gene Symbol']).agg([np.average])
+		df_avg_symbol = df_symbol.groupby(['Gene Symbol']).mean()
 		df_avg_symbol.reset_index(drop=False, inplace=True)
-		# df_avg_symbol = df_avg_symbol.drop(['index'], axis = 1)
-		df_avg_symbol.columns = df_symbol.columns
+		# df_avg_symbol.columns = df_symbol.columns
 
 		return df_avg_symbol
 
