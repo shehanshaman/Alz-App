@@ -25,10 +25,6 @@ bp = Blueprint("analyze", __name__, url_prefix="/an")
 def index():
     result_id = request.args.get("id")
 
-    # if result_id != 0 and session.get("result_id"):
-    #     session_id = "result_id"
-    #     return render_template("alert.html", process = "Feature Selection or Analysis" , session_id = session_id)
-
     if result_id is None:
         return redirect('../fs/an/config')
 
