@@ -280,9 +280,9 @@ def save_reduced_df():
     PreProcess.saveDF(df_selected, path)
 
     # remove old files
-    # files = ["merge_" + file_name, "avg_symbol_" + file_name, "_p_fold_"+ file_name, "fr_" + file_name]
-    # folder_path = USER_PATH / str(g.user["id"]) / "tmp"
-    # remove_files(folder_path, files)
+    files = ["merge_" + file_name, "avg_symbol_" + file_name, "_p_fold_"+ file_name, "fr_" + file_name]
+    folder_path = USER_PATH / str(g.user["id"]) / "tmp"
+    remove_files(folder_path, files)
 
     session[file_name] = None
 
