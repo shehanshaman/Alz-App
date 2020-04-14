@@ -23,26 +23,27 @@
 
 <style type="text/css">
 
-        #tourControls{
-            top: 80px !important;
-        }
+    #tourControls {
+        top: 80px !important;
+    }
 
-    @keyframes grow{
+    @keyframes grow {
         from {
             opacity: 0;
             transform: scale(0.5);
         }
-        to{
+        to {
             opacity: 1;
             transform: scale(1);
         }
     }
 
-    .notification.hide{
+    .notification.hide {
         animation: shrink 0.4s ease-out forwards;
     }
-    @keyframes shrink{
-        to{
+
+    @keyframes shrink {
+        to {
             opacity: 0;
             transform: scale(0.6);
         }
@@ -86,7 +87,8 @@
 
     <div class="step-content">
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 2 : DATASET BEFORE PRE-PROCESS</h3>
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 2 : DATASET BEFORE
+                PRE-PROCESS</h3>
         </div>
 
         <div class="row">
@@ -137,7 +139,7 @@
 
     <div class="step-actions">
         <button class="waves-effect waves-dark btn next-step step-6-click"><a
-                href="{{ url_for('preprocess.scaling_imputation') }}">CONTINUE</a>
+                href="{{ url_for('preprocess.scaling_imputation') }}?id={{ pre_process_id }}">CONTINUE</a>
         </button>
         <button class="waves-effect waves-dark btn-flat previous-step"><a
                 href="{{ url_for('preprocess.index') }}">BACK</a></button>

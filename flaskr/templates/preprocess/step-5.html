@@ -187,6 +187,8 @@
                             </div>
                         </div>
 
+                        <input type="hidden" id="id" name="id" value="{{ pre_process_id }}"/>
+
                         <div class="row progress" id="progress_bar">
                             <div class="indeterminate"></div>
                         </div>
@@ -252,9 +254,11 @@
     $('#btn-calculate').click(function () {
         var fold_range = $('#fold-range').find(":selected").text();
         var p_value = $('#p-value').find(":selected").text();
+        var id = document.getElementById("id").value;
+
         document.getElementById("progress_bar").style.visibility = "visible";
         document.getElementById("btn-calculate").disabled = true;
-        $.get("./fr/pf/", {pvalue: p_value, foldChange: fold_range}, function (data, status) {
+        $.get("./fr/pf/", {pvalue: p_value, foldChange: fold_range, id: id}, function (data, status) {
             document.getElementById("result_div").style.visibility = "visible";
             document.getElementById("selected_features_count").innerHTML = data;
             document.getElementById("progress_bar").style.visibility = "hidden";

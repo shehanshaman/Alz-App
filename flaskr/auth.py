@@ -46,8 +46,6 @@ def load_logged_in_user():
     """If a user id is stored in the session, load the user object from
     the database into ``g.user``."""
     user_id = session.get("user_id")
-    pre_process_id = session.get("pre_process_id")
-    # result_id = session.get("result_id")
 
     if user_id is None:
         g.user = None
@@ -55,21 +53,6 @@ def load_logged_in_user():
         g.user = (
             get_db().execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
         )
-
-    if pre_process_id is None:
-        g.pre_process = None
-    else:
-        g.pre_process = (
-            get_db().execute("SELECT * FROM preprocess WHERE id = ?", (pre_process_id,)).fetchone()
-        )
-
-    # if result_id is None:
-    #     g.result_id = None
-    # else:
-    #     g.result = (
-    #         get_db().execute("SELECT * FROM results WHERE id = ?", (result_id,)).fetchone()
-    #     )
-
 
 @bp.route("/register", methods=("GET", "POST"))
 def register():
@@ -485,6 +468,13 @@ class UserData:
         db = get_db()
         result = db.execute(
             "SELECT * FROM preprocess WHERE user_id = ? AND file_name = ?", (user_id, file_name)
+        ).fetchone()
+        return result
+
+    def get_preprocess_from_id(id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM preprocess WHERE id = ?", (id, )
         ).fetchone()
         return result
 

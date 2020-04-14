@@ -8,9 +8,6 @@ from flask import redirect
 import base64
 import io
 
-from flaskr.db import get_db
-
-from flaskr.classes.validation import ValidateUser
 from .auth import UserData, login_required
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
@@ -27,9 +24,9 @@ bp = Blueprint("fs", __name__, url_prefix="/fs")
 @login_required
 def index():
 
-    file_name = request.args.get("file_name")
+    pre_process_id = request.args.get("id")
 
-    if file_name is None:
+    if pre_process_id is None:
 
         list_names = []
         path = USER_PATH / str(g.user["id"])
@@ -38,10 +35,14 @@ def index():
             list_names.append(filename)
         list_names.remove("tmp")
 
-        return render_template("fs/index.html", list_names=list_names, filename=None)
+        return render_template("fs/index.html", list_names=list_names, filename=None, pre_process_id = None)
+
     else:
 
-        return render_template("fs/index.html", list_names=None, filename=file_name)
+        pre_process = UserData.get_preprocess_from_id(pre_process_id)
+        file_name = "re_" + pre_process['file_name']
+
+        return render_template("fs/index.html", list_names=None, filename=file_name, pre_process_id = pre_process_id)
 
 
 # Get columns of 3 different feature selection methods
@@ -50,6 +51,7 @@ def index():
 def get_val():
     fs_methods_str = request.form["fs_methods"]
     filename = request.form["change_file"]
+    pre_process_id = request.form["pre_process_id"]
 
     user_id = session.get("user_id")
 
@@ -98,8 +100,9 @@ def get_val():
 
     col = [col_m1, col_m2, col_m3]
 
-    if g.pre_process and g.pre_process['classifiers']:
-        selected_clfs_str = g.pre_process['classifiers']
+    if pre_process_id:
+        pre_process = UserData.get_preprocess_from_id(pre_process_id)
+        selected_clfs_str = pre_process['classifiers']
         classifiers = selected_clfs_str.split(',')
         session['pre_process_id'] = None
     else:

@@ -44,16 +44,14 @@ def allowed_file(filename):
 @login_required
 def index():
 
-    if session.get("pre_process_id"):
-        session_id = "pre_process_id"
-        return render_template("alert.html", process = "Pre-process" , session_id = session_id)
+    # if session.get("pre_process_id"):
+    #     session_id = "pre_process_id"
+    #     return render_template("alert.html", process = "Pre-process" , session_id = session_id)
 
     list_names = []
     annotation_list = []
     path = USER_PATH / str(g.user["id"])
-    if not os.path.exists(path):
-        os.makedirs(path)
-        os.makedirs(path / "tmp")
+
     for filename in os.listdir(path):
         list_names.append(filename)
 
@@ -90,7 +88,6 @@ def view_merge_df():
         #save data to the Database
         UserData.add_preprocess(user_id, file_name, file_path.as_posix(), annotation_table, col_sel_method, merge_path_str)
         pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
-        session['pre_process_id'] = pre_process_id
 
         y = PreProcess.getDF(file_path)
         y = y['class']
@@ -103,16 +100,17 @@ def view_merge_df():
         else:
             df_view = df.head(15)
 
-        return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data)
+        return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data, pre_process_id = pre_process_id)
 
     return redirect('/pre')
 
 
 # step 3
-@bp.route("/step-3")
+@bp.route("/step-3", methods=['GET'])
 @login_required
 def scaling_imputation():
-    pre_process = g.pre_process
+    pre_process_id = request.args.get("id")
+    pre_process = UserData.get_preprocess_from_id(pre_process_id)
 
     if pre_process is None:
         return redirect('/pre')
@@ -120,7 +118,7 @@ def scaling_imputation():
     data = session.get(pre_process['file_name'])
 
     if data is not None:
-        return render_template("preprocess/step-3.html", details=data)
+        return render_template("preprocess/step-3.html", details=data, pre_process_id = pre_process_id)
 
     return redirect('/pre')
 
@@ -129,11 +127,13 @@ def scaling_imputation():
 @bp.route("/step-4", methods=['POST'])
 @login_required
 def norm():
-    pre_process = g.pre_process
-    user_id = pre_process['user_id']
 
     norm_method = request.form["norm_mthd"]
     null_rmv = request.form["null_rmv"]
+    pre_process_id = request.form["id"]
+
+    pre_process = UserData.get_preprocess_from_id(pre_process_id)
+    user_id = pre_process['user_id']
 
     UserData.update_preprocess(user_id, pre_process['file_name'], 'scaling', norm_method)
     UserData.update_preprocess(user_id, pre_process['file_name'], 'imputation', null_rmv)
@@ -161,14 +161,15 @@ def norm():
         df_view = df.head(15)
 
     return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')],
-                           details=data)
+                           details=data, pre_process_id = pre_process_id)
 
 
-# step 4
-@bp.route("/step-5")
+# step 5
+@bp.route("/step-5", methods=['GET'])
 @login_required
 def feature_reduction():
-    pre_process = g.pre_process
+    pre_process_id = request.args.get("id")
+    pre_process = UserData.get_preprocess_from_id(pre_process_id)
 
     if pre_process is None:
         return redirect('/pre')
@@ -192,7 +193,7 @@ def feature_reduction():
 
     volcano_hash = get_volcano_fig(p_fold_df['fold'], p_fold_df['pValues'])
 
-    return render_template("preprocess/step-5.html", data_array=data_array, volcano_hash=volcano_hash)
+    return render_template("preprocess/step-5.html", data_array=data_array, volcano_hash=volcano_hash, pre_process_id = pre_process_id)
 
 
 # step 6
@@ -202,8 +203,9 @@ def get_reduce_features_from_pvalues():
 
     fold = request.form["fold-range"]
     pvalue = request.form["p-value"]
+    pre_process_id = request.form["id"]
 
-    pre_process = g.pre_process
+    pre_process = UserData.get_preprocess_from_id(pre_process_id)
 
     p_fold_df_path = USER_PATH / str(g.user["id"]) / 'tmp' / ('_p_fold_' + pre_process['file_name'])
     p_fold_df = PreProcess.getDF(p_fold_df_path)
@@ -237,7 +239,7 @@ def get_reduce_features_from_pvalues():
     UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'classifiers', cls_id)
 
     return render_template("preprocess/step-6.html", split_array=split_array, fs_fig_hash=fs_fig_hash,
-                           tables=[classification_result_df.to_html(classes='data')], cls_names=cls_name)
+                           tables=[classification_result_df.to_html(classes='data')], cls_names=cls_name, pre_process_id = pre_process_id)
 
 
 @bp.route("/fr/pf/", methods=['GET'])
@@ -246,8 +248,11 @@ def get_feature_count_pval():
 
     pvalue = request.args.get("pvalue")
     foldChange = request.args.get("foldChange")
+    pre_process_id = request.args.get("id")
 
-    path = USER_PATH / str(g.user["id"]) / 'tmp' / ('_p_fold_' + g.pre_process['file_name'])
+    pre_process = UserData.get_preprocess_from_id(pre_process_id)
+
+    path = USER_PATH / str(g.user["id"]) / 'tmp' / ('_p_fold_' + pre_process['file_name'])
     p_fold_df = PreProcess.getDF(path)
 
     count = PreProcess.get_filtered_df_count_pvalue(p_fold_df, float(pvalue), float(foldChange))
@@ -258,15 +263,18 @@ def get_feature_count_pval():
 @login_required
 def save_reduced_df():
     features_count = request.form['features_count']
+    pre_process_id = request.form['id']
 
-    df = PreProcess.getDF(Path(g.pre_process['reduce_df_path']))
-    df_y = PreProcess.getDF(Path(g.pre_process['file_path']))
+    pre_process = UserData.get_preprocess_from_id(pre_process_id)
+
+    df = PreProcess.getDF(Path(pre_process['reduce_df_path']))
+    df_y = PreProcess.getDF(Path(pre_process['file_path']))
     y = df_y['class']
     y = pd.to_numeric(y)
 
     df_selected = FeatureReduction.getSelectedFeatures(df, int(features_count), y)
 
-    file_name = g.pre_process['file_name']
+    file_name = pre_process['file_name']
 
     path = USER_PATH / str(g.user["id"]) / ('re_' + file_name)
     PreProcess.saveDF(df_selected, path)
@@ -278,9 +286,9 @@ def save_reduced_df():
     # folder_path = USER_PATH / str(g.user["id"]) / "tmp"
     # remove_files(folder_path, files)
 
-    session[file_name] = ''
+    session[file_name] = None
 
-    return redirect('/fs/?file_name=re_' + file_name)
+    return redirect('/fs/?id=' + str(pre_process_id))
 
 
 @bp.route('/upload')
