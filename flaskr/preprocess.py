@@ -44,10 +44,6 @@ def allowed_file(filename):
 @login_required
 def index():
 
-    # if session.get("pre_process_id"):
-    #     session_id = "pre_process_id"
-    #     return render_template("alert.html", process = "Pre-process" , session_id = session_id)
-
     list_names = []
     annotation_list = []
     path = USER_PATH / str(g.user["id"])
