@@ -571,27 +571,6 @@ class UserData:
 
         return result
 
-    def get_df_results(user_id, filename):
-        db = get_db()
-        result = db.execute(
-            "SELECT * FROM results WHERE user_id = ? AND filename = ?", (user_id, filename)
-        ).fetchone()
-        return result
-
-    def update_result(user_id, column, value):
-        db = get_db()
-        db.execute(
-            "UPDATE results SET " + column +" = ? WHERE user_id = ?",( value, user_id),
-        )
-        db.commit()
-
-    def update_selected_col(selected_col, user_id):
-        db = get_db()
-        db.execute(
-            "UPDATE results SET  col_method1 = ?, col_method2 = ?, col_method3 = ? WHERE user_id = ?", (selected_col[0],selected_col[1], selected_col[2], user_id),
-        )
-        db.commit()
-
     #Medeling Table
     def update_model(user_id, trained_file, clasifier, features, model_path_name, accuracy):
         db = get_db()
@@ -616,16 +595,15 @@ class UserData:
             (user_id),
         )
         db.commit()
-        db.execute(
-            "DELETE FROM results WHERE user_id = ?",
-            (user_id),
-        )
-        db.commit()
+
         db.execute(
             "DELETE FROM modeling WHERE user_id = ?",
             (user_id),
         )
         db.commit()
+
+        UserData.delete_results(user_id)
+        UserData.delete_preprocess_all_file(user_id)
 
     def infrequent_users(ids):
         db = get_db()
@@ -640,39 +618,3 @@ class UserData:
         send_infrequent_mail(list)
 
         return list
-
-    def is_user_upload_file(id):
-        DIR = USER_PATH / str(id)
-        count = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
-
-        if count > 0:
-            return 1
-        else:
-            return 0
-
-    def get_user_pre_request(id):
-        pre = ['', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled', 'disabled']
-        pre = ['','','','','','','','']
-        # has_file = UserData.is_user_upload_file(id)
-        # result = UserData.get_user_results(id)
-        # model = UserData.get_user_model(id)
-        #
-        # if has_file:
-        #     pre[1] = ''
-        #     pre[2] = ''
-        #     pre[3] = ''
-        #
-        # if result['filename'] != '':
-        #     pre[3] = ''
-        #
-        # if result['fs_methods'] is not None:
-        #     pre[4] = ''
-        #
-        # if result['selected_method'] is not None:
-        #     pre[5] = ''
-        #     pre[6] = ''
-        #
-        # if model['accuracy'] is not None:
-        #     pre[7] = ''
-
-        return pre
