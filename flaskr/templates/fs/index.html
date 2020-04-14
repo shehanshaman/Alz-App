@@ -150,7 +150,7 @@
                 {% endfor %}
 
                 <div class="row">
-                    {% if list_names | length > 0 %}
+                    {% if list_names and (list_names | length > 0) %}
                         <div id="selected_file_div" class="row"></div>
                         <div class="row center">
                             <span class="col-sm-6" style="text-align: center;">Select File :</span>
@@ -165,7 +165,7 @@
                                 </div>
                             </div>
                         </div>
-                    {% elif list_names %}
+                    {% elif filename %}
                         <div id="selected_file_div" class="row">
                             <span class="col-sm-6" style="text-align: center;">Selected File :</span>
                             <label class="col-sm-6" style="text-align: left;">{{ filename }}</label>
@@ -223,7 +223,7 @@
 
                 <div class="step-actions">
                     <button id="btn-submit-fn-1" class="waves-effect waves-dark btn next-step step-6-click"
-                            onclick="myFunction()" {% if list_names | length == 0 %} disabled {% endif %}>CONTINUE
+                            onclick="myFunction()" {% if list_names and filename %} disabled {% endif %}>CONTINUE
                     </button>
                     <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
                 </div>
@@ -263,9 +263,13 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script>
     function myFunction() {
