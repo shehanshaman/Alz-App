@@ -14,12 +14,14 @@ from pathlib import Path
 
 ROOT_PATH = Path.cwd()
 GENE_CARD = ROOT_PATH / "flaskr" / "upload" / "Validation" / "GeneCards-SearchResults.pkl"
+VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
 
 bp = Blueprint("validation", __name__, url_prefix="/val")
 
 @bp.route("/", methods = ['GET'])
 @login_required
 def index():
+    validation_file_name = request.args.get("file")
     result_id = request.args.get("id")
 
     if result_id is None:
@@ -41,7 +43,9 @@ def index():
 
     col_mo = list(dict.fromkeys(col_overlapped + col_selected_method))
 
-    gene_card_df = PreProcess.getDF(GENE_CARD)
+    disease_file_path = VALIDATION_PATH / validation_file_name
+
+    gene_card_df = PreProcess.getDF(disease_file_path)
     col_gene_card = gene_card_df.columns.tolist()
 
     col_m1_gene_card = get_overlap_features(col_gene_card, col_m1)

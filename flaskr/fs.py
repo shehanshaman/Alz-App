@@ -16,6 +16,7 @@ from pathlib import Path
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
 
 bp = Blueprint("fs", __name__, url_prefix="/fs")
 
@@ -126,6 +127,7 @@ def get_val():
 @bp.route("/<method>/config")
 def result_config(method):
     user_id = g.user['id']
+    validation_file_list = []
 
     if method == 'an':
         all_result = UserData.get_user_results(user_id)
@@ -137,18 +139,27 @@ def result_config(method):
         url = url_for('validation.index')
         title = "Validation"
 
+        for file_name in os.listdir(VALIDATION_PATH):
+            validation_file_list.append(file_name)
+
     all_result = [r['filename'] for r in all_result]
 
-    return render_template("configuration.html", title=title, url=url, all_result=all_result)
+    return render_template("configuration.html", title=title, url=url, all_result=all_result, validation_file_list = validation_file_list)
 
 
 @bp.route("/config/", methods=['POST'])
 def result_config_apply():
     url = request.form["url"]
     available_result = request.form["available_result"]
+    disease_file = request.form.get('disease_file')
+
     user_id = g.user['id']
     id = UserData.get_result(user_id, available_result)['id']
-    url = url + "?id=" + str(id)
+
+    if disease_file:
+        url = url + "?id=" + str(id) + "&file=" + disease_file
+    else:
+        url = url + "?id=" + str(id)
 
     return redirect(url)
 

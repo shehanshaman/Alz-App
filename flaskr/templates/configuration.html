@@ -89,6 +89,27 @@
                                 <input type="hidden" id="url" name="url" value="{{ url }}"/>
                             </div>
 
+                            {% if validation_file_list %}
+                                <div class="row" style="margin-top: 20px;">
+                                    <div class="col-sm-6">
+                                        <h6 id="h3-head-1" class="card__title"
+                                            style="text-align: center;font-family: monospace;">Select Disease
+                                            :</h6>
+                                    </div>
+                                    <div id="disease_div" class="col-sm-6">
+                                        <div class="md-form">
+                                            <select style="font-family: monospace;" class="form-control"
+                                                    id="disease_file" name="disease_file">
+                                                {% for validation_file in validation_file_list %}
+                                                    <option value="{{ validation_file }}">{{ validation_file }}</option>
+                                                {% endfor %}
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
                             <div class="row" class="well" id="result_view"
                                  style="padding: 10px;">
                                 <div class="row">
