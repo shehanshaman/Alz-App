@@ -68,6 +68,10 @@ def get_val():
     file_to_open = USER_PATH / str(user_id) / filename
     df = PreProcess.getDF(file_to_open)
 
+    if not check_df_to_fs(df):
+        flash("Error: Couldn't process because having lot of features,  Start from pre-processing and reduce features.")
+        return redirect(url_for('fs.index'))
+
     selected_col = [None] * 3
     len = int(fs_methods[3])
 
@@ -104,14 +108,14 @@ def get_val():
 
     col = [col_m1, col_m2, col_m3]
 
-    if pre_process_id:
+    if pre_process_id == 'None':
+        classifiers = ['4', '5', '6']
+        selected_clfs_str = ','.join(e for e in classifiers)
+    else:
         pre_process = UserData.get_preprocess_from_id(pre_process_id)
         selected_clfs_str = pre_process['classifiers']
         classifiers = selected_clfs_str.split(',')
         session['pre_process_id'] = None
-    else:
-        classifiers = ['4', '5', '6']
-        selected_clfs_str = ','.join(e for e in classifiers)
 
     # Save data to the result table
     UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2], selected_clfs_str)
@@ -166,6 +170,15 @@ def result_config_apply():
 
     return redirect(url)
 
+def check_df_to_fs(df):
+    shape = df.shape
+    #Add new things
+
+    if shape[1] > 2000:
+        return False
+
+    else:
+        return True
 
 
 def get_summary_plot(results_testing, results_training):

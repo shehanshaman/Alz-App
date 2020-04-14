@@ -15,7 +15,6 @@ class PreProcess:
 	
 	def getDF(name):
 		df = pd.read_pickle(name)
-		# df = df.iloc[[0, 2], [1, 3]]
 		return df
 
 	def saveDF(df, path):
