@@ -23,7 +23,7 @@
 
 <style type="text/css">
 
-    #result_view{
+    #result_view {
         display: none;
     }
 
@@ -90,46 +90,64 @@
 
         {% endif %}
 
-        <div class="select-model">
-
-            <div class="row" style="margin-top: 40px;">
-                <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
-                        Analysed File :</h5>
-                </div>
-                <div class="col-sm-6">
-                    <div id="choose_result_div" class="md-form">
-                        <select style="font-family: monospace;" class="form-control" id="available_result"
-                                name="available_result">
-                            <option disabled="disabled" selected>Pick a choice!</option>
-                            {% for name in all_result %}
-                                <option value="{{ name }}">{{ name }}</option>
-                            {% endfor %}
-                        </select>
+        {% if analysed_file %}
+            <div class="select-model">
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Analysed File : </h5>
+                    </div>
+                    <div class="col-sm-6">
+                         <h5 id="h4-head-2" class="card__title" style="text-align: center;font-family: monospace;"><b
+                                        id="selected_file">{{ analysed_file }}</b></h5>
                     </div>
                 </div>
             </div>
+            <div>
+                <input type="hidden" id="available_result" name="available_result" value="{{ analysed_file }}"/>
+            </div>
+            <div id="extracted_features_div"></div>
+        {% else %}
+            <div class="select-model">
 
-            <div class="row" id="result_view">
-
-                <div class="features" class="well"
-                     style="background-color: #26a69a54; border: 1px solid #26a69a; padding: 10px;">
-                    <div class="row">
-                        <h5>Feature Selection Methods</h5>
-                        <div id="fs_methods_div"></div>
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
+                            Analysed File :</h5>
                     </div>
-                    <div class="row">
-                        <h5>Overlapped Features </h5>
-                        <div id="overlapped_features_div"></div>
-                    </div>
-                    <div class="row">
-                        <h5 id="selected_method"></h5>
-                        <div id="extracted_features_div"></div>
+                    <div class="col-sm-6">
+                        <div id="choose_result_div" class="md-form">
+                            <select style="font-family: monospace;" class="form-control" id="available_result"
+                                    name="available_result">
+                                <option disabled="disabled" selected>Pick a choice!</option>
+                                {% for name in all_result %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
+                <div class="row" id="result_view">
+
+                    <div class="features" class="well"
+                         style="background-color: #26a69a54; border: 1px solid #26a69a; padding: 10px;">
+                        <div class="row">
+                            <h5>Feature Selection Methods</h5>
+                            <div id="fs_methods_div"></div>
+                        </div>
+                        <div class="row">
+                            <h5>Overlapped Features </h5>
+                            <div id="overlapped_features_div"></div>
+                        </div>
+                        <div class="row">
+                            <h5 id="selected_method"></h5>
+                            <div id="extracted_features_div"></div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        </div>
+        {% endif %}
 
         <br>
 
@@ -209,25 +227,27 @@
 <script>
 
     var tour = guide_main_call(tip_model_index, 'BL');
-{#    document.getElementById('result_view').style.display = "none";#}
-    $('#submit_button').prop('disabled', true);
 
 </script>
 
-<script>
-    $('#available_result').change(function () {
-        var filename = $('#available_result').find(":selected").text();
-        $.get("./results/", {filename: filename}, function (data, status) {
-            data = data.split("|");
-            methods = data['4'].split(',');
-            methods.pop()
-            $('#overlapped_features_div').text(data[8]);
-            $('#extracted_features_div').text(data[9]);
-            $('#selected_method').text(data[10] + " Extracted Features");
-            $('#fs_methods_div').text(methods);
+{% if analysed_file == None %}
+    <script>
+        $('#submit_button').prop('disabled', true);
 
-            document.getElementById('result_view').style.display = "block";
-            $('#submit_button').prop('disabled', false);
+        $('#available_result').change(function () {
+            var filename = $('#available_result').find(":selected").text();
+            $.get("./results/", {filename: filename}, function (data, status) {
+                data = data.split("|");
+                methods = data['4'].split(',');
+                methods.pop()
+                $('#overlapped_features_div').text(data[8]);
+                $('#extracted_features_div').text(data[9]);
+                $('#selected_method').text(data[10] + " Extracted Features");
+                $('#fs_methods_div').text(methods);
+
+                document.getElementById('result_view').style.display = "block";
+                $('#submit_button').prop('disabled', false);
+            });
         });
-    });
-</script>
+    </script>
+{% endif %}

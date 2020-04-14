@@ -29,6 +29,13 @@ bp = Blueprint("modeling", __name__, url_prefix="/mod")
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
+    result_id = request.args.get("id")
+    if result_id:
+        result = UserData.get_result_from_id(result_id)
+        analysed_file = result['filename']
+    else:
+        analysed_file = None
+
     s = -1
     if request.method == "GET":
         s = request.args.get('s')
@@ -49,7 +56,7 @@ def index():
     all_result = [r['filename'] for r in all_result]
 
     return render_template("modeling/index.html", available_list=list_names, classifier_list=classifier_list,
-                           state=s, accuracy=a, all_result=all_result)
+                           state=s, accuracy=a, all_result=all_result, analysed_file = analysed_file)
 
 
 @bp.route("/", methods=["POST"])
