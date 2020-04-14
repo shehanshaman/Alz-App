@@ -23,6 +23,8 @@ CREATE TABLE user (
   is_admin INTEGER DEFAULT 0
 );
 
+-- is_verified: 0-Unverified, 1-GeNet-User, 2-Google-User
+
 CREATE TABLE post (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   author_id INTEGER NOT NULL,

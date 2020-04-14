@@ -19,6 +19,11 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
+    <meta name="google-signin-scope" content="profile email">
+
+    <meta name="google-signin-client_id"
+          content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+
     <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
     <style>
@@ -28,10 +33,10 @@
             width: 50%;
         }
 
-        .form-padding{
+        .form-padding {
             width: 70%;
         }
-        
+
         .separator {
             display: flex;
             align-items: center;
@@ -106,7 +111,7 @@
                 <div class="row center">
                     <label>Forgot Password? <a href="{{ url_for('auth.reset_request') }}">Reset Password</a></label>
                 </div>
-            </div>            
+            </div>
         </div>
         <div class="col-sm-3"></div>
     </div>

@@ -1,8 +1,10 @@
-{#    Google Login#}
-<meta name="google-signin-scope" content="profile email">
+{% if g.user['is_verified'] == 2 %}
+    {#    Google Login#}
+    <meta name="google-signin-scope" content="profile email">
 
-<meta name="google-signin-client_id"
-      content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+    <meta name="google-signin-client_id"
+          content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+{% endif %}
 
 <style>
     #user_img {
@@ -116,7 +118,7 @@
         {% endif %}
         <li class="nav_link"><a class="dropdown-trigger" href="#"
                                 data-target="dropdown_user_side">{{ g.user['given_name'] }}<i
-                        class="material-icons right">arrow_drop_down</i></a></li>
+                class="material-icons right">arrow_drop_down</i></a></li>
     {% else %}
         <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
         <li class="nav_link"><a href="{{ url_for('auth.login') }}">Log In</a></li>
