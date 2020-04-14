@@ -1,6 +1,6 @@
 import base64
 
-from flask import Blueprint, session, send_from_directory
+from flask import Blueprint, session, send_from_directory, url_for
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -43,6 +43,11 @@ def allowed_file(filename):
 @bp.route("/")
 @login_required
 def index():
+
+    if session.get("pre_process_id"):
+        session_id = "pre_process_id"
+        return render_template("alert.html", process = "Pre-process" , session_id = session_id)
+
     list_names = []
     annotation_list = []
     path = USER_PATH / str(g.user["id"])
