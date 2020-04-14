@@ -26,6 +26,7 @@ bp = Blueprint("fs", __name__, url_prefix="/fs")
 @bp.route("/", methods=['GET'])
 @login_required
 def index():
+
     file_name = request.args.get("file_name")
 
     if file_name is None:
@@ -36,14 +37,6 @@ def index():
         for filename in os.listdir(path):
             list_names.append(filename)
         list_names.remove("tmp")
-
-        # user_id = session.get("user_id")
-        # result = UserData.get_user_results(user_id)
-        # filename = result['filename']
-        #
-        #
-        # if filename is None or filename == '':
-        #     flash("Error: You don't has pre-processed data-set, start from pre-processing or change file")
 
         return render_template("fs/index.html", list_names=list_names, filename=None)
     else:
@@ -88,6 +81,11 @@ def get_val():
         et_col = FeatureSelection.ExtraTrees(df, len).columns.tolist()
         selected_col[i] = ','.join(e for e in et_col)
 
+    #Check same process running user different window
+    # if session.get("result_id"):
+    #     session_id = "result_id"
+    #     return render_template("alert.html", process="Feature Selection or Analysis", session_id=session_id)
+
     # Check data already filled in database
     if UserData.get_result(user_id, filename):
         UserData.delete_result(user_id, filename)
@@ -117,7 +115,7 @@ def get_val():
     UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2], selected_clfs_str)
     # Save result id on session
     result_id = UserData.get_result(user_id, filename)['id']
-    session['result_id'] = result_id
+    # session['result_id'] = result_id
 
     results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3, y,
                                                                                     fs_methods, classifiers)
@@ -126,7 +124,7 @@ def get_val():
 
     venn_data = FeatureSelection.venn_diagram_data(col_m1, col_m2, col_m3)
 
-    return render_template("fs/result.html", image_data=img64, methods=fs_methods, columns=col, venn_data=venn_data)
+    return render_template("fs/result.html", image_data=img64, methods=fs_methods, columns=col, venn_data=venn_data, result_id=result_id)
 
 
 @bp.route("/<method>/config")
@@ -153,7 +151,8 @@ def result_config_apply():
     url = request.form["url"]
     available_result = request.form["available_result"]
     user_id = g.user['id']
-    session['result_id'] = UserData.get_result(user_id, available_result)['id']
+    id = UserData.get_result(user_id, available_result)['id']
+    url = url + "?id=" + str(id)
 
     return redirect(url)
 

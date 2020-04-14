@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-from flask import Blueprint, session, g
+from flask import Blueprint, session, g, request
 from flask import render_template
 from flask import redirect
 from flaskr.classes.featureSelectionClass import FeatureSelection
@@ -17,17 +17,15 @@ GENE_CARD = ROOT_PATH / "flaskr" / "upload" / "Validation" / "GeneCards-SearchRe
 
 bp = Blueprint("validation", __name__, url_prefix="/val")
 
-@bp.route("/")
+@bp.route("/", methods = ['GET'])
 @login_required
 def index():
+    result_id = request.args.get("id")
 
-    if session.get("result_id") is None:
+    if result_id is None:
         return redirect('../fs/val/config')
 
-    r = g.result
-
-    if r['col_selected_method'] is None:
-        return redirect('../fs/val/config')
+    r = UserData.get_result_from_id(result_id)
 
     col_overlapped = r['col_overlapped'].split(',')
     col_selected_method = r['col_selected_method'].split(',')

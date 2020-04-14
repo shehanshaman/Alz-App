@@ -20,14 +20,19 @@ USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 
 bp = Blueprint("analyze", __name__, url_prefix="/an")
 
-@bp.route("/")
+@bp.route("/", methods = ['GET'])
 @login_required
 def index():
+    result_id = request.args.get("id")
 
-    if session.get("result_id") is None:
+    # if result_id != 0 and session.get("result_id"):
+    #     session_id = "result_id"
+    #     return render_template("alert.html", process = "Feature Selection or Analysis" , session_id = session_id)
+
+    if result_id is None:
         return redirect('../fs/an/config')
 
-    r = g.result
+    r = UserData.get_result_from_id(result_id)
     user_id = r['user_id']
 
     filename = r['filename']
@@ -68,7 +73,7 @@ def index():
     small_set_pic_hash = get_small_set_features_fig(m_scores,x_scores, method_names[1:4], selected_clfs)
 
     return render_template("analyze/index.html", corr_data = correlation_pic_hash, overlap_data = overlap_pic_hash,
-                           small_set= small_set_pic_hash, methods = method_names[1:4], filename=filename)
+                           small_set= small_set_pic_hash, methods = method_names[1:4], filename=filename, result_id = result_id)
 
 
 @bp.route("/step2", methods = ['POST'])
@@ -76,8 +81,9 @@ def index():
 def selected_method():
 
     selected_method = request.form["selected_method"]
+    result_id = request.form["id"]
 
-    r = g.result
+    r = UserData.get_result_from_id(result_id)
     user_id = r['user_id']
 
     filename = r['filename']
@@ -118,13 +124,15 @@ def selected_method():
     return render_template("analyze/analyze_correlation.html", corr_results=cmp_corr_results_pic_hash,
                            tables=[max_corr_df.head().to_html(classes='data')],
                            method_title = selected_method, overlap = overlap, corr_selected = col_selected_method,
-                           max_clasify = max_corr_df['Maximum Accuracy'].idxmax(), corr_score = corr_score_pic_hash, filename=filename)
+                           max_clasify = max_corr_df['Maximum Accuracy'].idxmax(), corr_score = corr_score_pic_hash,
+                           filename=filename, result_id = result_id)
 
-@bp.route("/step3")
+@bp.route("/step3", methods = ['GET'])
 @login_required
 def final_result():
+    result_id = request.args.get("id")
 
-    r = g.result
+    r = UserData.get_result_from_id(result_id)
     user_id = r['user_id']
 
     overlap = r['col_overlapped'].split(',')
@@ -151,7 +159,8 @@ def final_result():
 
     return render_template("analyze/final_result.html", sel_roc=selected_roc_pic_hash, table_r1 = [r1_df.to_html(classes='data')],
                            title_r1 = r1_df.head().columns.values, all_roc=all_roc_pic_hash, table_r2 = [r2_df.to_html(classes='data')],
-                           title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col, filename = filename)
+                           title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col,
+                           filename = filename, result_id=result_id)
 
 def checkList(list1, list2):
     for word in list2:

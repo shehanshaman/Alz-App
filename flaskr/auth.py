@@ -47,7 +47,7 @@ def load_logged_in_user():
     the database into ``g.user``."""
     user_id = session.get("user_id")
     pre_process_id = session.get("pre_process_id")
-    result_id = session.get("result_id")
+    # result_id = session.get("result_id")
 
     if user_id is None:
         g.user = None
@@ -63,12 +63,12 @@ def load_logged_in_user():
             get_db().execute("SELECT * FROM preprocess WHERE id = ?", (pre_process_id,)).fetchone()
         )
 
-    if result_id is None:
-        g.result_id = None
-    else:
-        g.result = (
-            get_db().execute("SELECT * FROM results WHERE id = ?", (result_id,)).fetchone()
-        )
+    # if result_id is None:
+    #     g.result_id = None
+    # else:
+    #     g.result = (
+    #         get_db().execute("SELECT * FROM results WHERE id = ?", (result_id,)).fetchone()
+    #     )
 
 
 @bp.route("/register", methods=("GET", "POST"))
@@ -524,6 +524,13 @@ class UserData:
         db = get_db()
         result = db.execute(
             "SELECT * FROM results WHERE user_id = ? AND filename = ?", (user_id, filename)
+        ).fetchone()
+        return result
+
+    def get_result_from_id(id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM results WHERE id = ?", (id,)
         ).fetchone()
         return result
 
