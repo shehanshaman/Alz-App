@@ -171,14 +171,15 @@ def norm():
 @login_required
 def skip_df_mapping():
     user_id = g.user['id']
-    file_name = request.args.get("file_name")
-    file_path = USER_PATH / str(id) / file_name
+    file_name = request.args.get("selected_file")
+    file_path = USER_PATH / str(user_id) / file_name
+
+    UserData.delete_preprocess_file(user_id, file_name)
 
     UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '', '')
     pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
-    # UserData.update_preprocess(user_id, file_name, 'avg_symbol_df_path', file_path)
 
-    return redirect(url_for('preprocess.feature_reduction') + "?id=" + pre_process_id)
+    return redirect(url_for('preprocess.feature_reduction') + "?id=" + str(pre_process_id))
 
 # step 5
 @bp.route("/step-5", methods=['GET'])
@@ -373,10 +374,10 @@ def csv2pkl(path_csv, path_pkl):
     return True
 
 def get_volcano_fig(fold_change, pValues):
-    fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(14, 8))
+    fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(12, 7))
     axes.scatter(fold_change, -(np.log10(pValues)))
     axes.set_ylabel("-log10(pValue)")
-    axes.set_xlabel("fold")
+    axes.set_xlabel("Fold")
 
     pic_hash = fig_to_b64encode(fig)
 

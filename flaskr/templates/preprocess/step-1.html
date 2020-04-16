@@ -21,7 +21,7 @@
 
 </head>
 
-<style> 
+<style>
 
     .button {
         margin-top: inherit;
@@ -107,7 +107,9 @@
                         </div>
                     </div>
                     <div id="view_div" class="col-sm-1">
-                        <button type="button" class="view_button btn btn-warning" {% if available_list | length == 0 %} disabled {% endif %}>View</button>
+                        <button type="button" class="view_button btn btn-warning" {% if available_list | length == 0 %}
+                                disabled {% endif %}>View
+                        </button>
                     </div>
                 </div>
 
@@ -153,6 +155,9 @@
                 <button id="btn-submit-step-1" class="waves-effect waves-dark btn next-step step-6-click" type="submit"
                         value="Submit" {% if available_list | length == 0 %} disabled {% endif %}>
                     <input type="submit" value="Submit">
+                </button>
+                <button id="btn-skip-step-1" class="waves-effect waves-dark btn next-step" type="button" style="background-color: cadetblue;"
+                        {% if available_list | length == 0 %} disabled {% endif %}>SKIP MAPPING
                 </button>
                 <button id="btn-submit-step-back" class="waves-effect waves-dark btn-flat previous-step"><a
                         href="{{ url_for('preprocess.upload_file_view') }}">BACK</a></button>
@@ -207,6 +212,20 @@
         $("#form").submit();
 
         $('#tourControls').hide(0);
+    });
+
+    $('#btn-skip-step-1').click(function () {
+
+        var file_name = $('#available_files').find(":selected").text();
+        url = '{{ url_for('preprocess.skip_df_mapping') }}' + "?selected_file=" + file_name;
+
+        $('.main-div-step2').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
+
+        window.location.replace(url);
     });
 
     $('#btn-submit-step-1').click(function () {
