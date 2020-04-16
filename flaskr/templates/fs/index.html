@@ -167,7 +167,6 @@
                     <button id="btn-submit-fn-1" class="waves-effect waves-dark btn next-step step-6-click"
                             onclick="myFunction()" {% if list_names and filename %} disabled {% endif %}>CONTINUE
                     </button>
-                    <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
                 </div>
             </div>
         </div>
@@ -265,17 +264,32 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
+    function check_count(i) {
+        if(i==3){
+            document.getElementById("btn-submit-fn-1").disabled = false;
+        }else{
+            document.getElementById("btn-submit-fn-1").disabled = true;
+        }
+    }
+
     $(function () {
         $("#listTo").sortable();
         $("#listTo").disableSelection();
 
         $(document).on("click", "#listFrom li", function () {
             $(this).unbind("click").appendTo("#listTo");
+            count++;
+            check_count(count);
         });
         $(document).on("click", "#listTo li", function () {
             $(this).unbind("click").appendTo("#listFrom");
+            count--;
+            check_count(count);
         });
     });
+
+    var count = 0;
+    document.getElementById("btn-submit-fn-1").disabled = true;
 
     var slider = document.getElementById("myRange");
     var output = document.getElementById("demo");
