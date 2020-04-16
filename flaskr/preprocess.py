@@ -172,6 +172,10 @@ def norm():
 def skip_df_mapping():
     user_id = g.user['id']
     file_name = request.args.get("selected_file")
+
+    if not file_name:
+        return redirect('./pre')
+
     file_path = USER_PATH / str(user_id) / file_name
 
     UserData.delete_preprocess_file(user_id, file_name)

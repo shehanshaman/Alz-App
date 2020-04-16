@@ -116,8 +116,8 @@
             <div class="step-actions">
                 <button id="btn-submit-step-4" class="waves-effect waves-dark btn next-step step-6-click">
                     <a>CONTINUE</a></button>
-                <button class="waves-effect waves-dark btn-flat previous-step"><a
-                        href="{{ url_for('preprocess.scaling_imputation') }}">BACK</a></button>
+                <button class="waves-effect waves-dark btn-flat previous-step" type="button"><a
+                        href="{{ url_for('preprocess.scaling_imputation') }}?id={{ pre_process_id }}">BACK</a></button>
             </div>
 
         </form>

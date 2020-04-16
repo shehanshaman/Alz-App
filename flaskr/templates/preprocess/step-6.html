@@ -127,7 +127,9 @@
 
                 <div class="step-actions">
                     <button id="btn-submit-step-6" class="waves-effect waves-dark btn next-step step-6-click">CONTINUE</button>
-                    <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+                    <button class="waves-effect waves-dark btn-flat previous-step" type="button">
+                        <a href="{{ url_for('preprocess.feature_reduction') }}?id={{ pre_process_id }}">BACK</a>
+                    </button>
                 </div>
             </div>
         </form>

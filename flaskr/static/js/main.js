@@ -7,3 +7,7 @@ $(document).ready(function () {
 function signOut() {
     window.location.replace('/auth/logout');
 }
+
+function goBack() {
+    window.history.back();
+}

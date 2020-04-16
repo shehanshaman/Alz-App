@@ -75,7 +75,9 @@
         <form id="main-form-div-step5" method="post" action="/pre/step-6/" enctype="multipart/form-data">
             <div class="step-content">
                 <div class="row">
-                    <h3 id="h3-head-4" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 5 : FEATURE REDUCTION</h3>
+                    <h3 id="h3-head-4" class="card__title"
+                        style="text-align: center;color: #26a69a;font-family: monospace;">STEP 5 : FEATURE
+                        REDUCTION</h3>
                 </div>
 
                 <div class="row">
@@ -85,19 +87,21 @@
                                 <img id="fold-p" src="data:image/png;base64,{{ volcano_hash }}" alt="volcano">
                             </div>
                             <div class="top-right">
-                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                <button type="button"
+                                        style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
                                         class="use-download-fold" value="">
                                     <i class="fas fa-file-download fa-2x"></i>
                                 </button>
-                            </div>  
-                        </div>                      
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-sm-4">
                         <div class="row md-form">
                             <label><b>Fold Range</b></label>
                             <div id="fold_range_div" class="dropdown">
-                                <select style="font-family: monospace;" class="form-control dropdown-menu-fold-range" id="fold-range" name="fold-range">
+                                <select style="font-family: monospace;" class="form-control dropdown-menu-fold-range"
+                                        id="fold-range" name="fold-range">
                                     {% for name in data_array[1] %}
                                         <option value="{{ name }}">{{ name }}</option>
                                     {% endfor %}
@@ -107,8 +111,9 @@
 
                         <div class="row md-form">
                             <label><b>P-value</b></label>
-                            <div id="p_value_range_div"  class="dropdown">
-                                <select style="font-family: monospace;" class="form-control dropdown-menu-p-value" id="p-value" name="p-value">
+                            <div id="p_value_range_div" class="dropdown">
+                                <select style="font-family: monospace;" class="form-control dropdown-menu-p-value"
+                                        id="p-value" name="p-value">
                                     {% for name in data_array[0] %}
                                         <option value="{{ name }}">{{ name }}</option>
                                     {% endfor %}
@@ -128,12 +133,14 @@
                         </div>
                         <div class="row" id="result_div">
                             <div class="row" style="margin-top: 30px;">
-                                <h5 id="h4-head-2" class="card__title" style="text-align: center;font-family: monospace;">SELECTED NUMBER OF
+                                <h5 id="h4-head-2" class="card__title"
+                                    style="text-align: center;font-family: monospace;">SELECTED NUMBER OF
                                     GENES</h5>
                             </div>
 
                             <div class="row">
-                                <h5 id="h4-head-2" class="card__title" style="text-align: center;font-family: monospace;"><b
+                                <h5 id="h4-head-2" class="card__title"
+                                    style="text-align: center;font-family: monospace;"><b
                                         id="selected_features_count">2000</b></h5>
                             </div>
                         </div>
@@ -143,8 +150,9 @@
                 </div>
 
                 <div class="step-actions">
-                    <button id="btn-submit-step-5" class="waves-effect waves-dark btn next-step step-5-click">CONTINUE</button>
-                    <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+                    <button id="btn-submit-step-5" class="waves-effect waves-dark btn next-step step-5-click">CONTINUE
+                    </button>
+                    <button class="waves-effect waves-dark btn-flat previous-step" onclick="goBack()" type="button">BACK</button>
                 </div>
             </div>
         </form>
@@ -152,10 +160,10 @@
     </div>
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 20%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 20%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>
+</div>
 
 {% include 'guide_footer.html' %}
 
@@ -207,7 +215,7 @@
         $("#main-form-div-step5").submit();
         $('#tourControls').hide(0);
         $('.notification-container-pop').hide(0);
-    });  
+    });
 
     $(".use-download-fold").click(function () {
         var img = document.getElementById('fold-p');
@@ -219,7 +227,8 @@
         a.click();
 
         $('#tourControls').hide(0);
-    });     
+    });
+
 </script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
