@@ -59,7 +59,14 @@
 
         <div class="step-content">
             <div class="row">
-                <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 4 : DATASET AFTER MAPPING</h3>
+                <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 4 : DATASET AFTER
+                    MAPPING</h3>
+                <div style="float: right">
+                    <button style="color: #26a69a;border: none;"
+                            class="use-download" value="{{ file_name }}">
+                        <i class="fas fa-file-download fa-2x"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="row">
@@ -107,7 +114,8 @@
             <input type="hidden" id="id" name="id" value="{{ pre_process_id }}"/>
 
             <div class="step-actions">
-                <button id="btn-submit-step-4" class="waves-effect waves-dark btn next-step step-6-click"><a>CONTINUE</a></button>
+                <button id="btn-submit-step-4" class="waves-effect waves-dark btn next-step step-6-click">
+                    <a>CONTINUE</a></button>
                 <button class="waves-effect waves-dark btn-flat previous-step"><a
                         href="{{ url_for('preprocess.scaling_imputation') }}">BACK</a></button>
             </div>
@@ -115,13 +123,13 @@
         </form>
 
     </div>
-    
+
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load" style="top: -14%;"></div> 
-        <h5 style="margin-top: 22%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load" style="top: -14%;"></div>
+    <h5 style="margin-top: 22%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>
+</div>
 
 {% include 'footer.html' %}
 
@@ -149,6 +157,8 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endif %}
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
 <script type="text/javascript">
 
     $('#btn-submit-step-4').click(function () {
@@ -158,4 +168,14 @@
         $("#main-form-div-step4").submit();
     });
 
+</script>
+
+<script>
+    $(".use-download").click(function () {
+        var $file_name = $('.use-download').val();
+
+        var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=1";
+        window.open(url, '_blank');
+
+    });
 </script>
