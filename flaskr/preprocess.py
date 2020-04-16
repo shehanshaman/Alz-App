@@ -134,6 +134,7 @@ def norm():
 
     pre_process = UserData.get_preprocess_from_id(pre_process_id)
     user_id = pre_process['user_id']
+    col_sel_method = pre_process['col_sel_method']
 
     UserData.update_preprocess(user_id, pre_process['file_name'], 'scaling', norm_method)
     UserData.update_preprocess(user_id, pre_process['file_name'], 'imputation', null_rmv)
@@ -142,7 +143,7 @@ def norm():
 
     df = PreProcess.step3(PreProcess.getDF(merge_df_path), norm_method, null_rmv) #symbol_df
 
-    df = PreProcess.probe2Symbol(df) #avg_symbol_df
+    df = PreProcess.probe2Symbol(df, int(col_sel_method))
     avg_symbol_name = "avg_symbol_" + pre_process['file_name']
     avg_symbol_df_path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
 
