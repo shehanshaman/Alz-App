@@ -153,8 +153,10 @@ def predict_results():
     save_path = USER_PATH / str(user_id) / "tmp" / "results.pkl"
     out_result.to_pickle(save_path);
 
+    data = out_result['Predicted Result'].value_counts()
+
     return render_template("modeling/predict-results.html",
-                           tables=[out_result.to_html(classes='display" id = "table_id')])
+                           tables=[out_result.to_html(classes='display" id = "table_id')], data=data)
 
 
 @bp.route("/results/", methods=["GET"])

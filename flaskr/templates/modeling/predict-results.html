@@ -42,6 +42,20 @@
                 </button>                              
             </div>        
         </div>
+
+        <div class="row">
+            <table>
+                <tr>
+                    <td>Number of positive results</td>
+                    <td>{{ data['Positive'] }}</td>
+                </tr>
+                <tr>
+                    <td>Number of negative results</td>
+                    <td>{{ data['Negative'] }}</td>
+                </tr>
+            </table>
+        </div>
+
         <div class="row table_view">
             {% for table in tables %}
                 {{ table|safe }}
