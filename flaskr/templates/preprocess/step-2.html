@@ -57,8 +57,18 @@
 
     <div class="step-content">
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 2 : DATASET BEFORE
-                PRE-PROCESS</h3>
+            <div>
+                <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 2 : DATASET
+                    BEFORE
+                    PRE-PROCESS</h3>
+            </div>
+            <div style="float: right">
+                <button style="color: #26a69a;border: none;"
+                        class="use-download" value="{{ file_name }}">
+                    <i class="fas fa-file-download fa-2x"></i>
+                </button>
+            </div>
+
         </div>
 
         <div class="row">
@@ -153,4 +163,14 @@
 
     var tour = guide_main_call(tip_step_2, 'BL');
 
+</script>
+
+<script>
+    $(".use-download").click(function () {
+        var $file_name = $('.use-download').val();
+
+        var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=1";
+        window.open(url, '_blank');
+
+    });
 </script>

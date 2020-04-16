@@ -100,7 +100,8 @@ def view_merge_df():
         else:
             df_view = df.head(15)
 
-        return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data, pre_process_id = pre_process_id)
+        return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data,
+                               pre_process_id = pre_process_id, file_name = merge_name)
 
     return redirect('/pre')
 

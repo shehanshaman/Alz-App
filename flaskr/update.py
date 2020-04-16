@@ -77,7 +77,7 @@ def download_df():
     name = request.args.get('name')
     isTmp = request.args.get('is_tmp')
 
-    if isTmp == 1:
+    if int(isTmp) == 1:
         path = USER_PATH / str(id) / "tmp" / name
         df = PreProcess.getDF(path)
     else:
