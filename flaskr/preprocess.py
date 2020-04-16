@@ -166,6 +166,20 @@ def norm():
                            details=data, pre_process_id = pre_process_id, file_name = avg_symbol_name)
 
 
+# skip method Step 1 to Step 5
+@bp.route("/skip-step-1", methods=['GET'])
+@login_required
+def skip_df_mapping():
+    user_id = g.user['id']
+    file_name = request.args.get("file_name")
+    file_path = USER_PATH / str(id) / file_name
+
+    UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '', '')
+    pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
+    # UserData.update_preprocess(user_id, file_name, 'avg_symbol_df_path', file_path)
+
+    return redirect(url_for('preprocess.feature_reduction') + "?id=" + pre_process_id)
+
 # step 5
 @bp.route("/step-5", methods=['GET'])
 @login_required
@@ -176,10 +190,15 @@ def feature_reduction():
     if pre_process is None:
         return redirect('/pre')
 
-    avg_symbol_df_path = Path(pre_process['avg_symbol_df_path'])
-    file_path = Path(pre_process['file_path'])
+    if pre_process['avg_symbol_df_path']:
+        avg_symbol_df_path = Path(pre_process['avg_symbol_df_path'])
+        file_path = Path(pre_process['file_path'])
 
-    p_fold_df = PreProcess.get_pvalue_fold_df(avg_symbol_df_path, file_path)
+        p_fold_df = PreProcess.get_pvalue_fold_df(avg_symbol_df_path, file_path)
+    else:
+        file_path = Path(pre_process['file_path'])
+        p_fold_df = PreProcess.get_pvalue_fold_df(file_path)
+
     p_fold_df_path = USER_PATH / str(g.user["id"]) / 'tmp' / ('_p_fold_' + pre_process['file_name'])
     PreProcess.saveDF(p_fold_df, p_fold_df_path)
 

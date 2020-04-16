@@ -115,8 +115,12 @@ class PreProcess:
 
 		return df
 
-	def get_pvalue_fold_df(df_path, class_path):
-		df = PreProcess.set_class_to_df(df_path, class_path)
+	def get_pvalue_fold_df(df_path, class_path=None):
+		if class_path:
+			df = PreProcess.set_class_to_df(df_path, class_path)
+		else:
+			df = PreProcess.getDF(df_path)
+
 		df_normal, df_AD = PreProcess.split_df_by_class(df)
 
 		pValues = []
