@@ -26,14 +26,14 @@
             padding: 10px;
         }
 
-        .form-padding{
+        .form-padding {
             width: 70%;
         }
-        
+
         .border {
             border: 2px solid #26a69a;
             border-radius: 30px;
-            padding: 5px;
+            padding: 10px;
         }
 
         .flash {
@@ -47,15 +47,17 @@
 
 <body style="background-color: #f3f6f9;">
 
-<!-- Dropdown Structure -->
-{% include 'horizontal_nav_bar.html' %}
+<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 5%;">
 
-<div id="mainDataInterface-id" class="container mainDataInterface">
-
+    <div class="logo center" style="margin-top: -3%;">
+        <img src="{{ url_for('static', filename='images/login-logo.png') }}" alt="logo"
+             style="width:125px; filter: brightness(1.02);">
+    </div>
 
     <div class="step-content">
         <div class="row head-word">
-            <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">Register</h3>
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">Create your GeNet
+                Account</h3>
         </div>
     </div>
 
@@ -66,8 +68,8 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-6">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
             <div class="border">
                 <form method="post" class="form-padding center">
                     <label for="given_name" style="float: left">Name</label>
@@ -79,14 +81,15 @@
 
                     <input type="submit" value="Register" class="waves-effect waves-dark btn">
                 </form>
-            </div>            
+                <div class="row center">
+                    <label><a href="{{ url_for('auth.login') }}">Sign in instead</a></label>
+                </div>
+            </div>
         </div>
-        <div class="col-sm-3"></div>
+        <div class="col-sm-2"></div>
     </div>
 
 </div>
-
-{% include 'footer.html' %}
 
 </body>
 </html>

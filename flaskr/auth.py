@@ -234,6 +234,8 @@ def reset_request():
         message = "Please, check your email."
         flash(message)
 
+        return redirect(url_for('auth.login'))
+
     return render_template("auth/reset_request.html")
 
 
@@ -244,10 +246,25 @@ def reset_key_verify():
         username = request.form["username"]
         password = request.form["password"]
 
+        #Update password
         db = get_db()
         db.execute(
             "UPDATE user SET password = ? WHERE username = ?",
             (generate_password_hash(password), username),
+        )
+        db.commit()
+
+        #Get user id
+        user = db.execute(
+            "SELECT * FROM user WHERE username = ?", (username,)
+        ).fetchone()
+
+        user_id = int(user['id'])
+
+        #Delete query in verify
+        db.execute(
+            "DELETE FROM verify WHERE user_id = ? AND subject = 'reset'",
+            (user_id,)
         )
         db.commit()
 
@@ -260,20 +277,15 @@ def reset_key_verify():
 
     db = get_db()
     verify_data = db.execute(
-        "SELECT * FROM verify WHERE user_id = ? AND subject = 'reset'", (user_id,)
+        "SELECT * FROM verify WHERE user_id = ? AND subject = 'reset' ORDER BY id DESC", (user_id,)
     ).fetchone()
 
-    e = ["Not Found", []]
-
     if verify_data is None:
-        e[1].append("You don't request for reset.")
+        flash("You don't request for reset.")
+        return redirect(url_for("auth.login"))
 
     elif verify_key == verify_data['verify_key']:
-        db.execute(
-            "DELETE FROM verify WHERE user_id = ? AND subject = 'reset'",
-            (user_id),
-        )
-        db.commit()
+
         flash("Your email has been verified, Enter new password.")
 
         user = db.execute(
@@ -283,14 +295,9 @@ def reset_key_verify():
         return render_template("auth/reset.html", email = user["username"])
 
     else:
-        db.execute(
-            "DELETE FROM verify WHERE user_id = ? AND subject = 'reset'",
-            (user_id),
-        )
-        db.commit()
-        e[1].append("Wrong Key.")
+        flash("Wrong url for rest verification.")
+        return redirect(url_for("auth.login"))
 
-    return render_template("error.html", errors=e)
 
 @bp.route("/settings")
 @login_required

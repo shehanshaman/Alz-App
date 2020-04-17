@@ -74,7 +74,6 @@
         }
 
         .flash {
-            margin: 1em 0;
             padding: 1em;
             background: #cae6f6;
             border: 1px solid #377ba8;
@@ -84,15 +83,20 @@
 
 <body style="background-color: #f3f6f9;">
 
-<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 6%;">
+<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 5%;">
+
+    <div class="logo center" style="margin-top: -3%;">
+        <img src="{{ url_for('static', filename='images/login-logo.png') }}" alt="logo"
+                 style="width:125px; filter: brightness(1.02);">
+    </div>
 
     <div class="step-content">
-        <div class="row head-word">
+        <div class="row head-word" style="margin-bottom: 0px;">
             <h3 id="h3-head-1" class="card__title" style="text-align: center; color: #26a69a;">Log In</h3>
         </div>
     </div>
 
-    <div>
+    <div class="center">
         {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
         {% endfor %}
@@ -103,7 +107,7 @@
         <div class="col-sm-6">
             <div class="border">
                 <form method="post" class="center form-padding">
-                    <label for="username" style="float: left">Username</label>
+                    <label for="username" style="float: left">E-mail</label>
                     <input name="username" id="username" required>
                     <label for="password" style="float: left">Password</label>
                     <input type="password" name="password" id="password" required>
