@@ -29,14 +29,17 @@ class PreProcess:
 		df = PreProcess.getDF(df_path)
 		df_T = df.T.reset_index()
 		df_T = df_T.rename(columns={'index': 'ID'})
-		probes = PreProcess.getProbeDF(probe_path)
-		df_merge = pd.merge(df_T, probes, on='ID')
+		if "ID" in df_T.columns.tolist():
+			probes = PreProcess.getProbeDF(probe_path)
+			df_merge = pd.merge(df_T, probes, on='ID')
 
-		cols = df_merge.columns.tolist()
-		cols = cols[-1:] + cols[:-1]
-		df_merge = df_merge[cols]
+			cols = df_merge.columns.tolist()
+			cols = cols[-1:] + cols[:-1]
+			df_merge = df_merge[cols]
 
-		return df_merge
+			return df_merge
+		else:
+			return None
 
 	def rmNullRows(df_merge):
 		df_merge_rm_null = df_merge.dropna(how='any',axis=0)

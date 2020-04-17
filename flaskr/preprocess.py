@@ -67,19 +67,23 @@ def index():
 @login_required
 def view_merge_df():
     user_id = g.user["id"]
-    annotation_table = request.form["anno_tbl"]
-    col_sel_method = request.form["column_selection"]
-    file_name = request.form["available_files"]
-
-    file_path = USER_PATH / str(user_id) / file_name
+    annotation_table = request.form.get("anno_tbl")
+    col_sel_method = request.form.get("column_selection")
+    file_name = request.form.get("available_files")
 
     if annotation_table and col_sel_method and file_name:
+
+        file_path = USER_PATH / str(user_id) / file_name
 
         #Delete query if file already pre-processed
         UserData.delete_preprocess_file(user_id, file_name)
 
         #load df
         df = PreProcess.mergeDF(file_path, ANNOTATION_TBL / annotation_table)
+        if df is None:
+            flash("Couldn't merge dataset with annotation table")
+            return redirect('/pre')
+
         merge_name = "merge_" + file_name
         merge_path = USER_PATH / str(user_id) / "tmp" / merge_name
         merge_path_str = merge_path.as_posix()
@@ -129,41 +133,49 @@ def scaling_imputation():
 @login_required
 def norm():
 
-    norm_method = request.form["norm_mthd"]
-    null_rmv = request.form["null_rmv"]
-    pre_process_id = request.form["id"]
+    norm_method = request.form.get("norm_mthd")
+    null_rmv = request.form.get("null_rmv")
+    pre_process_id = request.form.get("id")
 
-    pre_process = UserData.get_preprocess_from_id(pre_process_id)
-    user_id = pre_process['user_id']
-    col_sel_method = pre_process['col_sel_method']
+    if norm_method and null_rmv and pre_process_id:
 
-    UserData.update_preprocess(user_id, pre_process['file_name'], 'scaling', norm_method)
-    UserData.update_preprocess(user_id, pre_process['file_name'], 'imputation', null_rmv)
+        pre_process = UserData.get_preprocess_from_id(pre_process_id)
 
-    merge_df_path = Path(pre_process['merge_df_path'])
+        if pre_process is None:
+            return redirect('/pre')
 
-    df = PreProcess.step3(PreProcess.getDF(merge_df_path), norm_method, null_rmv) #symbol_df
+        user_id = pre_process['user_id']
+        col_sel_method = pre_process['col_sel_method']
 
-    df = PreProcess.probe2Symbol(df, int(col_sel_method))
-    avg_symbol_name = "avg_symbol_" + pre_process['file_name']
-    avg_symbol_df_path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
+        UserData.update_preprocess(user_id, pre_process['file_name'], 'scaling', norm_method)
+        UserData.update_preprocess(user_id, pre_process['file_name'], 'imputation', null_rmv)
 
-    avg_symbol_df_path_str = avg_symbol_df_path.as_posix()
-    PreProcess.saveDF(df, avg_symbol_df_path_str)
+        merge_df_path = Path(pre_process['merge_df_path'])
 
-    UserData.update_preprocess(user_id, pre_process['file_name'], 'avg_symbol_df_path', avg_symbol_df_path_str)
+        df = PreProcess.step3(PreProcess.getDF(merge_df_path), norm_method, null_rmv) #symbol_df
 
-    data = session[pre_process['file_name']]
-    data = PreProcess.add_details_json(data, df, "r1")
-    session[pre_process['file_name']] = data
+        df = PreProcess.probe2Symbol(df, int(col_sel_method))
+        avg_symbol_name = "avg_symbol_" + pre_process['file_name']
+        avg_symbol_df_path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
 
-    if len(df.columns) > 100:
-        df_view = df.iloc[:, 0:100].head(15)
-    else:
-        df_view = df.head(15)
+        avg_symbol_df_path_str = avg_symbol_df_path.as_posix()
+        PreProcess.saveDF(df, avg_symbol_df_path_str)
 
-    return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')],
-                           details=data, pre_process_id = pre_process_id, file_name = avg_symbol_name)
+        UserData.update_preprocess(user_id, pre_process['file_name'], 'avg_symbol_df_path', avg_symbol_df_path_str)
+
+        data = session[pre_process['file_name']]
+        data = PreProcess.add_details_json(data, df, "r1")
+        session[pre_process['file_name']] = data
+
+        if len(df.columns) > 100:
+            df_view = df.iloc[:, 0:100].head(15)
+        else:
+            df_view = df.head(15)
+
+        return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')],
+                               details=data, pre_process_id = pre_process_id, file_name = avg_symbol_name)
+
+    return redirect('/pre')
 
 
 # skip method Step 1 to Step 5
