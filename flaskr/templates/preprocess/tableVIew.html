@@ -43,11 +43,42 @@
             <div class="col-sm-12">
                 <h4 style="color: #26a69a; display: inline;font-size: 20px;">File Name : </h4>
                 <h4 class="h4-file-name" style="color: #26a69a; display: inline;font-size: 20px;">{{ data[0] }}</h4>
-                <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;" class="use-download" value="{{ data[0] }}">
+                <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                        class="use-download" value="{{ data[0] }}">
                     <i class="fas fa-file-download fa-2x"></i>
-                </button>                              
-            </div>        
+                </button>
+            </div>
         </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Number of features</td>
+                        <td id="number_features_div">{{ data[1][1] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of samples</td>
+                        <td id="number_samples_div">{{ data[1][0] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Minimum value</td>
+                        <td id="min_val_div">{{ data[2] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum value</td>
+                        <td id="max_val_div">{{ data[3] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
         <div class="row table_view">
             {% for table in tables %}
                 {{ table|safe }}
@@ -87,7 +118,9 @@
     window.onload = function () {<!--   w  w w  .j  a  v a  2 s  .c  om-->
         var rows = document.getElementsByTagName("tr");
         for (var i = 0; i < rows.length; i++) {
-            if (i==0){ continue;}
+            if (i == 0) {
+                continue;
+            }
             rows[i].onclick = function () {
                 $("#selected_row").val($(this).find('th')[0].innerHTML);
                 $("#form").submit();
@@ -97,7 +130,7 @@
 
     $(".use-download").click(function () {
         var $file_name = $('.h4-file-name').text();
-        
+
         var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=0";
         window.open(url, '_blank');
 
