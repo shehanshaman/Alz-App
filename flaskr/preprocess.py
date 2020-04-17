@@ -302,7 +302,7 @@ def save_reduced_df():
 
     file_name = pre_process['file_name']
 
-    path = USER_PATH / str(g.user["id"]) / ('re_' + file_name)
+    path = USER_PATH / str(g.user["id"]) / ('GeNet_' + file_name)
     PreProcess.saveDF(df_selected, path)
 
     # remove old files

@@ -44,7 +44,7 @@ def index():
     else:
 
         pre_process = UserData.get_preprocess_from_id(pre_process_id)
-        file_name = "re_" + pre_process['file_name']
+        file_name = "GeNet_" + pre_process['file_name']
 
         return render_template("fs/index.html", list_names=None, filename=file_name, pre_process_id = pre_process_id)
 
