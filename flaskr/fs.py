@@ -29,12 +29,9 @@ def index():
 
     if pre_process_id is None:
 
-        list_names = []
         path = USER_PATH / str(g.user["id"])
 
-        for filename in os.listdir(path):
-            list_names.append(filename)
-        list_names.remove("tmp")
+        list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
         if len(list_names) == 0:
             flash("Error: You don't have pre-processed or uploaded file.")
@@ -146,8 +143,7 @@ def result_config(method):
         url = url_for('validation.index')
         title = "Validation"
 
-        for file_name in os.listdir(VALIDATION_PATH):
-            validation_file_list.append(file_name)
+        validation_file_list = [f for f in os.listdir(VALIDATION_PATH) if os.path.isfile((VALIDATION_PATH / f))]
 
     all_result = [r['filename'] for r in all_result]
 
