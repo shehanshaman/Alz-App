@@ -17,6 +17,7 @@ from pathlib import Path
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
 
 bp = Blueprint("analyze", __name__, url_prefix="/an")
 
@@ -153,10 +154,14 @@ def final_result():
     r_len = [len(col_selected_method), len(dis_gene)]
     r_col = [col_selected_method, dis_gene]
 
+    validation_file_list = []
+    for file_name in os.listdir(VALIDATION_PATH):
+        validation_file_list.append(file_name)
+
     return render_template("analyze/final_result.html", sel_roc=selected_roc_pic_hash, table_r1 = [r1_df.to_html(classes='data')],
                            title_r1 = r1_df.head().columns.values, all_roc=all_roc_pic_hash, table_r2 = [r2_df.to_html(classes='data')],
                            title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col,
-                           filename = filename, result_id=result_id)
+                           filename = filename, result_id=result_id, validation_file_list= validation_file_list)
 
 def checkList(list1, list2):
     for word in list2:

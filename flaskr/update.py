@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from flask import Blueprint, request, make_response
+from flask import Blueprint, request, make_response, g, abort
 
 from os.path import isfile, join
 
@@ -111,10 +111,19 @@ def update_user_tour():
 
     return str(want_tour)
 
+def is_not_admin(user):
+    if user['is_admin'] == 0:
+        return True
+    else:
+        return False
 
 @bp.route("/user/admin/", methods=["GET"])
 @login_required
 def update_user_admin():
+    #Check whether admin
+    if is_not_admin(g.user):
+        return abort('401')
+
     id = request.args.get('id')
     is_admin = request.args.get('is_admin')
 
