@@ -21,6 +21,14 @@
 
 </head>
 
+<style type="text/css">
+
+    #result_view {
+        display: none;
+    }
+
+</style>
+
 <body style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
@@ -32,7 +40,8 @@
 
         <div class="step-content">
             <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">MODELLING</h3>
+                <h3 id="h3-head-1" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">MODELLING</h3>
             </div>
         </div>
 
@@ -40,7 +49,8 @@
 
             <div class="alert alert-success alert-dismissible fade in">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b> <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
+                <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b>
+                <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
             </div>
 
         {% elif state == '0' %}
@@ -50,24 +60,86 @@
                 <strong>Danger!</strong> Something went wrong.
             </div>
 
+        {% elif state == '2' %}
+            <div class="alert alert-danger alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Danger!</strong> You don't have configured model.
+            </div>
+
         {% endif %}
 
-        <div class="features">
-            <h5>Extracted Features </h5>
-            <div id="extracted_features_div" class="well" style="background-color: #26a69a54; border: 1px solid #26a69a;">{{ features }}</div>
-        </div>
+        {% if analysed_file %}
+            <div class="select-model">
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Analysed File : </h5>
+                    </div>
+                    <div class="col-sm-6">
+                         <h5 id="h4-head-2" class="card__title" style="text-align: center;font-family: monospace;"><b
+                                        id="selected_file">{{ analysed_file }}</b></h5>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <input type="hidden" id="available_result" name="available_result" value="{{ analysed_file }}"/>
+            </div>
+            <div id="extracted_features_div"></div>
+        {% else %}
+            <div class="select-model">
+
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
+                            Analysed File :</h5>
+                    </div>
+                    <div class="col-sm-6">
+                        <div id="choose_result_div" class="md-form">
+                            <select style="font-family: monospace;" class="form-control" id="available_result"
+                                    name="available_result">
+                                <option disabled="disabled" selected>Pick a choice!</option>
+                                {% for name in all_result %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="result_view">
+
+                    <div class="features" class="well"
+                         style="background-color: #26a69a54; border: 1px solid #26a69a; padding: 10px;">
+                        <div class="row">
+                            <h5>Feature Selection Methods</h5>
+                            <div id="fs_methods_div"></div>
+                        </div>
+                        <div class="row">
+                            <h5>Overlapped Features </h5>
+                            <div id="overlapped_features_div"></div>
+                        </div>
+                        <div class="row">
+                            <h5 id="selected_method"></h5>
+                            <div id="extracted_features_div"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        {% endif %}
 
         <br>
 
-        <div class="where-you-like" style="margin-top: 40px;border: 2px solid #26a69a;padding: 30px;">
+        <div class="where-you-like" style="margin-top: 5px;border: 2px solid #26a69a;padding: 30px;">
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose File :</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
+                        File :</h5>
                 </div>
                 <div class="col-sm-6">
-                    <div id="choose_file_div"  class="md-form">
-                        <select style="font-family: monospace;" class="form-control" id="available_files" name="available_files">
+                    <div id="choose_file_div" class="md-form">
+                        <select style="font-family: monospace;" class="form-control" id="available_files"
+                                name="available_files">
                             {% for name in available_list %}
                                 <option value="{{ name }}">{{ name }}</option>
                             {% endfor %}
@@ -76,12 +148,13 @@
                 </div>
             </div>
 
-            <div class="row" style="margin-top: 40px;">
+            <div class="row" style="margin-top: 5px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Classifier :</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Classifier
+                        :</h5>
                 </div>
                 <div class="col-sm-6">
-                    <div id="classifier_method_div"  class="md-form">
+                    <div id="classifier_method_div" class="md-form">
                         <select style="font-family: monospace;" class="form-control" id="classifier" name="classifier">
                             {% for name in classifier_list %}
                                 <option value="{{ name }}">{{ name }}</option>
@@ -92,7 +165,7 @@
             </div>
 
             <div class="step-actions">
-                <button class="waves-effect waves-dark btn next-step step-6-click">SUBMIT</button>
+                <button class="waves-effect waves-dark btn next-step step-6-click" id="submit_button">SUBMIT</button>
             </div>
             <br>
         </div>
@@ -116,9 +189,13 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
@@ -130,7 +207,29 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
- 
+
     var tour = guide_main_call(tip_model_index, 'BL');
 
 </script>
+
+{% if analysed_file == None %}
+    <script>
+        $('#submit_button').prop('disabled', true);
+
+        $('#available_result').change(function () {
+            var filename = $('#available_result').find(":selected").text();
+            $.get("./results/", {filename: filename}, function (data, status) {
+                data = data.split("|");
+                methods = data['4'].split(',');
+                methods.pop()
+                $('#overlapped_features_div').text(data[8]);
+                $('#extracted_features_div').text(data[9]);
+                $('#selected_method').text(data[10] + " Extracted Features");
+                $('#fs_methods_div').text(methods);
+
+                document.getElementById('result_view').style.display = "block";
+                $('#submit_button').prop('disabled', false);
+            });
+        });
+    </script>
+{% endif %}

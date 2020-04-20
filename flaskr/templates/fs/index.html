@@ -27,15 +27,14 @@
             height: inherit;
         }
 
-        #file_tbl_div {
-            visibility: hidden;
-        }
-
         .flash {
             margin: 1em 0;
             padding: 1em;
-            background: #cae6f6;
-            border: 1px solid #377ba8;
+            background: #f6ac8f;
+            border: 1px solid #5c0202;
+            text-align: center;
+            margin-left: 10%;
+            margin-right: 10%;
         }
 
     .thumb {
@@ -87,27 +86,16 @@
                 </div>
 
                 {% for message in get_flashed_messages() %}
-                    <div class="flash">{{ message }}</div>
+                    <div class="row">
+                        <div class="flash">{{ message }}</div>
+                    </div>
                 {% endfor %}
 
                 <div class="row">
-                    <div id="selected_file_div" class="row">
-                        <span class="col-sm-6" style="text-align: center;">Selected File :</span>
-                        <label class="col-sm-6" style="text-align: left;">{{ filename }}</label>
-                    </div>
-                    <div class="switch">
-                        <div class="row">
-                            <span class="col-sm-6" style="text-align: center;">Change File :</span>
-                            <label class="col-sm-6" onclick="update_checkbox(event)">
-                                Off
-                                <input type="checkbox" value="false" id="is_map" name="is_map">
-                                <span id="change_file_div" class="lever"></span>
-                                On
-                            </label>
-                        </div>
-
-                        <div class="col-sm-12">
-                            <div class="col-sm-6"></div>
+                    {% if list_names and (list_names | length > 0) %}
+                        <div id="selected_file_div" class="row"></div>
+                        <div class="row center">
+                            <span class="col-sm-6" style="text-align: center;">Select File :</span>
                             <div class="col-sm-6">
                                 <div class="md-form" id="file_tbl_div">
                                     <select class="form-control" id="file_tbl" name="file_tbl">
@@ -119,8 +107,16 @@
                                 </div>
                             </div>
                         </div>
+                    {% elif filename %}
+                        <div id="selected_file_div" class="row">
+                            <span class="col-sm-6" style="text-align: center;">Selected File :</span>
+                            <label class="col-sm-6" style="text-align: left;">{{ filename }}</label>
+                        </div>
+                    {% else %}
+                        <div id="selected_file_div" class="row"></div>
+                    {% endif %}
 
-                    </div>
+
                 </div>
 
                 <div class="row">
@@ -169,9 +165,8 @@
 
                 <div class="step-actions">
                     <button id="btn-submit-fn-1" class="waves-effect waves-dark btn next-step step-6-click"
-                            onclick="myFunction()">CONTINUE
+                            onclick="myFunction()" {% if list_names and filename %} disabled {% endif %}>CONTINUE
                     </button>
-                    <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
                 </div>
             </div>
         </div>
@@ -181,8 +176,8 @@
 
     <form id="main-form-div-fn-1" style="display: none" action="/fs/" method="POST" id="form">
         <input type="hidden" id="fs_methods" name="fs_methods" value=""/>
-        <input type="hidden" id="change_file" name="change_file" value=""/>
-        <input type="hidden" id="is_change" name="is_change" value=""/>
+        <input type="hidden" id="change_file" name="change_file" value="{{ filename }}"/>
+        <input type="hidden" id="pre_process_id" name="pre_process_id" value="{{ pre_process_id }}"/>
     </form>
 </div>
 
@@ -209,9 +204,13 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script>
     function myFunction() {
@@ -237,16 +236,6 @@
         $("#change_file").val(conceptName);
     });
 
-    function update_checkbox(event) {
-        var id = event.target.id;
-        if (id) {
-            document.getElementById("file_tbl_div").style.visibility = "visible";
-            var s = document.getElementById(id).checked;
-            document.getElementById(id).value = s;
-            $("#is_change").val(s);
-        }
-        $('#tourControls').hide(0);
-    }
 </script>
 
 <script type="text/javascript">
@@ -275,17 +264,32 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
+    function check_count(i) {
+        if(i==3){
+            document.getElementById("btn-submit-fn-1").disabled = false;
+        }else{
+            document.getElementById("btn-submit-fn-1").disabled = true;
+        }
+    }
+
     $(function () {
         $("#listTo").sortable();
         $("#listTo").disableSelection();
 
         $(document).on("click", "#listFrom li", function () {
             $(this).unbind("click").appendTo("#listTo");
+            count++;
+            check_count(count);
         });
         $(document).on("click", "#listTo li", function () {
             $(this).unbind("click").appendTo("#listFrom");
+            count--;
+            check_count(count);
         });
     });
+
+    var count = 0;
+    document.getElementById("btn-submit-fn-1").disabled = true;
 
     var slider = document.getElementById("myRange");
     var output = document.getElementById("demo");

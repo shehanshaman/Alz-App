@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, session
+from flask import Blueprint, session, g, url_for
 from flask import render_template
 from flask import request
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ from flask import redirect
 import base64
 import io
 
-from .auth import UserResult, login_required
+from .auth import UserData, login_required
 from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
@@ -17,14 +17,20 @@ from pathlib import Path
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
 
 bp = Blueprint("analyze", __name__, url_prefix="/an")
 
-@bp.route("/")
+@bp.route("/", methods = ['GET'])
 @login_required
 def index():
-    user_id = session.get("user_id")
-    r = UserResult.get_user_results(user_id)
+    result_id = request.args.get("id")
+
+    if result_id is None:
+        return redirect('../fs/an/config')
+
+    r = UserData.get_result_from_id(result_id)
+    user_id = r['user_id']
 
     filename = r['filename']
     file_to_open = USER_PATH / str(user_id) / filename
@@ -34,6 +40,7 @@ def index():
     col_m2 = r['col_method2'].split(',')
     col_m3 = r['col_method3'].split(',')
     method_names = r['fs_methods'].split(',')
+    selected_clfs = r['classifiers'].split(',')
 
     len = int(method_names[3])
 
@@ -45,9 +52,7 @@ def index():
     overlap = get_overlap_features(col_m1, col_m2, col_m3)
     overlap_str = ','.join(e for e in overlap)
 
-    UserResult.update_result(user_id, 'col_overlapped', overlap_str)
-
-    selected_clfs = r['classifiers'].split(',')
+    UserData.update_result_column(user_id, filename, 'col_overlapped', overlap_str)
 
     results, count = FeatureSelection.getFeatureSummary(df, y, col_uni, overlap, method_names, selected_clfs)
     results = results.astype(float)
@@ -64,23 +69,19 @@ def index():
 
     small_set_pic_hash = get_small_set_features_fig(m_scores,x_scores, method_names[1:4], selected_clfs)
 
-    return render_template("analyze/index.html", corr_data = correlation_pic_hash, overlap_data = overlap_pic_hash, small_set= small_set_pic_hash, methods = method_names[1:4])
+    return render_template("analyze/index.html", corr_data = correlation_pic_hash, overlap_data = overlap_pic_hash,
+                           small_set= small_set_pic_hash, methods = method_names[1:4], filename=filename, result_id = result_id)
 
 
-@bp.route("/step2", methods = ['GET', 'POST'])
+@bp.route("/step2", methods = ['POST'])
 @login_required
 def selected_method():
-    user_id = session.get("user_id")
 
-    if request.method == 'POST':
-        selected_method = request.form["selected_method"]
-        UserResult.update_result(user_id, 'selected_method', selected_method)
+    selected_method = request.form["selected_method"]
+    result_id = request.form["id"]
 
-    r = UserResult.get_user_results(user_id)
-    selected_method = r['selected_method']
-
-    if selected_method is None:
-        return redirect('/an')
+    r = UserData.get_result_from_id(result_id)
+    user_id = r['user_id']
 
     filename = r['filename']
     file_to_open = USER_PATH / str(user_id) / filename
@@ -92,10 +93,9 @@ def selected_method():
     col_m3 = r['col_method3'].split(',')
     method_names = r['fs_methods'].split(',')
     overlap = r['col_overlapped'].split(',')
+    selected_clfs = r['classifiers'].split(',')
 
     i = method_names.index(selected_method)
-
-    len = int(method_names[3])
 
     col_uni = get_unique_columns(col_m1, col_m2, col_m3)
 
@@ -103,8 +103,6 @@ def selected_method():
 
     cmp_corr_results = FeatureSelection.compareCorrelatedFeatures(cmp_corr_1, cmp_corr_2, cmp_corr_3)
     cmp_corr_results_pic_hash = get_cmp_corr_results_fig(cmp_corr_results)
-
-    selected_clfs = r['classifiers'].split(',')
 
     # Corr scores and select
     corrScore = FeatureSelection.returnScoreDataFrame(df[col_uni[i]], y, selected_clfs) #0 tobe change according to the user
@@ -116,18 +114,24 @@ def selected_method():
     col_selected_method = FeatureSelection.getSelectedDF(x, x.corr(), max_corr_df.loc[max_corr_df['Maximum Accuracy'].idxmax()]['Correlation coefficient']).columns.tolist()
     col_selected_str = ','.join(e for e in col_selected_method)
 
-    UserResult.update_result(user_id, 'col_selected_method', col_selected_str)
+    #Update results
+    UserData.update_result_column(user_id, filename, 'selected_method', selected_method)
+    UserData.update_result_column(user_id, filename, 'col_selected_method', col_selected_str)
 
     return render_template("analyze/analyze_correlation.html", corr_results=cmp_corr_results_pic_hash,
-                           tables=[max_corr_df.head().to_html(classes='data')], titles=max_corr_df.head().columns.values,
+                           tables=[max_corr_df.head().to_html(classes='data')],
                            method_title = selected_method, overlap = overlap, corr_selected = col_selected_method,
-                           max_clasify = max_corr_df['Maximum Accuracy'].idxmax(), corr_score = corr_score_pic_hash)
+                           max_clasify = max_corr_df['Maximum Accuracy'].idxmax(), corr_score = corr_score_pic_hash,
+                           filename=filename, result_id = result_id)
 
-@bp.route("/step3")
+@bp.route("/step3", methods = ['GET'])
 @login_required
 def final_result():
-    user_id = session.get("user_id")
-    r = UserResult.get_user_results(user_id)
+    result_id = request.args.get("id")
+
+    r = UserData.get_result_from_id(result_id)
+    user_id = r['user_id']
+
     overlap = r['col_overlapped'].split(',')
     col_selected_method = r['col_selected_method'].split(',')
     selected_method = r['selected_method']
@@ -150,9 +154,12 @@ def final_result():
     r_len = [len(col_selected_method), len(dis_gene)]
     r_col = [col_selected_method, dis_gene]
 
+    validation_file_list = [f for f in os.listdir(VALIDATION_PATH) if os.path.isfile((VALIDATION_PATH / f))]
+
     return render_template("analyze/final_result.html", sel_roc=selected_roc_pic_hash, table_r1 = [r1_df.to_html(classes='data')],
                            title_r1 = r1_df.head().columns.values, all_roc=all_roc_pic_hash, table_r2 = [r2_df.to_html(classes='data')],
-                           title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col)
+                           title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col,
+                           filename = filename, result_id=result_id, validation_file_list= validation_file_list)
 
 def checkList(list1, list2):
     for word in list2:

@@ -1,10 +1,10 @@
 import os
 from pathlib import Path
-from flask import Blueprint, request, make_response
+from flask import Blueprint, request, make_response, g, abort
 
 from os.path import isfile, join
 
-from flaskr.auth import UserResult, login_required
+from flaskr.auth import UserData, login_required
 from flaskr.db import get_db
 from .classes.preProcessClass import PreProcess
 
@@ -21,6 +21,9 @@ bp = Blueprint("update", __name__, url_prefix="/update")
 def delete_file():
     id = request.args.get('id')
     name = request.args.get('name')
+
+    UserData.delete_preprocess_file(id, name)
+    UserData.delete_result(id, name)
 
     f_path = USER_PATH / id / name
 
@@ -53,7 +56,7 @@ def update_given_name():
 @login_required
 def delete_user_account():
     id = request.args.get('id')
-    UserResult.remove_user(id)
+    UserData.remove_user(id)
     dir_path = USER_PATH / str(id)
     delete_folder(dir_path)
     return '1'
@@ -74,7 +77,7 @@ def download_df():
     name = request.args.get('name')
     isTmp = request.args.get('is_tmp')
 
-    if isTmp == 1:
+    if int(isTmp) == 1:
         path = USER_PATH / str(id) / "tmp" / name
         df = PreProcess.getDF(path)
     else:
@@ -108,10 +111,19 @@ def update_user_tour():
 
     return str(want_tour)
 
+def is_not_admin(user):
+    if user['is_admin'] == 0:
+        return True
+    else:
+        return False
 
 @bp.route("/user/admin/", methods=["GET"])
 @login_required
 def update_user_admin():
+    #Check whether admin
+    if is_not_admin(g.user):
+        return abort('401')
+
     id = request.args.get('id')
     is_admin = request.args.get('is_admin')
 
@@ -128,6 +140,9 @@ def update_user_admin():
 @bp.route("/delete/files/", methods=["GET"])
 @login_required
 def delete_user_files():
+
+    if is_not_admin(g.user):
+        return abort('401')
 
     id = request.args.get('id')
     delete_user_all_files(id)
@@ -156,7 +171,7 @@ def infrequent_files_delete():
     for id in id_array:
         delete_user_all_files(id)
 
-    UserResult.infrequent_users(ids)
+    UserData.infrequent_users(ids)
 
     return "1"
 

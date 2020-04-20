@@ -46,11 +46,16 @@ def create_app(test_config=None):
         file_to_open = USER_PATH / str(user_id) / selected_file
         df = PreProcess.getDF(file_to_open)
 
+        shape = df.shape
+        min = round(df.min().min())
+        max = round(df.max().max())
+
         if len(df.columns) > 15:
             session['view_df_name'] = selected_file
-            df = df.iloc[:, : 10]
+            df.insert(10, "....", "....")
+            df = df.iloc[:, : 11]
 
-        data = [selected_file]
+        data = [selected_file, shape, min, max]
         return render_template('preprocess/tableVIew.html', tables=[df.to_html(classes = 'display" id = "table_id')], data=data)
 
     @app.route("/view/p/", methods=["GET"])
