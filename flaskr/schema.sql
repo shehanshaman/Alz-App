@@ -8,7 +8,6 @@ DROP TABLE IF EXISTS modeling;
 DROP TABLE IF EXISTS mail_template;
 DROP TABLE IF EXISTS verify;
 DROP TABLE IF EXISTS classifiers;
-DROP TABLE IF EXISTS prerequest;
 DROP TABLE IF EXISTS preprocess;
 
 CREATE TABLE user (
@@ -100,12 +99,6 @@ CREATE TABLE classifiers (
   short_name VARCHAR(10)
 );
 
-CREATE TABLE prerequest(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  method VARCHAR(20) UNIQUE ,
-  prerequest VARCHAR(50)
-);
-
 INSERT INTO classifiers (id, clf_name, short_name) VALUES
   (1, 'Gaussian Naive Bayes', 'GNB'),
   (2, 'Decision Tree', 'DT'),
@@ -113,16 +106,6 @@ INSERT INTO classifiers (id, clf_name, short_name) VALUES
   (4, 'SVM + Gaussian kernel', 'GK'),
   (5, 'SVM + linear kernel', 'LK'),
   (6, 'Random Forest', 'RF');
-
-INSERT INTO prerequest (method, prerequest) VALUES
-  ('Upload File', NULL ),
-  ('Visualization', 'Upload File'),
-  ('Pre-process', 'Upload File'),
-  ('Feature Selection', 'Upload File or Pre-process'),
-  ('Analysis', 'Feature Selection'),
-  ('Validation', 'Analysis'),
-  ('Modelling', 'Analysis'),
-  ('Prediction', 'Modelling');
 
 INSERT INTO user (username, given_name, password, last_login, is_verified, is_admin) VALUES ('user', 'user', 'pbkdf2:sha256:150000$LuBMEbIc$f3e7ec7e9061bad12ffb9193a8740722cc96be7e193c520e3aa551dc43c78b7c', '2020-04-10 17:24:15.484058', 3, 1);
 -- INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2,
