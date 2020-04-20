@@ -8,6 +8,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    install_requires=["flask", 'pandas', 'matplotlib', 'seaborn', 'sklearn', "flask_mail", "waitress"],
+    install_requires=["flask", 'pandas', 'matplotlib', 'seaborn', 'sklearn', "Flask-Mail", "waitress"],
     extras_require={"test": ["pytest", "coverage"]},
 )

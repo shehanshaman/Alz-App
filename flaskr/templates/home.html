@@ -85,7 +85,7 @@
     <div class="row">
         <div class="row" style="margin-bottom: 80px;">
 
-            <div id="upload_icon" class="option sites col-sm-3 center {{ dis[0] }}"><a
+            <div id="upload_icon" class="option sites col-sm-3 center"><a
                     href="{{ url_for('preprocess.upload_file_view') }}">
                 <div class="">
                     <i class="fas fa-file-upload fa-5x"></i>
@@ -93,7 +93,7 @@
                 <h4>Upload File</h4></a>
             </div>
 
-            <div id="visualization_icon" class="option sites col-sm-3 center {{ dis[1] }}"><a
+            <div id="visualization_icon" class="option sites col-sm-3 center"><a
                     href="{{ url_for('visualization.index') }}">
                 <div class="">
                     <i class="fas fa-chart-line fa-5x"></i>
@@ -102,7 +102,8 @@
             </a>
             </div>
 
-            <div id="preprocess_icon" class="option sites col-sm-3 center {{ dis[2] }}"><a href="{{ url_for('preprocess.index') }}">
+            <div id="preprocess_icon" class="option sites col-sm-3 center"><a
+                    href="{{ url_for('preprocess.index') }}">
                 <div class="">
                     <i class="fas fa-chalkboard-teacher fa-5x"></i>
                 </div>
@@ -110,7 +111,8 @@
             </a>
             </div>
 
-            <div id="feature_icon" class="option sites col-sm-3 center {{ dis[3] }}"><a href="{{ url_for('fs.index') }}">
+            <div id="feature_icon" class="option sites col-sm-3 center"><a
+                    href="{{ url_for('fs.index') }}">
                 <div class="">
                     <i class="far fa-object-group fa-5x"></i>
                 </div>
@@ -122,7 +124,8 @@
 
         <div class="row">
 
-            <div id="analize_icon" class="option sites col-sm-3 center {{ dis[4] }}"><a href="{{ url_for('analyze.index') }}">
+            <div id="analize_icon" class="option sites col-sm-3 center"><a
+                    href="{{ url_for('analyze.index') }}">
                 <div class="">
                     <i class="fas fa-chart-pie fa-5x"></i>
                 </div>
@@ -130,7 +133,8 @@
             </a>
             </div>
 
-            <div id="validation_icon" class="option sites col-sm-3 center {{ dis[5] }}"><a href="{{ url_for('validation.index') }}">
+            <div id="validation_icon" class="option sites col-sm-3 center"><a
+                    href="{{ url_for('validation.index') }}">
                 <div class="">
                     <i class="fas fa-clipboard-check fa-5x"></i>
                 </div>
@@ -138,7 +142,8 @@
             </a>
             </div>
 
-            <div id="modeling_icon" class="option sites col-sm-3 center {{ dis[6] }}"><a href="{{ url_for('modeling.index') }}">
+            <div id="modeling_icon" class="option sites col-sm-3 center"><a
+                    href="{{ url_for('modeling.index') }}">
                 <div class="">
                     <i class="fas fa-laptop-code fa-5x"></i>
                 </div>
@@ -146,7 +151,8 @@
             </a>
             </div>
 
-            <div id="prediction_icon" class="option sites col-sm-3 center {{ dis[7] }}"><a href="{{ url_for('modeling.predict') }}">
+            <div id="prediction_icon" class="option sites col-sm-3 center"><a
+                    href="{{ url_for('modeling.predict') }}">
                 <div class="">
                     <i class="fas fa-thermometer-full fa-5x"></i>
                 </div>
@@ -175,11 +181,15 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
-
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>

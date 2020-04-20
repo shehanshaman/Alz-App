@@ -104,7 +104,7 @@
 
             <br>
             
-        <form id="main-form-div-step3" method="post" action="/pre/step-3" enctype="multipart/form-data">
+        <form id="main-form-div-step3" method="post" action="/pre/step-4" enctype="multipart/form-data">
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
@@ -132,6 +132,8 @@
                 </div>
             </div>
 
+            <input type="hidden" id="id" name="id" value="{{ pre_process_id }}"/>
+
             <br>
 
             <hr class="line-hr">
@@ -141,8 +143,7 @@
             <div class="step-actions">
                 <button id="btn-submit-step-3" class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">PRE-PROCESS
                 </button>
-                <button class="waves-effect waves-dark btn-flat previous-step"><a
-                        href="{{ url_for('preprocess.view') }}">BACK</a></button>
+                <button class="waves-effect waves-dark btn-flat previous-step" onclick="goBack()" type="button">BACK</button>
             </div>
 
         </form>
@@ -174,9 +175,13 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript">
 

@@ -68,13 +68,13 @@ class FeatureReduction:
         return df_200F
 
     def create_figure(selectedFeatures, length):
-        fig = Figure(figsize=(12, 8))
+        fig = Figure(figsize=(10, 7))
         axis = fig.add_subplot(1, 1, 1)
         axis.set_ylabel('Score')
         axis.set_xlabel('Specs')
         axis.set_title('Univariate Selection: ' + str(length) + " features")
-
-        axis.plot(selectedFeatures["Specs"], selectedFeatures["Score"], label='linear')
+        x_array = list(range(1, length + 1))
+        axis.plot(x_array, selectedFeatures["Score"], label='linear')
         return fig
 
     def get_classification_results(X, y):

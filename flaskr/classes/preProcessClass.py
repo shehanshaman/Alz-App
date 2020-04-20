@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 import pandas as pd
-from flask import jsonify
+from flask import jsonify, abort
 from sklearn import preprocessing
 
 from scipy import stats
@@ -15,11 +15,15 @@ class PreProcess:
 	
 	def getDF(name):
 		df = pd.read_pickle(name)
-		# df = df.iloc[[0, 2], [1, 3]]
 		return df
 
 	def saveDF(df, path):
 		df.to_pickle(path)
+
+	def get_gene_card_df(file_path):
+		gene_card = pd.read_csv(file_path, index_col=0)
+		gene_card = gene_card.T
+		return gene_card
 
 	def getProbeDF(name):
 		probes = pd.read_csv(name)
@@ -30,14 +34,17 @@ class PreProcess:
 		df = PreProcess.getDF(df_path)
 		df_T = df.T.reset_index()
 		df_T = df_T.rename(columns={'index': 'ID'})
-		probes = PreProcess.getProbeDF(probe_path)
-		df_merge = pd.merge(df_T, probes, on='ID')
+		if "ID" in df_T.columns.tolist():
+			probes = PreProcess.getProbeDF(probe_path)
+			df_merge = pd.merge(df_T, probes, on='ID')
 
-		cols = df_merge.columns.tolist()
-		cols = cols[-1:] + cols[:-1]
-		df_merge = df_merge[cols]
+			cols = df_merge.columns.tolist()
+			cols = cols[-1:] + cols[:-1]
+			df_merge = df_merge[cols]
 
-		return df_merge
+			return df_merge
+		else:
+			return None
 
 	def rmNullRows(df_merge):
 		df_merge_rm_null = df_merge.dropna(how='any',axis=0)
@@ -80,11 +87,23 @@ class PreProcess:
 
 		return df_symbol
 
-	def probe2Symbol(df_symbol):
-		df_avg_symbol = df_symbol.groupby(['Gene Symbol']).agg([np.average])
+	def probe2Symbol(df_symbol, col_sel_method = 1):
+		#1-Average, 2-Max, 3-Min, 4-quantile(IQR)
+
+		# df_avg_symbol = df_symbol.groupby(['Gene Symbol']).agg([np.average])
+		if col_sel_method == 1:
+			df_avg_symbol = df_symbol.groupby(['Gene Symbol']).mean()
+		elif col_sel_method == 2:
+			df_avg_symbol = df_symbol.groupby(['Gene Symbol']).max()
+		elif col_sel_method == 3:
+			df_avg_symbol = df_symbol.groupby(['Gene Symbol']).min()
+		elif col_sel_method == 4:
+			df_avg_symbol = df_symbol.groupby(['Gene Symbol']).quantile()
+		else:
+			return abort(404)
+
 		df_avg_symbol.reset_index(drop=False, inplace=True)
-		# df_avg_symbol = df_avg_symbol.drop(['index'], axis = 1)
-		df_avg_symbol.columns = df_symbol.columns
+		# df_avg_symbol.columns = df_symbol.columns
 
 		return df_avg_symbol
 
@@ -104,8 +123,12 @@ class PreProcess:
 
 		return df
 
-	def get_pvalue_fold_df(df_path, class_path):
-		df = PreProcess.set_class_to_df(df_path, class_path)
+	def get_pvalue_fold_df(df_path, class_path=None):
+		if class_path:
+			df = PreProcess.set_class_to_df(df_path, class_path)
+		else:
+			df = PreProcess.getDF(df_path)
+
 		df_normal, df_AD = PreProcess.split_df_by_class(df)
 
 		pValues = []
