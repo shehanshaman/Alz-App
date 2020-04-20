@@ -80,6 +80,10 @@
             <div class="row">
                 <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">ANALYSIS</h3>
             </div>
+            <div class="row">
+                <label style="float: left"><b>Selected File: </b> {{ filename }}</label>
+                <a href="../fs/an/config" style="float: right"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
+            </div>
         </div>
 
         <div class="step-content">
@@ -172,13 +176,14 @@
             <hr class="line-hr">
 
             <div class="step-actions">
-                <button class="waves-effect waves-dark btn-flat previous-step"><a {{ url_for('fs.result') }}>BACK</a>
+                <button class="waves-effect waves-dark btn-flat previous-step" type="button"><a href="{{ url_for('home.index') }}">BACK</a>
                 </button>
             </div>
         </div>
 
         <form id="main-form-div-an-1" style="display: none" action="/an/step2" method="POST" id="form">
             <input type="hidden" id="selected_method" name="selected_method" value=""/>
+            <input type="hidden" id="id" name="id" value="{{ result_id }}"/>
         </form>
 
     </div>
@@ -208,9 +213,13 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 

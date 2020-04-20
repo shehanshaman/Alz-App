@@ -57,6 +57,7 @@
             border-radius: inherit;
             border: inherit;
         }
+
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
@@ -97,7 +98,12 @@
 
         <div class="step-heading">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">VALIDATION</h3>
+                <h3 id="h3-head-6" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">VALIDATION</h3>
+            </div>
+            <div class="row">
+                <label style="float: left"><b>Selected File: </b> {{ filename }}</label>
+                <a href="../fs/val/config" style="float: right"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
             </div>
         </div>
 
@@ -137,7 +143,9 @@
 
             <div class="result_content">
                 <div id="venn_diagram_div" class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that are already identified and biologically validated from the 50 genes obtained by each method</h4>
+                    <h4 id="h4-head-6" class="card__title"
+                        style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that
+                        are already identified and biologically validated from the 50 genes obtained by each method</h4>
                 </div>
 
                 <br>
@@ -146,13 +154,13 @@
                     <div class="col-sm-3"></div>
                     <div class="col-sm-8 union_div" style="width: 50%;margin-top: auto;">
 
-                        <p class="p_M value_p">{{venn_data[2] | length}}</p>
-                        <p class="p_T value_p">{{venn_data[0][1] | length}}</p>
-                        <p class="p_L value_p">{{venn_data[0][0] | length}}</p>
-                        <p class="p_R value_p">{{venn_data[0][2] | length}}</p>
-                        <p class="p_TLM value_p">{{venn_data[1][0] | length}}</p>
-                        <p class="p_TRM value_p">{{venn_data[1][1] | length}}</p>
-                        <p class="p_LRM value_p">{{venn_data[1][2] | length}}</p>
+                        <p class="p_M value_p">{{ venn_data[2] | length }}</p>
+                        <p class="p_T value_p">{{ venn_data[0][1] | length }}</p>
+                        <p class="p_L value_p">{{ venn_data[0][0] | length }}</p>
+                        <p class="p_R value_p">{{ venn_data[0][2] | length }}</p>
+                        <p class="p_TLM value_p">{{ venn_data[1][0] | length }}</p>
+                        <p class="p_TRM value_p">{{ venn_data[1][1] | length }}</p>
+                        <p class="p_LRM value_p">{{ venn_data[1][2] | length }}</p>
 
                         <p class="value_clf_p clf_T">{{ method_names[1] }}</p>
                         <p class="value_clf_p clf_L">{{ method_names[0] }}</p>
@@ -207,12 +215,15 @@
                         </svg>
                     </div>
                     <div class="col-sm-1"></div>
- 
+
                 </div>
 
                 <div class="row">
-                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">GeneCards.org contains information on the already identified risk genes for a particular disease. This diagram shows the number of genes selected by each method which are also identified by GeneCards !</p>
-                </div>                
+                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">
+                        GeneCards.org contains information on the already identified risk genes for a particular
+                        disease. This diagram shows the number of genes selected by each method which are also
+                        identified by GeneCards !</p>
+                </div>
             </div>
 
             <div class="result_content">
@@ -241,12 +252,13 @@
                     <a>MODELING</a>
                 </button>
                 <button class="waves-effect waves-dark btn-flat previous-step">
-                    <a href="{{ url_for('analyze.final_result') }}">BACK</a>
+                    <a href="{{ url_for('home.index') }}">BACK</a>
                 </button>
             </div>
         </div>
 
         <form id="main-form-div-model" style="display: none" action="/mod" method="get" id="form">
+            <input type="hidden" id="id" name="id" value="{{ result_id }}"/>
         </form>
 
     </div>
@@ -257,33 +269,40 @@
     <div class="modal-content-1">
         <div class="row">
             <span class="close">&times;</span>
-        </div>      
-        <div class="row">
-            <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }} method</p>
-            <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }} method</p>
-            <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }} method</p>
-            <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }} + {{ method_names[1] }} + {{ method_names[2] }}</p>
-            <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }} and {{ method_names[1] }}</p>
-            <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }} and {{ method_names[2] }}</p>        
-            <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }} and {{ method_names[2] }}</p>                      
         </div>
         <div class="row">
-            <p style="display: none;" class="popup_gene_list_div T_gene">{{venn_data[0][1]}}</p>
-            <p style="display: none;" class="popup_gene_list_div L_gene">{{venn_data[0][0]}}</p>
-            <p style="display: none;" class="popup_gene_list_div R_gene">{{venn_data[0][2]}}</p>
-            <p style="display: none;" class="popup_gene_list_div M_gene">{{venn_data[2]}}</p>
-            <p style="display: none;" class="popup_gene_list_div TL_gene">{{venn_data[1][0]}}</p>
-            <p style="display: none;" class="popup_gene_list_div TR_gene">{{venn_data[1][1]}}</p>        
-            <p style="display: none;" class="popup_gene_list_div LR_gene">{{venn_data[1][2]}}</p>
-        </div>          
+            <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }}
+                method</p>
+            <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }}
+                method</p>
+            <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }}
+                method</p>
+            <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }}
+                + {{ method_names[1] }} + {{ method_names[2] }}</p>
+            <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }}
+                and {{ method_names[1] }}</p>
+            <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }}
+                and {{ method_names[2] }}</p>
+            <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }}
+                and {{ method_names[2] }}</p>
+        </div>
+        <div class="row">
+            <p style="display: none;" class="popup_gene_list_div T_gene">{{ venn_data[0][1] }}</p>
+            <p style="display: none;" class="popup_gene_list_div L_gene">{{ venn_data[0][0] }}</p>
+            <p style="display: none;" class="popup_gene_list_div R_gene">{{ venn_data[0][2] }}</p>
+            <p style="display: none;" class="popup_gene_list_div M_gene">{{ venn_data[2] }}</p>
+            <p style="display: none;" class="popup_gene_list_div TL_gene">{{ venn_data[1][0] }}</p>
+            <p style="display: none;" class="popup_gene_list_div TR_gene">{{ venn_data[1][1] }}</p>
+            <p style="display: none;" class="popup_gene_list_div LR_gene">{{ venn_data[1][2] }}</p>
+        </div>
     </div>
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">MODELING</h5>        
-    </div> 
-    
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">MODELING</h5>
+</div>
+
 {% include 'guide_footer.html' %}
 
 </body>
@@ -302,9 +321,14 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
@@ -334,9 +358,9 @@
         $('.main-div-validation').hide(0);
         $('.loader-div').show(0);
         $('.main-body').click(false);
-        $("#main-form-div-model").submit();   
+        $("#main-form-div-model").submit();
         $('#tourControls').hide(0);
-        $('.notification-container-pop').hide(0);     
+        $('.notification-container-pop').hide(0);
     });
 
 </script>

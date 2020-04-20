@@ -21,13 +21,21 @@
 
 </head>
 
-<style> 
+<style>
 
     .button {
         margin-top: inherit;
     }
 
-</style> 
+    .flash {
+        margin: 1em 0;
+        padding: 1em;
+        background: #f6ac8f;
+        border: 1px solid #5c0202;
+        text-align: center;
+    }
+
+</style>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
@@ -65,23 +73,33 @@
 
     <div id="mainDataInterface-id" class="container mainDataInterface">
 
-        <form id="main-form-div-step1" method="post" action="/pre/" enctype="multipart/form-data">
+        <form id="main-form-div-step1" method="post" action="/pre/step-2" enctype="multipart/form-data">
 
             <div class="step-content">
                 <div class="row head-word">
-                    <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 1 : CHOOSE DATA SET</h3>
+                    <h3 id="h3-head-1" class="card__title"
+                        style="text-align: center;color: #26a69a;font-family: monospace;">STEP 1 : CHOOSE DATA SET</h3>
                 </div>
             </div>
 
-            <div class="where-you-like" style="font-family: monospace;margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
+            <div class="where-you-like"
+                 style="font-family: monospace;margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
+
+                {% for message in get_flashed_messages() %}
+                    <div class="row">
+                        <div class="flash">{{ message }}</div>
+                    </div>
+                {% endfor %}
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Available Files :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">
+                            Available Files :</h5>
                     </div>
                     <div id="available_file_name" class="col-sm-5">
                         <div class="md-form">
-                            <select style="font-family: monospace;" class="form-control" id="available_files" name="available_files">
+                            <select style="font-family: monospace;" class="form-control" id="available_files"
+                                    name="available_files">
                                 {% for name in available_list %}
                                     <option value="{{ name }}">{{ name }}</option>
                                 {% endfor %}
@@ -89,13 +107,16 @@
                         </div>
                     </div>
                     <div id="view_div" class="col-sm-1">
-                        <button type="button" class="button btn btn-warning">View</button>
+                        <button type="button" class="view_button btn btn-warning" {% if available_list | length == 0 %}
+                                disabled {% endif %}>View
+                        </button>
                     </div>
                 </div>
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Annotation Table :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">
+                            Annotation Table :</h5>
                     </div>
                     <div id="annotation_table_name" class="col-sm-6">
                         <div class="md-form">
@@ -110,12 +131,17 @@
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Probe Selection Method :</h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Probe
+                            Selection Method :</h5>
                     </div>
                     <div id="average_div" class="col-sm-6">
                         <div class="md-form">
-                            <select style="font-family: monospace;" class="form-control" id="column_selection" name="column_selection">
+                            <select style="font-family: monospace;" class="form-control" id="column_selection"
+                                    name="column_selection">
                                 <option value="1">Average</option>
+                                <option value="2">Max</option>
+                                <option value="3">Min</option>
+                                <option value="4">Interquartile Range</option>
                             </select>
                         </div>
                     </div>
@@ -126,8 +152,13 @@
             <br>
 
             <div class="step-actions">
-                <button id="btn-submit-step-1" class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">
+                <button id="btn-submit-step-1" class="waves-effect waves-dark btn next-step step-6-click" type="submit"
+                        value="Submit" {% if available_list | length == 0 %} disabled {% endif %}>
                     <input type="submit" value="Submit">
+                </button>
+                <button id="btn-skip-step-1" class="waves-effect waves-dark btn next-step" type="button"
+                        style="background-color: cadetblue;"
+                        {% if available_list | length == 0 %} disabled {% endif %}>SKIP MAPPING
                 </button>
                 <button id="btn-submit-step-back" class="waves-effect waves-dark btn-flat previous-step"><a
                         href="{{ url_for('preprocess.upload_file_view') }}">BACK</a></button>
@@ -142,13 +173,13 @@
             <input type="hidden" id="selected_file" name="selected_file" value=""/>
         </form>
     </div>
-        
+
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 22%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PROCESSING</h5>
+</div>
 
 {% include 'guide_footer.html' %}
 
@@ -165,19 +196,37 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script>
 
-    $(".button").click(function () {
+    $(".view_button").click(function () {
         var conceptName = $('#available_files').find(":selected").text();
 
         $("#selected_file").val(conceptName);
         $("#form").submit();
 
         $('#tourControls').hide(0);
+    });
+
+    $('#btn-skip-step-1').click(function () {
+
+        var file_name = $('#available_files').find(":selected").text();
+        url = '{{ url_for('preprocess.skip_df_mapping') }}' + "?selected_file=" + file_name;
+
+        $('.main-div-step2').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
+
+        window.location.replace(url);
     });
 
     $('#btn-submit-step-1').click(function () {

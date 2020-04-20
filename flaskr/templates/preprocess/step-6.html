@@ -118,12 +118,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                        </div>
-                        <div class='row form-field step-miami-checkbox' style="margin-top: 30px;">
-                            <p><input name='checkbox-all-features' type="checkbox" class="filled-in"
-                                      id="checkbox-all-features" value='checkbox-all-features'/>
-                                {#                            <label for="checkbox-all-features">SELECT ALL FEATURES</label>#}
-                            </p>
+                            <input type="hidden" id="id" name="id" value="{{ pre_process_id }}"/>
                         </div>
                     </div>
                 </div>
@@ -132,7 +127,9 @@
 
                 <div class="step-actions">
                     <button id="btn-submit-step-6" class="waves-effect waves-dark btn next-step step-6-click">CONTINUE</button>
-                    <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+                    <button class="waves-effect waves-dark btn-flat previous-step" type="button">
+                        <a href="{{ url_for('preprocess.feature_reduction') }}?id={{ pre_process_id }}">BACK</a>
+                    </button>
                 </div>
             </div>
         </form>
@@ -160,9 +157,13 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
@@ -186,7 +187,9 @@
         a.download = "univarient_score.png";
         a.click();
         $('#tourControls').hide(0);
-    }); 
+    });
+
+    document.getElementById('features_count').value= "200";
 </script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
