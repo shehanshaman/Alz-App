@@ -44,17 +44,13 @@ def allowed_file(filename):
 @login_required
 def index():
 
-    list_names = []
     annotation_list = []
     path = USER_PATH / str(g.user["id"])
 
-    for filename in os.listdir(path):
-        list_names.append(filename)
+    list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
     for filename in os.listdir(ANNOTATION_TBL):
         annotation_list.append(filename)
-
-    list_names.remove("tmp")
 
     if len(list_names) == 0:
         flash("Error: You don't have uploaded file.")

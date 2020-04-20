@@ -43,12 +43,9 @@ def index():
 
     user_id = g.user['id']
 
-    list_names = []
     path = USER_PATH / str(user_id)
 
-    for filename in os.listdir(path):
-        list_names.append(filename)
-    list_names.remove("tmp")
+    list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
     classifier_list = ["svmLinear", "svmGaussian", "randomForest"]
 
@@ -83,11 +80,9 @@ def create_model():
 def predict():
     user_id = g.user['id']
 
-    list_names = []
     path = USER_PATH / str(g.user["id"])
-    for filename in os.listdir(path):
-        list_names.append(filename)
-    list_names.remove("tmp")
+
+    list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
     annotation_list = []
     for filename in os.listdir(ANNOTATION_TBL):
