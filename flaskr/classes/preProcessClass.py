@@ -20,6 +20,11 @@ class PreProcess:
 	def saveDF(df, path):
 		df.to_pickle(path)
 
+	def get_gene_card_df(file_path):
+		gene_card = pd.read_csv(file_path, index_col=0)
+		gene_card = gene_card.T
+		return gene_card
+
 	def getProbeDF(name):
 		probes = pd.read_csv(name)
 		probes = probes[['Gene Symbol', 'ID']]

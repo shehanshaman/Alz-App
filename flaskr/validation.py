@@ -45,7 +45,9 @@ def index():
 
     disease_file_path = VALIDATION_PATH / validation_file_name
 
-    gene_card_df = PreProcess.getDF(disease_file_path)
+    # gene_card_df = PreProcess.getDF(disease_file_path) get_gene_card_df
+    gene_card_df = PreProcess.get_gene_card_df(disease_file_path)
+
     col_gene_card = gene_card_df.columns.tolist()
 
     col_m1_gene_card = get_overlap_features(col_gene_card, col_m1)
