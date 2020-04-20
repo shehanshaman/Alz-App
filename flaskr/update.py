@@ -141,6 +141,9 @@ def update_user_admin():
 @login_required
 def delete_user_files():
 
+    if is_not_admin(g.user):
+        return abort('401')
+
     id = request.args.get('id')
     delete_user_all_files(id)
 
