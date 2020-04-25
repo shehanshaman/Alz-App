@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Pre-Process</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+</head>
+
+<body style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="card-content">
+
+    <ul data-method="GET" class="stepper linear">
+        <li class="step active">
+            <a href="{{ url_for('preprocess.index') }}">
+                <div class="step-title waves-effect waves-dark">Pre-processing</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('fs.index') }}">
+                <div class="step-title waves-effect waves-dark">Feature selection</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('analyze.index') }}">
+                <div class="step-title waves-effect waves-dark">Analysis</div>
+            </a>
+        </li>
+        <li class="step">
+            <a href="{{ url_for('validation.index') }}">
+                <div class="step-title waves-effect waves-dark">Validation</div>
+            </a>
+        </li>
+    </ul>
+
+</div>
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+    <div class="step-content">
+        <div class="row">
+            <div>
+                <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 2 : DATASET
+                    BEFORE
+                    PRE-PROCESS</h3>
+            </div>
+            <div style="float: right">
+                <button style="color: #26a69a;border: none;"
+                        class="use-download" value="{{ file_name }}">
+                    <i class="fas fa-file-download fa-2x"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Number of features</td>
+                        <td id="number_features_div">{{ details["Number of features"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of samples</td>
+                        <td id="number_samples_div">{{ details["Number of samples"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of positive samples</td>
+                        <td id="number_samples_positive">{{ details["Positive"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Minimum value</td>
+                        <td id="min_val_div">{{ details["min"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum value</td>
+                        <td id="max_val_div">{{ details["max"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of negative samples</td>
+                        <td id="number_samples_negative">{{ details["Negative"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        <div id="table_div" style="overflow: auto;">
+            {% for table in tables %}
+                {{ table|safe }}
+            {% endfor %}
+        </div>
+    </div>
+
+    <hr class="line-hr">
+
+    <div class="step-actions">
+        <button class="waves-effect waves-dark btn next-step step-6-click"><a
+                href="{{ url_for('preprocess.scaling_imputation') }}?id={{ pre_process_id }}">CONTINUE</a>
+        </button>
+        <button class="waves-effect waves-dark btn-flat previous-step" type="button"><a
+                href="{{ url_for('preprocess.index') }}">BACK</a></button>
+    </div>
+
+</div>
+
+{% include 'guide_footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
+<script>
+
+    var tour = guide_main_call(tip_step_2, 'BL');
+
+</script>
+
+<script>
+    $(".use-download").click(function () {
+        var $file_name = $('.use-download').val();
+
+        var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=1";
+        window.open(url, '_blank');
+
+    });
+</script>

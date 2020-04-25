@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Pre-processing</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+</head>
+
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-step3">
+
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li class="step active">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="row">
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 3 : SCALING & IMPUTATION</h3>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Number of features</td>
+                        <td id="number_features_div">{{ details["Number of features"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of unique Gene Symbols</td>
+                        <td id="number_unique_div">{{ details["Number of unique Gene Symbols"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Minimum value</td>
+                        <td id="min_val_div">{{ details["min"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <td>Number of null values in data</td>
+                        <td id="number_null_div">{{ details["Number of null values in data"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of null values in Gene Symbols</td>
+                        <td id="number_gene_null_div">{{ details["Number of null values in Gene Symbols"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum value</td>
+                        <td id="max_val_div">{{ details["max"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+            <br>
+
+            <hr class="line-hr">
+
+            <br>
+            
+        <form id="main-form-div-step3" method="post" action="/pre/step-4" enctype="multipart/form-data">
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Scaling :</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div id="scaling_select_div" class="md-form">
+                        <select style="font-family: monospace;" class="form-control" id="norm_mthd" name="norm_mthd">
+                            <option value="sklearn">Sklearn Normalize</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-6">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Imputation :</h5>
+                </div>
+                <div class="col-sm-6">
+                    <div id="imputation_select_div"  class="md-form">
+                        <select style="font-family: monospace;" class="form-control" id="null_rmv" name="null_rmv">
+                            <option value="drop">Drop</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" id="id" name="id" value="{{ pre_process_id }}"/>
+
+            <br>
+
+            <hr class="line-hr">
+
+            <br>
+
+            <div class="step-actions">
+                <button id="btn-submit-step-3" class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">PRE-PROCESS
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step" onclick="goBack()" type="button">BACK</button>
+            </div>
+
+        </form>
+
+    </div>
+    
+</div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="margin-top: 19%;text-align: center;color: #26a69a; margin-bottom: 200px;">DATA SET PRE-PROCESSING</h5>        
+    </div> 
+
+{% include 'guide_footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript">
+
+    $('#btn-submit-step-3').click(function () {
+        $('.main-div-step3').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-step3").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
+    });
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
+<script>
+
+    var tour = guide_main_call(tip_step_3, 'BL');
+
+</script>
