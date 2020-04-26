@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Admin</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+        .center {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+
+        .g-user {
+            padding: 4px 8px;
+            font-weight: 600;
+            line-height: 20px;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            background-color: #6f42c1;
+            border-radius: 3px;
+        }
+
+        #progress_bar {
+            visibility: hidden;
+        }
+
+    </style>
+</head>
+
+<body style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+
+    <div class="step-content">
+        <div class="row head-word">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">Admin Panel</h3>
+        </div>
+    </div>
+
+    {% if data[1] %}
+        <div class="row">
+            <h5>Infrequent Users Details</h5><br>
+            <div class="row">
+                <div class="well well-lg">
+                    <div class="row">
+                        There has {{ data[1] }} infrequent users and they used {{ data[0] }} MB of storage.
+                    </div>
+
+                    <div class="row progress" id="progress_bar">
+                        <div class="indeterminate"></div>
+                    </div>
+
+                    <div class="row">
+                        <button id="infrequent_users_file_delete" class="waves-effect waves-dark btn">DELETE FILES
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+    <div class="row">
+        <h5>Users Details</h5><br>
+        <div class="row table_view">
+            <table class="display" id="table_id">
+                <thead>
+                <tr>
+                    <th>User name</th>
+                    <th>Name</th>
+                    <th>Last login</th>
+                    <th>Account type</th>
+                    <th>Admin</th>
+                    <th>Usage</th>
+                    <th>Delete files</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for index, user in users.iterrows() %}
+
+                    <tr id="user_{{ user['id'] }}">
+                        <td>{{ user['username'] }}</td>
+                        <td>{{ user['given_name'] }}</td>
+                        <td>{{ user['last_login'] }}</td>
+                        <td>
+                            {% if user['is_verified'] == 2 %}
+                                Google
+                            {% elif user['is_verified'] == 0 %}
+                                Unverified
+                            {% else %}
+                                GeNet
+                            {% endif %}
+                        </td>
+                        <td data-id="{{ user['is_admin'] }}">
+                            {% if user['is_admin'] == 1 %}
+                                <label>Admin</label>
+                                <button id="{{ user['id'] }}" onclick="change_admin(this.id)" style="float: right">
+                                    Change
+                                </button>
+                            {% else %}
+                                <label>Not Admin</label>
+                                <button id="{{ user['id'] }}" onclick="change_admin(this.id)" style="float: right">
+                                    Change
+                                </button>
+                            {% endif %}
+                        </td>
+                        <td>{{ user['usage'] }} MB</td>
+                        <td>
+                            <button id="{{ user['id'] }}" onclick="delete_user_files(this.id)">Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/>
+
+<script type="text/javascript"
+        src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#table_id').DataTable();
+    });
+
+    function change_admin(id) {
+        var row = document.getElementById("user_" + id);
+        var tds = $(row).find('td');
+        var type = tds[4];
+
+        if (($(type).data('id')) == 1) {
+            $.get("../update/user/admin/", {id: id, is_admin: 0}, function (data, status) {
+                $(type).data('id', 0);
+                $(type).find('label')[0].innerHTML = "Not Admin"
+            });
+        } else {
+            $.get("../update/user/admin/", {id: id, is_admin: 1}, function (data, status) {
+                $(type).data('id', 1);
+                $(type).find('label')[0].innerHTML = "Admin"
+            });
+        }
+
+    };
+
+    function delete_user_files(id) {
+        var row = document.getElementById("user_" + id);
+        var tds = $(row).find('td');
+        $.get("../update/delete/files/", {id: id}, function (data, status) {
+            var type = tds[5];
+            $(type)[0].innerHTML = "0 MB";
+        });
+    };
+
+    {% if data[1] %}
+
+        $('#infrequent_users_file_delete').click(function () {
+            var ids = {{ data[2] }};
+            document.getElementById("progress_bar").style.visibility = "visible";
+            document.getElementById("infrequent_users_file_delete").disabled = true;
+            $.get("../update/infrequent/files/", {ids: ids}, function (data, status) {
+                document.getElementById("progress_bar").style.visibility = "hidden";
+
+            });
+        });
+
+    {% endif %}
+
+</script>
+
+
+

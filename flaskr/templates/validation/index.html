@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Validation</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!-- Materializecss compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/venn_diagram.css') }}">
+    
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+</head>
+
+<style>
+        .summary_plot > img {
+            padding: 5px;
+            width: 100%;
+        }
+
+        div.centre {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 0;
+            margin-bottom: 0;
+            align-content: center;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: circle;
+        }
+
+        .modal {
+            bottom: inherit;
+        }
+
+        .modal-content {
+            position: initial;
+            background-color: inherit;
+            border-radius: inherit;
+            border: inherit;
+        }
+
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-validation">
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li class="step">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step active">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step-heading">
+            <div class="row">
+                <h3 id="h3-head-6" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">VALIDATION</h3>
+            </div>
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-6">
+                    <label style="float: right;font-size: 20px;"><b>Selected File: </b> {{ filename }}</label>   
+                </div>
+                <div class="col-sm-3 change_file_div">
+                    <a href="../fs/val/config" style="color: #26a69a;text-decoration: none;font-size: 15px;"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>             
+        </div>
+
+        <div class="step-content">
+
+            <div id="info_results_div" class="alert alert-info">
+                <strong>Info!</strong>
+                <ul>
+                    <li>- There are <b> {{ col_gene_card[0] | length }} already identified </b> genes within
+                        the {{ method_names[3] }}
+                        genes selected from <b> {{ method_names[0] }} </b> . 
+                        <a href="#modal1" onclick="more_click({param1: {{ col_gene_card[0] }} , param2: '{{ method_names[0] }}', param3: '1'})">more</a>
+                    </li>
+                    <li>- There are <b>{{ col_gene_card[1] | length }} already identified </b> genes within
+                        the {{ method_names[3] }}
+                        genes selected from <b> {{ method_names[1] }} </b> .
+                        <a href="#modal1" onclick="more_click({param1: {{ col_gene_card[1] }} , param2: '{{ method_names[1] }}', param3: '2'})">more</a>
+                    </li>
+                    <li>- There are <b>{{ col_gene_card[2] | length }} already identified </b> genes within
+                        the {{ method_names[3] }}
+                        genes selected from <b> {{ method_names[2] }} </b> .
+                        <a href="#modal1" onclick="more_click({param1: {{ col_gene_card[2] }} , param2: '{{ method_names[2] }}', param3: '3'})">more</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Modal Structure -->
+            <div id="modal1" class="modal">
+                <div class="modal-content">
+                    <h4 id="method_head">Modal Header</h4>
+                    <p style="word-wrap: break-word;" id="feature_list"></p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="modal-close waves-effect waves-green btn-flat">Close</a>
+                </div>
+            </div>
+
+            <div class="result_content">
+                <div id="venn_diagram_div" class="row">
+                    <h4 id="h4-head-6" class="card__title"
+                        style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that
+                        are already identified and biologically validated from the 50 genes obtained by each method</h4>
+                </div>
+
+                <br>
+                <div class="row">
+
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-8 union_div" style="width: 50%;margin-top: auto;">
+
+                        <p class="p_M value_p">{{ venn_data[2] | length }}</p>
+                        <p class="p_T value_p">{{ venn_data[0][1] | length }}</p>
+                        <p class="p_L value_p">{{ venn_data[0][0] | length }}</p>
+                        <p class="p_R value_p">{{ venn_data[0][2] | length }}</p>
+                        <p class="p_TLM value_p">{{ venn_data[1][0] | length }}</p>
+                        <p class="p_TRM value_p">{{ venn_data[1][1] | length }}</p>
+                        <p class="p_LRM value_p">{{ venn_data[1][2] | length }}</p>
+
+                        <p class="value_clf_p clf_T">{{ method_names[1] }}</p>
+                        <p class="value_clf_p clf_L">{{ method_names[0] }}</p>
+                        <P class="value_clf_p clf_R">{{ method_names[2] }}</P>
+
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                             viewBox="0 84 612 556" enable-background="new 0 84 612 556" xml:space="preserve">
+                        <g>
+                            <a fill="white"  id="T_clc">
+                                <path d="M166.5,314.9c-15.6-34.7-17.4-70.4-6.1-106.4c6.6-21.2,17.1-40.8,32.5-57.2c9.3-9.9,19.3-19.2,30.9-26.6
+                                c25.9-16.4,54-25.4,84.8-25.9c28.5-0.4,55.3,6,80.3,19.7c11.4,6.2,21.4,14,31,22.5c15.3,13.5,26.4,29.9,35.1,48.2
+                                c18.9,39.7,19,80,4,120.9c-2-0.4-4.1-0.6-6.1-1.1c-14.1-3.5-28.3-5.6-42.9-5.1c-8.3,0.3-16.7,1.1-24.9,2.4c-18,3-35,8.9-50.7,18.2
+                                c-5.4,3.2-10.7,6.5-16,9.8c-0.7-0.4-1.5-0.8-2.1-1.3c-17.1-14-36.9-21.8-58.6-25.7c-23.3-4.2-46.5-4.2-69.5,0.5
+                                c-7.4,1.5-14.4,4.7-21.6,7.1L166.5,314.9z"/>
+                            </a>
+                            <a  fill="white"  id="R_clc">
+                                <path d="M459.4,310.9c9.2,3.7,18.5,7.2,27.5,11.3c12.6,5.7,23.1,14.3,33.5,23.2c13,11.1,23,24.5,31.2,39.3
+                                c25.8,46.6,26.2,94.3,4,142.1c-7.5,16.2-18.1,30.8-31.4,43c-10.1,9.3-20.8,18-33.1,24.4c-41.1,21.8-83.9,26-128.4,11.8
+                                c-12.6-4-24.3-9.8-35.4-16.9c-2.9-1.8-5.7-3.7-8.5-5.6c2.9-2.3,5.9-4.5,8.7-6.9c12.7-10.8,23.4-23.4,32.4-37.2
+                                c21.7-33.4,27.8-70,19.5-108.9c-2.3-10.7-6.2-21.2-9.4-31.7c1.6-0.9,3.3-1.8,4.9-2.6c5.8-2.9,11.9-5.4,17.5-8.6
+                                c15.5-8.9,28.7-20.7,39.3-35C441.7,339.3,450.2,324.9,459.4,310.9z"/>
+                            </a>
+                            <a fill="white"  id="L_clc">
+                                <path d="M166.5,314.9c0,0,0.3,0,0.3,0c9,14.9,16.9,30.5,29.4,43.1c9.9,10,20.2,19.4,32.2,27
+                                c11.8,7.5,23.9,14,37.6,17.1c-0.3,1.1-0.5,2.2-0.8,3.3c-2.1,7.1-4.7,14.1-6,21.3c-1.6,8.8-2.7,17.8-3,26.7
+                                c-0.5,13.1,1.1,26,4.5,38.8c7,25.7,18.1,49,36.1,68.7c7.1,7.8,14.6,15.1,22,22.7c-7.7,4.7-15,10-23,13.9
+                                c-31.3,15.4-64.2,20.1-98.6,14.3c-24.5-4.1-46.6-13.6-66.8-28.1c-12.6-9-23.1-19.9-32.5-32c-26.2-33.9-35-72.4-29.7-114.3
+                                c3.1-24.4,11.9-46.9,26.4-66.8c9.2-12.6,19.6-24.3,32.3-33.6C138.9,328.1,151.8,319.9,166.5,314.9z"/>
+                            </a>
+                            <a fill="#9df6ed" id="LRM_clc" >
+                                <path d="M318.5,583.6c-7.3-7.6-14.9-14.9-22-22.7c-18-19.7-29.1-43-36.1-68.7c-3.5-12.8-5-25.7-4.5-38.8
+                                c0.3-8.9,1.4-17.9,3-26.7c1.3-7.2,4-14.2,6-21.3c0.3-1.1,0.6-2.2,0.8-3.3c0.2-0.1,0.4-0.2,0.6-0.3c21.2,4.4,42.7,6,64.4,4.7
+                                c13.2-0.8,26.3-2.9,38.7-7.8c0.2,0,0.4,0.1,0.5,0.2c3.2,10.6,7.1,21,9.4,31.7c8.3,38.8,2.3,75.5-19.5,108.9
+                                c-9,13.8-19.7,26.5-32.4,37.2c-2.8,2.4-5.8,4.6-8.7,6.9c0,0-0.2,0.1-0.2,0.1L318.5,583.6z"/>
+                            </a>
+                            <a fill="#9df6ed" id="TRM_clc" >
+                                <path d="M370.1,398.8c-0.2-0.1-0.3-0.2-0.5-0.2c-4.1-6.8-8.1-13.8-12.4-20.5c-3.3-5.1-6.8-10.1-10.5-14.9
+                                c-8.1-10.5-16.8-20.6-27.9-28.1c0-0.3-0.1-0.5-0.1-0.8c5.3-3.3,10.6-6.6,16-9.8c15.8-9.2,32.7-15.2,50.7-18.2
+                                c8.2-1.3,16.6-2.1,24.9-2.4c14.5-0.5,28.8,1.6,42.9,5.1c2,0.5,4,0.8,6.1,1.1c0.1,0.2,0.2,0.4,0.2,0.7c-9.1,14-17.6,28.4-27.6,41.8
+                                c-10.6,14.2-23.8,26-39.3,35c-5.6,3.2-11.7,5.7-17.5,8.6C373.3,397.1,371.7,398,370.1,398.8z"/>
+                            </a>
+                            <a fill="#9df6ed" id="TLM_clc">
+                                <path d="M318.5,334.4c0,0.3,0.1,0.5,0.1,0.8c-9.2,8.9-18.7,17.3-27.4,26.6c-10.9,11.6-19.1,25-24.7,40
+                                c-0.2,0.1-0.4,0.2-0.6,0.3c-13.7-3.1-25.8-9.6-37.6-17.1c-12-7.6-22.2-17-32.2-27c-12.5-12.6-20.3-28.2-29.4-43.1
+                                c7.2-2.4,14.2-5.6,21.6-7.1c23.1-4.8,46.3-4.7,69.5-0.5c21.6,3.9,41.4,11.7,58.6,25.7C317.1,333.6,317.8,333.9,318.5,334.4z"/>
+                            </a>
+                            <a fill="none" id="M_clc" >
+                                <path d="M266.5,401.7c5.6-15,13.8-28.4,24.7-40c8.7-9.3,18.3-17.8,27.4-26.6c11.1,7.6,19.8,17.6,27.9,28.1
+                                c3.7,4.8,7.2,9.8,10.5,14.9c4.3,6.7,8.3,13.6,12.4,20.5c-12.4,4.9-25.5,7-38.7,7.8C309.2,407.8,287.7,406.1,266.5,401.7z"/>
+                            </a>
+                        </g>
+                        </svg>
+                    </div>
+                    <div class="col-sm-1"></div>
+
+                </div>
+
+                <div class="row">
+                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">
+                        GeneCards.org contains information on the already identified risk genes for a particular
+                        disease. This diagram shows the number of genes selected by each method which are also
+                        identified by GeneCards !</p>
+                </div>
+            </div>
+
+            <div class="result_content">
+                <div class="row">
+                    <h4 id="h4-head-6" class="card__title" style="text-align: center;"></h4>
+                </div>
+
+                <div class="alert alert-danger">
+                    <strong>Our Method!</strong> Out of those predicted {{ col_gene_card[3] | length }},
+                    {{ col_gene_card[4] | length }} were currently discovered. 
+                    <a href="#modal1" onclick="more_click({param1: {{ col_gene_card[3] }} , param2: {{ col_gene_card[4] }}, param3: '4'})">more</a>
+                </div>
+
+                <div id="results_table_div1" style="overflow: auto;">
+                    {% for table in tables %}
+                        {{ table|safe }}
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <hr class="line-hr">
+
+            <div class="step-actions">
+                <button id="btn-submit-model" class="waves-effect waves-dark btn next-step step-6-click">
+                    <a>MODELING</a>
+                </button>
+                <button class="waves-effect waves-dark btn-flat previous-step">
+                    <a href="{{ url_for('home.index') }}">BACK</a>
+                </button>
+            </div>
+        </div>
+
+        <form id="main-form-div-model" style="display: none" action="/mod" method="get" id="form">
+            <input type="hidden" id="id" name="id" value="{{ result_id }}"/>
+        </form>
+
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="popup_gene_list" class="modal_pop" style="display: none;">
+    <div class="modal-content-1">
+        <div class="row">
+            <span class="close">&times;</span>
+        </div>
+        <div class="row">
+            <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }}
+                method</p>
+            <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }}
+                method</p>
+            <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }}
+                method</p>
+            <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }}
+                + {{ method_names[1] }} + {{ method_names[2] }}</p>
+            <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }}
+                and {{ method_names[1] }}</p>
+            <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }}
+                and {{ method_names[2] }}</p>
+            <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }}
+                and {{ method_names[2] }}</p>
+        </div>
+        <div class="row">
+            <p style="display: none;" class="popup_gene_list_div T_gene">{{ venn_data[0][1] }}</p>
+            <p style="display: none;" class="popup_gene_list_div L_gene">{{ venn_data[0][0] }}</p>
+            <p style="display: none;" class="popup_gene_list_div R_gene">{{ venn_data[0][2] }}</p>
+            <p style="display: none;" class="popup_gene_list_div M_gene">{{ venn_data[2] }}</p>
+            <p style="display: none;" class="popup_gene_list_div TL_gene">{{ venn_data[1][0] }}</p>
+            <p style="display: none;" class="popup_gene_list_div TR_gene">{{ venn_data[1][1] }}</p>
+            <p style="display: none;" class="popup_gene_list_div LR_gene">{{ venn_data[1][2] }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">MODELING</h5>
+</div>
+
+{% include 'guide_footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script>
+    function more_click(event) {
+        var element = document.getElementById("feature_list");
+        var element_head = document.getElementById("method_head");
+        var list = event.param1;
+        var head = event.param2;
+        var i = event.param3;
+
+        if (i == '4') {
+            var out = "<b>Identified All Genes: " + list.length + " </b><br><br>" + list + "<br><br> <b>Already Identified Genes: " + head.length + "</b><br><br>" + head;
+            element_head.innerHTML = "Our Framework";
+            element.innerHTML = out;
+        } else {
+            element.innerHTML = list;
+            element_head.innerHTML = head;
+        }
+        $('#modal1').openModal();
+        $('#tourControls').hide(0);
+    }
+</script>
+
+<script>
+
+    $('#btn-submit-model').click(function () {
+        $('.main-div-validation').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-model").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
+    });
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/venn_diagram.js') }}"></script>
+
+<script>
+
+    var tour = guide_main_call(tip_validation, 'BL');
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
+</script>

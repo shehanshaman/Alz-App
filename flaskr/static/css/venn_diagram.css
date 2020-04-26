@@ -1,0 +1,130 @@
+    .union_div path{
+        stroke: #26a69a;
+        stroke-width: 4px;
+    }
+
+    .value_p{
+        font-size: 34px;
+        font-family: monospace;
+        font-weight: bold;
+        color: #26a69a;
+        cursor: pointer;
+    }
+
+    .value_clf_p{
+        font-size: 26px;
+        font-family: monospace;
+        font-weight: bold;
+        color: #26a69a;
+    }
+
+    .p_M {
+      position: absolute;
+      left: 48%;
+      top: 47%;
+    }
+
+    .p_T {
+      position: absolute;
+      left: 49%;
+      top: 17%;
+    }
+
+    .p_L {
+      position: absolute;
+      left: 26%;
+      top: 62%;
+    }
+
+    .p_R {
+      position: absolute;
+      left: 72%;
+      top: 62%;
+    }
+
+    .p_TLM {
+      position: absolute;
+      left: 38%;
+      top: 40%;
+    }
+
+    .p_TRM {
+      position: absolute;
+      left: 60%;
+      top: 40%;
+    }
+
+    .p_LRM {
+      position: absolute;
+      left: 49%;
+      top: 64%;
+    }
+
+    .clf_T{
+      position: absolute;
+      left: 73%;
+      top: -6%;
+    }
+
+    .clf_R{
+      position: absolute;
+      left: 97%;
+      top: 56%;
+    }
+
+    .clf_L{
+      position: absolute;
+      left: -3%;
+      top: 95%;
+    }   
+
+    .popup_head_div{
+        font-size: 20px;
+        font-family: monospace;
+        color: #26a69a;
+    }
+
+    .popup_gene_list_div{
+        font-size: 17px;
+        font-family: monospace;
+        color: gray;
+        text-align: justify;
+    }
+
+/* The Modal (background) */
+.modal_pop {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content-1 {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 40px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+/* The Close Button */
+.close {
+  color: #000000;
+  float: right;
+  font-size: 45px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}

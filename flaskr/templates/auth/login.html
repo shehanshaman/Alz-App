@@ -1,15 +1,182 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
 
-{% block header %}
-  <h1>{% block title %}Log In{% endblock %}</h1>
-{% endblock %}
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block content %}
-  <form method="post">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
-    <input type="submit" value="Log In">
-  </form>
-{% endblock %}
+    <meta name="google-signin-scope" content="profile email">
+
+    <meta name="google-signin-client_id"
+      content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+
+    <title>GeNet | Login</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <meta name="google-signin-scope" content="profile email">
+
+    <meta name="google-signin-client_id"
+          content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+    <style>
+        .center {
+            margin: auto;
+            padding: 10px;
+            width: 50%;
+        }
+
+        .form-padding {
+            width: 70%;
+        }
+
+        .separator {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #26a69a;
+        }
+
+        .separator::before, .separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #26a69a;
+        }
+
+        .separator::before {
+            margin-right: .25em;
+        }
+
+        .separator::after {
+            margin-left: .25em;
+        }
+
+        .g_login {
+            padding: 5% 10% 5% 10%;
+        }
+
+        .border {
+            border: 2px solid #26a69a;
+            border-radius: 30px;
+            padding: 5px;
+        }
+
+        .flash {
+            padding: 1em;
+            background: #cae6f6;
+            border: 1px solid #377ba8;
+        }
+    </style>
+</head>
+
+<body style="background-color: #f3f6f9;">
+
+<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 5%;">
+
+    <div class="logo center" style="margin-top: -3%;">
+        <img src="{{ url_for('static', filename='images/login-logo.png') }}" alt="logo"
+                 style="width:125px; filter: brightness(1.02);">
+    </div>
+
+    <div class="step-content">
+        <div class="row head-word" style="margin-bottom: 0px;">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center; color: #26a69a;">Log In</h3>
+        </div>
+    </div>
+
+    <div class="center">
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <div class="border">
+                <form method="post" class="center form-padding">
+                    <label for="username" style="float: left">E-mail</label>
+                    <input name="username" id="username" required>
+                    <label for="password" style="float: left">Password</label>
+                    <input type="password" name="password" id="password" required>
+                    <input type="submit" value="Log In" class="waves-effect waves-dark btn">
+                </form>
+                <div class="row center">
+                    <label>Forgot Password? <a href="{{ url_for('auth.reset_request') }}">Reset Password</a></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3"></div>
+    </div>
+
+    <br>
+
+    <div class="separator"> OR</div>
+
+    <div class="row center">
+        <div class="g_login">
+            <div class="row">
+                <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" data-width="auto"></div>
+            </div>
+            <div class="">
+                <label>Don't have an Account? <a href="{{ url_for('auth.register') }}">Sign Up</a></label>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<form style="display: none" action="/auth/glogin/" method="POST" id="gform">
+    <input type="hidden" id="email" name="email" value=""/>
+    <input type="hidden" id="given_name" name="given_name" value=""/>
+    <input type="hidden" id="image_url" name="image_url" value=""/>
+    <input type="hidden" id="profile_id" name="profile_id" value=""/>
+</form>
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script>
+    function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+
+        var given_name = profile.getGivenName();
+        var image_url = profile.getImageUrl();
+        var email = profile.getEmail();
+        var profile_id = profile.getId();
+
+        // The ID token you need to pass to your backend:
+        var id_token = googleUser.getAuthResponse().id_token;
+
+        if (id_token !== null && id_token !== '') {
+            $("#given_name").val(given_name);
+            $("#image_url").val(image_url);
+            $("#email").val(email);
+            $("#profile_id").val(profile_id);
+            $("#gform").submit();
+        }
+    }
+</script>

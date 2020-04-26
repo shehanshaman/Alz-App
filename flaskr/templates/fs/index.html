@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Feature Selection</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+</head>
+
+
+<style>
+        .slider {
+            height: inherit;
+        }
+
+        .flash {
+            margin: 1em 0;
+            padding: 1em;
+            background: #f6ac8f;
+            border: 1px solid #5c0202;
+            text-align: center;
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+
+    .thumb {
+        margin-left: 7px !important;
+    }
+
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
+
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-fn-1">
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li class="step ">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li class="step active">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step">
+            <div class="step-content">
+                <div class="row">
+                    <h3 id="h3-head-6" class="card__title"
+                        style="text-align: center;color: #26a69a;font-family: monospace;">FEATURE SELECTION</h3>
+                </div>
+
+                {% for message in get_flashed_messages() %}
+                    <div class="row">
+                        <div class="flash">{{ message }}</div>
+                    </div>
+                {% endfor %}
+
+                <div class="row">
+                    {% if list_names and (list_names | length > 0) %}
+                        <div id="selected_file_div" class="row"></div>
+                        <div class="row center">
+                            <span class="col-sm-6" style="text-align: center;">Select File :</span>
+                            <div class="col-sm-6">
+                                <div class="md-form" id="file_tbl_div">
+                                    <select class="form-control" id="file_tbl" name="file_tbl">
+                                        <option disabled="disabled" selected>Pick a choice!</option>
+                                        {% for name in list_names %}
+                                            <option value="{{ name }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif filename %}
+                        <div id="selected_file_div" class="row">
+                            <span class="col-sm-6" style="text-align: center;">Selected File :</span>
+                            <label class="col-sm-6" style="text-align: left;">{{ filename }}</label>
+                        </div>
+                    {% else %}
+                        <div id="selected_file_div" class="row"></div>
+                    {% endif %}
+
+
+                </div>
+
+                <div class="row">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Select
+                        Three Feature Selection
+                        Methods</h5>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="container">
+                            <div class="row">
+                                <div id="select_methods_div" class="col-sm-6">
+                                    <ul id="listFrom" class="nav nav-pills nav-stacked">
+                                        <li data-id="1" class="active" data-value="PCA">PCA</li>
+                                        <li data-id="2" class="active" data-value="Random Forest">Random Forest</li>
+                                        <li data-id="3" class="active" data-value="Extra Tree Classifier">
+                                            Extra Tree Classifier
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6">
+                                    <ul id="listTo" class="nav nav-pills nav-stacked"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Number of
+                        Features Selected</h5>
+                </div>
+                <div id="num_of_features" class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <div class="slidecontainer">
+                            <input type="range" min="30" max="100" value="50" class="slider" id="myRange">
+                            <p>Value: <span id="demo"></span></p>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+
+                <hr class="line-hr">
+
+                <div class="step-actions">
+                    <button id="btn-submit-fn-1" class="waves-effect waves-dark btn next-step step-6-click"
+                            onclick="myFunction()" {% if list_names and filename %} disabled {% endif %}>CONTINUE
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <form id="main-form-div-fn-1" style="display: none" action="/fs/" method="POST" id="form">
+        <input type="hidden" id="fs_methods" name="fs_methods" value=""/>
+        <input type="hidden" id="change_file" name="change_file" value="{{ filename }}"/>
+        <input type="hidden" id="pre_process_id" name="pre_process_id" value="{{ pre_process_id }}"/>
+    </form>
+</div>
+
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="margin-top: 19%;text-align: center;color: #26a69a; margin-bottom: 10%;">PROCESSING RESULTS</h5>
+</div>
+
+{% include 'guide_footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!--main navbar-->
+<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/stepper-js-file.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script>
+    function myFunction() {
+        var val = document.getElementById("listTo");
+        var arr = val.getElementsByClassName('active');
+        var fs = new Array(3);
+        var i;
+        for (i = 0; i < arr.length; i++) {
+            fs[i] = arr[i].getAttribute('data-value');
+        }
+
+        fs[3] = document.getElementById("demo").innerHTML;
+
+        $("#fs_methods").val(fs);
+        $("#form").submit();
+
+        $('#tourControls').hide(0);
+
+    }
+    $('#file_tbl').change(function () {
+
+        var conceptName = $('#file_tbl').find(":selected").text();
+        $("#change_file").val(conceptName);
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-fn-1').click(function () {
+        $('.main-div-fn-1').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-fn-1").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
+    });
+
+    $('#select_methods_div').click(function () {
+        $('#tourControls').hide(0);
+    });
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
+<script>
+    function check_count(i) {
+        if(i==3){
+            document.getElementById("btn-submit-fn-1").disabled = false;
+        }else{
+            document.getElementById("btn-submit-fn-1").disabled = true;
+        }
+    }
+
+    $(function () {
+        $("#listTo").sortable();
+        $("#listTo").disableSelection();
+
+        $(document).on("click", "#listFrom li", function () {
+            $(this).unbind("click").appendTo("#listTo");
+            count++;
+            check_count(count);
+        });
+        $(document).on("click", "#listTo li", function () {
+            $(this).unbind("click").appendTo("#listFrom");
+            count--;
+            check_count(count);
+        });
+    });
+
+    var count = 0;
+    document.getElementById("btn-submit-fn-1").disabled = true;
+
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function () {
+        output.innerHTML = this.value;
+    };
+
+    var tour = guide_main_call(tip_fs_index, 'BL');
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
+</script>

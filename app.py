@@ -1,5 +1,8 @@
 import flaskr
+from waitress import serve
+
+app = flaskr.create_app()
 
 if __name__ == '__main__':
-    app = flaskr.create_app()
-    app.run()
+    app.run(debug=True)
+    # serve(app)
