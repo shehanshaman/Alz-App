@@ -631,12 +631,15 @@ class UserData:
     def is_file_upload(user_id):
         path = USER_PATH / str(user_id)
 
-        list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
+        if os.path.exists(path):
+            list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
-        if len(list_names) == 0:
-            return False
-        else:
-            return True
+            if len(list_names) == 0:
+                return False
+            else:
+                return True
+
+        return False
 
     def delete_model(user_id, name):
         db = get_db()
@@ -646,9 +649,16 @@ class UserData:
         )
         db.commit()
 
+    def is_model_created(user_id):
+        user_model = UserData.get_model(user_id)
+        if user_model and user_model['accuracy']:
+            return True
+
+        return False
+
     def get_disable_validate_array(user_id):
         disable_list = [0, 0, 0, 0, 0, 0, 0]
-        print(UserData.get_model(user_id)['accuracy'])
+
         if(UserData.is_file_upload(user_id)):
             disable_list[0] = 1
             disable_list[1] = 1
@@ -658,7 +668,7 @@ class UserData:
         if(UserData.get_result_to_validation(user_id)):
             disable_list[4] = 1
             disable_list[5] = 1
-        if(UserData.get_model(user_id)['accuracy'] != ''):
+        if UserData.is_model_created(user_id) and disable_list[0]:
             disable_list[6] = 1  
         return disable_list
 
