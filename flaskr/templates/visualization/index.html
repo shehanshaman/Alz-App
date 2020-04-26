@@ -95,10 +95,10 @@
     color: #ffffff; 
   }
 
-  #featuresautocomplete-list{
+/*  #featuresautocomplete-list{
       height: 300px;
       overflow: scroll;   
-  }
+  }*/
 
 </style>
 
@@ -300,9 +300,13 @@ function autocomplete(inp, arr) {
               closeAllLists();
           });
           a.appendChild(b);
+
+          $("#featuresautocomplete-list").css("height","300px");
+          $("#featuresautocomplete-list").css("overflow","scroll");
         }
       }
   });
+
   /*execute a function presses a key on the keyboard:*/
   inp.addEventListener("keydown", function(e) {
       var x = document.getElementById(this.id + "autocomplete-list");
