@@ -39,7 +39,6 @@ ANNOTATION_TBL = UPLOAD_FOLDER / "AnnotationTbls"
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
 @bp.route("/")
 @login_required
 def index():
@@ -403,7 +402,6 @@ def get_feature_selection_fig(df, df_y, length):
     pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
-
 
 def fig_to_b64encode(fig):
     pic_IObytes = io.BytesIO()

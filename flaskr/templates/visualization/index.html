@@ -360,3 +360,12 @@ function autocomplete(inp, arr) {
   });
 }
 </script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
+</script>
