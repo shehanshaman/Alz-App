@@ -33,6 +33,10 @@
         width: 100%;
     }
 
+    ul.stepper .step.active:before, ul.stepper .step.done:before {
+        background-color: #26a69a;
+    }
+    
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
@@ -44,22 +48,22 @@
     <div class="card-content">
 
         <ul data-method="GET" class="stepper linear">
-            <li class="step">
+            <li id="side_step_nav_preprocess_icon" class="step">
                 <a href="{{ url_for('preprocess.index') }}">
                     <div class="step-title waves-effect waves-dark">Pre-processing</div>
                 </a>
             </li>
-            <li class="step">
+            <li id="side_step_nav_feature_icon" class="step">
                 <a href="{{ url_for('fs.index') }}">
                     <div class="step-title waves-effect waves-dark">Feature selection</div>
                 </a>
             </li>
-            <li class="step active">
+            <li id="side_step_nav_analize_icon" class="step active">
                 <a href="{{ url_for('analyze.index') }}">
                     <div class="step-title waves-effect waves-dark">Analysis</div>
                 </a>
             </li>
-            <li class="step">
+            <li id="side_step_nav_validation_icon" class="step">
                 <a href="{{ url_for('validation.index') }}">
                     <div class="step-title waves-effect waves-dark">Validation</div>
                 </a>
