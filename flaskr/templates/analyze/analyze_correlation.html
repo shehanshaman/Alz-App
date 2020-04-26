@@ -130,9 +130,15 @@
                 <h3 id="selected-method" style="display: none;">{{ method_title }}</h3>
             </div>
             <div class="row">
-                <label style="float: left"><b>Selected File: </b> {{ filename }}</label>
-                <a href="../fs/an/config" style="float: right"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
-            </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-6">
+                    <label style="float: right;font-size: 20px;"><b>Selected File: </b> {{ filename }}</label>    
+                </div>
+                <div class="col-sm-3 change_file_div">
+                    <a href="../fs/an/config" style="color: #26a69a;text-decoration: none;font-size: 15px;"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>            
         </div>
 
         <div class="step-content">
@@ -394,4 +400,13 @@
 
     var tour = guide_main_call(tip_an_correlation, 'BL');
 
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
 </script>

@@ -49,7 +49,9 @@ def load_logged_in_user():
 
     if user_id is None:
         g.user = None
+        g.dList = None
     else:
+        g.dList = UserData.get_disable_validate_array(user_id)
         g.user = (
             get_db().execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
         )
@@ -83,7 +85,7 @@ def register():
             # the name is available, store it in the database and go to
             # the login page
 
-            create_user_db(db, username, password, given_name, '', 0)
+            create_user_db(db, username, password, given_name, '', 1)
             if "@" in username:
                 user_id = UserData.get_user_id(username)
                 verify_key = randomString()
@@ -625,3 +627,39 @@ class UserData:
         send_infrequent_mail(list)
 
         return list
+
+    def is_file_upload(user_id):
+        path = USER_PATH / str(user_id)
+
+        list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
+
+        if len(list_names) == 0:
+            return False
+        else:
+            return True
+
+    def delete_model(user_id, name):
+        db = get_db()
+        db.execute(
+            "UPDATE modeling SET "
+            "accuracy = ?  WHERE user_id = ? and trained_file = ?", ('', user_id, name),
+        )
+        db.commit()
+
+    def get_disable_validate_array(user_id):
+        disable_list = [0, 0, 0, 0, 0, 0, 0]
+        print(UserData.get_model(user_id)['accuracy'])
+        if(UserData.is_file_upload(user_id)):
+            disable_list[0] = 1
+            disable_list[1] = 1
+            disable_list[2] = 1
+        if(UserData.get_user_results(user_id)):
+            disable_list[3] = 1
+        if(UserData.get_result_to_validation(user_id)):
+            disable_list[4] = 1
+            disable_list[5] = 1
+        if(UserData.get_model(user_id)['accuracy'] != ''):
+            disable_list[6] = 1  
+        return disable_list
+
+

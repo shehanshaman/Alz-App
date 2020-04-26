@@ -82,6 +82,12 @@ var tip_step_1 =
         tooltip : 'Choose a method to handle multiple probe ids mapping to the same gene symbol !', 
         text: 'Probe selection method', 
         position: 'T' 
+    },
+    { 
+        element : '#btn-skip-step-1', 
+        tooltip : 'Without mapping continue processing data !', 
+        text: 'Skip mapping', 
+        position: 'T' 
     }
 ];
 
@@ -311,6 +317,12 @@ var tip_fs_results =
 var tip_an_index =
 [
     { 
+        element : '.change_file_div', 
+        tooltip : 'You can change analysis file from here !', 
+        text: 'Select file', 
+        position: 'T' 
+    },
+    { 
         element : '#result_plot_div1', 
         tooltip : 'Right: Number of features selected by each method only, Left : The variation of accuracy with the features selected by one method trained under 3 classifiers !', 
         text: 'Training accuracies', 
@@ -338,6 +350,12 @@ var tip_an_index =
 
 var tip_an_correlation =
 [
+    { 
+        element : '.change_file_div', 
+        tooltip : 'You can change file from here !', 
+        text: 'Select file', 
+        position: 'T' 
+    },
     { 
         element : '#results_plot_div1', 
         tooltip : 'Variation of correlation values with the number of correlated features by considering all the 3 methods !', 
@@ -373,6 +391,12 @@ var tip_an_correlation =
 var tip_an_final =
 [
     { 
+        element : '.change_file_div', 
+        tooltip : 'You can change file from here !', 
+        text: 'Select file', 
+        position: 'T' 
+    },
+    { 
         element : '#gene_output_div1', 
         tooltip : 'This shows the set of genes selected by considering the least correlation values and the highest accuracy !', 
         text: 'Extracted genes', 
@@ -407,11 +431,23 @@ var tip_an_final =
         tooltip : 'This table shows the testing and training accuracies of all the selected features. This is the final accuracy of the  best set of genes !', 
         text: 'Accuracy results', 
         position: 'T' 
+    },
+    { 
+        element : '#disease_div', 
+        tooltip : 'You have to change this for validate your results !', 
+        text: 'Change disease',
+        position: 'T' 
     }
 ];
 
 var tip_validation =
 [
+    { 
+        element : '.change_file_div', 
+        tooltip : 'Choose file you want to validate !', 
+        text: 'Select file', 
+        position: 'T' 
+    },
     { 
         element : '#info_results_div', 
         tooltip : 'Now, we need to validate our results to confirm their biological relevance. For this, we use data from https://www.genecards.org/ to compare our results. In GeneCards, they have information on the already identified risk genes for a particular disease!', 

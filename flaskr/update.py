@@ -24,6 +24,7 @@ def delete_file():
 
     UserData.delete_preprocess_file(id, name)
     UserData.delete_result(id, name)
+    UserData.delete_model(id, name)
 
     f_path = USER_PATH / id / name
 
