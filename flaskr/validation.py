@@ -12,6 +12,8 @@ from .auth import UserData, login_required
 
 from pathlib import Path
 
+import json
+
 ROOT_PATH = Path.cwd()
 GENE_CARD = ROOT_PATH / "flaskr" / "upload" / "Validation" / "GeneCards-SearchResults.pkl"
 VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
@@ -66,11 +68,17 @@ def index():
     #Get gene info
     gene_info_path = GENE_INFO_PATH / "Homo_sapiens.gene_info"
     unique_genes = list(set(col_m1 + col_m2 + col_m3))
-    gene_info = FeatureSelection.get_selected_gene_info(gene_info_path, unique_genes)
+
+    gene_info_df = FeatureSelection.get_selected_gene_info(gene_info_path, unique_genes)
+    gene_info = gene_info_df.to_json(orient='index')
+
+    gene_info = json.loads(gene_info)
+
+    gene_name_list = list(gene_info_df.index)
 
     return render_template("validation/index.html", col_gene_card = col_gene_card, method_names = method_names,
                            tables=[dis_gene_card.head().to_html(classes='data')], venn_data=venn_data, filename=filename,
-                           result_id = result_id, gene_info = gene_info)
+                           result_id = result_id, gene_info = gene_info, gene_name_list = gene_name_list)
 
 def get_overlap_features(col1, col2):
     t = list(set(col1) & set(col2))

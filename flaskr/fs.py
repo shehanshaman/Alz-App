@@ -13,6 +13,7 @@ from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
 from pathlib import Path
+import json
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
@@ -129,10 +130,16 @@ def get_val():
     # Get gene info
     gene_info_path = GENE_INFO_PATH / "Homo_sapiens.gene_info"
     unique_genes = list(set(col_m1 + col_m2 + col_m3))
-    gene_info = FeatureSelection.get_selected_gene_info(gene_info_path, unique_genes)
+    
+    gene_info_df = FeatureSelection.get_selected_gene_info(gene_info_path, unique_genes)
+    gene_info = gene_info_df.to_json(orient='index')
+
+    gene_info = json.loads(gene_info)
+
+    gene_name_list = list(gene_info_df.index)
 
     return render_template("fs/result.html", image_data=img64, methods=fs_methods, columns=col, venn_data=venn_data,
-                           result_id=result_id, gene_info = gene_info)
+                           result_id=result_id, gene_info = gene_info, gene_name_list = gene_name_list)
 
 
 @bp.route("/<method>/config")
