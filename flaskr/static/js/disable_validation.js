@@ -12,7 +12,10 @@ function disable_read_fun(disable_prop){
 	        $('#nav_' + div_list[i]).css("opacity", "0.4");
 
 	        $('#side_nav_' + div_list[i]).css("pointer-events", "none");
-	        $('#side_nav_' + div_list[i]).css("opacity", "0.4");                  
+	        $('#side_nav_' + div_list[i]).css("opacity", "0.4");     
+
+			$('#side_step_nav_' + div_list[i]).css("pointer-events", "none");
+	        $('#side_step_nav_' + div_list[i]).css("opacity", "0.4");             
 	    }
 	}	
 }

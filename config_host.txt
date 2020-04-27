@@ -1,3 +1,10 @@
+envirenment set
+cd Alz-App
+. env/bin/activate
+
 export PS1='$(whoami)@$(hostname):$(pwd)$ '
 ps -U servercom -au
 kill pid
+
+run
+python app.py &
