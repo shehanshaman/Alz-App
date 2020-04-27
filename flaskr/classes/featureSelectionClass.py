@@ -537,3 +537,13 @@ class FeatureSelection:
         col_c = [col_m12_uni, col_m23_uni, col_m13_uni]
 
         return col_c
+
+    def get_gene_info_df(file_path):
+        data = pd.read_csv(file_path, sep="\t", index_col="Symbol")
+        return data
+
+    def get_selected_gene_info(file_path, gene_symbols):
+        df = FeatureSelection.get_gene_info_df(file_path)
+        df_sel = df.index.isin(gene_symbols)
+        df = df[df_sel]
+        return df
