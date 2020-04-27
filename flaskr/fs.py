@@ -17,6 +17,7 @@ from pathlib import Path
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
+GENE_INFO_PATH = ROOT_PATH / "flaskr" / "upload" / "gene_info"
 
 bp = Blueprint("fs", __name__, url_prefix="/fs")
 
@@ -125,7 +126,13 @@ def get_val():
 
     venn_data = FeatureSelection.venn_diagram_data(col_m1, col_m2, col_m3)
 
-    return render_template("fs/result.html", image_data=img64, methods=fs_methods, columns=col, venn_data=venn_data, result_id=result_id)
+    # Get gene info
+    gene_info_path = GENE_INFO_PATH / "Homo_sapiens.gene_info"
+    unique_genes = list(set(col_m1 + col_m2 + col_m3))
+    gene_info = FeatureSelection.get_selected_gene_info(gene_info_path, unique_genes)
+
+    return render_template("fs/result.html", image_data=img64, methods=fs_methods, columns=col, venn_data=venn_data,
+                           result_id=result_id, gene_info = gene_info)
 
 
 @bp.route("/<method>/config")
