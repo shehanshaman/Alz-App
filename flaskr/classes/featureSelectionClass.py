@@ -540,6 +540,7 @@ class FeatureSelection:
 
     def get_gene_info_df(file_path):
         data = pd.read_csv(file_path, sep="\t", index_col="Symbol")
+        data = data.loc[~data.index.duplicated(keep='first')]
         return data
 
     def get_selected_gene_info(file_path, gene_symbols):
