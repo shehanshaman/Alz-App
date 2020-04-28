@@ -14,10 +14,12 @@ from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
 from pathlib import Path
+import json
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
+GENE_INFO_PATH = ROOT_PATH / "flaskr" / "upload" / "gene_info"
 
 bp = Blueprint("analyze", __name__, url_prefix="/an")
 
@@ -154,12 +156,24 @@ def final_result():
     r_len = [len(col_selected_method), len(dis_gene)]
     r_col = [col_selected_method, dis_gene]
 
+    #Get gene info
+    gene_info_path = GENE_INFO_PATH / "Homo_sapiens.gene_info"
+    unique_genes = list(set(col_selected_method + dis_gene))
+
+    gene_info_df = FeatureSelection.get_selected_gene_info(gene_info_path, unique_genes)
+    gene_info = gene_info_df.to_json(orient='index')
+
+    gene_info = json.loads(gene_info)
+
+    gene_name_list = list(gene_info_df.index)
+
+
     validation_file_list = [f for f in os.listdir(VALIDATION_PATH) if os.path.isfile((VALIDATION_PATH / f))]
 
     return render_template("analyze/final_result.html", sel_roc=selected_roc_pic_hash, table_r1 = [r1_df.to_html(classes='data')],
                            title_r1 = r1_df.head().columns.values, all_roc=all_roc_pic_hash, table_r2 = [r2_df.to_html(classes='data')],
                            title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col,
-                           filename = filename, result_id=result_id, validation_file_list= validation_file_list)
+                           filename = filename, result_id=result_id, validation_file_list= validation_file_list,  gene_info = gene_info, gene_name_list = gene_name_list)
 
 def checkList(list1, list2):
     for word in list2:
