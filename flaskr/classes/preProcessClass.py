@@ -75,6 +75,10 @@ class PreProcess:
 
 		if imputation_method == 'drop':
 			df_merge_rm_null = PreProcess.rmNullRows(df_merge)
+		elif imputation_method == 'avg':
+			df_merge = df_merge.dropna(axis=0, subset=['Gene Symbol'])
+			# df_merge_rm_null = df_merge.fillna(df_merge.mean())
+			df_merge_rm_null = df_merge.T.fillna(df_merge.mean(axis=1)).T
 
 		df_merge_rm_null_float = PreProcess.df2float(df_merge_rm_null)
 
@@ -147,10 +151,13 @@ class PreProcess:
 
 		return p_fold_df
 
-	def get_filtered_df_pvalue(p_fold_df, df_path, pvalue, foldChange):
+	def get_filtered_df_pvalue(p_fold_df, df_path, pvalue, foldChange, nskip = 1):
 		df = PreProcess.getDF(df_path)
-		df = df.set_index(["Gene Symbol"])
-		df = df.T
+		if nskip:
+			df = df.set_index(["Gene Symbol"])
+			df = df.T
+		elif 'class' in df.columns:
+			df = df.drop(['class'], axis=1)
 
 		p_fold_df['is_selected'] = (abs(p_fold_df['fold']) > foldChange) & (p_fold_df['pValues'] < pvalue)
 		sorted_dataframe = df.filter(df.columns[p_fold_df['is_selected']])
