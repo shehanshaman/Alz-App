@@ -59,7 +59,10 @@ function set_gene_list(gene_list_post){
         $('#td_chromosome').html(gene_describe_json[index_name]["chromosome"]);
         $('#td_dbXrefs').html(gene_describe_json[index_name]["dbXrefs"]);
         $('#td_designations').html(gene_describe_json[index_name]["Other_designations"]);
-        $('#td_gene_type').html(gene_describe_json[index_name]["type_of_gene"]); 
+        $('#td_gene_type').html(gene_describe_json[index_name]["type_of_gene"]);
+
+        newUrl = 'https://www.ncbi.nlm.nih.gov/gene/' + gene_describe_json[index_name]["GeneID"];
+        $('.more_details button a').attr("href", newUrl);
     }
     else{
         $('.gene_not_have').show(0);
@@ -86,7 +89,10 @@ function set_gene_list(gene_list_post){
             $('#td_chromosome').html(gene_describe_json[index_name]["chromosome"]);
             $('#td_dbXrefs').html(gene_describe_json[index_name]["dbXrefs"]);
             $('#td_designations').html(gene_describe_json[index_name]["Other_designations"]);
-            $('#td_gene_type').html(gene_describe_json[index_name]["type_of_gene"]);             
+            $('#td_gene_type').html(gene_describe_json[index_name]["type_of_gene"]);
+
+            newUrl = 'https://www.ncbi.nlm.nih.gov/gene/' + gene_describe_json[index_name]["GeneID"];
+            $('.more_details button a').attr("href", newUrl);                      
         }
         else{
             $('.gene_not_have').show(0);
@@ -101,7 +107,12 @@ function is_gene_exsist(gene_have_new_list, gene_name){
 
     for(var j = 0; j<gene_have_new_list.length; j++){
         if( gene_have_new_list[j] == gene_name ){
+            //console.log(gene_describe_json[gene_name]);
             return true;
+        }
+        else{
+            //console.log(gene_name)
+            //console.log(gene_have_new_list)
         }
     }
     return false;
@@ -188,6 +199,30 @@ $('.p_TLM, #TLM_clc').click(function(){
     $('#tourControls').hide(0);
 
     gene_list = $('.TL_gene_list').text();
+    set_gene_list(gene_list);
+});
+
+$('#gene_output_div1').click(function(){
+    $('#popup_gene_list').slideToggle("show");
+
+    $('.mthd_features_div').show(0);
+    $('.mthd_overlap_features_div').hide(0);
+
+    $('#tourControls').hide(0);
+
+    gene_list = $('.mthd_features_list').text();
+    set_gene_list(gene_list);
+});
+
+$('#gene_output_div2').click(function(){
+    $('#popup_gene_list').slideToggle("show");
+
+    $('.mthd_overlap_features_div').show(0);
+    $('.mthd_features_div').hide(0);
+
+    $('#tourControls').hide(0);
+
+    gene_list = $('.mthd_overlap_features_list').text();
     set_gene_list(gene_list);
 });
 
