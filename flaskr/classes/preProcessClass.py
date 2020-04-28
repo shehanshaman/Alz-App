@@ -1,15 +1,10 @@
 import pandas as pd
-import numpy as np
-
-import pandas as pd
-from flask import jsonify, abort
-from sklearn import preprocessing
-
-from scipy import stats
 import statistics
-from scipy.stats import ttest_ind
-
 import json
+
+from flask import abort
+from sklearn import preprocessing
+from scipy.stats import ttest_ind
 
 class PreProcess:
 	
@@ -25,9 +20,10 @@ class PreProcess:
 		gene_card = gene_card.T
 		return gene_card
 
-	def getProbeDF(name):
-		probes = pd.read_csv(name)
-		probes = probes[['Gene Symbol', 'ID']]
+	def getProbeDF(file_path):
+		probes = pd.read_csv(file_path, usecols=[0, 10], header=0)
+		# probes = pd.read_csv(file_path)
+		# probes = probes[['Gene Symbol', 'ID']]
 		return probes
 
 	def mergeDF(df_path, probe_path):
