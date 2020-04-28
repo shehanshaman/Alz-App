@@ -245,7 +245,11 @@ def get_reduce_features_from_pvalues():
     p_fold_df_path = USER_PATH / str(g.user["id"]) / 'tmp' / ('_p_fold_' + pre_process['file_name'])
     p_fold_df = PreProcess.getDF(p_fold_df_path)
 
-    df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['avg_symbol_df_path'], float(pvalue), float(fold))
+    if pre_process['avg_symbol_df_path']:
+        df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['avg_symbol_df_path'], float(pvalue), float(fold))
+    else:
+        df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['file_path'], float(pvalue), float(fold), 0)
+
     fr_df_path = USER_PATH / str(g.user["id"]) / 'tmp' /  ('fr_' + pre_process['file_name'])
     PreProcess.saveDF(df, fr_df_path)
 

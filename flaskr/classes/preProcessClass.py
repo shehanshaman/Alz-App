@@ -151,10 +151,13 @@ class PreProcess:
 
 		return p_fold_df
 
-	def get_filtered_df_pvalue(p_fold_df, df_path, pvalue, foldChange):
+	def get_filtered_df_pvalue(p_fold_df, df_path, pvalue, foldChange, nskip = 1):
 		df = PreProcess.getDF(df_path)
-		df = df.set_index(["Gene Symbol"])
-		df = df.T
+		if nskip:
+			df = df.set_index(["Gene Symbol"])
+			df = df.T
+		else:
+			df = df.drop(['class'], axis=1)
 
 		p_fold_df['is_selected'] = (abs(p_fold_df['fold']) > foldChange) & (p_fold_df['pValues'] < pvalue)
 		sorted_dataframe = df.filter(df.columns[p_fold_df['is_selected']])
