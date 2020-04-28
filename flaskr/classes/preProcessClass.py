@@ -156,7 +156,7 @@ class PreProcess:
 		if nskip:
 			df = df.set_index(["Gene Symbol"])
 			df = df.T
-		else:
+		elif 'class' in df.columns:
 			df = df.drop(['class'], axis=1)
 
 		p_fold_df['is_selected'] = (abs(p_fold_df['fold']) > foldChange) & (p_fold_df['pValues'] < pvalue)
