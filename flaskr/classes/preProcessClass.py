@@ -75,6 +75,10 @@ class PreProcess:
 
 		if imputation_method == 'drop':
 			df_merge_rm_null = PreProcess.rmNullRows(df_merge)
+		elif imputation_method == 'avg':
+			df_merge = df_merge.dropna(axis=0, subset=['Gene Symbol'])
+			# df_merge_rm_null = df_merge.fillna(df_merge.mean())
+			df_merge_rm_null = df_merge.T.fillna(df_merge.mean(axis=1)).T
 
 		df_merge_rm_null_float = PreProcess.df2float(df_merge_rm_null)
 
