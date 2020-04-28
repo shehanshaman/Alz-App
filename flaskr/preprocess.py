@@ -14,14 +14,16 @@ from .classes.preProcessClass import PreProcess
 from .classes.featureReductionClass import FeatureReduction
 
 import io
-
-import json
 import pandas as pd
 
 from flaskr.auth import login_required, UserData
 from flask import g
 
 import numpy as np
+
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
@@ -410,6 +412,8 @@ def fig_to_b64encode(fig):
     pic_hash = base64.b64encode(pic_IObytes.read())
 
     pic_hash = pic_hash.decode("utf-8")
+
+    plt.close(fig)
 
     return pic_hash
 
