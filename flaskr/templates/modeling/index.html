@@ -48,7 +48,7 @@
         {% if state == '1' %}
 
             <div class="alert alert-success alert-dismissible fade in">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
                 <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b>
                 <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
             </div>
@@ -56,13 +56,13 @@
         {% elif state == '0' %}
 
             <div class="alert alert-danger alert-dismissible fade in">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
                 <strong>Danger!</strong> Something went wrong.
             </div>
 
         {% elif state == '2' %}
             <div class="alert alert-danger alert-dismissible fade in">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
                 <strong>Danger!</strong> You don't have configured model.
             </div>
 
@@ -209,6 +209,10 @@
 <script>
 
     var tour = guide_main_call(tip_model_index, 'BL');
+
+    $('.close').click(function (){
+        $('.alert-dismissible').hide(0);
+    });
 
 </script>
 
