@@ -76,8 +76,6 @@ def get_files_for_modeling():
             if ValidateUser.is_subset(df.columns.to_list(), col):
                 list_names.append(f)
 
-    # print(list_names)
-
     return json.dumps(list_names)
 
 

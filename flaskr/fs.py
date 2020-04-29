@@ -2,6 +2,7 @@ import os
 from flask import Blueprint, session, g, flash, url_for
 from flask import render_template
 from flask import request
+from werkzeug.exceptions import abort
 
 import matplotlib
 matplotlib.use('Agg')
@@ -47,6 +48,8 @@ def index():
     else:
 
         pre_process = UserData.get_preprocess_from_id(pre_process_id)
+        if pre_process is None:
+            return abort(403)
         file_name = "GeNet_" + pre_process['file_name']
 
         return render_template("fs/index.html", list_names=None, filename=file_name, pre_process_id = pre_process_id)
