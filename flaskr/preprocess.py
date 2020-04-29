@@ -255,8 +255,10 @@ def get_reduce_features_from_pvalues():
 
     length = len(df.columns)
 
-    if (length < 350):
-        split_array = np.linspace(150, int(length / 10) * 10, 21)
+    if length <= 150:
+        split_array = np.array([length])
+    elif length < 350:
+        split_array = np.arange(150, int(length / 10) * 10, 10)
     else:
         split_array = np.linspace(150, 350, 21)
 
@@ -270,9 +272,11 @@ def get_reduce_features_from_pvalues():
     classification_result_df = FeatureReduction.get_classification_results(df, y)
     cls_id, cls_name = FeatureReduction.get_best_cls(classification_result_df)
 
-    classification_result_df = classification_result_df.drop(['avg'], axis=1)
-    classification_result_df = classification_result_df.drop(['Training'], axis=1)
-    classification_result_df = classification_result_df.sort_values(by=['Testing'], ascending=False)
+    classification_result_df = classification_result_df.drop(['Testing', 'Training'], axis=1)
+    classification_result_df = classification_result_df.sort_values(by=['avg'], ascending=False)
+    classification_result_df = classification_result_df.set_index(['Classifiers'])
+    classification_result_df.index.name = None
+    classification_result_df = classification_result_df.rename(columns={"avg": "Average Accuracy /%"})
 
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
