@@ -14,14 +14,16 @@ from .classes.preProcessClass import PreProcess
 from .classes.featureReductionClass import FeatureReduction
 
 import io
-
-import json
 import pandas as pd
 
 from flaskr.auth import login_required, UserData
 from flask import g
 
 import numpy as np
+
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
@@ -243,14 +245,20 @@ def get_reduce_features_from_pvalues():
     p_fold_df_path = USER_PATH / str(g.user["id"]) / 'tmp' / ('_p_fold_' + pre_process['file_name'])
     p_fold_df = PreProcess.getDF(p_fold_df_path)
 
-    df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['avg_symbol_df_path'], float(pvalue), float(fold))
+    if pre_process['avg_symbol_df_path']:
+        df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['avg_symbol_df_path'], float(pvalue), float(fold))
+    else:
+        df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['file_path'], float(pvalue), float(fold), 0)
+
     fr_df_path = USER_PATH / str(g.user["id"]) / 'tmp' /  ('fr_' + pre_process['file_name'])
     PreProcess.saveDF(df, fr_df_path)
 
     length = len(df.columns)
 
-    if (length < 350):
-        split_array = np.linspace(150, int(length / 10) * 10, 21)
+    if length <= 150:
+        split_array = np.array([length])
+    elif length < 350:
+        split_array = np.arange(150, int(length / 10) * 10, 10)
     else:
         split_array = np.linspace(150, 350, 21)
 
@@ -264,7 +272,11 @@ def get_reduce_features_from_pvalues():
     classification_result_df = FeatureReduction.get_classification_results(df, y)
     cls_id, cls_name = FeatureReduction.get_best_cls(classification_result_df)
 
-    classification_result_df = classification_result_df.drop(['avg'], axis=1)
+    classification_result_df = classification_result_df.drop(['Testing', 'Training'], axis=1)
+    classification_result_df = classification_result_df.sort_values(by=['avg'], ascending=False)
+    classification_result_df = classification_result_df.set_index(['Classifiers'])
+    classification_result_df.index.name = None
+    classification_result_df = classification_result_df.rename(columns={"avg": "Average Accuracy /%"})
 
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
@@ -410,6 +422,8 @@ def fig_to_b64encode(fig):
     pic_hash = base64.b64encode(pic_IObytes.read())
 
     pic_hash = pic_hash.decode("utf-8")
+
+    plt.close(fig)
 
     return pic_hash
 

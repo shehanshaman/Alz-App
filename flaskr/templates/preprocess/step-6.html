@@ -194,7 +194,6 @@
         $('#tourControls').hide(0);
     });
 
-    document.getElementById('features_count').value= "200";
 </script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
@@ -216,5 +215,6 @@
 
 disable_prop = {{ g.dList }};
 
-disable_read_fun(disable_prop)
+disable_read_fun(disable_prop);
+
 </script>

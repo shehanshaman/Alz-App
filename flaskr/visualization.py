@@ -6,10 +6,12 @@ from flask import Blueprint, request
 
 from flaskr.auth import login_required
 from flask import g
+
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
-
 import base64
-
 import io
 
 from .classes.preProcessClass import PreProcess
@@ -79,5 +81,7 @@ def getPlot(file_name, feature):
     pic_hash = base64.b64encode(pic_IObytes.read())
 
     pic_hash = pic_hash.decode("utf-8")
+
+    plt.close(fig)
 
     return pic_hash
