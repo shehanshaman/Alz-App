@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, session, g, url_for
+from flask import Blueprint
 from flask import render_template
 from flask import request
 
@@ -19,6 +19,7 @@ from .classes.featureSelectionClass import FeatureSelection
 
 from pathlib import Path
 import json
+from werkzeug.exceptions import abort
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
@@ -36,6 +37,9 @@ def index():
         return redirect('../fs/an/config')
 
     r = UserData.get_result_from_id(result_id)
+    if r is None:
+        return abort(403)
+
     user_id = r['user_id']
 
     filename = r['filename']
@@ -136,6 +140,9 @@ def final_result():
     result_id = request.args.get("id")
 
     r = UserData.get_result_from_id(result_id)
+    if r is None:
+        return abort(403)
+
     user_id = r['user_id']
 
     overlap = r['col_overlapped'].split(',')

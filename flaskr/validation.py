@@ -6,6 +6,7 @@ from flaskr.classes.preProcessClass import PreProcess
 from .auth import UserData, login_required
 
 from pathlib import Path
+from werkzeug.exceptions import abort
 
 import json
 
@@ -26,6 +27,8 @@ def index():
         return redirect('../fs/val/config')
 
     r = UserData.get_result_from_id(result_id)
+    if r is None:
+        return abort(403)
 
     col_overlapped = r['col_overlapped'].split(',')
     col_selected_method = r['col_selected_method'].split(',')

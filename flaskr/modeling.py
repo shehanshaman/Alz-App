@@ -10,6 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.svm import SVC
 import pickle
+import json
 
 from flaskr.auth import UserData, login_required
 from flaskr.classes.preProcessClass import PreProcess
@@ -43,17 +44,39 @@ def index():
 
     user_id = g.user['id']
 
-    path = USER_PATH / str(user_id)
-
-    list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
-
     classifier_list = ["svmLinear", "svmGaussian", "randomForest"]
 
     all_result = UserData.get_result_to_validation(user_id)
     all_result = [r['filename'] for r in all_result]
 
-    return render_template("modeling/index.html", available_list=list_names, classifier_list=classifier_list,
+    return render_template("modeling/index.html", available_list='', classifier_list=classifier_list,
                            state=s, accuracy=a, all_result=all_result, analysed_file = analysed_file)
+
+@bp.route("/files/", methods=["GET"])
+@login_required
+def get_files_for_modeling():
+    filename = request.args.get('filename')
+
+    user_id = g.user['id']
+
+    result = UserData.get_result_for_modeling(user_id, filename)
+
+    col_overlapped = result['col_overlapped'].split(',')
+    col_selected_method = result['col_selected_method'].split(',')
+
+    col = list(set(col_overlapped + col_selected_method))
+
+    path = USER_PATH / str(user_id)
+    list_names = []
+
+    for f in os.listdir(path):
+        file_path = path / f
+        if os.path.isfile(file_path):
+            df = PreProcess.getDF(file_path)
+            if ValidateUser.is_subset(df.columns.to_list(), col):
+                list_names.append(f)
+
+    return json.dumps(list_names)
 
 
 @bp.route("/", methods=["POST"])
