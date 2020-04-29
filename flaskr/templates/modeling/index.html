@@ -23,7 +23,7 @@
 
 <style type="text/css">
 
-    #result_view, #available_files_div{
+    #result_view, #available_files_div {
         display: none;
     }
 
@@ -72,11 +72,12 @@
             <div class="select-model">
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Analysed File : </h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">
+                            Analysed File : </h5>
                     </div>
                     <div class="col-sm-6">
-                         <h5 id="h4-head-2" class="card__title" style="text-align: center;font-family: monospace;"><b
-                                        id="selected_file">{{ analysed_file }}</b></h5>
+                        <h5 id="h4-head-2" class="card__title" style="text-align: center;font-family: monospace;"><b
+                                id="selected_file">{{ analysed_file }}</b></h5>
                     </div>
                 </div>
             </div>
@@ -210,7 +211,7 @@
 
     var tour = guide_main_call(tip_model_index, 'BL');
 
-    $('.close').click(function (){
+    $('.close').click(function () {
         $('.alert-dismissible').hide(0);
     });
 
@@ -235,29 +236,39 @@
                 $('#submit_button').prop('disabled', false);
             });
         });
-    </script>
-{% endif %}
 
-<script>
-     $('#available_result').change(function () {
-        $('#available_files').find('option').remove();
-        var result_file = $('#available_result').find(":selected").text();
+        $('#available_result').change(function () {
+            $('#available_files').find('option').remove();
+            var result_file = $('#available_result').find(":selected").text();
+            $.getJSON("./files/", {filename: result_file}, function (data, status) {
+                for (i = 0; i < data.length; i++) {
+                    $("#available_files").append(new Option(data[i], data[i]));
+                }
+                document.getElementById('available_files_div').style.display = "block";
+            });
+        });
+
+    </script>
+
+{% else %}
+
+    <script>
+        var result_file = '{{ analysed_file }}';
         $.getJSON("./files/", {filename: result_file}, function (data, status) {
             for (i = 0; i < data.length; i++) {
                 $("#available_files").append(new Option(data[i], data[i]));
             }
             document.getElementById('available_files_div').style.display = "block";
-
         });
+    </script>
 
-    });
-</script>
+{% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
 
 <script type="text/javascript">
 
-disable_prop = {{ g.dList }};
+    disable_prop = {{ g.dList }};
 
-disable_read_fun(disable_prop)
+    disable_read_fun(disable_prop)
 </script>
