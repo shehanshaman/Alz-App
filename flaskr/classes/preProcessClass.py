@@ -1,15 +1,10 @@
 import pandas as pd
-import numpy as np
-
-import pandas as pd
-from flask import jsonify, abort
-from sklearn import preprocessing
-
-from scipy import stats
 import statistics
-from scipy.stats import ttest_ind
-
 import json
+
+from flask import abort
+from sklearn import preprocessing
+from scipy.stats import ttest_ind
 
 class PreProcess:
 	
@@ -25,9 +20,10 @@ class PreProcess:
 		gene_card = gene_card.T
 		return gene_card
 
-	def getProbeDF(name):
-		probes = pd.read_csv(name)
-		probes = probes[['Gene Symbol', 'ID']]
+	def getProbeDF(file_path):
+		probes = pd.read_csv(file_path, usecols=[0, 10], header=0)
+		# probes = pd.read_csv(file_path)
+		# probes = probes[['Gene Symbol', 'ID']]
 		return probes
 
 	def mergeDF(df_path, probe_path):
@@ -79,6 +75,10 @@ class PreProcess:
 
 		if imputation_method == 'drop':
 			df_merge_rm_null = PreProcess.rmNullRows(df_merge)
+		elif imputation_method == 'avg':
+			df_merge = df_merge.dropna(axis=0, subset=['Gene Symbol'])
+			# df_merge_rm_null = df_merge.fillna(df_merge.mean())
+			df_merge_rm_null = df_merge.T.fillna(df_merge.mean(axis=1)).T
 
 		df_merge_rm_null_float = PreProcess.df2float(df_merge_rm_null)
 
@@ -151,10 +151,13 @@ class PreProcess:
 
 		return p_fold_df
 
-	def get_filtered_df_pvalue(p_fold_df, df_path, pvalue, foldChange):
+	def get_filtered_df_pvalue(p_fold_df, df_path, pvalue, foldChange, nskip = 1):
 		df = PreProcess.getDF(df_path)
-		df = df.set_index(["Gene Symbol"])
-		df = df.T
+		if nskip:
+			df = df.set_index(["Gene Symbol"])
+			df = df.T
+		elif 'class' in df.columns:
+			df = df.drop(['class'], axis=1)
 
 		p_fold_df['is_selected'] = (abs(p_fold_df['fold']) > foldChange) & (p_fold_df['pValues'] < pvalue)
 		sorted_dataframe = df.filter(df.columns[p_fold_df['is_selected']])

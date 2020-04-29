@@ -14,14 +14,16 @@ from .classes.preProcessClass import PreProcess
 from .classes.featureReductionClass import FeatureReduction
 
 import io
-
-import json
 import pandas as pd
 
 from flaskr.auth import login_required, UserData
 from flask import g
 
 import numpy as np
+
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
@@ -243,7 +245,11 @@ def get_reduce_features_from_pvalues():
     p_fold_df_path = USER_PATH / str(g.user["id"]) / 'tmp' / ('_p_fold_' + pre_process['file_name'])
     p_fold_df = PreProcess.getDF(p_fold_df_path)
 
-    df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['avg_symbol_df_path'], float(pvalue), float(fold))
+    if pre_process['avg_symbol_df_path']:
+        df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['avg_symbol_df_path'], float(pvalue), float(fold))
+    else:
+        df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['file_path'], float(pvalue), float(fold), 0)
+
     fr_df_path = USER_PATH / str(g.user["id"]) / 'tmp' /  ('fr_' + pre_process['file_name'])
     PreProcess.saveDF(df, fr_df_path)
 
@@ -410,6 +416,8 @@ def fig_to_b64encode(fig):
     pic_hash = base64.b64encode(pic_IObytes.read())
 
     pic_hash = pic_hash.decode("utf-8")
+
+    plt.close(fig)
 
     return pic_hash
 

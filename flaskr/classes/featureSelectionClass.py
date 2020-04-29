@@ -8,7 +8,7 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 
-from sklearn.model_selection import cross_val_score, cross_val_predict
+from sklearn.model_selection import cross_val_score
 from sklearn import svm
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
@@ -16,7 +16,6 @@ from sklearn import metrics
 
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import roc_curve, auc
-from sklearn.metrics import roc_auc_score
 
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
