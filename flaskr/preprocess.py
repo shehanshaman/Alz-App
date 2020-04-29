@@ -271,6 +271,7 @@ def get_reduce_features_from_pvalues():
     cls_id, cls_name = FeatureReduction.get_best_cls(classification_result_df)
 
     classification_result_df = classification_result_df.drop(['avg'], axis=1)
+    classification_result_df = classification_result_df.drop(['Training'], axis=1)
     classification_result_df = classification_result_df.sort_values(by=['Testing'], ascending=False)
 
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
