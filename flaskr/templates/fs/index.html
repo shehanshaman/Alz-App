@@ -216,7 +216,17 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endif %}
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
 <script>
+
+    file_name = '{{ filename }}';
+    Swal.fire({
+      icon: 'success',
+      title: 'Pre-processing has finished',
+      text: 'Your latest pre-processed file name is "' + file_name + '"',
+    });
+
     function myFunction() {
         var val = document.getElementById("listTo");
         var arr = val.getElementsByClassName('active');
@@ -321,7 +331,8 @@
 
 <script type="text/javascript">
 
-disable_prop = {{ g.dList }};
+    disable_prop = {{ g.dList }};
 
-disable_read_fun(disable_prop)
+    disable_read_fun(disable_prop);
+
 </script>
