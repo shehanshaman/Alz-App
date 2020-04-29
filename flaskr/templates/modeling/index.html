@@ -23,7 +23,7 @@
 
 <style type="text/css">
 
-    #result_view {
+    #result_view, #available_files_div{
         display: none;
     }
 
@@ -131,7 +131,7 @@
 
         <div class="where-you-like" style="margin-top: 5px;border: 2px solid #26a69a;padding: 30px;">
 
-            <div class="row" style="margin-top: 40px;">
+            <div class="row" style="margin-top: 40px;" id="available_files_div">
                 <div class="col-sm-6">
                     <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
                         File :</h5>
@@ -221,7 +221,7 @@
             $.get("./results/", {filename: filename}, function (data, status) {
                 data = data.split("|");
                 methods = data['4'].split(',');
-                methods.pop()
+                methods.pop();
                 $('#overlapped_features_div').text(data[8]);
                 $('#extracted_features_div').text(data[9]);
                 $('#selected_method').text(data[10] + " Extracted Features");
@@ -233,6 +233,21 @@
         });
     </script>
 {% endif %}
+
+<script>
+     $('#available_result').change(function () {
+        $('#available_files').find('option').remove();
+        var result_file = $('#available_result').find(":selected").text();
+        $.getJSON("./files/", {filename: result_file}, function (data, status) {
+            for (i = 0; i < data.length; i++) {
+                $("#available_files").append(new Option(data[i], data[i]));
+            }
+            document.getElementById('available_files_div').style.display = "block";
+
+        });
+
+    });
+</script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
 
