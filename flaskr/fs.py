@@ -2,6 +2,10 @@ import os
 from flask import Blueprint, session, g, flash, url_for
 from flask import render_template
 from flask import request
+
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 from flask import redirect
 
@@ -226,5 +230,7 @@ def fig_to_b64encode(fig):
     pic_hash = base64.b64encode(pic_IObytes.read())
 
     pic_hash = pic_hash.decode("utf-8")
+
+    plt.close(fig)
 
     return pic_hash

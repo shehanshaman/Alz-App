@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-from flask import Blueprint, session, request, url_for
+from flask import Blueprint, request, url_for
 from flask import render_template
 from flask import redirect
 from flask import g
