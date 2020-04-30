@@ -1,20 +1,19 @@
-import os
-
-import pandas as pd
-from flask import Blueprint, session, g, request
+from flask import Blueprint, request
 from flask import render_template
 from flask import redirect
 from flaskr.classes.featureSelectionClass import FeatureSelection
-
 from flaskr.classes.preProcessClass import PreProcess
-from flaskr.classes.validation import ValidateUser
 from .auth import UserData, login_required
 
 from pathlib import Path
+from werkzeug.exceptions import abort
+
+import json
 
 ROOT_PATH = Path.cwd()
 GENE_CARD = ROOT_PATH / "flaskr" / "upload" / "Validation" / "GeneCards-SearchResults.pkl"
 VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
+GENE_INFO_PATH = ROOT_PATH / "flaskr" / "upload" / "gene_info"
 
 bp = Blueprint("validation", __name__, url_prefix="/val")
 
@@ -28,6 +27,8 @@ def index():
         return redirect('../fs/val/config')
 
     r = UserData.get_result_from_id(result_id)
+    if r is None:
+        return abort(403)
 
     col_overlapped = r['col_overlapped'].split(',')
     col_selected_method = r['col_selected_method'].split(',')
@@ -62,9 +63,20 @@ def index():
 
     venn_data = FeatureSelection.venn_diagram_data(col_m1_gene_card, col_m2_gene_card, col_m3_gene_card)
 
+    #Get gene info
+    gene_info_path = GENE_INFO_PATH / "Homo_sapiens.gene_info"
+    unique_genes = list(set(col_m1 + col_m2 + col_m3))
+
+    gene_info_df = FeatureSelection.get_selected_gene_info(gene_info_path, unique_genes)
+    gene_info = gene_info_df.to_json(orient='index')
+
+    gene_info = json.loads(gene_info)
+
+    gene_name_list = list(gene_info_df.index)
+
     return render_template("validation/index.html", col_gene_card = col_gene_card, method_names = method_names,
                            tables=[dis_gene_card.head().to_html(classes='data')], venn_data=venn_data, filename=filename,
-                           result_id = result_id)
+                           result_id = result_id, gene_info = gene_info, gene_name_list = gene_name_list)
 
 def get_overlap_features(col1, col2):
     t = list(set(col1) & set(col2))

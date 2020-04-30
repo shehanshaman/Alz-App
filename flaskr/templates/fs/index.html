@@ -44,7 +44,7 @@
     ul.stepper .step.active:before, ul.stepper .step.done:before {
         background-color: #26a69a;
     }
-    
+
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
@@ -187,7 +187,7 @@
 
 <div class="loader-div" style="display: none;">
     <div id="loader" class="center-load"></div>
-    <h5 style="margin-top: 19%;text-align: center;color: #26a69a; margin-bottom: 10%;">PROCESSING RESULTS</h5>
+    <h5 style="text-align: center;color: #26a69a;">PROCESSING RESULTS</h5>
 </div>
 
 {% include 'guide_footer.html' %}
@@ -216,7 +216,22 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endif %}
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+{% if filename %}
+    <script>
+        file_name = '{{ filename }}';
+        Swal.fire({
+          icon: 'success',
+          title: 'Pre-processing has finished',
+          text: 'Your latest pre-processed file name is "' + file_name + '"',
+        });
+    </script>
+
+{% endif %}
+
 <script>
+
     function myFunction() {
         var val = document.getElementById("listTo");
         var arr = val.getElementsByClassName('active');
@@ -321,7 +336,8 @@
 
 <script type="text/javascript">
 
-disable_prop = {{ g.dList }};
+    disable_prop = {{ g.dList }};
 
-disable_read_fun(disable_prop)
+    disable_read_fun(disable_prop);
+
 </script>

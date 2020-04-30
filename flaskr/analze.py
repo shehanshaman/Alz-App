@@ -1,7 +1,11 @@
 import os
-from flask import Blueprint, session, g, url_for
+from flask import Blueprint
 from flask import render_template
 from flask import request
+
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 from flask import redirect
@@ -14,10 +18,13 @@ from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
 from pathlib import Path
+import json
+from werkzeug.exceptions import abort
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
+GENE_INFO_PATH = ROOT_PATH / "flaskr" / "upload" / "gene_info"
 
 bp = Blueprint("analyze", __name__, url_prefix="/an")
 
@@ -30,6 +37,9 @@ def index():
         return redirect('../fs/an/config')
 
     r = UserData.get_result_from_id(result_id)
+    if r is None:
+        return abort(403)
+
     user_id = r['user_id']
 
     filename = r['filename']
@@ -130,6 +140,9 @@ def final_result():
     result_id = request.args.get("id")
 
     r = UserData.get_result_from_id(result_id)
+    if r is None:
+        return abort(403)
+
     user_id = r['user_id']
 
     overlap = r['col_overlapped'].split(',')
@@ -154,12 +167,24 @@ def final_result():
     r_len = [len(col_selected_method), len(dis_gene)]
     r_col = [col_selected_method, dis_gene]
 
+    #Get gene info
+    gene_info_path = GENE_INFO_PATH / "Homo_sapiens.gene_info"
+    unique_genes = list(set(col_selected_method + dis_gene))
+
+    gene_info_df = FeatureSelection.get_selected_gene_info(gene_info_path, unique_genes)
+    gene_info = gene_info_df.to_json(orient='index')
+
+    gene_info = json.loads(gene_info)
+
+    gene_name_list = list(gene_info_df.index)
+
+
     validation_file_list = [f for f in os.listdir(VALIDATION_PATH) if os.path.isfile((VALIDATION_PATH / f))]
 
     return render_template("analyze/final_result.html", sel_roc=selected_roc_pic_hash, table_r1 = [r1_df.to_html(classes='data')],
                            title_r1 = r1_df.head().columns.values, all_roc=all_roc_pic_hash, table_r2 = [r2_df.to_html(classes='data')],
                            title_r2 = r2_df.head().columns.values, method = selected_method, len = r_len, col = r_col,
-                           filename = filename, result_id=result_id, validation_file_list= validation_file_list)
+                           filename = filename, result_id=result_id, validation_file_list= validation_file_list,  gene_info = gene_info, gene_name_list = gene_name_list)
 
 def checkList(list1, list2):
     for word in list2:
@@ -338,5 +363,7 @@ def fig_to_b64encode(fig):
     pic_hash = base64.b64encode(pic_IObytes.read())
 
     pic_hash = pic_hash.decode("utf-8")
+
+    plt.close(fig)
 
     return pic_hash

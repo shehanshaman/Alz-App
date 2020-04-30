@@ -2,6 +2,11 @@ import os
 from flask import Blueprint, session, g, flash, url_for
 from flask import render_template
 from flask import request
+from werkzeug.exceptions import abort
+
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 from flask import redirect
 
@@ -13,10 +18,12 @@ from .classes.preProcessClass import PreProcess
 from .classes.featureSelectionClass import FeatureSelection
 
 from pathlib import Path
+import json
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
+GENE_INFO_PATH = ROOT_PATH / "flaskr" / "upload" / "gene_info"
 
 bp = Blueprint("fs", __name__, url_prefix="/fs")
 
@@ -41,6 +48,8 @@ def index():
     else:
 
         pre_process = UserData.get_preprocess_from_id(pre_process_id)
+        if pre_process is None:
+            return abort(403)
         file_name = "GeNet_" + pre_process['file_name']
 
         return render_template("fs/index.html", list_names=None, filename=file_name, pre_process_id = pre_process_id)
@@ -125,7 +134,19 @@ def get_val():
 
     venn_data = FeatureSelection.venn_diagram_data(col_m1, col_m2, col_m3)
 
-    return render_template("fs/result.html", image_data=img64, methods=fs_methods, columns=col, venn_data=venn_data, result_id=result_id)
+    # Get gene info
+    gene_info_path = GENE_INFO_PATH / "Homo_sapiens.gene_info"
+    unique_genes = list(set(col_m1 + col_m2 + col_m3))
+    
+    gene_info_df = FeatureSelection.get_selected_gene_info(gene_info_path, unique_genes)
+    gene_info = gene_info_df.to_json(orient='index')
+
+    gene_info = json.loads(gene_info)
+
+    gene_name_list = list(gene_info_df.index)
+
+    return render_template("fs/result.html", image_data=img64, methods=fs_methods, columns=col, venn_data=venn_data,
+                           result_id=result_id, gene_info = gene_info, gene_name_list = gene_name_list)
 
 
 @bp.route("/<method>/config")
@@ -212,5 +233,7 @@ def fig_to_b64encode(fig):
     pic_hash = base64.b64encode(pic_IObytes.read())
 
     pic_hash = pic_hash.decode("utf-8")
+
+    plt.close(fig)
 
     return pic_hash

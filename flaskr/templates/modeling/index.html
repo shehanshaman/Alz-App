@@ -23,7 +23,7 @@
 
 <style type="text/css">
 
-    #result_view {
+    #result_view, #available_files_div {
         display: none;
     }
 
@@ -48,7 +48,7 @@
         {% if state == '1' %}
 
             <div class="alert alert-success alert-dismissible fade in">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
                 <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b>
                 <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
             </div>
@@ -56,13 +56,13 @@
         {% elif state == '0' %}
 
             <div class="alert alert-danger alert-dismissible fade in">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
                 <strong>Danger!</strong> Something went wrong.
             </div>
 
         {% elif state == '2' %}
             <div class="alert alert-danger alert-dismissible fade in">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
                 <strong>Danger!</strong> You don't have configured model.
             </div>
 
@@ -72,11 +72,12 @@
             <div class="select-model">
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Analysed File : </h5>
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">
+                            Analysed File : </h5>
                     </div>
                     <div class="col-sm-6">
-                         <h5 id="h4-head-2" class="card__title" style="text-align: center;font-family: monospace;"><b
-                                        id="selected_file">{{ analysed_file }}</b></h5>
+                        <h5 id="h4-head-2" class="card__title" style="text-align: center;font-family: monospace;"><b
+                                id="selected_file">{{ analysed_file }}</b></h5>
                     </div>
                 </div>
             </div>
@@ -131,7 +132,7 @@
 
         <div class="where-you-like" style="margin-top: 5px;border: 2px solid #26a69a;padding: 30px;">
 
-            <div class="row" style="margin-top: 40px;">
+            <div class="row" style="margin-top: 40px;" id="available_files_div">
                 <div class="col-sm-6">
                     <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
                         File :</h5>
@@ -210,6 +211,10 @@
 
     var tour = guide_main_call(tip_model_index, 'BL');
 
+    $('.close').click(function () {
+        $('.alert-dismissible').hide(0);
+    });
+
 </script>
 
 {% if analysed_file == None %}
@@ -221,7 +226,7 @@
             $.get("./results/", {filename: filename}, function (data, status) {
                 data = data.split("|");
                 methods = data['4'].split(',');
-                methods.pop()
+                methods.pop();
                 $('#overlapped_features_div').text(data[8]);
                 $('#extracted_features_div').text(data[9]);
                 $('#selected_method').text(data[10] + " Extracted Features");
@@ -231,14 +236,39 @@
                 $('#submit_button').prop('disabled', false);
             });
         });
+
+        $('#available_result').change(function () {
+            $('#available_files').find('option').remove();
+            var result_file = $('#available_result').find(":selected").text();
+            $.getJSON("./files/", {filename: result_file}, function (data, status) {
+                for (i = 0; i < data.length; i++) {
+                    $("#available_files").append(new Option(data[i], data[i]));
+                }
+                document.getElementById('available_files_div').style.display = "block";
+            });
+        });
+
     </script>
+
+{% else %}
+
+    <script>
+        var result_file = '{{ analysed_file }}';
+        $.getJSON("./files/", {filename: result_file}, function (data, status) {
+            for (i = 0; i < data.length; i++) {
+                $("#available_files").append(new Option(data[i], data[i]));
+            }
+            document.getElementById('available_files_div').style.display = "block";
+        });
+    </script>
+
 {% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
 
 <script type="text/javascript">
 
-disable_prop = {{ g.dList }};
+    disable_prop = {{ g.dList }};
 
-disable_read_fun(disable_prop)
+    disable_read_fun(disable_prop)
 </script>

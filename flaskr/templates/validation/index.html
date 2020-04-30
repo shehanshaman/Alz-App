@@ -8,10 +8,11 @@
     <title>GeNet | Validation</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!-- Materializecss compiled and minified CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
@@ -61,7 +62,26 @@
     ul.stepper .step.active:before, ul.stepper .step.done:before {
         background-color: #26a69a;
     }
-    
+
+#exTab3 .tab-content {
+  color : white;
+  background-color: #163b37;
+  padding : 15px 15px;
+}
+
+#exTab3 .tab-content tr:hover {
+  color : #26a69a;
+}
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+    color: #fff;
+    background-color: #26a69a;
+}
+
+.nav>li>a {
+    color: #26a69a;
+    margin-bottom: 10px;    
+}
+
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
@@ -274,43 +294,123 @@
     </div>
 </div>
 
+<p style="display: none;" class="popup_gene_list_div T_gene_list">{{ venn_data[0][1] }}</p>
+<p style="display: none;" class="popup_gene_list_div L_gene_list">{{ venn_data[0][0] }}</p>
+<p style="display: none;" class="popup_gene_list_div R_gene_list">{{ venn_data[0][2] }}</p>
+<p style="display: none;" class="popup_gene_list_div M_gene_list">{{ venn_data[2] }}</p>
+<p style="display: none;" class="popup_gene_list_div TL_gene_list">{{ venn_data[1][0] }}</p>
+<p style="display: none;" class="popup_gene_list_div TR_gene_list">{{ venn_data[1][1] }}</p>
+<p style="display: none;" class="popup_gene_list_div LR_gene_list">{{ venn_data[1][2] }}</p>
+<p style="display: none;" class="gene_ex_list_div">{{ gene_name_list }}</p>
+
 <!-- The Modal -->
 <div id="popup_gene_list" class="modal_pop" style="display: none;">
     <div class="modal-content-1">
         <div class="row">
-            <span class="close">&times;</span>
+            <div class="col-sm-10">
+                <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }}
+                    method</p>
+                <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }}
+                    method</p>
+                <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }}
+                    method</p>
+                <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }}
+                    + {{ method_names[1] }} + {{ method_names[2] }}</p>
+                <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }}
+                    and {{ method_names[1] }}</p>
+                <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }}
+                    and {{ method_names[2] }}</p>
+                <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }}
+                    and {{ method_names[2] }}</p>               
+            </div>
+            <div class="col-sm-2">
+                <span class="close">&times;</span>
+            </div>
         </div>
         <div class="row">
-            <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }}
-                method</p>
-            <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }}
-                method</p>
-            <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }}
-                method</p>
-            <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }}
-                + {{ method_names[1] }} + {{ method_names[2] }}</p>
-            <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }}
-                and {{ method_names[1] }}</p>
-            <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }}
-                and {{ method_names[2] }}</p>
-            <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }}
-                and {{ method_names[2] }}</p>
-        </div>
-        <div class="row">
-            <p style="display: none;" class="popup_gene_list_div T_gene">{{ venn_data[0][1] }}</p>
-            <p style="display: none;" class="popup_gene_list_div L_gene">{{ venn_data[0][0] }}</p>
-            <p style="display: none;" class="popup_gene_list_div R_gene">{{ venn_data[0][2] }}</p>
-            <p style="display: none;" class="popup_gene_list_div M_gene">{{ venn_data[2] }}</p>
-            <p style="display: none;" class="popup_gene_list_div TL_gene">{{ venn_data[1][0] }}</p>
-            <p style="display: none;" class="popup_gene_list_div TR_gene">{{ venn_data[1][1] }}</p>
-            <p style="display: none;" class="popup_gene_list_div LR_gene">{{ venn_data[1][2] }}</p>
+            <div id="exTab3"> 
+                <ul class="nav nav-pills gene_list_div" style="background-color: #26a69a00;">
+                </ul>
+
+                <div class="tab-content clearfix">
+                    <div class="gene_not_have">
+                        <p>Sorry this gene details currently not available..</p>
+                    </div>
+                    <div class="tab-pane active" id="1b">
+                        <table class="table table-bordered table-hover gene_have">
+                          <tbody>
+                            <tr>
+                              <td>Full name</td>
+                              <td id="td_name"></td>
+                            </tr>                            
+                            <tr>
+                              <td>Feature type</td>
+                              <td id="td_type"></td>
+                            </tr>
+                            <tr>
+                              <td>Gene ID</td>
+                              <td id="td_id"></td>
+                            </tr>
+                            <tr>
+                              <td>Locus Tag</td>
+                              <td id="td_locus_tag"></td>
+                            </tr>
+                            <tr>
+                              <td>Modification date</td>
+                              <td id="td_date"></td>
+                            </tr>
+                            <tr>
+                              <td>Nomenclature status</td>
+                              <td id="td_nomenclature_status"></td>
+                            </tr>
+                            <tr>
+                              <td>Description</td>
+                              <td id="td_description"></td>
+                            </tr>
+                            <tr>
+                              <td>Synonyms</td>
+                              <td id="td_synonyms"></td>
+                            </tr>
+                            <tr>
+                              <td>Chromosome</td>
+                              <td id="td_chromosome"></td>
+                            </tr>
+                            <tr>
+                              <td>dbXrefs</td>
+                              <td id="td_dbXrefs"></td>
+                            </tr>
+                            <tr>
+                              <td>Other designations</td>
+                              <td id="td_designations"></td>
+                            </tr>
+                            <tr>
+                              <td>Type of gene</td>
+                              <td id="td_gene_type"></td>
+                            </tr>                                                    
+                          </tbody>
+                      </table>
+                      <div class="gene_have more_details">
+                          <button class="btn" style="float: right; border-radius: 5px; background-color: #f8f8f8;"><a style="color: #163b37" target="_blank">more details</a></button>
+                      </div>                      
+                    </div>
+                    <div class="tab-pane" id="2b">
+                        <h3>We use the class nav-pills instead of nav-tabs which automatically creates a background color for the tab</h3>
+                    </div>
+                    <div class="tab-pane" id="3b">
+                        <h3>We applied clearfix to the tab-content to rid of the gap between the tab and the content</h3>
+                    </div>
+                    <div class="tab-pane" id="4b">
+                        <h3>We use css to change the background color of the content to be equal to the tab</h3>
+                    </div>
+                </div>
+            </div>            
         </div>
     </div>
 </div>
 
 <div class="loader-div" style="display: none;">
     <div id="loader" class="center-load"></div>
-    <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">MODELING</h5>
+    <h5 style="text-align: center;color: #26a69a;">MODELING</h5>
 </div>
 
 {% include 'guide_footer.html' %}
@@ -397,4 +497,13 @@
 disable_prop = {{ g.dList }};
 
 disable_read_fun(disable_prop)
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+
+<script type="text/javascript">
+
+gene_list_post = '{{ gene_info | tojson}}';
+gene_describe_json = JSON.parse(gene_list_post);
+
 </script>
