@@ -73,12 +73,14 @@
         }
     }
 
+
+    .loader-div{
+        margin-top: 12%;
+        margin-bottom: 12%;
+    }
+    
+
     .center-load {
-        position: absolute;
-        top: -25%;
-        bottom: 0;
-        left: 0;
-        right: 0;
         margin: auto;
     }
         
