@@ -11,25 +11,25 @@ body::-webkit-scrollbar-thumb {
   outline: 1px solid slategrey;
 }
 
-        .result_content {
-            border-color: #26a69a;
-            border-style: ridge;
-            padding: 15px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-radius: 16px;
-        }
+.result_content {
+    border-color: #26a69a;
+    border-style: ridge;
+    padding: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+}
         
-        .container-1 {
-            position: relative;
-            text-align: center;
-        }
+.container-1 {
+    position: relative;
+    text-align: center;
+}
 
-        .top-right {
-            position: absolute;
-            top: 8px;
-            right: 5px;
-        }
+.top-right {
+    position: absolute;
+    top: 8px;
+    right: 5px;
+}
         
     .modal_pop {
         position: fixed;
