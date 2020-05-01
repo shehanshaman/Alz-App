@@ -376,15 +376,15 @@ def download_sample_file():
 @bp.route('/sample/upload/')
 @login_required
 def upload_sample_file():
-    src = UPLOAD_FOLDER / "sample" / 'GSE5281-GPL570.zip'
+    src = UPLOAD_FOLDER / "sample" / 'GSE5281-GPL570.pkl'
     dst = USER_PATH / str(g.user['id']) / 'GSE5281-GPL570.pkl'
-    # copyfile(src, dst)
+    copyfile(src, dst)
 
-    df = pd.read_csv(src)
-    df = df.set_index(["ID"])
-    df.index.name = None
-    df.columns.name = "ID"
-    df.to_pickle(dst)
+    # df = pd.read_csv(src)
+    # df = df.set_index(["ID"])
+    # df.index.name = None
+    # df.columns.name = "ID"
+    # df.to_pickle(dst)
 
     return redirect('/pre')
 
