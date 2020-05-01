@@ -1,23 +1,35 @@
+body::-webkit-scrollbar {
+  width: 0.5em;
+}
+ 
+body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+ 
+body::-webkit-scrollbar-thumb {
+  background-color: #26a69a;
+  outline: 1px solid slategrey;
+}
 
-        .result_content {
-            border-color: #26a69a;
-            border-style: ridge;
-            padding: 15px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-radius: 16px;
-        }
+.result_content {
+    border-color: #26a69a;
+    border-style: ridge;
+    padding: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+}
         
-        .container-1 {
-            position: relative;
-            text-align: center;
-        }
+.container-1 {
+    position: relative;
+    text-align: center;
+}
 
-        .top-right {
-            position: absolute;
-            top: 8px;
-            right: 5px;
-        }
+.top-right {
+    position: absolute;
+    top: 8px;
+    right: 5px;
+}
         
     .modal_pop {
         position: fixed;
@@ -73,12 +85,14 @@
         }
     }
 
+
+    .loader-div{
+        margin-top: 12%;
+        margin-bottom: 12%;
+    }
+    
+
     .center-load {
-        position: absolute;
-        top: -25%;
-        bottom: 0;
-        left: 0;
-        right: 0;
         margin: auto;
     }
         
