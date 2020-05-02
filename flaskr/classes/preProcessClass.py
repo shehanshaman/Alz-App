@@ -34,10 +34,6 @@ class PreProcess:
 			probes = PreProcess.getProbeDF(probe_path)
 			df_merge = pd.merge(df_T, probes, on='ID')
 
-			cols = df_merge.columns.tolist()
-			cols = cols[-1:] + cols[:-1]
-			df_merge = df_merge[cols]
-
 			return df_merge
 		else:
 			return None
@@ -47,8 +43,11 @@ class PreProcess:
 		return df_merge_rm_null
 
 	def df2float(df_merge_rm_null):
-		# df_merge_rm_null_float = df_merge_rm_null.iloc[:,1:df_merge_rm_null.columns.shape[0]-1].astype(float)
-		df_merge_rm_null_float = df_merge_rm_null.drop(["Gene Symbol", "ID"], 1).astype(float)
+		if 'Gene Symbol' in df_merge_rm_null.columns:
+			df_merge_rm_null_float = df_merge_rm_null.drop(["Gene Symbol"], 1).astype(float)
+		else:
+			df_merge_rm_null_float = df_merge_rm_null.drop(["ID"], 1).astype(float)
+
 		return df_merge_rm_null_float
 
 	def dfNormSKlearn(df_merge_rm_null_float, df_merge_rm_null):
@@ -60,7 +59,10 @@ class PreProcess:
 		df_symbol = pd.DataFrame()
 		df_val = pd.DataFrame()
 
-		df_symbol['Gene Symbol'] = df_merge_rm_null['Gene Symbol']
+		if 'Gene Symbol' in df_merge_rm_null.columns:
+			df_symbol['Gene Symbol'] = df_merge_rm_null['Gene Symbol']
+		else:
+			df_symbol['ID'] = df_merge_rm_null['ID']
 
 		df_val[df_merge_rm_null_float.columns]  = df_norm
 
@@ -76,7 +78,7 @@ class PreProcess:
 		if imputation_method == 'drop':
 			df_merge_rm_null = PreProcess.rmNullRows(df_merge)
 		elif imputation_method == 'avg':
-			df_merge = df_merge.dropna(axis=0, subset=['Gene Symbol'])
+			# df_merge = df_merge.dropna(axis=0, subset=['Gene Symbol'])
 			# df_merge_rm_null = df_merge.fillna(df_merge.mean())
 			df_merge_rm_null = df_merge.T.fillna(df_merge.mean(axis=1)).T
 
@@ -115,7 +117,10 @@ class PreProcess:
 
 	def set_class_to_df(df_path, class_path):
 		df = PreProcess.getDF(df_path)
-		df = df.set_index(["Gene Symbol"])
+		if 'Gene Symbol' in df.columns:
+			df = df.set_index(["Gene Symbol"])
+		else:
+			df = df.set_index(["ID"])
 		df = df.T
 
 		df_class = PreProcess.getDF(class_path)
@@ -154,7 +159,10 @@ class PreProcess:
 	def get_filtered_df_pvalue(p_fold_df, df_path, pvalue, foldChange, nskip = 1):
 		df = PreProcess.getDF(df_path)
 		if nskip:
-			df = df.set_index(["Gene Symbol"])
+			if 'Gene Symbol' in df.columns:
+				df = df.set_index(["Gene Symbol"])
+			else:
+				df = df.set_index(["ID"])
 			df = df.T
 		elif 'class' in df.columns:
 			df = df.drop(['class'], axis=1)
@@ -172,25 +180,44 @@ class PreProcess:
 
 	#DF details to json
 	def get_df_details(df, y):
-		d = df.drop(["ID", "Gene Symbol"], axis=1)
 
-		x = '{ "Number of features":' + str(d.shape[0]) + ', "Number of samples": ' + str(d.shape[1]) + ', "min":' + str(
-			round(d.min().min())) + ', "max":' + str(round(d.max().max())) + '}'
-		z = json.loads(x)
+		if "Gene Symbol" in df.columns:
+			d = df.drop(["ID", "Gene Symbol"], axis=1)
 
-		x = {"Number of unique Gene Symbols": str(df['Gene Symbol'].nunique()),
-			 "Number of null values in Gene Symbols": str(df['Gene Symbol'].isnull().sum()),
-			 "Number of null values in data": str(d.isnull().sum().sum())}
-		z.update(x)
+			x = '{ "Number of features":' + str(d.shape[0]) + ', "Number of samples": ' + str(d.shape[1]) + ', "min":' + str(
+				round(d.min().min())) + ', "max":' + str(round(d.max().max())) + '}'
+			z = json.loads(x)
 
-		s = y.value_counts()
-		x = {"Positive": str(s[1]), "Negative": str(s[0])}
-		z.update(x)
+			x = {"Number of unique Gene Symbols": str(df['Gene Symbol'].nunique()),
+				 "Number of null values in Gene Symbols": str(df['Gene Symbol'].isnull().sum()),
+				 "Number of null values in data": str(d.isnull().sum().sum())}
+			z.update(x)
+
+		else:
+			d = df
+
+			x = '{ "Number of features":' + str(d.shape[0]) + ', "Number of samples": ' + str(
+				d.shape[1]) + ', "min":' + str(
+				round(d.min().min())) + ', "max":' + str(round(d.max().max())) + '}'
+			z = json.loads(x)
+
+			x = {"Number of unique Gene Symbols": "-",
+				 "Number of null values in Gene Symbols": "-",
+				 "Number of null values in data": str(d.isnull().sum().sum())}
+			z.update(x)
+
+		if y:
+			s = y.value_counts()
+			x = {"Positive": str(s[1]), "Negative": str(s[0])}
+			z.update(x)
 
 		return z
 
 	def add_details_json(z, df, r):
-		d = df.drop(["Gene Symbol"], axis=1)
+		if 'Gene Symbol' in df.columns:
+			d = df.drop(["Gene Symbol"], axis=1)
+		else:
+			d = df.drop(["ID"], axis=1)
 		x = '{ "Number of features":' + str(d.shape[0]) + ', "Number of samples": ' + str(d.shape[1]) + ', "min":' + str(round(d.min().min(), 3)) + ', "max":' + str(round(d.max().max(),3)) + '}'
 		new_z = json.loads(x)
 		w = {r: new_z}

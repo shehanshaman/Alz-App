@@ -81,6 +81,15 @@ def view_merge_df():
             flash("Couldn't merge dataset with annotation table")
             return redirect('/pre')
 
+        y = PreProcess.getDF(file_path)
+        y = y['class']
+        data = PreProcess.get_df_details(df, y)
+
+        session[file_name] = data
+
+        df = df.dropna(axis=0, subset=['Gene Symbol'])
+        df = PreProcess.probe2Symbol(df, int(col_sel_method))
+
         merge_name = "merge_" + file_name
         merge_path = USER_PATH / str(user_id) / "tmp" / merge_name
         merge_path_str = merge_path.as_posix()
@@ -89,12 +98,6 @@ def view_merge_df():
         #save data to the Database
         UserData.add_preprocess(user_id, file_name, file_path.as_posix(), annotation_table, col_sel_method, merge_path_str)
         pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
-
-        y = PreProcess.getDF(file_path)
-        y = y['class']
-        data = PreProcess.get_df_details(df, y)
-
-        session[file_name] = data
 
         if len(df.columns) > 100:
             df_view = df.iloc[:, 0:100].head(15)
@@ -142,16 +145,23 @@ def norm():
             return redirect('/pre')
 
         user_id = pre_process['user_id']
-        col_sel_method = pre_process['col_sel_method']
 
         UserData.update_preprocess(user_id, pre_process['file_name'], 'scaling', norm_method)
         UserData.update_preprocess(user_id, pre_process['file_name'], 'imputation', null_rmv)
 
-        merge_df_path = Path(pre_process['merge_df_path'])
+        if pre_process['merge_df_path'] == '':
+            merge_df_path = Path(pre_process['file_path'])
+            df = PreProcess.getDF(merge_df_path)
+            df = df.drop(['class'], axis=1)
+            df = df.T
+            df = df.reset_index()
 
-        df = PreProcess.step3(PreProcess.getDF(merge_df_path), norm_method, null_rmv) #symbol_df
+        else:
+            merge_df_path = Path(pre_process['merge_df_path'])
+            df = PreProcess.getDF(merge_df_path)
 
-        df = PreProcess.probe2Symbol(df, int(col_sel_method))
+        df = PreProcess.step3(df, norm_method, null_rmv) #symbol_df
+
         avg_symbol_name = "avg_symbol_" + pre_process['file_name']
         avg_symbol_df_path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
 
@@ -175,7 +185,7 @@ def norm():
     return redirect('/pre')
 
 
-# skip method Step 1 to Step 5
+# skip method Step 1 to Step 3
 @bp.route("/skip-step-1", methods=['GET'])
 @login_required
 def skip_df_mapping():
@@ -192,7 +202,12 @@ def skip_df_mapping():
     UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '', '')
     pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
 
-    return redirect(url_for('preprocess.feature_reduction') + "?id=" + str(pre_process_id))
+    df = PreProcess.getDF(file_path)
+    data = PreProcess.get_df_details(df, None)
+
+    session[file_name] = data
+
+    return redirect(url_for('preprocess.scaling_imputation') + "?id=" + str(pre_process_id))
 
 # step 5
 @bp.route("/step-5", methods=['GET'])
@@ -210,6 +225,7 @@ def feature_reduction():
 
         p_fold_df = PreProcess.get_pvalue_fold_df(avg_symbol_df_path, file_path)
     else:
+        #From step1
         file_path = Path(pre_process['file_path'])
         p_fold_df = PreProcess.get_pvalue_fold_df(file_path)
 
@@ -248,6 +264,7 @@ def get_reduce_features_from_pvalues():
     if pre_process['avg_symbol_df_path']:
         df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['avg_symbol_df_path'], float(pvalue), float(fold))
     else:
+        #From step1 skip
         df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['file_path'], float(pvalue), float(fold), 0)
 
     fr_df_path = USER_PATH / str(g.user["id"]) / 'tmp' /  ('fr_' + pre_process['file_name'])
