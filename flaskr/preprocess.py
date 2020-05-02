@@ -82,8 +82,15 @@ def view_merge_df():
 
             if file and allowed_file(file.filename):
                 annotation_table = secure_filename(file.filename)
+                path_csv = ANNOTATION_TBL / "other" / (str(user_id) + "_" + annotation_table)
 
-                path_csv = ANNOTATION_TBL / "other" / ( str(user_id) + "_" + annotation_table )
+                #Delete same file uploaded
+                result = UserData.get_user_file_by_file_name(user_id, annotation_table)
+                if result:
+                    UserData.delete_user_file_by_file_name(user_id, annotation_table)
+                    if os.path.exists(path_csv):
+                        os.remove(path_csv)
+
                 file.save(path_csv)
 
             else:

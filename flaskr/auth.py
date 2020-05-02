@@ -702,10 +702,25 @@ class UserData:
         ).fetchall()
         return result
 
+    def get_user_file_by_file_name(user_id, file_name):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM file WHERE user_id = ? AND file_name = ?", (user_id, file_name),
+        ).fetchall()
+        return result
+
     def delete_user_file(user_id):
         db = get_db()
         db.execute(
             "DELETE FROM file WHERE user_id = ?",
             (user_id),
+        )
+        db.commit()
+
+    def delete_user_file_by_file_name(user_id, file_name):
+        db = get_db()
+        db.execute(
+            "DELETE FROM file WHERE user_id = ? AND file_name = ?",
+            (user_id, file_name),
         )
         db.commit()
