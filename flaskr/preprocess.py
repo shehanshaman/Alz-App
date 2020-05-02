@@ -25,6 +25,7 @@ import matplotlib
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
+from werkzeug.exceptions import abort
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
@@ -50,14 +51,28 @@ def index():
 
     list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
-    for filename in os.listdir(ANNOTATION_TBL):
-        annotation_list.append(filename)
+    annotation_db = UserData.get_annotation_file(g.user["id"])
+    for f in annotation_db:
+        annotation_list.append([f['file_name'], f['path']])
 
     if len(list_names) == 0:
         flash("Error: You don't have uploaded file.")
 
     return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list)
 
+
+def check_annotation(file_path):
+    if os.path.exists(file_path):
+        anno = pd.read_csv(file_path)
+        col = anno.columns
+
+        if "ID" in col and "Gene Symbol" in col and len(col) == 2:
+            return True
+
+        else:
+            os.remove(file_path)
+
+    return False
 
 # step 2 | Session > Database
 @bp.route("/step-2", methods=['POST'])
@@ -75,13 +90,47 @@ def view_merge_df():
         #Delete query if file already pre-processed
         UserData.delete_preprocess_file(user_id, file_name)
 
-        #load df
-        df = PreProcess.mergeDF(file_path, ANNOTATION_TBL / annotation_table)
+        if annotation_table == 'other':
+            file = request.files['chooseFile']
+
+            if file and allowed_file(file.filename):
+
+                annotation_table = secure_filename(file.filename)
+                path_csv = ANNOTATION_TBL / "other" / (str(user_id) + "_" + annotation_table)
+
+                #Delete same file uploaded
+                result = UserData.get_user_file_by_file_name(user_id, annotation_table)
+
+                file.save(path_csv)
+
+                # check file
+                if not check_annotation(path_csv):
+                    flash("Wrong Format: Gene Symbol and/or ID column not found in annotation table.")
+                    return redirect('/pre')
+
+            else:
+                return abort(403)
+
+            df = PreProcess.mergeDF(file_path, path_csv)
+
+            if result is None:
+                view_path = "/AnnotationTbls/other/" + str(user_id) + "_" + annotation_table
+                UserData.add_file(annotation_table, annotation_table.split('.')[1], view_path, user_id, 1, 0)
+
+        else:
+            # load df
+            annotation_table_path = UPLOAD_FOLDER.as_posix() + annotation_table
+            df = PreProcess.mergeDF(file_path, Path(annotation_table_path))
+
         if df is None:
             flash("Couldn't merge dataset with annotation table")
             return redirect('/pre')
 
         y = PreProcess.getDF(file_path)
+        if 'class' not in y.columns:
+            flash("Wrong Format: class column not found.")
+            return redirect('/pre')
+
         y = y['class']
         data = PreProcess.get_df_details(df, y)
 

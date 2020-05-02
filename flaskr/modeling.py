@@ -108,8 +108,9 @@ def predict():
     list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
     annotation_list = []
-    for filename in os.listdir(ANNOTATION_TBL):
-        annotation_list.append(filename)
+    annotation_db = UserData.get_annotation_file(g.user["id"])
+    for f in annotation_db:
+        annotation_list.append([f['file_name'], f['path']])
 
     r = UserData.get_model(user_id)
 
@@ -145,7 +146,8 @@ def predict_results():
 
     if is_map == "true":
         annotation_file = request.form["anno_tbl"]
-        df = PreProcess.mergeDF(df_path, ANNOTATION_TBL / annotation_file)
+        annotation_table_path = UPLOAD_FOLDER.as_posix() + annotation_file
+        df = PreProcess.mergeDF(df_path, Path(annotation_table_path) )
         df = PreProcess.step3(df, 'sklearn', 'drop')
         df = PreProcess.probe2Symbol(df)
         df = df.set_index(['Gene Symbol'])
