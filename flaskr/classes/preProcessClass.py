@@ -206,7 +206,7 @@ class PreProcess:
 				 "Number of null values in data": str(d.isnull().sum().sum())}
 			z.update(x)
 
-		if y:
+		if y is not None:
 			s = y.value_counts()
 			x = {"Positive": str(s[1]), "Negative": str(s[0])}
 			z.update(x)
