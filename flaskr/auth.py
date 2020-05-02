@@ -680,4 +680,47 @@ class UserData:
             disable_list[6] = 1  
         return disable_list
 
+    def add_file(file_name, file_type, path, user_id, is_annotation, has_class):
+        db = get_db()
+        db.execute(
+            "INSERT INTO file (file_name, file_type, path, user_id, is_annotation, has_class) VALUES (?, ?, ?, ?, ?, ?)",
+            (file_name, file_type, path, user_id, is_annotation, has_class),
+        )
+        db.commit()
 
+    def get_annotation_file(user_id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM file WHERE user_id IN (0, ?) AND is_annotation = 1", (user_id,)
+        ).fetchall()
+        return result
+
+    def get_user_file(user_id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM file WHERE user_id = ?", (user_id,)
+        ).fetchall()
+        return result
+
+    def get_user_file_by_file_name(user_id, file_name):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM file WHERE user_id = ? AND file_name = ?", (user_id, file_name),
+        ).fetchone()
+        return result
+
+    def delete_user_file(user_id):
+        db = get_db()
+        db.execute(
+            "DELETE FROM file WHERE user_id = ?",
+            (user_id),
+        )
+        db.commit()
+
+    def delete_user_file_by_file_name(user_id, file_name):
+        db = get_db()
+        db.execute(
+            "DELETE FROM file WHERE user_id = ? AND file_name = ?",
+            (user_id, file_name),
+        )
+        db.commit()

@@ -3,6 +3,7 @@ from flask import render_template
 import os
 
 from flask import Blueprint, request
+import numpy as np
 
 from flaskr.auth import login_required
 from flask import g
@@ -26,12 +27,10 @@ bp = Blueprint("visualization", __name__, url_prefix="/vis")
 @bp.route("/")
 @login_required
 def index():
-    list_names = []
+
     path = USER_PATH / str(g.user["id"])
     if os.path.exists(path):
-        for filename in os.listdir(path):
-            list_names.append(filename)
-        list_names.remove("tmp")
+        list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
         session['files'] = list_names
         return render_template("visualization/index.html", available_list=list_names)
@@ -64,15 +63,27 @@ def getPlot(file_name, feature):
     path = USER_PATH / str(g.user["id"]) / file_name
     df = PreProcess.getDF(path)
 
-    fig, axs = plt.subplots(2, 2, figsize=(10, 8))
-    axs[0, 0].scatter(df['class'], df[feature], edgecolors='r')
-    axs[0, 0].set_title('Scatter plot')
-    axs[0, 1].hist(df[feature])
-    axs[0, 1].set_title('Histogram')
-    df.boxplot(column=[feature], ax=axs[1, 0])
-    axs[1, 0].set_title('Boxplot')
-    df.boxplot(column=[feature], by='class', ax=axs[1, 1])
-    axs[1, 1].set_title('Boxplot group by class')
+    np.warnings.filterwarnings('ignore')
+
+    if 'class' in df.columns:
+
+        fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+        axs[0, 0].scatter(df['class'], df[feature], edgecolors='r')
+        axs[0, 0].set_title('Scatter plot')
+        axs[0, 1].hist(df[feature])
+        axs[0, 1].set_title('Histogram')
+        df.boxplot(column=[feature], ax=axs[1, 0])
+        axs[1, 0].set_title('Boxplot')
+        df.boxplot(column=[feature], by='class', ax=axs[1, 1])
+        axs[1, 1].set_title('Boxplot group by class')
+
+    else:
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 8))
+        ax1.hist(df[feature])
+        ax1.set_title('Histogram')
+        df.boxplot(column=[feature], ax=ax2)
+        ax2.set_title('Boxplot')
+
     fig.suptitle(file_name + ": " + feature, fontsize=16)
 
     pic_IObytes = io.BytesIO()

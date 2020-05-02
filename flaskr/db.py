@@ -1,6 +1,7 @@
 import sqlite3
 
 import click
+import os
 from flask import current_app
 from flask import g
 from flask.cli import with_appcontext
@@ -8,6 +9,7 @@ from pathlib import Path
 
 ROOT_PATH = Path.cwd()
 MAIL_PATH = ROOT_PATH / "flaskr" / "mail"
+ANNOTATION_TBL = ROOT_PATH / "flaskr" / "upload" / "AnnotationTbls"
 
 def get_db():
     """Connect to the application's configured database. The connection
@@ -47,7 +49,19 @@ def init_db_command():
     """Clear existing data and create new tables."""
     init_db()
     add_mail_templates()
+    add_annotation()
     click.echo("Initialized the database.")
+
+def add_annotation():
+    file_names = [f for f in os.listdir(ANNOTATION_TBL) if os.path.isfile((ANNOTATION_TBL / f))]
+    db = get_db()
+    for file in file_names:
+        path = "/AnnotationTbls/" + file
+        db.execute(
+            "INSERT INTO file (file_name, file_type, path, user_id, is_annotation, has_class) VALUES (?, ?, ?, ?, ?, ?)",
+            (file, file.split('.')[1], path, 0, 1, 0),
+        )
+    db.commit()
 
 def add_mail_templates():
     db = get_db()
@@ -57,9 +71,9 @@ def add_mail_templates():
         f = open(file_name, "r")
         message = f.read()
         db.execute(
-        "INSERT INTO mail_template (subject, message) VALUES (?, ?)",
-        (subject, message),
-    )
+            "INSERT INTO mail_template (subject, message) VALUES (?, ?)",
+            (subject, message),
+        )
     db.commit()
 
 def init_app(app):

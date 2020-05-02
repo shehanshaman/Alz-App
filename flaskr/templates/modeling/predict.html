@@ -160,7 +160,7 @@
                                             <div class="md-form" id="anno_tbl_div">
                                                 <select style="font-family: monospace;" class="form-control" id="anno_tbl" name="anno_tbl" style="margin-bottom: 20px;">
                                                     {% for name in annotation_list %}
-                                                        <option value="{{ name }}">{{ name }}</option>
+                                                        <option value="{{ name[1] }}">{{ name[0] }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
