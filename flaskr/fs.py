@@ -74,8 +74,9 @@ def get_val():
     file_to_open = USER_PATH / str(user_id) / filename
     df = PreProcess.getDF(file_to_open)
 
-    if not check_df_to_fs(df):
-        flash("Error: Couldn't process because having lot of features,  Start from pre-processing and reduce features.")
+    msg = check_df_to_fs(df)
+    if msg:
+        flash(msg)
         return redirect(url_for('fs.index'))
 
     selected_col = [None] * 3
@@ -192,10 +193,14 @@ def check_df_to_fs(df):
     #Add new things
 
     if shape[1] > 2000:
-        return False
+        msg = "Error: Couldn't process because having lot of features,  Start from pre-processing and reduce features."
+        return msg
 
-    else:
-        return True
+    if 'class' not in df.columns:
+        msg = "Wrong Format: class column not found."
+        return msg
+
+    return None
 
 
 def get_summary_plot(results_testing, results_training):

@@ -16,8 +16,9 @@ class PreProcess:
 		return abort(404)
 	
 	def getDF(name):
-		df = pd.read_pickle(name)
-		return df
+		if PreProcess.check_file_exist(name):
+			df = pd.read_pickle(name)
+			return df
 
 	def saveDF(df, path):
 		df.to_pickle(path)

@@ -103,6 +103,10 @@ def view_merge_df():
             return redirect('/pre')
 
         y = PreProcess.getDF(file_path)
+        if 'class' not in y.columns:
+            flash("Wrong Format: class column not found.")
+            return redirect('/pre')
+
         y = y['class']
         data = PreProcess.get_df_details(df, y)
 
