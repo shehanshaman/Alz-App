@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import statistics
 import json
@@ -7,6 +9,11 @@ from sklearn import preprocessing
 from scipy.stats import ttest_ind
 
 class PreProcess:
+
+	def check_file_exist(file_path):
+		if os.path.exists(file_path):
+			return True
+		return abort(404)
 	
 	def getDF(name):
 		df = pd.read_pickle(name)
@@ -21,7 +28,8 @@ class PreProcess:
 		return gene_card
 
 	def getProbeDF(file_path):
-		probes = pd.read_csv(file_path, usecols=[0, 10], header=0)
+		if PreProcess.check_file_exist(file_path):
+			probes = pd.read_csv(file_path, usecols=[0, 1], header=0)
 		# probes = pd.read_csv(file_path)
 		# probes = probes[['Gene Symbol', 'ID']]
 		return probes

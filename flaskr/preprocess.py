@@ -25,6 +25,7 @@ import matplotlib
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
+from werkzeug.exceptions import abort
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
@@ -50,8 +51,9 @@ def index():
 
     list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
-    for filename in os.listdir(ANNOTATION_TBL):
-        annotation_list.append(filename)
+    annotation_db = UserData.get_annotation_file(g.user["id"])
+    for f in annotation_db:
+        annotation_list.append([f['file_name'], f['path']])
 
     if len(list_names) == 0:
         flash("Error: You don't have uploaded file.")
@@ -75,8 +77,27 @@ def view_merge_df():
         #Delete query if file already pre-processed
         UserData.delete_preprocess_file(user_id, file_name)
 
-        #load df
-        df = PreProcess.mergeDF(file_path, ANNOTATION_TBL / annotation_table)
+        if annotation_table == 'other':
+            file = request.files['chooseFile']
+
+            if file and allowed_file(file.filename):
+                annotation_table = secure_filename(file.filename)
+
+                path_csv = ANNOTATION_TBL / "other" / ( str(user_id) + "_" + annotation_table )
+                file.save(path_csv)
+
+            else:
+                return abort(403)
+
+            df = PreProcess.mergeDF(file_path, path_csv)
+            view_path = "/AnnotationTbls/other/" + str(user_id) + "_" + annotation_table
+            UserData.add_file(annotation_table, annotation_table.split('.')[1], view_path, user_id, 1, 0)
+
+        else:
+            # load df
+            annotation_table_path = UPLOAD_FOLDER.as_posix() + annotation_table
+            df = PreProcess.mergeDF(file_path, Path(annotation_table_path))
+
         if df is None:
             flash("Couldn't merge dataset with annotation table")
             return redirect('/pre')
