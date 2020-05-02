@@ -61,6 +61,19 @@ def index():
     return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list)
 
 
+def check_annotation(file_path):
+    if os.path.exists(file_path):
+        anno = pd.read_csv(file_path)
+        col = anno.columns
+
+        if "ID" in col and "Gene Symbol" in col and len(col) == 2:
+            return True
+
+        else:
+            os.remove(file_path)
+
+    return False
+
 # step 2 | Session > Database
 @bp.route("/step-2", methods=['POST'])
 @login_required
@@ -81,24 +94,28 @@ def view_merge_df():
             file = request.files['chooseFile']
 
             if file and allowed_file(file.filename):
+
                 annotation_table = secure_filename(file.filename)
                 path_csv = ANNOTATION_TBL / "other" / (str(user_id) + "_" + annotation_table)
 
                 #Delete same file uploaded
                 result = UserData.get_user_file_by_file_name(user_id, annotation_table)
-                if result:
-                    UserData.delete_user_file_by_file_name(user_id, annotation_table)
-                    if os.path.exists(path_csv):
-                        os.remove(path_csv)
 
                 file.save(path_csv)
+
+                # check file
+                if not check_annotation(path_csv):
+                    flash("Wrong Format: Gene Symbol and/or ID column not found in annotation table.")
+                    return redirect('/pre')
 
             else:
                 return abort(403)
 
             df = PreProcess.mergeDF(file_path, path_csv)
-            view_path = "/AnnotationTbls/other/" + str(user_id) + "_" + annotation_table
-            UserData.add_file(annotation_table, annotation_table.split('.')[1], view_path, user_id, 1, 0)
+
+            if result is None:
+                view_path = "/AnnotationTbls/other/" + str(user_id) + "_" + annotation_table
+                UserData.add_file(annotation_table, annotation_table.split('.')[1], view_path, user_id, 1, 0)
 
         else:
             # load df

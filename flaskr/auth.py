@@ -706,7 +706,7 @@ class UserData:
         db = get_db()
         result = db.execute(
             "SELECT * FROM file WHERE user_id = ? AND file_name = ?", (user_id, file_name),
-        ).fetchall()
+        ).fetchone()
         return result
 
     def delete_user_file(user_id):
