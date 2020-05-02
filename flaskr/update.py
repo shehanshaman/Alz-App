@@ -60,8 +60,18 @@ def delete_user_account():
     UserData.remove_user(id)
     dir_path = USER_PATH / str(id)
     delete_folder(dir_path)
+
+    delete_user_file(id)
+
     return '1'
 
+def delete_user_file(user_id):
+    files = UserData.get_user_file(user_id)
+
+    for f in files:
+        path = Path(f['path'])
+        if os.path.exists( path ):
+            os.remove(path)
 
 def delete_folder(dir_path):
     try:
