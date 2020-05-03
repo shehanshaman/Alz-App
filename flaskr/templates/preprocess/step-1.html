@@ -39,6 +39,10 @@
         background-color: #26a69a;
     }
 
+    #other_annotation{
+        display: none;
+    }
+
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
@@ -126,12 +130,27 @@
                         <div class="md-form">
                             <select style="font-family: monospace;" class="form-control" id="anno_tbl" name="anno_tbl">
                                 {% for name in annotation_list %}
-                                    <option value="{{ name }}">{{ name }}</option>
+                                    <option value="{{ name[1] }}">{{ name[0] }}</option>
                                 {% endfor %}
+                                <option value="other">Other</option>
                             </select>
                         </div>
                     </div>
                 </div>
+
+                <div class="row" style="margin-top: 40px;" id="other_annotation">
+                    <div class="col-sm-6"></div>
+                    <div class="col-sm-6">
+                        <div class="file-upload">
+                            <div class="file-select" style="font-family: monospace;">
+                                <div class="file-select-button" id="fileName">Choose File</div>
+                                <div class="file-select-name" id="noFile">No file choosen...</div>
+                                <input type="file" name="chooseFile" id="chooseFile" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="row" style="margin-top: 40px;">
                     <div class="col-sm-6">
@@ -210,6 +229,28 @@
 
 <script>
 
+    //csv read
+    $('#chooseFile').bind('change', function () {
+        var filename = $("#chooseFile").val();
+        if (/^\s*$/.test(filename)) {
+            $(".file-upload").removeClass('active');
+            $("#noFile").text("No file chosen...");
+        }
+        else {
+            $(".file-upload").addClass('active');
+            $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+        }
+    });
+
+    $('#anno_tbl').change(function () {
+        if (anno_tbl.value == 'other') {
+            document.getElementById('other_annotation').style.display = "block";
+        }else{
+            document.getElementById('other_annotation').style.display = "none";
+        }
+    });
+
+
     $(".view_button").click(function () {
         var conceptName = $('#available_files').find(":selected").text();
 
@@ -263,7 +304,7 @@
 
 <script type="text/javascript">
 
-disable_prop = {{ g.dList }};
+    disable_prop = {{ g.dList }};
 
-disable_read_fun(disable_prop)
+    disable_read_fun(disable_prop)
 </script>

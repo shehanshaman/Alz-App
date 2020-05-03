@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS mail_template;
 DROP TABLE IF EXISTS verify;
 DROP TABLE IF EXISTS classifiers;
 DROP TABLE IF EXISTS preprocess;
+DROP TABLE IF EXISTS file;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -106,6 +107,19 @@ INSERT INTO classifiers (id, clf_name, short_name) VALUES
   (4, 'SVM + Gaussian kernel', 'GK'),
   (5, 'SVM + linear kernel', 'LK'),
   (6, 'Random Forest', 'RF');
+
+
+CREATE TABLE file (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  file_name VARCHAR(100) NOT NULL ,
+  file_type VARCHAR(10) NOT NULL,
+  path TEXT NOT NULL,
+  user_id int NOT NULL,
+  is_annotation int NOT NULL,
+  has_class int NOT NULL
+
+--   FOREIGN KEY (user_id) REFERENCES user (id)
+);
 
 INSERT INTO user (username, given_name, password, last_login, is_verified, is_admin) VALUES ('user', 'user', 'pbkdf2:sha256:150000$LuBMEbIc$f3e7ec7e9061bad12ffb9193a8740722cc96be7e193c520e3aa551dc43c78b7c', '2020-04-10 17:24:15.484058', 3, 1);
 -- INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2,
