@@ -138,6 +138,11 @@
 
 </div>
 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="text-align: center;color: #26a69a;">DELETING</h5>
+</div>
+
 {% include 'footer.html' %}
 
 </body>
@@ -195,6 +200,10 @@
     });
 
     $("#delete_account").click(function () {
+        $('.container').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        
         $.get("/update/user/delete/", {id: '{{ g.user['id'] }}'}, function (data, status) {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
