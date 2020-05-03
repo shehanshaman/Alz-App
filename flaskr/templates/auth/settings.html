@@ -203,7 +203,7 @@
         $('.container').hide(0);
         $('.loader-div').show(0);
         $('.main-body').click(false);
-        
+
         $.get("/update/user/delete/", {id: '{{ g.user['id'] }}'}, function (data, status) {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
