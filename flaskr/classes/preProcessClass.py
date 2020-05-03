@@ -208,10 +208,7 @@ class PreProcess:
 		return z
 
 	def add_details_json(z, df, r):
-		# if 'Gene Symbol' in df.columns:
-		# 	d = df.drop(["Gene Symbol"], axis=1)
-		# else:
-		# 	d = df.drop(["ID"], axis=1)
+
 		d = df.drop([df.columns[0]], axis=1)
 
 		x = '{ "Number of features":' + str(d.shape[0]) + ', "Number of samples": ' + str(d.shape[1]) + ', "min":' + str(round(d.min().min(), 3)) + ', "max":' + str(round(d.max().max(),3)) + '}'
