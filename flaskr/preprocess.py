@@ -29,7 +29,7 @@ from werkzeug.exceptions import abort
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
-ALLOWED_EXTENSIONS = set(['pkl', 'csv'])
+ALLOWED_EXTENSIONS = set(['pkl', 'csv', 'plk'])
 
 from pathlib import Path
 
@@ -455,10 +455,10 @@ def upload_sample_file():
     return redirect('/pre')
 
 def csv2pkl(path_csv, path_pkl):
-    df_save = pd.read_csv(path_csv)
-    df_save = df_save.set_index(["ID"])
+    df_save = pd.read_csv(path_csv, index_col=0)
+    # df_save = df_save.set_index(["ID"])
+    df_save.columns.name = df_save.index.name
     df_save.index.name = None
-    df_save.columns.name = "ID"
     df_save.to_pickle(path_pkl)
     return True
 
