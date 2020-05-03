@@ -61,19 +61,6 @@ def index():
     return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list)
 
 
-def check_annotation(file_path):
-    if os.path.exists(file_path):
-        anno = pd.read_csv(file_path)
-        col = anno.columns
-
-        if "ID" in col and "Gene Symbol" in col and len(col) == 2:
-            return True
-
-        else:
-            os.remove(file_path)
-
-    return False
-
 # step 2 | Session > Database
 @bp.route("/step-2", methods=['POST'])
 @login_required
@@ -101,10 +88,13 @@ def view_merge_df():
                 #Delete same file uploaded
                 result = UserData.get_user_file_by_file_name(user_id, annotation_table)
 
-                file.save(path_csv)
+                annotation_df = pd.read_csv(file)
+                col = annotation_df.columns
 
-                # check file
-                if not check_annotation(path_csv):
+                if "ID" in col and "Gene Symbol" in col and len(col) == 2:
+                    annotation_df.to_csv(path_csv, index=False)
+
+                else:
                     flash("Wrong Format: Gene Symbol and/or ID column not found in annotation table.")
                     return redirect('/pre')
 
@@ -415,15 +405,11 @@ def upload_file():
     if file and allowed_file(file.filename):
 
         filename = secure_filename(file.filename)
-        path_csv = USER_PATH / str(g.user["id"]) / filename
-        file.save(path_csv)
-
         name = filename.split('.')
 
         if name[1] == 'csv':
             path_pkl = USER_PATH / str(g.user["id"]) / (name[0] + '.pkl')
-            csv2pkl(path_csv, path_pkl)
-            os.remove(path_csv)
+            csv2pkl(file, path_pkl)
 
         return redirect('/pre')
     else:
@@ -454,9 +440,8 @@ def upload_sample_file():
 
     return redirect('/pre')
 
-def csv2pkl(path_csv, path_pkl):
-    df_save = pd.read_csv(path_csv, index_col=0)
-    # df_save = df_save.set_index(["ID"])
+def csv2pkl(file, path_pkl):
+    df_save = pd.read_csv(file, index_col=0)
     df_save.columns.name = df_save.index.name
     df_save.index.name = None
     df_save.to_pickle(path_pkl)
