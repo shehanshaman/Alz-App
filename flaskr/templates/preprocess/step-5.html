@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Pre-process</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+</head>
+
+<style>
+    #result_div {
+        visibility: hidden;
+    }
+
+    #progress_bar {
+        visibility: hidden;
+    }
+
+    .volcano_plot > img {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+        width: 100%;
+    }
+
+    ul.stepper .step.active:before, ul.stepper .step.done:before {
+        background-color: #26a69a;
+    }
+        
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-step5">
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li id="side_step_nav_preprocess_icon" class="step active">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li id="side_step_nav_feature_icon" class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li id="side_step_nav_analize_icon" class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li id="side_step_nav_validation_icon" class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+        <form id="main-form-div-step5" method="post" action="/pre/step-6/" enctype="multipart/form-data">
+            <div class="step-content">
+                <div class="row">
+                    <h3 id="h3-head-4" class="card__title"
+                        style="text-align: center;color: #26a69a;font-family: monospace;">STEP 5 : FEATURE
+                        REDUCTION</h3>
+                </div>
+
+                <div class="row">
+                    <div id="img_results_div" class="col-sm-8">
+                        <div class="container-1">
+                            <div class="volcano_plot">
+                                <img id="fold-p" src="data:image/png;base64,{{ volcano_hash }}" alt="volcano">
+                            </div>
+                            <div class="top-right">
+                                <button type="button"
+                                        style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                        class="use-download-fold" value="">
+                                    <i class="fas fa-file-download fa-2x"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="row md-form">
+                            <label><b>Fold Range</b></label>
+                            <div id="fold_range_div" class="dropdown">
+                                <select style="font-family: monospace;" class="form-control dropdown-menu-fold-range"
+                                        id="fold-range" name="fold-range">
+                                    {% for name in data_array[1] %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row md-form">
+                            <label><b>P-value</b></label>
+                            <div id="p_value_range_div" class="dropdown">
+                                <select style="font-family: monospace;" class="form-control dropdown-menu-p-value"
+                                        id="p-value" name="p-value">
+                                    {% for name in data_array[0] %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="id" name="id" value="{{ pre_process_id }}"/>
+
+                        <div class="row progress" id="progress_bar">
+                            <div class="indeterminate"></div>
+                        </div>
+
+                        <div id="calculate_feature_div" class="row" style="margin-top: 30px;">
+                            <button id="btn-calculate" type="button" class="btn btn-primary btn-lg btn-block"><p
+                                    class="btn-page-2-p">CALCULATE</p></button>
+                        </div>
+                        <div class="row" id="result_div">
+                            <div class="row" style="margin-top: 30px;">
+                                <h5 id="h4-head-2" class="card__title"
+                                    style="text-align: center;font-family: monospace;">SELECTED NUMBER OF
+                                    GENES</h5>
+                            </div>
+
+                            <div class="row">
+                                <h5 id="h4-head-2" class="card__title"
+                                    style="text-align: center;font-family: monospace;"><b
+                                        id="selected_features_count"></b></h5>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button id="btn-submit-step-5" class="waves-effect waves-dark btn next-step step-5-click">CONTINUE
+                    </button>
+                    <button class="waves-effect waves-dark btn-flat previous-step" onclick="goBack()" type="button">BACK</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="text-align: center;color: #26a69a;">PROCESSING</h5>
+</div>
+
+{% include 'guide_footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script>
+
+    $('#btn-calculate').click(function () {
+        var fold_range = $('#fold-range').find(":selected").text();
+        var p_value = $('#p-value').find(":selected").text();
+        var id = document.getElementById("id").value;
+
+        document.getElementById("progress_bar").style.visibility = "visible";
+        document.getElementById("btn-calculate").disabled = true;
+        $.get("./fr/pf/", {pvalue: p_value, foldChange: fold_range, id: id}, function (data, status) {
+            document.getElementById("result_div").style.visibility = "visible";
+            document.getElementById("selected_features_count").innerHTML = data;
+            document.getElementById("progress_bar").style.visibility = "hidden";
+            document.getElementById("btn-calculate").disabled = false;
+        });
+        $('#tourControls').hide(0);
+    });
+
+    $('#btn-submit-step-5').click(function () {
+        $('.main-div-step5').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-step5").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
+    });
+
+    $(".use-download-fold").click(function () {
+        var img = document.getElementById('fold-p');
+        var url = img.src;
+
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "fold-p-test.png";
+        a.click();
+
+        $('#tourControls').hide(0);
+    });
+
+    document.getElementById('p-value').value= "0.005";
+    document.getElementById("fold-range").selectedIndex = "10";
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
+<script>
+
+    var tour = guide_main_call(tip_step_5, 'BL');
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
+</script>

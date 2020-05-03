@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Pre-Process</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+</head>
+
+<style type="text/css">
+
+    ul.stepper .step.active:before, ul.stepper .step.done:before {
+        background-color: #26a69a;
+    }
+        
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-step4">
+
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li id="side_step_nav_preprocess_icon" class="step active">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li id="side_step_nav_feature_icon" class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li id="side_step_nav_analize_icon" class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li id="side_step_nav_validation_icon" class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step-content">
+            <div class="row">
+                <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 4 : DATASET AFTER
+                    MAPPING</h3>
+                <div style="float: right">
+                    <button style="color: #26a69a;border: none;"
+                            class="use-download" value="{{ file_name }}">
+                        <i class="fas fa-file-download fa-2x"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <table>
+                        <tr>
+                            <td>Number of features</td>
+                            <td>{{ details["r1"]["Number of features"] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Number of samples</td>
+                            <td>{{ details["r1"]["Number of samples"] }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-sm-6">
+                    <table>
+                        <tr>
+                            <td>Minimum value</td>
+                            <td>{{ details["r1"]["min"] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Maximum value</td>
+                            <td>{{ details["r1"]["max"] }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div style="overflow: auto;">
+                    {% for table in tablesstep4 %}
+                        {{ table|safe }}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="line-hr">
+
+        <form id="main-form-div-step4" method="get" action="/pre/step-5" enctype="multipart/form-data">
+
+            <input type="hidden" id="id" name="id" value="{{ pre_process_id }}"/>
+
+            <div class="step-actions">
+                <button id="btn-submit-step-4" class="waves-effect waves-dark btn next-step step-6-click">
+                    <a>CONTINUE</a></button>
+                <button class="waves-effect waves-dark btn-flat previous-step" type="button"><a
+                        href="{{ url_for('preprocess.scaling_imputation') }}?id={{ pre_process_id }}">BACK</a></button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load" style="top: -14%;"></div>
+    <h5 style="text-align: center;color: #26a69a;">PROCESSING</h5>
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-step-4').click(function () {
+        $('.main-div-step4').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-step4").submit();
+    });
+
+</script>
+
+<script>
+    $(".use-download").click(function () {
+        var $file_name = $('.use-download').val();
+
+        var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=1";
+        window.open(url, '_blank');
+
+    });
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
+</script>

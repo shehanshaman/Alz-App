@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Pre-Process</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+</head>
+
+<style>
+    .fs_plot > img {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+        width: 100%;
+    }
+
+    ul.stepper .step.active:before, ul.stepper .step.done:before {
+        background-color: #26a69a;
+    }
+
+</style>
+
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-step6">
+    <div class="card-content">
+
+        <ul data-method="GET" class="stepper linear">
+            <li id="side_step_nav_preprocess_icon" class="step active">
+                <a href="{{ url_for('preprocess.index') }}">
+                    <div class="step-title waves-effect waves-dark">Pre-processing</div>
+                </a>
+            </li>
+            <li id="side_step_nav_feature_icon" class="step">
+                <a href="{{ url_for('fs.index') }}">
+                    <div class="step-title waves-effect waves-dark">Feature selection</div>
+                </a>
+            </li>
+            <li id="side_step_nav_analize_icon" class="step">
+                <a href="{{ url_for('analyze.index') }}">
+                    <div class="step-title waves-effect waves-dark">Analysis</div>
+                </a>
+            </li>
+            <li id="side_step_nav_validation_icon" class="step">
+                <a href="{{ url_for('validation.index') }}">
+                    <div class="step-title waves-effect waves-dark">Validation</div>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+        <form id="main-form-div-step6" method="post" action="/pre/fr/save/" enctype="multipart/form-data">
+            <div class="step-content">
+                <div class="row">
+                    <h3 id="h3-head-5" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 6 : FEATURE REDUCTION</h3>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div id="img_results_div" class="container-1">
+                            <div class="fs_plot">
+                                <img id="univarient_img" src="data:image/png;base64,{{ fs_fig_hash }}" alt="FR">
+                            </div>
+                            <div class="top-right">
+                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                            class="use-download-univarient_img" value="">
+                                    <i class="fas fa-file-download fa-2x"></i>
+                                </button>
+                            </div>
+                        </div>                         
+                    </div>
+
+                    <div class=" col-sm-4" style="margin-top: 5px;">
+
+                        <div class="row">
+                            <div class="row">
+                                <label><b>Classification Results</b></label>
+                            </div>
+
+                            <div id="table_results_div" class="row">
+                                {% for table in tables %}
+                                    {{ table|safe }}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="row">
+                                <label><b>Selected Classifiers</b></label>
+                            </div>
+                            <div id="highest_accuracy_clf" class="row">
+                                <span>{{ cls_names }}</span>
+                            </div>
+                        </div>
+
+                        <div class="row md-form">
+                            <label><b>SELECT FEATURE COUNT</b></label>
+                            <div id="select_num_features_div" class="dropdown">
+                                <select style="font-family: monospace;" class="form-control dropdown-menu-p-value" id="features_count"
+                                        name="features_count">
+                                    {% for name in split_array %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <input type="hidden" id="id" name="id" value="{{ pre_process_id }}"/>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="line-hr">
+
+                <div class="step-actions">
+                    <button id="btn-submit-step-6" class="waves-effect waves-dark btn next-step step-6-click">CONTINUE</button>
+                    <button class="waves-effect waves-dark btn-flat previous-step" type="button">
+                        <a href="{{ url_for('preprocess.feature_reduction') }}?id={{ pre_process_id }}">BACK</a>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div> 
+        <h5 style="text-align: center;color: #26a69a;">REDUCING FEATURES</h5>       
+    </div> 
+
+{% include 'guide_footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript">
+
+    $('#btn-submit-step-6').click(function () {
+        $('.main-div-step6').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form-div-step6").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
+    });
+
+    $(".use-download-univarient_img").click(function () {
+        var img = document.getElementById('univarient_img');
+        var url = img.src;
+
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "univarient_score.png";
+        a.click();
+        $('#tourControls').hide(0);
+    });
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
+
+<script>
+
+    var tour = guide_main_call(tip_step_6, 'BL');
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop);
+
+</script>

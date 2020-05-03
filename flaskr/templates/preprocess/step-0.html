@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Upload</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+</head>
+
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<!-- The Modal_pop -->
+<div id="upload_page_pop" class="modal_pop" style="display: none;">
+
+    <!-- Modal_pop content -->
+    <div class="modal_pop_content">
+        <span class="close close_pop">&times;</span>
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="tip_class_text" style="font-size: 15px; font-family: Monospace; text-align: justify;">tip</p>
+            </div>
+        </div>
+        <div class="row">
+            <center>
+                <div class="col-sm-12">
+                    <img style="width: 100%;" class="tip_img_div"
+                         src="{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}" alt="slide">
+                </div>
+            </center>
+        </div>
+        <div class="row" style="position: absolute; bottom: 5%; left: 43%;">
+            <div class="col-sm-6">
+                <button class="prv_btn_class btn info" style="float: right;">PREV</button>
+            </div>
+            <div class="col-sm-6">
+                <button class="next_btn_class btn info" style="float: left;">NEXT</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 50px; margin-bottom: 50px;">
+
+    <form id="main-form-div" method="post" action="/pre/upload/" enctype="multipart/form-data">
+
+        <div class="step-content row">
+            <div class="head-word">
+                <h3 id="h3-head-1" class="card__title" style="text-align: center;color:#26a69a;font-family: monospace;">
+                    UPLOAD YOUR DATA SET</h3>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
+
+            <div class="row">
+                <center>
+                    <div class="col-sm-6">
+                        <button type="button" class="info_data_set"
+                                style="color: #a6268e;border: none; background-color: #f3f6f9;">
+                            <i class="fas fa-info-circle fa-2x"></i>
+                        </button>
+                        <h5 id="h3-head-1" class="card__title"
+                            style="text-align: center;display: inline;font-family: monospace;">DATA SET :</h5>
+                    </div>
+                </center>
+                <div class="col-sm-6">
+                    <div class="file-upload">
+                        <div class="file-select" style="font-family: monospace;">
+                            <div class="file-select-button" id="fileName">Choose File</div>
+                            <div class="file-select-name" id="noFile">No file choosen...</div>
+                            <input type="file" name="chooseFile" id="chooseFile" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <a href="{{ url_for('preprocess.upload_sample_file') }}">
+                        <button type="button" class="btn sample_select_btn"
+                                style="background-color: #4c78af;float: right;">SELECT SAMPLE FILE
+                        </button>
+                    </a>
+                </div>
+                <div class="col-sm-6">
+                    <a href="{{ url_for('preprocess.download_sample_file') }}">
+                        <button type="button" class="btn download_sample_file" style="background-color: #a94442;">
+                            DOWNLOAD SAMPLE FILE
+                        </button>
+                    </a>
+                </div>
+            </div>
+
+            <br>
+
+            <hr class="line-hr">
+
+            <br>
+
+            <div class="row center">
+                <div class="step-actions">
+                    <input id="btn-submit-step-0" class="waves-effect waves-dark btn" type="submit" value="Submit">
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+
+    <div class="loader-div" style="display: none;">
+        <div id="loader" class="center-load"></div>
+        <h5 style="text-align: center;color: #26a69a;">UPLOADING DATASET</h5>
+    </div>
+
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript">
+
+    //csv read
+    $('#chooseFile').bind('change', function () {
+        var filename = $("#chooseFile").val();
+        if (/^\s*$/.test(filename)) {
+            $(".file-upload").removeClass('active');
+            $("#noFile").text("No file chosen...");
+        }
+        else {
+            $(".file-upload").addClass('active');
+            $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+        }
+    });
+
+    $('#btn-submit-step-0').click(function () {
+
+        if ($('#chooseFile').val() != '') {
+            $('#main-form-div').hide(0);
+            $('.loader-div').show(0);
+            $('.main-body').click(false);
+            $("#main-form-div").submit();
+        }
+        else {
+        }
+    });
+
+    $('.sample_select_btn').click(function () {
+
+        $('#main-form-div').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        window.location.replace("{{ url_for('preprocess.upload_sample_file') }}");
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    var i = 0;
+    var tip_list = [
+        "You can only upload comma-separated value (.csv) files. When uploading the data set, it is necessary that the file should be in the given format. Read the guidelines carefully before uploading the data set. We will guide you through the necessary steps by providing screenshots of a sample data set. GSE5281 contains microarray gene expression data of 161 samples. 87 of these samples are from Alzheimer’s disease patients while 74 of the samples are from the control group. A screenshot of part of the .csv file is shown below.",
+        "The first column of the file refers to the unique ID of the samples (In here the number of samples is 161). For example, here the IDs are GSM119615, GSM119616, GSM119617, GSM119618, etc. Note that the sample IDs are used only for naming purposes. Therefore, the  IDs can be any unique name.",
+        "The column headers(except the first column) contains the Probe IDs. A probe ID is a unique ID given for a probe/spot in microarray experiments. For example, here the probe IDs are 1007_s_at, 1053_at, 117_at, etc.",
+        "A row represents the gene expression data values of all the probe IDs with respect to a given sample. This highlighted row represents the gene expression data values for every probe ID in the sample GSM119618.",
+        "The cells in the highlighted area can only contain numerical values.",
+        "Apart from the data sets that are to be used in the prediction, other data sets should include a class label column as the last column. This should only contain binary values ( 0 and 1). The negatives should be represented by 0 while the positive values should be represented by 1. For example, in the given Alzheimer disease-related data set, 1 corresponds to the samples of patients having the disease. 0 corresponds to the control samples. Note that this column should be named as ‘class’ all in simple letters."
+    ];
+
+    var tip_img_list = [
+        "{{ url_for('static', filename='images/upload_pop/sl1.jpg') }}",
+        "{{ url_for('static', filename='images/upload_pop/sl2.jpg') }}",
+        "{{ url_for('static', filename='images/upload_pop/sl3.jpg') }}",
+        "{{ url_for('static', filename='images/upload_pop/sl4.jpg') }}",
+        "{{ url_for('static', filename='images/upload_pop/sl5.jpg') }}",
+        "{{ url_for('static', filename='images/upload_pop/sl6.jpg') }}"
+    ];
+    $('.tip_class_text').text(tip_list[0]);
+    $(".tip_img_div").attr("src", tip_img_list[0]);
+
+    $('.next_btn_class').click(function () {
+        i++;
+        if (i == tip_list.length) {
+            i = 0;
+        }
+        $('.tip_class_text').text(tip_list[i]);
+        $(".tip_img_div").attr("src", tip_img_list[i]);
+
+    });
+
+    $('.prv_btn_class').click(function () {
+        i--;
+        if (i < 0) {
+            i = tip_list.length - 1;
+        }
+        $('.tip_class_text').text(tip_list[i]);
+        $(".tip_img_div").attr("src", tip_img_list[i]);
+    });
+
+    $('.close_pop').click(function () {
+        $('#upload_page_pop').slideToggle("hide");
+    });
+
+    $('.info_data_set').click(function () {
+        $('#upload_page_pop').slideToggle("slow");
+    });
+
+    $(".download_sample_file").hover(function () {
+        $(this).css("background-color", "white");
+        $(this).css("color", "#a94442");
+        $(this).css("border", "1px solid #a94442");
+    }, function () {
+        $(this).css("background-color", "#a94442");
+        $(this).css("color", "white");
+        $(this).css("border", "1px solid #a94442");
+    });
+
+    $(".sample_select_btn").hover(function () {
+        $(this).css("background-color", "white");
+        $(this).css("color", "#4c78af");
+        $(this).css("border", "1px solid #4c78af");
+    }, function () {
+        $(this).css("background-color", "#4c78af");
+        $(this).css("color", "white");
+        $(this).css("border", "1px solid #4c78af");
+    });
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
+</script>
