@@ -88,7 +88,7 @@ def view_merge_df():
                 #Delete same file uploaded
                 result = UserData.get_user_file_by_file_name(user_id, annotation_table)
 
-                annotation_df = pd.read_csv(file)
+                annotation_df = pd.read_csv(file, usecols=[0, 1], header=0)
                 col = annotation_df.columns
 
                 if "ID" in col and "Gene Symbol" in col and len(col) == 2:
