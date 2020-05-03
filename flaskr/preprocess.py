@@ -420,7 +420,10 @@ def upload_file():
 
             size = os.stat(path_csv).st_size
             if size:
-                csv2pkl(path_csv, path_pkl)
+                if not csv2pkl(path_csv, path_pkl):
+                    os.remove(path_csv)
+                    flash("Error: Empty file content.")
+                    return redirect('/pre/upload')
             else:
                 os.remove(path_csv)
                 flash("Error: Empty file.")
@@ -459,12 +462,15 @@ def upload_sample_file():
 def csv2pkl(path_csv, path_pkl):
     df_save = pd.read_csv(path_csv, index_col=0)
     shape = df_save.shape
-    df_save.columns.name = df_save.index.name
-    df_save.index.name = None
-    df_save.to_pickle(path_pkl)
-    os.remove(path_csv)
+    if shape[0] > 0 and shape[0] > 0:
+        df_save.columns.name = df_save.index.name
+        df_save.index.name = None
+        df_save.to_pickle(path_pkl)
+        os.remove(path_csv)
+        return True
 
-    return True
+    else:
+        return False
 
 def get_volcano_fig(fold_change, pValues):
     fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(12, 7))
