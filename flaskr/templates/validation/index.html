@@ -139,6 +139,8 @@
 
         <div class="step-content">
 
+        {% if data_available %}
+
             <div id="info_results_div" class="alert alert-info">
                 <strong>Info!</strong>
                 <ul>
@@ -274,6 +276,15 @@
                 </div>
             </div>
 
+        {% else %}
+
+            <div class="row" style="margin-bottom: 20%;">
+                <div class="well well-lg">
+                    <h6 style="color: red;">Not found validation results.</h6>
+                </div>
+            </div>
+
+        {% endif %}
 
             <hr class="line-hr">
 
