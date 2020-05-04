@@ -369,7 +369,7 @@ def admin_contact_panel():
         res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)
 
     except requests.exceptions.RequestException as e:
-        flash(e)
+        flash("Requested host not available")
         return redirect(url_for('auth.admin_panel'))
 
     contact_list = res.text
@@ -381,7 +381,12 @@ def admin_contact_panel():
 @login_required
 def admin_subscribe_panel():
     contact_data = {'option':'ok', 'password':'abc123', 'option_name':'subscribe_list'}
-    res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)    
+    try:
+        res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)
+
+    except requests.exceptions.RequestException as e:
+        flash("Requested host not available")
+        return redirect(url_for('auth.admin_panel'))
 
     subscribe_list = res.text
     
