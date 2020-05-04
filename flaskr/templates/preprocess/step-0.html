@@ -19,6 +19,16 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
+    <style>
+        .flash {
+            margin: 1em 0;
+            padding: 1em;
+            background: #f6ac8f;
+            border: 1px solid #5c0202;
+            text-align: center;
+        }
+    </style>
+
 </head>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
@@ -67,6 +77,12 @@
                     UPLOAD YOUR DATA SET</h3>
             </div>
         </div>
+
+        {% for message in get_flashed_messages() %}
+            <div class="row">
+                <div class="flash">{{ message }}</div>
+            </div>
+        {% endfor %}
 
         <div class="row" style="margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
 
@@ -271,7 +287,7 @@
 
 <script type="text/javascript">
 
-disable_prop = {{ g.dList }};
+    disable_prop = {{ g.dList }};
 
-disable_read_fun(disable_prop)
+    disable_read_fun(disable_prop)
 </script>

@@ -22,6 +22,9 @@ import random
 import string
 from pathlib import Path
 
+import requests
+import json
+
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 
@@ -357,6 +360,38 @@ def admin_panel():
 
     return render_template("auth/admin.html", select_users=select_users, users=users, data=data)
 
+#contact list show
+@bp.route("/admin/contact_list")
+@login_required
+def admin_contact_panel():
+    contact_data = {'option':'ok', 'password':'abc123', 'option_name':'contact_list'}
+    try:
+        res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)
+
+    except requests.exceptions.RequestException as e:
+        flash("Requested host not available")
+        return redirect(url_for('auth.admin_panel'))
+
+    contact_list = res.text
+    
+    return render_template("auth/contact_list.html", contact_list=contact_list)
+
+#subscribe list show
+@bp.route("/admin/subscribe_list")
+@login_required
+def admin_subscribe_panel():
+    contact_data = {'option':'ok', 'password':'abc123', 'option_name':'subscribe_list'}
+    try:
+        res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)
+
+    except requests.exceptions.RequestException as e:
+        flash("Requested host not available")
+        return redirect(url_for('auth.admin_panel'))
+
+    subscribe_list = res.text
+    
+    return render_template("auth/subscribe_list.html", subscribe_list=subscribe_list)
+
 def get_infrequent_ids(users):
     n = datetime.now()
     list = []
@@ -680,4 +715,47 @@ class UserData:
             disable_list[6] = 1  
         return disable_list
 
+    def add_file(file_name, file_type, path, user_id, is_annotation, has_class):
+        db = get_db()
+        db.execute(
+            "INSERT INTO file (file_name, file_type, path, user_id, is_annotation, has_class) VALUES (?, ?, ?, ?, ?, ?)",
+            (file_name, file_type, path, user_id, is_annotation, has_class),
+        )
+        db.commit()
 
+    def get_annotation_file(user_id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM file WHERE user_id IN (0, ?) AND is_annotation = 1", (user_id,)
+        ).fetchall()
+        return result
+
+    def get_user_file(user_id):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM file WHERE user_id = ?", (user_id,)
+        ).fetchall()
+        return result
+
+    def get_user_file_by_file_name(user_id, file_name):
+        db = get_db()
+        result = db.execute(
+            "SELECT * FROM file WHERE user_id = ? AND file_name = ?", (user_id, file_name),
+        ).fetchone()
+        return result
+
+    def delete_user_file(user_id):
+        db = get_db()
+        db.execute(
+            "DELETE FROM file WHERE user_id = ?",
+            (user_id),
+        )
+        db.commit()
+
+    def delete_user_file_by_file_name(user_id, file_name):
+        db = get_db()
+        db.execute(
+            "DELETE FROM file WHERE user_id = ? AND file_name = ?",
+            (user_id, file_name),
+        )
+        db.commit()

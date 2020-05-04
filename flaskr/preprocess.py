@@ -22,13 +22,15 @@ from flask import g
 import numpy as np
 
 import matplotlib
+
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
+from werkzeug.exceptions import abort
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
-ALLOWED_EXTENSIONS = set(['pkl', 'csv'])
+ALLOWED_EXTENSIONS = set(['pkl', 'csv', 'plk'])
 
 from pathlib import Path
 
@@ -41,22 +43,25 @@ ANNOTATION_TBL = UPLOAD_FOLDER / "AnnotationTbls"
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 @bp.route("/")
 @login_required
 def index():
+    upload_file = request.args.get("name")
 
     annotation_list = []
     path = USER_PATH / str(g.user["id"])
 
     list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
 
-    for filename in os.listdir(ANNOTATION_TBL):
-        annotation_list.append(filename)
+    annotation_db = UserData.get_annotation_file(g.user["id"])
+    for f in annotation_db:
+        annotation_list.append([f['file_name'], f['path']])
 
     if len(list_names) == 0:
         flash("Error: You don't have uploaded file.")
 
-    return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list)
+    return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list, upload_file = upload_file)
 
 
 # step 2 | Session > Database
@@ -72,29 +77,70 @@ def view_merge_df():
 
         file_path = USER_PATH / str(user_id) / file_name
 
-        #Delete query if file already pre-processed
+        # Delete query if file already pre-processed
         UserData.delete_preprocess_file(user_id, file_name)
 
-        #load df
-        df = PreProcess.mergeDF(file_path, ANNOTATION_TBL / annotation_table)
+        if annotation_table == 'other':
+            file = request.files['chooseFile']
+
+            if file and allowed_file(file.filename):
+
+                annotation_table = secure_filename(file.filename)
+                path_csv = ANNOTATION_TBL / "other" / (str(user_id) + "_" + annotation_table)
+
+                # Delete same file uploaded
+                result = UserData.get_user_file_by_file_name(user_id, annotation_table)
+
+                annotation_df = pd.read_csv(file, usecols=[0, 1], header=0)
+                col = annotation_df.columns
+
+                if "ID" in col and "Gene Symbol" in col and len(col) == 2:
+                    annotation_df.to_csv(path_csv, index=False)
+
+                else:
+                    flash("Wrong Format: Gene Symbol and/or ID column not found in annotation table.")
+                    return redirect('/pre')
+
+            else:
+                return abort(403)
+
+            df = PreProcess.mergeDF(file_path, path_csv)
+
+            if result is None:
+                view_path = "/AnnotationTbls/other/" + str(user_id) + "_" + annotation_table
+                UserData.add_file(annotation_table, annotation_table.split('.')[1], view_path, user_id, 1, 0)
+
+        else:
+            # load df
+            annotation_table_path = UPLOAD_FOLDER.as_posix() + annotation_table
+            df = PreProcess.mergeDF(file_path, Path(annotation_table_path))
+
         if df is None:
             flash("Couldn't merge dataset with annotation table")
             return redirect('/pre')
+
+        y = PreProcess.getDF(file_path)
+        if 'class' not in y.columns:
+            flash("Wrong Format: class column not found.")
+            return redirect('/pre')
+
+        y = y['class']
+        data = PreProcess.get_df_details(df, y)
+
+        session[file_name] = data
+
+        df = df.dropna(axis=0, subset=['Gene Symbol'])
+        df = PreProcess.probe2Symbol(df, int(col_sel_method))
 
         merge_name = "merge_" + file_name
         merge_path = USER_PATH / str(user_id) / "tmp" / merge_name
         merge_path_str = merge_path.as_posix()
         PreProcess.saveDF(df, merge_path_str)
 
-        #save data to the Database
-        UserData.add_preprocess(user_id, file_name, file_path.as_posix(), annotation_table, col_sel_method, merge_path_str)
+        # save data to the Database
+        UserData.add_preprocess(user_id, file_name, file_path.as_posix(), annotation_table, col_sel_method,
+                                merge_path_str)
         pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
-
-        y = PreProcess.getDF(file_path)
-        y = y['class']
-        data = PreProcess.get_df_details(df, y)
-
-        session[file_name] = data
 
         if len(df.columns) > 100:
             df_view = df.iloc[:, 0:100].head(15)
@@ -102,7 +148,7 @@ def view_merge_df():
             df_view = df.head(15)
 
         return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data,
-                               pre_process_id = pre_process_id, file_name = merge_name)
+                               pre_process_id=pre_process_id, file_name=merge_name)
 
     return redirect('/pre')
 
@@ -120,7 +166,7 @@ def scaling_imputation():
     data = session.get(pre_process['file_name'])
 
     if data is not None:
-        return render_template("preprocess/step-3.html", details=data, pre_process_id = pre_process_id)
+        return render_template("preprocess/step-3.html", details=data, pre_process_id=pre_process_id)
 
     return redirect('/pre')
 
@@ -129,7 +175,6 @@ def scaling_imputation():
 @bp.route("/step-4", methods=['POST'])
 @login_required
 def norm():
-
     norm_method = request.form.get("norm_mthd")
     null_rmv = request.form.get("null_rmv")
     pre_process_id = request.form.get("id")
@@ -142,16 +187,23 @@ def norm():
             return redirect('/pre')
 
         user_id = pre_process['user_id']
-        col_sel_method = pre_process['col_sel_method']
 
         UserData.update_preprocess(user_id, pre_process['file_name'], 'scaling', norm_method)
         UserData.update_preprocess(user_id, pre_process['file_name'], 'imputation', null_rmv)
 
-        merge_df_path = Path(pre_process['merge_df_path'])
+        if pre_process['merge_df_path'] == '':
+            merge_df_path = Path(pre_process['file_path'])
+            df = PreProcess.getDF(merge_df_path)
+            df = df.drop(['class'], axis=1)
+            df = df.T
+            df = df.reset_index()
 
-        df = PreProcess.step3(PreProcess.getDF(merge_df_path), norm_method, null_rmv) #symbol_df
+        else:
+            merge_df_path = Path(pre_process['merge_df_path'])
+            df = PreProcess.getDF(merge_df_path)
 
-        df = PreProcess.probe2Symbol(df, int(col_sel_method))
+        df = PreProcess.step3(df, norm_method, null_rmv)  # symbol_df
+
         avg_symbol_name = "avg_symbol_" + pre_process['file_name']
         avg_symbol_df_path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
 
@@ -170,12 +222,12 @@ def norm():
             df_view = df.head(15)
 
         return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')],
-                               details=data, pre_process_id = pre_process_id, file_name = avg_symbol_name)
+                               details=data, pre_process_id=pre_process_id, file_name=avg_symbol_name)
 
     return redirect('/pre')
 
 
-# skip method Step 1 to Step 5
+# skip method Step 1 to Step 3
 @bp.route("/skip-step-1", methods=['GET'])
 @login_required
 def skip_df_mapping():
@@ -192,7 +244,13 @@ def skip_df_mapping():
     UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '', '')
     pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
 
-    return redirect(url_for('preprocess.feature_reduction') + "?id=" + str(pre_process_id))
+    df = PreProcess.getDF(file_path)
+    data = PreProcess.get_df_details(df, None)
+
+    session[file_name] = data
+
+    return redirect(url_for('preprocess.scaling_imputation') + "?id=" + str(pre_process_id))
+
 
 # step 5
 @bp.route("/step-5", methods=['GET'])
@@ -210,6 +268,7 @@ def feature_reduction():
 
         p_fold_df = PreProcess.get_pvalue_fold_df(avg_symbol_df_path, file_path)
     else:
+        # From step1
         file_path = Path(pre_process['file_path'])
         p_fold_df = PreProcess.get_pvalue_fold_df(file_path)
 
@@ -228,14 +287,14 @@ def feature_reduction():
 
     volcano_hash = get_volcano_fig(p_fold_df['fold'], p_fold_df['pValues'])
 
-    return render_template("preprocess/step-5.html", data_array=data_array, volcano_hash=volcano_hash, pre_process_id = pre_process_id)
+    return render_template("preprocess/step-5.html", data_array=data_array, volcano_hash=volcano_hash,
+                           pre_process_id=pre_process_id)
 
 
 # step 6
 @bp.route("/step-6/", methods=['POST'])
 @login_required
 def get_reduce_features_from_pvalues():
-
     fold = request.form["fold-range"]
     pvalue = request.form["p-value"]
     pre_process_id = request.form["id"]
@@ -248,9 +307,10 @@ def get_reduce_features_from_pvalues():
     if pre_process['avg_symbol_df_path']:
         df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['avg_symbol_df_path'], float(pvalue), float(fold))
     else:
+        # From step1 skip
         df = PreProcess.get_filtered_df_pvalue(p_fold_df, pre_process['file_path'], float(pvalue), float(fold), 0)
 
-    fr_df_path = USER_PATH / str(g.user["id"]) / 'tmp' /  ('fr_' + pre_process['file_name'])
+    fr_df_path = USER_PATH / str(g.user["id"]) / 'tmp' / ('fr_' + pre_process['file_name'])
     PreProcess.saveDF(df, fr_df_path)
 
     length = len(df.columns)
@@ -272,25 +332,26 @@ def get_reduce_features_from_pvalues():
     classification_result_df = FeatureReduction.get_classification_results(df, y)
     cls_id, cls_name = FeatureReduction.get_best_cls(classification_result_df)
 
-    classification_result_df = classification_result_df.drop(['Testing', 'Training'], axis=1)
-    classification_result_df = classification_result_df.sort_values(by=['avg'], ascending=False)
+    classification_result_df = classification_result_df.drop(['Training'], axis=1)
+    classification_result_df = classification_result_df.sort_values(by=['Testing'], ascending=False)
     classification_result_df = classification_result_df.set_index(['Classifiers'])
     classification_result_df.index.name = None
-    classification_result_df = classification_result_df.rename(columns={"avg": "Average Accuracy /%"})
+    classification_result_df = classification_result_df.rename(columns={"Testing": "Testing Accuracy /%"})
 
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
-    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'reduce_df_path', fr_df_path.as_posix() )
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'reduce_df_path',
+                               fr_df_path.as_posix())
     UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'classifiers', cls_id)
 
     return render_template("preprocess/step-6.html", split_array=split_array, fs_fig_hash=fs_fig_hash,
-                           tables=[classification_result_df.to_html(classes='data')], cls_names=cls_name, pre_process_id = pre_process_id)
+                           tables=[classification_result_df.to_html(classes='data')], cls_names=cls_name,
+                           pre_process_id=pre_process_id)
 
 
 @bp.route("/fr/pf/", methods=['GET'])
 @login_required
 def get_feature_count_pval():
-
     pvalue = request.args.get("pvalue")
     foldChange = request.args.get("foldChange")
     pre_process_id = request.args.get("id")
@@ -325,7 +386,7 @@ def save_reduced_df():
     PreProcess.saveDF(df_selected, path)
 
     # remove old files
-    files = ["merge_" + file_name, "avg_symbol_" + file_name, "_p_fold_"+ file_name, "fr_" + file_name]
+    files = ["merge_" + file_name, "avg_symbol_" + file_name, "_p_fold_" + file_name, "fr_" + file_name]
     folder_path = USER_PATH / str(g.user["id"]) / "tmp"
     remove_files(folder_path, files)
 
@@ -349,17 +410,25 @@ def upload_file():
     if file and allowed_file(file.filename):
 
         filename = secure_filename(file.filename)
-        path_csv = USER_PATH / str(g.user["id"]) / filename
-        file.save(path_csv)
-
         name = filename.split('.')
 
         if name[1] == 'csv':
             path_pkl = USER_PATH / str(g.user["id"]) / (name[0] + '.pkl')
-            csv2pkl(path_csv, path_pkl)
-            os.remove(path_csv)
+            path_csv = USER_PATH / str(g.user["id"]) / filename
+            file.save(path_csv)
 
-        return redirect('/pre')
+            size = os.stat(path_csv).st_size
+            if size:
+                if not csv2pkl(path_csv, path_pkl):
+                    os.remove(path_csv)
+                    flash("Error: Empty file content.")
+                    return redirect('/pre/upload')
+            else:
+                os.remove(path_csv)
+                flash("Error: Empty file.")
+                return redirect('/pre/upload')
+
+        return redirect('/pre?name=' + name[0] + '.pkl')
     else:
         e = ["Wrong file type", ["Please upload csv file."]]
         return render_template("error.html", errors=e)
@@ -386,15 +455,21 @@ def upload_sample_file():
     # df.columns.name = "ID"
     # df.to_pickle(dst)
 
-    return redirect('/pre')
+    return redirect('/pre?name=GSE5281-GPL570.pkl')
+
 
 def csv2pkl(path_csv, path_pkl):
-    df_save = pd.read_csv(path_csv)
-    df_save = df_save.set_index(["ID"])
-    df_save.index.name = None
-    df_save.columns.name = "ID"
-    df_save.to_pickle(path_pkl)
-    return True
+    df_save = pd.read_csv(path_csv, index_col=0)
+    shape = df_save.shape
+    if shape[0] > 0 and shape[0] > 0:
+        df_save.columns.name = df_save.index.name
+        df_save.index.name = None
+        df_save.to_pickle(path_pkl)
+        os.remove(path_csv)
+        return True
+
+    else:
+        return False
 
 def get_volcano_fig(fold_change, pValues):
     fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(12, 7))
@@ -406,6 +481,7 @@ def get_volcano_fig(fold_change, pValues):
 
     return pic_hash
 
+
 def get_feature_selection_fig(df, df_y, length):
     df["class"] = df_y['class']
     selectedFeatures = FeatureReduction.getScoresFromUS(df)
@@ -414,6 +490,7 @@ def get_feature_selection_fig(df, df_y, length):
     pic_hash = fig_to_b64encode(fig)
 
     return pic_hash
+
 
 def fig_to_b64encode(fig):
     pic_IObytes = io.BytesIO()

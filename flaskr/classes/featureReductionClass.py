@@ -131,8 +131,8 @@ class FeatureReduction:
         return df
 
     def get_best_cls(cls_result_df):
-        cls_result_df["avg"] = (cls_result_df['Testing'] + cls_result_df['Training']) / 2
-        cls_name = cls_result_df.nlargest(3, ['avg'])["Classifiers"].tolist()
+        # cls_result_df["avg"] = (cls_result_df['Testing'] + cls_result_df['Training']) / 2
+        cls_name = cls_result_df.nlargest(3, ['Testing'])["Classifiers"].tolist()
         cls_id = get_cls_id(cls_name)
         cls_id_str = ','.join(str(e) for e in cls_id)
         cls_name_str = ','.join(e for e in cls_name)
