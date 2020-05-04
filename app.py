@@ -4,5 +4,5 @@ from waitress import serve
 app = flaskr.create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    # serve(app)
+    # app.run(debug=True)
+    serve(app)
