@@ -22,6 +22,9 @@ import random
 import string
 from pathlib import Path
 
+import requests
+import json
+
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 
@@ -356,6 +359,28 @@ def admin_panel():
     data = [round(select_users['usage'].sum(), 2) , select_users.shape[0], ids_str]
 
     return render_template("auth/admin.html", select_users=select_users, users=users, data=data)
+
+#contact list show
+@bp.route("/admin/contact_list")
+@login_required
+def admin_contact_panel():
+    contact_data = {'option':'ok', 'password':'abc123', 'option_name':'contact_list'}
+    res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)    
+
+    contact_list = res.text
+    
+    return render_template("auth/contact_list.html", contact_list=contact_list)
+
+#subscribe list show
+@bp.route("/admin/subscribe_list")
+@login_required
+def admin_subscribe_panel():
+    contact_data = {'option':'ok', 'password':'abc123', 'option_name':'subscribe_list'}
+    res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)    
+
+    subscribe_list = res.text
+    
+    return render_template("auth/subscribe_list.html", subscribe_list=subscribe_list)
 
 def get_infrequent_ids(users):
     n = datetime.now()
