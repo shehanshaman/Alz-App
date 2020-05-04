@@ -1,6 +1,7 @@
-# Alz-App
+# GeNet
 
-Web application for Genetic big data analytics
+Gene Expression Analysis Tool
+
 
 Install
 -------
@@ -15,21 +16,14 @@ Or on Windows cmd::
     $ py -3 -m venv venv
     $ venv\Scripts\activate.bat
 
-Install Flaskr::
+Install Dependencies::
 
-    $ pip install -e .
-
-Or if you are using the master branch, install Flask from source before
-installing Flaskr::
-
-    $ pip install -e ../..
-    $ pip install -e .
+    $ pip install -r requirements.txt
 
 
 Run
 ---
-
-::
+On Linux cmd::
 
     $ export FLASK_APP=flaskr
     $ export FLASK_ENV=development
@@ -43,4 +37,4 @@ Or on Windows cmd::
     > flask init-db
     > flask run
 
-Open http://127.0.0.1:5000 in a browser.
+Open http://localhost:5000 in a browser.
