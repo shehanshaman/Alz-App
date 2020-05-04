@@ -365,7 +365,12 @@ def admin_panel():
 @login_required
 def admin_contact_panel():
     contact_data = {'option':'ok', 'password':'abc123', 'option_name':'contact_list'}
-    res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)    
+    try:
+        res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)
+
+    except requests.exceptions.RequestException as e:
+        flash(e)
+        return redirect(url_for('auth.admin_panel'))
 
     contact_list = res.text
     
