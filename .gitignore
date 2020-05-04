@@ -13,3 +13,4 @@ build/
 *.swp
 *~
 flaskr/upload/users/
+flaskr/upload/AnnotationTbls/other/
