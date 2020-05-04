@@ -283,6 +283,10 @@
         $('.notification-container-pop').hide(0);
     });
 
+    {% if upload_file %}
+        document.getElementById('available_files').value= "{{ upload_file }}";
+    {% endif %}
+
 </script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>

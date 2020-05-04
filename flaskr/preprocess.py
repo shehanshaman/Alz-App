@@ -47,6 +47,8 @@ def allowed_file(filename):
 @bp.route("/")
 @login_required
 def index():
+    upload_file = request.args.get("name")
+
     annotation_list = []
     path = USER_PATH / str(g.user["id"])
 
@@ -59,7 +61,7 @@ def index():
     if len(list_names) == 0:
         flash("Error: You don't have uploaded file.")
 
-    return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list)
+    return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list, upload_file = upload_file)
 
 
 # step 2 | Session > Database
@@ -407,9 +409,6 @@ def upload_file():
 
     if file and allowed_file(file.filename):
 
-        # Check empty file
-        # size = file.st_size
-
         filename = secure_filename(file.filename)
         name = filename.split('.')
 
@@ -429,7 +428,7 @@ def upload_file():
                 flash("Error: Empty file.")
                 return redirect('/pre/upload')
 
-        return redirect('/pre')
+        return redirect('/pre?name=' + name[0] + '.pkl')
     else:
         e = ["Wrong file type", ["Please upload csv file."]]
         return render_template("error.html", errors=e)
@@ -456,7 +455,7 @@ def upload_sample_file():
     # df.columns.name = "ID"
     # df.to_pickle(dst)
 
-    return redirect('/pre')
+    return redirect('/pre?name=GSE5281-GPL570.pkl')
 
 
 def csv2pkl(path_csv, path_pkl):
