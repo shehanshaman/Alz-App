@@ -14,3 +14,4 @@ build/
 *~
 flaskr/upload/users/
 flaskr/upload/AnnotationTbls/other/
+flaskr/upload/sample/GSE5281-GPL570.pkl
