@@ -54,12 +54,14 @@ def index():
 
     len = int(method_names[3])
 
-    col_uni = get_unique_columns(col_m1, col_m2, col_m3)
+    overlap = get_overlap_features(col_m1, col_m2, col_m3)
+    # col_uni = get_unique_columns(col_m1, col_m2, col_m3)
+    col_uni = get_unique_columns_without_overlap(col_m1, col_m2, col_m3, overlap)
 
     correlation_pic_hash = get_correlation_fig(df,col_uni, method_names)
 
     y = df["class"]
-    overlap = get_overlap_features(col_m1, col_m2, col_m3)
+
     overlap_str = ','.join(e for e in overlap)
 
     UserData.update_result_column(user_id, filename, 'col_overlapped', overlap_str)
@@ -107,7 +109,8 @@ def selected_method():
 
     i = method_names.index(selected_method)
 
-    col_uni = get_unique_columns(col_m1, col_m2, col_m3)
+    # col_uni = get_unique_columns(col_m1, col_m2, col_m3)
+    col_uni = get_unique_columns_without_overlap(col_m1, col_m2, col_m3, overlap)
 
     cmp_corr_1, cmp_corr_2, cmp_corr_3 = get_correlation(df, col_uni)
 
@@ -202,6 +205,15 @@ def get_unique_columns(col_m1,col_m2,col_m3):
 
     return col_uni
 
+def get_unique_columns_without_overlap(col_m1, col_m2, col_m3, overlap):
+    col1_uni = [x for x in col_m1 if x not in overlap]
+    col2_uni = [x for x in col_m2 if x not in overlap]
+    col3_uni = [x for x in col_m3 if x not in overlap]
+
+    col_uni = [col1_uni, col2_uni, col3_uni]
+
+    return col_uni
+
 def get_overlap_features(col1, col2, col3):
     t = list(set(col1) & set(col2) & set(col3))
     return t
@@ -247,7 +259,7 @@ def get_overlap_result_fig(results,count):
 
     results.T.plot.bar(rot=0, ax=ax1)
 
-    ax2.set_ylim([5, 40])
+    ax2.set_ylim([0, count['val'].max() * 1.5])
     ax2.set_ylabel("No of features")
     count.plot.bar(x='id', y='val', rot=0, color=(0.2, 0.4, 0.6, 0.6), ax = ax2)
     ax2.get_legend().remove()
