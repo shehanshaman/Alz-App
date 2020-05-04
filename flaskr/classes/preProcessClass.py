@@ -31,8 +31,6 @@ class PreProcess:
 	def getProbeDF(file_path):
 		if PreProcess.check_file_exist(file_path):
 			probes = pd.read_csv(file_path, usecols=[0, 1], header=0)
-		# probes = pd.read_csv(file_path)
-		# probes = probes[['Gene Symbol', 'ID']]
 		return probes
 
 	def mergeDF(df_path, probe_path):
@@ -52,10 +50,7 @@ class PreProcess:
 		return df_merge_rm_null
 
 	def df2float(df_merge_rm_null):
-		if 'Gene Symbol' in df_merge_rm_null.columns:
-			df_merge_rm_null_float = df_merge_rm_null.drop(["Gene Symbol"], 1).astype(float)
-		else:
-			df_merge_rm_null_float = df_merge_rm_null.drop(["ID"], 1).astype(float)
+		df_merge_rm_null_float = df_merge_rm_null.drop([df_merge_rm_null.columns[0]], 1).astype(float)
 
 		return df_merge_rm_null_float
 
@@ -68,10 +63,8 @@ class PreProcess:
 		df_symbol = pd.DataFrame()
 		df_val = pd.DataFrame()
 
-		if 'Gene Symbol' in df_merge_rm_null.columns:
-			df_symbol['Gene Symbol'] = df_merge_rm_null['Gene Symbol']
-		else:
-			df_symbol['ID'] = df_merge_rm_null['ID']
+		col_name = df_merge_rm_null.columns[0]
+		df_symbol[col_name] = df_merge_rm_null[col_name]
 
 		df_val[df_merge_rm_null_float.columns]  = df_norm
 
@@ -87,8 +80,6 @@ class PreProcess:
 		if imputation_method == 'drop':
 			df_merge_rm_null = PreProcess.rmNullRows(df_merge)
 		elif imputation_method == 'avg':
-			# df_merge = df_merge.dropna(axis=0, subset=['Gene Symbol'])
-			# df_merge_rm_null = df_merge.fillna(df_merge.mean())
 			df_merge_rm_null = df_merge.T.fillna(df_merge.mean(axis=1)).T
 
 		df_merge_rm_null_float = PreProcess.df2float(df_merge_rm_null)
@@ -126,10 +117,7 @@ class PreProcess:
 
 	def set_class_to_df(df_path, class_path):
 		df = PreProcess.getDF(df_path)
-		if 'Gene Symbol' in df.columns:
-			df = df.set_index(["Gene Symbol"])
-		else:
-			df = df.set_index(["ID"])
+		df = df.set_index([df.columns[0]])
 		df = df.T
 
 		df_class = PreProcess.getDF(class_path)
@@ -168,10 +156,7 @@ class PreProcess:
 	def get_filtered_df_pvalue(p_fold_df, df_path, pvalue, foldChange, nskip = 1):
 		df = PreProcess.getDF(df_path)
 		if nskip:
-			if 'Gene Symbol' in df.columns:
-				df = df.set_index(["Gene Symbol"])
-			else:
-				df = df.set_index(["ID"])
+			df = df.set_index([df.columns[0]])
 			df = df.T
 		elif 'class' in df.columns:
 			df = df.drop(['class'], axis=1)
@@ -223,10 +208,9 @@ class PreProcess:
 		return z
 
 	def add_details_json(z, df, r):
-		if 'Gene Symbol' in df.columns:
-			d = df.drop(["Gene Symbol"], axis=1)
-		else:
-			d = df.drop(["ID"], axis=1)
+
+		d = df.drop([df.columns[0]], axis=1)
+
 		x = '{ "Number of features":' + str(d.shape[0]) + ', "Number of samples": ' + str(d.shape[1]) + ', "min":' + str(round(d.min().min(), 3)) + ', "max":' + str(round(d.max().max(),3)) + '}'
 		new_z = json.loads(x)
 		w = {r: new_z}
