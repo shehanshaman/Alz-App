@@ -142,6 +142,11 @@ def view_merge_df():
                                 merge_path_str)
         pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
 
+        # df = df.sort_values(df.columns[0], ascending=False)
+        df = df.set_index([df.columns[0]])
+        df.columns.name = df.index.name
+        df.index.name = None
+
         if len(df.columns) > 100:
             df_view = df.iloc[:, 0:100].head(15)
         else:
@@ -215,6 +220,10 @@ def norm():
         data = session[pre_process['file_name']]
         data = PreProcess.add_details_json(data, df, "r1")
         session[pre_process['file_name']] = data
+
+        df = df.set_index([df.columns[0]])
+        df.columns.name = df.index.name
+        df.index.name = None
 
         if len(df.columns) > 100:
             df_view = df.iloc[:, 0:100].head(15)
