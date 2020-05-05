@@ -1,6 +1,6 @@
 import base64
 
-from flask import Blueprint, session, send_from_directory, url_for, flash
+from flask import Blueprint, session, send_from_directory, url_for, flash, current_app
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -398,7 +398,12 @@ def save_reduced_df():
 @bp.route('/upload')
 @login_required
 def upload_file_view():
-    return render_template("preprocess/step-0.html")
+    user_id = g.user['id']
+    path = USER_PATH / str(user_id)
+    folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
+    available_space = round(current_app.config['APP_ALZ'].max_usage - folder_size , 2)
+
+    return render_template("preprocess/step-0.html", available_space = available_space)
 
 
 # file upload
@@ -406,6 +411,7 @@ def upload_file_view():
 @login_required
 def upload_file():
     file = request.files['chooseFile']
+    available_space = request.form.get('available_space')
 
     if file and allowed_file(file.filename):
 
@@ -418,7 +424,13 @@ def upload_file():
             file.save(path_csv)
 
             size = os.stat(path_csv).st_size
+
             if size:
+                if (size / 1024 / 1024)  > float(available_space):
+                    os.remove(path_csv)
+                    flash("You don't have enough space.")
+                    return redirect('/pre/upload')
+
                 if not csv2pkl(path_csv, path_pkl):
                     os.remove(path_csv)
                     flash("Error: Empty file content.")
@@ -445,17 +457,28 @@ def download_sample_file():
 @bp.route('/sample/upload/')
 @login_required
 def upload_sample_file():
-    src = UPLOAD_FOLDER / "sample" / 'GSE5281-GPL570.pkl'
-    dst = USER_PATH / str(g.user['id']) / 'GSE5281-GPL570.pkl'
-    copyfile(src, dst)
+    user_id = g.user['id']
+    path = USER_PATH / str(user_id)
+    folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
+    available_space = round(current_app.config['APP_ALZ'].max_usage - folder_size, 2)
 
-    # df = pd.read_csv(src)
-    # df = df.set_index(["ID"])
-    # df.index.name = None
-    # df.columns.name = "ID"
-    # df.to_pickle(dst)
+    if available_space > 68:
 
-    return redirect('/pre?name=GSE5281-GPL570.pkl')
+        src = UPLOAD_FOLDER / "sample" / 'GSE5281-GPL570.pkl'
+        dst = USER_PATH / str(g.user['id']) / 'GSE5281-GPL570.pkl'
+        copyfile(src, dst)
+
+        # df = pd.read_csv(src)
+        # df = df.set_index(["ID"])
+        # df.index.name = None
+        # df.columns.name = "ID"
+        # df.to_pickle(dst)
+
+        return redirect('/pre?name=GSE5281-GPL570.pkl')
+
+    else:
+        flash("You don't have enough space.")
+        return redirect('/pre/upload')
 
 
 def csv2pkl(path_csv, path_pkl):
