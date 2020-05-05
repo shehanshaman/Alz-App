@@ -124,11 +124,13 @@
     <hr class="line-hr">
 
     <div class="step-actions">
-        <button class="waves-effect waves-dark btn next-step step-6-click"><a
-                href="{{ url_for('preprocess.scaling_imputation') }}?id={{ pre_process_id }}">CONTINUE</a>
-        </button>
-        <button class="waves-effect waves-dark btn-flat previous-step" type="button"><a
-                href="{{ url_for('preprocess.index') }}">BACK</a></button>
+        <a href="{{ url_for('preprocess.scaling_imputation') }}?id={{ pre_process_id }}">
+            <button class="waves-effect waves-dark btn next-step">CONTINUE</button>
+        </a>
+
+        <a href="{{ url_for('preprocess.index') }}">
+            <button class="waves-effect waves-dark btn-flat previous-step" type="button">BACK</button>
+        </a>
     </div>
 
 </div>
