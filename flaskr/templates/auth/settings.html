@@ -97,7 +97,8 @@
                 </div>
 
                 <div class="row">
-                    <h5>Cache Clear</h5><br>
+                    <h5>Cleanup</h5><br>
+                    <label>Clean {{ data[1][1] }} MB in cache</label> <br>
                     <button class="waves-effect waves-dark btn" style="float: left" id="cache_clear" {% if data[1][1] < 1 %}
                         disabled
                     {% endif %}>Clear</button>

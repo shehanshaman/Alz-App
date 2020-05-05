@@ -199,7 +199,7 @@ def verify():
 
         db.execute(
             "DELETE FROM verify WHERE user_id = ? AND subject = 'verify'",
-            (user_id),
+            (user_id, ),
         )
         db.commit()
         flash("Your email has been verified.")
@@ -315,12 +315,16 @@ def settings():
 
     folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
     max_usage = current_app.config['APP_ALZ'].max_usage
-    full_usage = folder_size * 100 / max_usage
-    file_usage = df_files['file size'].sum() * 100 / max_usage
-    cashe_usage = full_usage - file_usage
-    available_space = 100 - full_usage
 
-    usages = [file_usage, cashe_usage, available_space]
+    full_usage = folder_size
+    file_usage = round(df_files['file size'].sum(), 2)
+    cache_usage = round((full_usage - file_usage) ,2)
+    available_space = round((max_usage - full_usage) , 2)
+
+    if available_space < 0:
+        available_space = 0
+
+    usages = [file_usage, cache_usage, available_space]
 
     data = [user_data, usages]
 

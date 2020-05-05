@@ -462,7 +462,7 @@ def upload_sample_file():
     folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
     available_space = round(current_app.config['APP_ALZ'].max_usage - folder_size, 2)
 
-    if (available_space / 1024 / 1024) > 68:
+    if available_space > 68:
 
         src = UPLOAD_FOLDER / "sample" / 'GSE5281-GPL570.pkl'
         dst = USER_PATH / str(g.user['id']) / 'GSE5281-GPL570.pkl'
