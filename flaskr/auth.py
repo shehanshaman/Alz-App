@@ -199,7 +199,7 @@ def verify():
 
         db.execute(
             "DELETE FROM verify WHERE user_id = ? AND subject = 'verify'",
-            (user_id),
+            (user_id, )
         )
         db.commit()
         flash("Your email has been verified.")
@@ -549,7 +549,7 @@ class UserData:
         db = get_db()
         db.execute(
             "DELETE FROM preprocess WHERE user_id = ?",
-            (user_id),
+            (user_id, )
         )
         db.commit()
 
@@ -644,13 +644,12 @@ class UserData:
         db = get_db()
         db.execute(
             "DELETE FROM user WHERE id = ?",
-            (user_id),
+            (user_id, )
         )
-        db.commit()
 
         db.execute(
             "DELETE FROM modeling WHERE user_id = ?",
-            (user_id),
+            (user_id, )
         )
         db.commit()
 
@@ -748,7 +747,7 @@ class UserData:
         db = get_db()
         db.execute(
             "DELETE FROM file WHERE user_id = ?",
-            (user_id),
+            (user_id, )
         )
         db.commit()
 
