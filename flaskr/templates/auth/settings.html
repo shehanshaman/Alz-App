@@ -87,13 +87,24 @@
                 <div id="piechart"></div>
             </div>
             <div class="col-sm-4">
-                <h5>User details</h5><br>
-                <label for="username" style="float: left">E-mail</label>
-                <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
-                <label for="given_name" style="float: left">Name</label>
-                <input name="given_name" id="given_name" value="{{ data[0][1] }}">
-                <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
+                <div class="row">
+                    <h5>User details</h5><br>
+                    <label for="username" style="float: left">E-mail</label>
+                    <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
+                    <label for="given_name" style="float: left">Name</label>
+                    <input name="given_name" id="given_name" value="{{ data[0][1] }}">
+                    <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
+                </div>
+
+                <div class="row">
+                    <h5>Cache Clear</h5><br>
+                    <button class="waves-effect waves-dark btn" style="float: left" id="cache_clear" {% if data[1][1] < 1 %}
+                        disabled
+                    {% endif %}>Clear</button>
+                </div>
+
             </div>
+
             <div class="col-sm-8">
                 <h5>Files</h5><br>
                 <table>
@@ -126,7 +137,8 @@
         <div class="row" style="background-color: #ff00008c; padding: 10px; border: 3px solid red; border-radius: 5px;">
             <h5 class="row">Delete account</h5>
             <div class="row">
-                <p class="col-sm-8"><br><b>Please note, </b> If you delete your account, you won't be able to reactive it
+                <p class="col-sm-8"><br><b>Please note, </b> If you delete your account, you won't be able to reactive
+                    it
                     later.</p>
                 <button class="col-sm-3 waves-effect btn" id="delete_account" style="background-color: #31708f">Delete
                     account
@@ -215,30 +227,37 @@
             });
         });
     });
+
+    $("#cache_clear").click(function () {
+        $.get("/update/delete/tmp/", {id: '{{ g.user['id'] }}'}, function (data, status) {
+            location.reload();
+        });
+    });
+
 </script>
 
 {# Google Charts #}
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script type="text/javascript">
-// Load google charts
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+    // Load google charts
+    google.charts.load('current', {'packages': ['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
 
-// Draw the chart and set the chart values
-function drawChart() {
-  var data = google.visualization.arrayToDataTable([
-  ['Task', 'Spaces'],
-  ['Files', {{ data[1][0] }}],
-  ['Cache', {{ data[1][1] }}],
-  ['Available', {{ data[1][2] }}]
-]);
+    // Draw the chart and set the chart values
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Task', 'Spaces'],
+            ['Files', {{ data[1][0] }}],
+            ['Cache', {{ data[1][1] }}],
+            ['Available', {{ data[1][2] }}]
+        ]);
 
-  // Optional; add a title and set the width and height of the chart
-  var options = {backgroundColor: 'transparent', 'title':'My Current Usage', 'width':550, 'height':400};
+        // Optional; add a title and set the width and height of the chart
+        var options = {backgroundColor: 'transparent', 'width': 550, 'height': 400, sliceVisibilityThreshold:0};
 
-  // Display the chart inside the <div> element with id="piechart"
-  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-  chart.draw(data, options);
-}
+        // Display the chart inside the <div> element with id="piechart"
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+    }
 </script>
