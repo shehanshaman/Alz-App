@@ -66,7 +66,7 @@
     <div id="mainDataInterface-id" class="container mainDataInterface">
 
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 3 : SCALING & IMPUTATION</h3>
+            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">STEP 3 : NORMALIZATION & IMPUTATION</h3>
         </div>
 
         <div class="row">
@@ -116,7 +116,7 @@
 
             <div class="row" style="margin-top: 40px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Scaling :</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Normalization :</h5>
                 </div>
                 <div class="col-sm-6">
                     <div id="scaling_select_div" class="md-form">
@@ -152,7 +152,9 @@
             <div class="step-actions">
                 <button id="btn-submit-step-3" class="waves-effect waves-dark btn next-step step-6-click" type="submit" value="Submit">PRE-PROCESS
                 </button>
-                <button class="waves-effect waves-dark btn-flat previous-step" onclick="goBack()" type="button">BACK</button>
+                <a href="{{ url_for('preprocess.view_merge_df') }}?id={{ pre_process_id }}">
+                    <button class="waves-effect waves-dark btn-flat previous-step" type="button">BACK</button>
+                </a>
             </div>
 
         </form>

@@ -60,8 +60,18 @@ def delete_user_account():
     UserData.remove_user(id)
     dir_path = USER_PATH / str(id)
     delete_folder(dir_path)
+
+    delete_user_file(id)
+
     return '1'
 
+def delete_user_file(user_id):
+    files = UserData.get_user_file(user_id)
+
+    for f in files:
+        path = Path(f['path'])
+        if os.path.exists( path ):
+            os.remove(path)
 
 def delete_folder(dir_path):
     try:
@@ -150,14 +160,26 @@ def delete_user_files():
 
     return str(1)
 
+@bp.route("/delete/tmp/", methods=["GET"])
+@login_required
+def delete_user_tmp_files():
+    id = request.args.get('id')
+    dir_path = USER_PATH / str(id) / "tmp"
+    delete_files_in_dir(dir_path, True)
+
+    return '1'
+
 def delete_user_all_files(id):
     dir_path = USER_PATH / str(id)
     delete_files_in_dir(dir_path)
     dir_path = USER_PATH / str(id) / "tmp"
     delete_files_in_dir(dir_path)
 
-def delete_files_in_dir(path):
+def delete_files_in_dir(path, modal=False):
     for f in os.listdir(path):
+        if modal:
+            if f == '_model.pkl':
+                continue
         file = join(path, f)
         if isfile(file):
             os.remove(file)

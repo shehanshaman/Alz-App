@@ -19,6 +19,16 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
+    <style>
+        .flash {
+            margin: 1em 0;
+            padding: 1em;
+            background: #f6ac8f;
+            border: 1px solid #5c0202;
+            text-align: center;
+        }
+    </style>
+
 </head>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
@@ -68,7 +78,23 @@
             </div>
         </div>
 
+        {% for message in get_flashed_messages() %}
+            <div class="row">
+                <div class="flash">{{ message }}</div>
+            </div>
+        {% endfor %}
+
         <div class="row" style="margin-top: 40px;border: 2px solid #26a69a; padding: 50px;">
+
+            <div class="row" style="text-align: center;">
+                {% if available_space > 0 %}
+                    <label style="font-size: inherit;">Available space: {{ available_space }} MB</label>
+                {% else %}
+                    <label style="font-size: inherit; color: red">You don't have enough space.</label>
+                {% endif %}
+
+                <input type="hidden" name="available_space" value="{{ available_space }}">
+            </div>
 
             <div class="row">
                 <center>
@@ -96,11 +122,17 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <a href="{{ url_for('preprocess.upload_sample_file') }}">
+                    {% if available_space > 0 %}
+                        <<a href="{{ url_for('preprocess.upload_sample_file') }}">
                         <button type="button" class="btn sample_select_btn"
                                 style="background-color: #4c78af;float: right;">SELECT SAMPLE FILE
                         </button>
                     </a>
+                    {% else %}
+                        <button type="button" class="btn sample_select_btn"
+                                style="background-color: #4c78af;float: right;" disabled>SELECT SAMPLE FILE
+                        </button>
+                    {% endif %}
                 </div>
                 <div class="col-sm-6">
                     <a href="{{ url_for('preprocess.download_sample_file') }}">
@@ -119,7 +151,11 @@
 
             <div class="row center">
                 <div class="step-actions">
-                    <input id="btn-submit-step-0" class="waves-effect waves-dark btn" type="submit" value="Submit">
+                    {% if available_space > 0 %}
+                        <input id="btn-submit-step-0" class="waves-effect waves-dark btn" type="submit" value="Submit">
+                    {% else %}
+                        <button id="btn-submit-step-0" class="waves-effect waves-dark btn" disabled>Submit</button>
+                    {% endif %}
                 </div>
             </div>
 
@@ -271,7 +307,7 @@
 
 <script type="text/javascript">
 
-disable_prop = {{ g.dList }};
+    disable_prop = {{ g.dList }};
 
-disable_read_fun(disable_prop)
+    disable_read_fun(disable_prop)
 </script>
