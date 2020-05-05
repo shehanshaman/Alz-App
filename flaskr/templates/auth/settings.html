@@ -82,6 +82,10 @@
 
     <div class="row">
         <div class="border row">
+            <div class="row center">
+                <h5>Host Usage</h5>
+                <div id="piechart"></div>
+            </div>
             <div class="col-sm-4">
                 <h5>User details</h5><br>
                 <label for="username" style="float: left">E-mail</label>
@@ -213,5 +217,28 @@
     });
 </script>
 
+{# Google Charts #}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
+<script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
 
+// Draw the chart and set the chart values
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+  ['Task', 'Spaces'],
+  ['Files', {{ data[1][0] }}],
+  ['Cache', {{ data[1][1] }}],
+  ['Available', {{ data[1][2] }}]
+]);
+
+  // Optional; add a title and set the width and height of the chart
+  var options = {backgroundColor: 'transparent', 'title':'My Current Usage', 'width':550, 'height':400};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+</script>

@@ -312,7 +312,18 @@ def settings():
 
     path = USER_PATH / str(user['id'])
     df_files = get_files_size(path)
-    data = [user_data]
+
+    folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
+    max_usage = current_app.config['APP_ALZ'].max_usage
+    full_usage = folder_size * 100 / max_usage
+    file_usage = df_files['file size'].sum() * 100 / max_usage
+    cashe_usage = full_usage - file_usage
+    available_space = 100 - full_usage
+
+    usages = [file_usage, cashe_usage, available_space]
+
+    data = [user_data, usages]
+
     return render_template("auth/settings.html", data = data, df_files = df_files)
 
 def get_all_users():
