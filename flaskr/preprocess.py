@@ -65,9 +65,11 @@ def index():
 
 
 # step 2 | Session > Database
-@bp.route("/step-2", methods=['POST'])
+@bp.route("/step-2", methods=['POST', 'GET'])
 @login_required
 def view_merge_df():
+    id = request.args.get("id")
+
     user_id = g.user["id"]
     annotation_table = request.form.get("anno_tbl")
     col_sel_method = request.form.get("column_selection")
@@ -155,6 +157,28 @@ def view_merge_df():
         return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data,
                                pre_process_id=pre_process_id, file_name=merge_name)
 
+    elif id:
+        pre_process = UserData.get_preprocess_from_id(id)
+
+        if pre_process and pre_process['merge_df_path']:
+            merge_name = "merge_" + pre_process['file_name']
+            merge_path = Path(pre_process['merge_df_path'])
+            df = PreProcess.getDF(merge_path)
+
+            data = session[pre_process['file_name']]
+
+            df = df.set_index([df.columns[0]])
+            df.columns.name = df.index.name
+            df.index.name = None
+
+            if len(df.columns) > 100:
+                df_view = df.iloc[:, 0:100].head(15)
+            else:
+                df_view = df.head(15)
+
+            return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data,
+                                   pre_process_id=id, file_name=merge_name)
+
     return redirect('/pre')
 
 
@@ -177,9 +201,11 @@ def scaling_imputation():
 
 
 # normalization and null remove
-@bp.route("/step-4", methods=['POST'])
+@bp.route("/step-4", methods=['POST', 'GET'])
 @login_required
 def norm():
+    id = request.args.get("id")
+
     norm_method = request.form.get("norm_mthd")
     null_rmv = request.form.get("null_rmv")
     pre_process_id = request.form.get("id")
@@ -213,7 +239,7 @@ def norm():
         avg_symbol_df_path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
 
         avg_symbol_df_path_str = avg_symbol_df_path.as_posix()
-        PreProcess.saveDF(df, avg_symbol_df_path_str)
+        PreProcess.saveDF(df, avg_symbol_df_path)
 
         UserData.update_preprocess(user_id, pre_process['file_name'], 'avg_symbol_df_path', avg_symbol_df_path_str)
 
@@ -232,6 +258,30 @@ def norm():
 
         return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')],
                                details=data, pre_process_id=pre_process_id, file_name=avg_symbol_name)
+
+    elif id:
+        pre_process = UserData.get_preprocess_from_id(id)
+
+        if pre_process and pre_process['avg_symbol_df_path']:
+
+            avg_symbol_name = "avg_symbol_" + pre_process['file_name']
+            avg_symbol_df_path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
+
+            data = session[pre_process['file_name']]
+
+            df = PreProcess.getDF(avg_symbol_df_path)
+
+            df = df.set_index([df.columns[0]])
+            df.columns.name = df.index.name
+            df.index.name = None
+
+            if len(df.columns) > 100:
+                df_view = df.iloc[:, 0:100].head(15)
+            else:
+                df_view = df.head(15)
+
+            return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')],
+                                   details=data, pre_process_id=id, file_name=avg_symbol_name)
 
     return redirect('/pre')
 
