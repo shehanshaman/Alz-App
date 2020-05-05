@@ -157,7 +157,9 @@
                 <div class="step-actions">
                     <button id="btn-submit-step-5" class="waves-effect waves-dark btn next-step step-5-click">CONTINUE
                     </button>
-                    <button class="waves-effect waves-dark btn-flat previous-step" onclick="goBack()" type="button">BACK</button>
+                    <a href="{{ url_for('preprocess.norm') }}?id={{ pre_process_id }}">
+                        <button class="waves-effect waves-dark btn-flat previous-step" type="button">BACK</button>
+                    </a>
                 </div>
             </div>
         </form>

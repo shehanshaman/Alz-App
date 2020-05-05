@@ -88,7 +88,7 @@ def register():
             # the name is available, store it in the database and go to
             # the login page
 
-            create_user_db(db, username, password, given_name, '', 1)
+            create_user_db(db, username, password, given_name, '', 0)
             if "@" in username:
                 user_id = UserData.get_user_id(username)
                 verify_key = randomString()

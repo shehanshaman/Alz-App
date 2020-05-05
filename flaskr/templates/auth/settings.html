@@ -99,9 +99,11 @@
                 <div class="row">
                     <h5>Cleanup</h5><br>
                     <label>Clean {{ data[1][1] }} MB in cache</label> <br>
-                    <button class="waves-effect waves-dark btn" style="float: left" id="cache_clear" {% if data[1][1] < 1 %}
-                        disabled
-                    {% endif %}>Clear</button>
+                    <button class="waves-effect waves-dark btn" style="float: left" id="cache_clear"
+                            {% if data[1][1] < 1 %}
+                            disabled
+                            {% endif %}>Clear
+                    </button>
                 </div>
 
             </div>
@@ -222,10 +224,14 @@
         $('.main-body').click(false);
 
         $.get("/update/user/delete/", {id: '{{ g.user['id'] }}'}, function (data, status) {
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
+            {% if g.user['is_verified'] == 2 %}
+                var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut().then(function () {
+                    window.location.replace('/auth/logout');
+                });
+            {% else %}
                 window.location.replace('/auth/logout');
-            });
+            {% endif %}
         });
     });
 
@@ -255,7 +261,7 @@
         ]);
 
         // Optional; add a title and set the width and height of the chart
-        var options = {backgroundColor: 'transparent', 'width': 550, 'height': 400, sliceVisibilityThreshold:0};
+        var options = {backgroundColor: 'transparent', 'width': 550, 'height': 400, sliceVisibilityThreshold: 0};
 
         // Display the chart inside the <div> element with id="piechart"
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
