@@ -30,7 +30,7 @@ from werkzeug.exceptions import abort
 
 bp = Blueprint("preprocess", __name__, url_prefix="/pre")
 
-ALLOWED_EXTENSIONS = set(['pkl', 'csv', 'plk'])
+ALLOWED_EXTENSIONS = set(['csv'])
 
 from pathlib import Path
 
@@ -61,7 +61,8 @@ def index():
     if len(list_names) == 0:
         flash("Error: You don't have uploaded file.")
 
-    return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list, upload_file = upload_file)
+    return render_template("preprocess/step-1.html", available_list=list_names, annotation_list=annotation_list,
+                           upload_file=upload_file)
 
 
 # step 2 | Session > Database
@@ -460,9 +461,9 @@ def upload_file_view():
     user_id = g.user['id']
     path = USER_PATH / str(user_id)
     folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
-    available_space = round(current_app.config['APP_ALZ'].max_usage - folder_size , 2)
+    available_space = round(current_app.config['APP_ALZ'].max_usage - folder_size, 2)
 
-    return render_template("preprocess/step-0.html", available_space = available_space)
+    return render_template("preprocess/step-0.html", available_space=available_space)
 
 
 # file upload
@@ -477,32 +478,32 @@ def upload_file():
         filename = secure_filename(file.filename)
         name = filename.split('.')
 
-        if name[1] == 'csv':
-            path_pkl = USER_PATH / str(g.user["id"]) / (name[0] + '.pkl')
-            path_csv = USER_PATH / str(g.user["id"]) / filename
-            file.save(path_csv)
+        path_pkl = USER_PATH / str(g.user["id"]) / (name[0] + '.pkl')
+        path_csv = USER_PATH / str(g.user["id"]) / filename
+        file.save(path_csv)
 
-            size = os.stat(path_csv).st_size
+        size = os.stat(path_csv).st_size
 
-            if size:
-                if (size / 1024 / 1024)  > float(available_space):
-                    os.remove(path_csv)
-                    flash("You don't have enough space.")
-                    return redirect('/pre/upload')
-
-                if not csv2pkl(path_csv, path_pkl):
-                    os.remove(path_csv)
-                    flash("Error: Empty file content.")
-                    return redirect('/pre/upload')
-            else:
+        if size:
+            if (size / 1024 / 1024) > float(available_space):
                 os.remove(path_csv)
-                flash("Error: Empty file.")
+                flash("You don't have enough space.")
                 return redirect('/pre/upload')
 
+            if not csv2pkl(path_csv, path_pkl):
+                os.remove(path_csv)
+                flash("Error: Empty file content.")
+                return redirect('/pre/upload')
+        else:
+            os.remove(path_csv)
+            flash("Error: Empty file.")
+            return redirect('/pre/upload')
+
         return redirect('/pre?name=' + name[0] + '.pkl')
+
     else:
-        e = ["Wrong file type", ["Please upload csv file."]]
-        return render_template("error.html", errors=e)
+        flash("Wrong file type, Please upload csv file.")
+        return redirect('/pre/upload')
 
 
 @bp.route('/sample/download/')
@@ -552,6 +553,7 @@ def csv2pkl(path_csv, path_pkl):
 
     else:
         return False
+
 
 def get_volcano_fig(fold_change, pValues):
     fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(12, 7))

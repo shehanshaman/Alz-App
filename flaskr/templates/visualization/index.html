@@ -137,21 +137,22 @@
                 <div class="row">
                     <h5 id="h3-head-1" class="card__title" style="text-align: center;">GENE SYMBOLS:</h5>
                 </div>
-                <div class="row">
+                <div class="row" style="margin-bottom: 0">
                     <div class="md-form">
-                        <div class="autocomplete" style="width:300px;">
+                        <div class="autocomplete" style="width:100%;">
                             <input id="features" type="text" name="features" placeholder="GENE SYMBOLS"
                                    style="margin-top: -10px;">
                         </div>
                     </div>
                 </div>
-{#                <div class="row">#}
-{#                    <label>#}
-{#                        <ul id="example_gene">#}
-{#                            <li style="display: block; float:left;">Examples:</li>#}
-{#                        </ul>#}
-{#                    </label>#}
-{#                </div>#}
+                <div class="row" style="margin-bottom: 0">
+                    <label>
+                        <ul id="example_gene">
+                            <li style="display: block; float:left;">Example:</li>
+                            <li style="display: block; float:left;" id="ex_symbol_name"></li>
+                        </ul>
+                    </label>
+                </div>
             </div>
         </div>
         <div class="col-sm-2 form_container">
@@ -218,6 +219,7 @@
 <script>
     $(document).ready(function () {
         $('#submit_button').prop('disabled', true);
+        $('#example_gene').hide();
     });
 </script>
 
@@ -229,13 +231,11 @@
         $('#submit_button').prop('disabled', false);
         $.get("./js/", {available_files: conceptName, user_id: {{ g.user['id'] }}}, function (data, status) {
             data = data.split(",");
-{#            data_len = data.length;#}
-{#            if (data_len > 0) {#}
-{#                var node = document.createElement("LI");#}
-{#                var textnode = document.createTextNode(data[0]);#}
-{#                node.appendChild(textnode);#}
-{#                document.getElementById("example_gene").appendChild(node);#}
-{#            }#}
+            data_len = data.length;
+            if (data_len > 0) {
+                $('#ex_symbol_name')[0].innerHTML = data[0];
+                $('#example_gene').show();
+            }
             autocomplete(document.getElementById("features"), data);
         });
         $('#features').val('');
