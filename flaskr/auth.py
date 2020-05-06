@@ -366,7 +366,7 @@ def admin_panel():
 def admin_contact_panel():
     contact_data = {'option':'ok', 'password':'abc123', 'option_name':'contact_list'}
     try:
-        res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)
+        res = requests.post('https://guides.genetlabs.com/data/data_extract_api.php', data=contact_data)
 
     except requests.exceptions.RequestException as e:
         flash("Requested host not available")
@@ -382,7 +382,7 @@ def admin_contact_panel():
 def admin_subscribe_panel():
     contact_data = {'option':'ok', 'password':'abc123', 'option_name':'subscribe_list'}
     try:
-        res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)
+        res = requests.post('https://guides.genetlabs.com/data/data_extract_api.php', data=contact_data)
 
     except requests.exceptions.RequestException as e:
         flash("Requested host not available")
