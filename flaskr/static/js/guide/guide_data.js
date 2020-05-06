@@ -1,5 +1,5 @@
 
-var host_name = 'http://localhost/myapp/fyp-web-app/web-app/manual.php'
+var host_name = 'https://guides.genetlabs.com/manual.php'
 var tip_home =  
 [
     {

@@ -83,13 +83,13 @@ def create_app(test_config=None):
 
     mail = Mail()
     mail_settings = {
-        "MAIL_SERVER": 'smtp.gmail.com',
+        "MAIL_SERVER": 'mail.genetlabs.com',
         "MAIL_PORT": 465,
         "MAIL_USE_TLS": False,
         "MAIL_USE_SSL": True,
-        "MAIL_USERNAME": 'shamanmario95@gmail.com',
-        "MAIL_PASSWORD": 'Shehan123'
-    }
+        "MAIL_USERNAME": 'info@genetlabs.com',
+        "MAIL_PASSWORD": ';46sEs$0&AL+'
+    }    
     app.config.update(mail_settings)
     mail.init_app(app)
 
