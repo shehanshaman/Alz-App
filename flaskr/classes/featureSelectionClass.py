@@ -8,7 +8,7 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 
-from sklearn.model_selection import cross_val_score, cross_val_predict
+from sklearn.model_selection import cross_val_score
 from sklearn import svm
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
@@ -16,7 +16,6 @@ from sklearn import metrics
 
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import roc_curve, auc
-from sklearn.metrics import roc_auc_score
 
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -537,3 +536,14 @@ class FeatureSelection:
         col_c = [col_m12_uni, col_m23_uni, col_m13_uni]
 
         return col_c
+
+    def get_gene_info_df(file_path):
+        data = pd.read_csv(file_path, sep="\t", index_col="Symbol")
+        data = data.loc[~data.index.duplicated(keep='first')]
+        return data
+
+    def get_selected_gene_info(file_path, gene_symbols):
+        df = FeatureSelection.get_gene_info_df(file_path)
+        df_sel = df.index.isin(gene_symbols)
+        df = df[df_sel]
+        return df

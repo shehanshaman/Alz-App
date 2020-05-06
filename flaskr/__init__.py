@@ -46,11 +46,16 @@ def create_app(test_config=None):
         file_to_open = USER_PATH / str(user_id) / selected_file
         df = PreProcess.getDF(file_to_open)
 
+        shape = df.shape
+        min = round(df.min().min())
+        max = round(df.max().max())
+
         if len(df.columns) > 15:
             session['view_df_name'] = selected_file
-            df = df.iloc[:, : 10]
+            df.insert(10, "....", "....")
+            df = df.iloc[:, : 11]
 
-        data = [selected_file]
+        data = [selected_file, shape, min, max]
         return render_template('preprocess/tableVIew.html', tables=[df.to_html(classes = 'display" id = "table_id')], data=data)
 
     @app.route("/view/p/", methods=["GET"])
@@ -78,13 +83,13 @@ def create_app(test_config=None):
 
     mail = Mail()
     mail_settings = {
-        "MAIL_SERVER": 'smtp.gmail.com',
+        "MAIL_SERVER": 'mail.genetlabs.com',
         "MAIL_PORT": 465,
         "MAIL_USE_TLS": False,
         "MAIL_USE_SSL": True,
-        "MAIL_USERNAME": 'kggcbgunarathne@gmail.com',
-        "MAIL_PASSWORD": 'Gihan@pera123'
-    }
+        "MAIL_USERNAME": 'info@genetlabs.com',
+        "MAIL_PASSWORD": ';46sEs$0&AL+'
+    }    
     app.config.update(mail_settings)
     mail.init_app(app)
 

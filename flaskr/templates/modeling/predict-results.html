@@ -22,7 +22,7 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/>
 
 </head>
 
@@ -42,6 +42,20 @@
                 </button>                              
             </div>        
         </div>
+
+        <div class="row">
+            <table>
+                <tr>
+                    <td>Number of positive results</td>
+                    <td>{{ data['Positive'] }}</td>
+                </tr>
+                <tr>
+                    <td>Number of negative results</td>
+                    <td>{{ data['Negative'] }}</td>
+                </tr>
+            </table>
+        </div>
+
         <div class="row table_view">
             {% for table in tables %}
                 {{ table|safe }}
@@ -70,9 +84,13 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 

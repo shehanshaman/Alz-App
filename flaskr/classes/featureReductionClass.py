@@ -13,7 +13,7 @@ from sklearn import svm
 from sklearn.svm import SVC
 from sklearn import metrics
 import numpy as np
-from sklearn.model_selection import cross_val_score, cross_val_predict
+from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
@@ -68,13 +68,13 @@ class FeatureReduction:
         return df_200F
 
     def create_figure(selectedFeatures, length):
-        fig = Figure(figsize=(12, 8))
+        fig = Figure(figsize=(10, 7))
         axis = fig.add_subplot(1, 1, 1)
         axis.set_ylabel('Score')
         axis.set_xlabel('Specs')
         axis.set_title('Univariate Selection: ' + str(length) + " features")
-
-        axis.plot(selectedFeatures["Specs"], selectedFeatures["Score"], label='linear')
+        x_array = list(range(1, length + 1))
+        axis.plot(x_array, selectedFeatures["Score"], label='linear')
         return fig
 
     def get_classification_results(X, y):
@@ -131,8 +131,8 @@ class FeatureReduction:
         return df
 
     def get_best_cls(cls_result_df):
-        cls_result_df["avg"] = (cls_result_df['Testing'] + cls_result_df['Training']) / 2
-        cls_name = cls_result_df.nlargest(3, ['avg'])["Classifiers"].tolist()
+        # cls_result_df["avg"] = (cls_result_df['Testing'] + cls_result_df['Training']) / 2
+        cls_name = cls_result_df.nlargest(3, ['Testing'])["Classifiers"].tolist()
         cls_id = get_cls_id(cls_name)
         cls_id_str = ','.join(str(e) for e in cls_id)
         cls_name_str = ','.join(e for e in cls_name)

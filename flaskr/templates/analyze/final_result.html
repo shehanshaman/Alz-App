@@ -22,16 +22,49 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/venn_diagram.css') }}">
 </head>
 
 <style>
-        .summary_plot > img {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-            width: 100%;
-        }
+    .summary_plot > img {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+        width: 100%;
+    }
+
+    ul.stepper .step.active:before, ul.stepper .step.done:before {
+        background-color: #26a69a;
+    }
+
+    .alert-info:hover {
+        color: white;
+        background-color: #26a69a;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    } 
+
+    ul.stepper .step.active:before, ul.stepper .step.done:before {
+        background-color: #26a69a;
+    }
+
+    #exTab3 .tab-content {
+      color : white;
+      background-color: #163b37;
+      padding : 15px 15px;
+    }
+
+    #exTab3 .tab-content tr:hover {
+      color : #26a69a;
+    }
+    .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+        color: #fff;
+        background-color: #26a69a;
+    }
+
+    .nav>li>a {
+        color: #26a69a;
+        margin-bottom: 10px;    
+    }
 
 </style>
 
@@ -40,26 +73,123 @@
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
+<!-- The Modal -->
+<div id="popup_gene_list" class="modal_pop" style="display: none;">
+    <div class="modal-content-1">
+        <div class="row">
+            <div class="col-sm-10">
+                <p style="display: none;"  class="popup_head_div mthd_features_div">{{ method }} extracted {{ len[0] }} features.</p>
+                <p style="display: none;" class="popup_head_div mthd_overlap_features_div">{{ method }} + overlapped extracted {{ len[1] }} features.</p>            
+            </div>
+            <div class="col-sm-2">
+                <span class="close">&times;</span>
+            </div>
+        </div>
+        <div class="row">
+            <div id="exTab3"> 
+                <ul class="nav nav-pills gene_list_div" style="background-color: #26a69a00;">
+                </ul>
+
+                <div class="tab-content clearfix">
+                    <div class="gene_not_have">
+                        <p>Sorry this gene details currently not available..</p>
+                    </div>
+                    <div class="tab-pane active" id="1b">
+                        <table class="table table-bordered table-hover gene_have">
+                          <tbody>
+                            <tr>
+                              <td>Full name</td>
+                              <td id="td_name"></td>
+                            </tr>                            
+                            <tr>
+                              <td>Feature type</td>
+                              <td id="td_type"></td>
+                            </tr>
+                            <tr>
+                              <td>Gene ID</td>
+                              <td id="td_id"></td>
+                            </tr>
+                            <tr>
+                              <td>Locus Tag</td>
+                              <td id="td_locus_tag"></td>
+                            </tr>
+                            <tr>
+                              <td>Modification date</td>
+                              <td id="td_date"></td>
+                            </tr>
+                            <tr>
+                              <td>Nomenclature status</td>
+                              <td id="td_nomenclature_status"></td>
+                            </tr>
+                            <tr>
+                              <td>Description</td>
+                              <td id="td_description"></td>
+                            </tr>
+                            <tr>
+                              <td>Synonyms</td>
+                              <td id="td_synonyms"></td>
+                            </tr>
+                            <tr>
+                              <td>Chromosome</td>
+                              <td id="td_chromosome"></td>
+                            </tr>
+                            <tr>
+                              <td>dbXrefs</td>
+                              <td id="td_dbXrefs"></td>
+                            </tr>
+                            <tr>
+                              <td>Other designations</td>
+                              <td id="td_designations"></td>
+                            </tr>
+                            <tr>
+                              <td>Type of gene</td>
+                              <td id="td_gene_type"></td>
+                            </tr>                                                    
+                          </tbody>
+                      </table>
+                      <div class="gene_have more_details">
+                          <button class="btn" style="float: right; border-radius: 5px; background-color: #f8f8f8;"><a style="color: #163b37" target="_blank">more details</a></button>
+                      </div>                      
+                    </div>
+                    <div class="tab-pane" id="2b">
+                        <h3>We use the class nav-pills instead of nav-tabs which automatically creates a background color for the tab</h3>
+                    </div>
+                    <div class="tab-pane" id="3b">
+                        <h3>We applied clearfix to the tab-content to rid of the gap between the tab and the content</h3>
+                    </div>
+                    <div class="tab-pane" id="4b">
+                        <h3>We use css to change the background color of the content to be equal to the tab</h3>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+<p style="display: none;" class="mthd_features_list">{{ col[0] }}</p>
+<p style="display: none;" class="mthd_overlap_features_list">{{ col[1] }}</p>
+<p style="display: none;" class="gene_ex_list_div">{{ gene_name_list }}</p>
+
 <div class="main-div-an-3">
     <div class="card-content">
 
         <ul data-method="GET" class="stepper linear">
-            <li class="step">
+            <li id="side_step_nav_preprocess_icon" class="step">
                 <a href="{{ url_for('preprocess.index') }}">
                     <div class="step-title waves-effect waves-dark">Pre-processing</div>
                 </a>
             </li>
-            <li class="step">
+            <li id="side_step_nav_feature_icon" class="step">
                 <a href="{{ url_for('fs.index') }}">
                     <div class="step-title waves-effect waves-dark">Feature selection</div>
                 </a>
             </li>
-            <li class="step active">
+            <li id="side_step_nav_analize_icon" class="step active">
                 <a href="{{ url_for('analyze.index') }}">
                     <div class="step-title waves-effect waves-dark">Analysis</div>
                 </a>
             </li>
-            <li class="step">
+            <li id="side_step_nav_validation_icon" class="step">
                 <a href="{{ url_for('validation.index') }}">
                     <div class="step-title waves-effect waves-dark">Validation</div>
                 </a>
@@ -69,126 +199,185 @@
     </div>
 
     <div id="mainDataInterface-id" class="container mainDataInterface">
-
-        <div class="step">
-            <div class="step-content">
-
-                <div class="result_content">
+        <form id="main-form-div-an-3-continue" action="/val" method="get" id="form">
+            <div class="step">
+                <div class="step-content">
                     <div class="row">
-                        <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">
-                        {{ method }} Selected Features </h3>
-                        <h3 id="selected-method" style="display: none;">{{ method }}</h3>
-                    </div>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-6">
+                            <label style="float: right;font-size: 20px;"><b>Selected File: </b> {{ filename }}</label>    
+                        </div>
+                        <div class="col-sm-3 change_file_div">
+                            <a href="../fs/an/config" style="color: #26a69a;text-decoration: none;font-size: 15px;"><i class="fas fa-exchange-alt fa-2x"></i> Change
+                            file</a>
+                        </div>
+                        <div class="col-sm-2"></div>
+                    </div>                     
+                    <div class="result_content">
+                        <div class="row">
+                            <h3 id="h3-head-6" class="card__title"
+                                style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">
+                                {{ method }} Selected Features </h3>
+                            <h3 id="selected-method" style="display: none;">{{ method }}</h3>
+                        </div>
 
-                    <div id="gene_output_div1" class="alert alert-info">
-                        <strong>Info!</strong> {{ method }} extracted {{ len[0] }} features. <h6>{{ col[0] }}</h6>
-                    </div>
+                        <div id="gene_output_div1" class="alert alert-info" style="cursor: pointer;">
+                            <strong>Info!</strong> {{ method }} extracted {{ len[0] }} features. 
+                            <h6>{{ col[0] }}</h6>
+                        </div>
 
-                    <div class="row">
-                        <div id="results_plot_div1" class="container-1">
-                            <div class="summary_plot">
-                                <img id="selected_features" src="data:image/png;base64,{{ sel_roc }}" alt="overlap">
+                        <div class="row">
+                            <div id="results_plot_div1" class="container-1">
+                                <div class="summary_plot">
+                                    <img id="selected_features" src="data:image/png;base64,{{ sel_roc }}" alt="overlap">
+                                </div>
+                                <div class="top-right">
+                                    <button type="button"
+                                            style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                            class="use-download-selected_features" value="">
+                                        <i class="fas fa-file-download fa-2x"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="top-right">
-                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
-                                                class="use-download-selected_features" value="">
-                                    <i class="fas fa-file-download fa-2x"></i>
-                                </button>
+                        </div>
+
+                        <div>
+                            <div class="row">
+
+                                <h3 id="h3-head-2" class="card__title" style="text-align: center;"></h3>
                             </div>
-                        </div>                        
-                    </div>
 
-                    <div>
-                        <div class="row">
-
-                            <h3 id="h3-head-2" class="card__title" style="text-align: center;"></h3>
-                        </div>
-
-                        <div class="row">
-                            <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">A ROC curve is constructed by plotting the true positive rate (TPR) against the false positive rate (FPR). The true positive rate is the proportion of observations that were correctly predicted to be positive out of all positive observations (TP/(TP + FN)). Similarly, the false positive rate is the proportion of observations that are incorrectly predicted to be positive out of all negative observations (FP/(TN + FP)). This graph shows the ROC curve consideing the genes obtained through considering least correlation !</p>
-                            <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">The correlation matrix of the genes selected by {{ method }} only !</p>
-                        </div> 
-
-                        <br>
-
-                        <div id="results_table_div1"  style="overflow: auto;">
-                            {% for table in table_r1 %}
-                                {{ table|safe }}
-                            {% endfor %}
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="result_content">
-                    <div class="row">
-                        <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;text-transform: uppercase;">{{ method }} + Overlapped
-                            Features</h3>
-                    </div>
-
-                    <div id="gene_output_div2" class="alert alert-info">
-                        <strong>Info!</strong> {{ method }} + overlapped extracted {{ len[1] }} features.
-                        <h6>{{ col[1] }}</h6>
-                    </div>
-
-                    <div class="row">
-                        <div id="results_plot_div2"  class="container-1">
-                            <div class="summary_plot">
-                                <img id="overlapped_features" src="data:image/png;base64,{{ all_roc }}" alt="overlap">
+                            <div class="row">
+                                <p class="card__title"
+                                   style="font-size: 15px;text-align: justify; font-family: monospace;">
+                                    A ROC curve is constructed by plotting the true positive rate (TPR) against the
+                                    false
+                                    positive rate (FPR). The true positive rate is the proportion of observations that
+                                    were
+                                    correctly predicted to be positive out of all positive observations (TP/(TP + FN)).
+                                    Similarly, the false positive rate is the proportion of observations that are
+                                    incorrectly predicted to be positive out of all negative observations (FP/(TN +
+                                    FP)).
+                                    This graph shows the ROC curve consideing the genes obtained through considering
+                                    least
+                                    correlation !</p>
+                                <p class="card__title"
+                                   style="font-size: 15px;text-align: justify; font-family: monospace;">
+                                    The correlation matrix of the genes selected by {{ method }} only !</p>
                             </div>
-                            <div class="top-right">
-                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
-                                                class="use-download-overlapped_features" value="">
-                                    <i class="fas fa-file-download fa-2x"></i>
-                                </button>
-                            </div> 
-                        </div>                       
+
+                            <br>
+
+                            <div id="results_table_div1" style="overflow: auto;">
+                                {% for table in table_r1 %}
+                                    {{ table|safe }}
+                                {% endfor %}
+
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
+                    <div class="result_content">
                         <div class="row">
+                            <h3 id="h3-head-6" class="card__title"
+                                style="text-align: center;color: #26a69a;text-transform: uppercase;">{{ method }} +
+                                Overlapped
+                                Features</h3>
+                        </div>
 
-                            <h3 id="h3-head-2" class="card__title" style="text-align: center;"></h3>
+                        <div id="gene_output_div2" class="alert alert-info" style="cursor: pointer;">
+                            <strong>Info!</strong> {{ method }} + overlapped extracted {{ len[1] }} features.
+                            <h6>{{ col[1] }}</h6>
                         </div>
 
                         <div class="row">
-                            <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">The graph(left) shows the ROC curve of all the genes selected.That is, the set of overlapped genes plus the genes filtered out by {{ method }} considering the least correlation, The graph(right) shows the correlation matrix of all the genes selected. That is, the set of overlapped genes plus the genes filtered out by considering the least correlation !</p>
-                        </div> 
+                            <div id="results_plot_div2" class="container-1">
+                                <div class="summary_plot">
+                                    <img id="overlapped_features" src="data:image/png;base64,{{ all_roc }}"
+                                         alt="overlap">
+                                </div>
+                                <div class="top-right">
+                                    <button type="button"
+                                            style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                            class="use-download-overlapped_features" value="">
+                                        <i class="fas fa-file-download fa-2x"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-                        <br>
+                        <div>
+                            <div class="row">
 
-                        <div id="results_table_div2"  style="overflow: auto;">
-                            {% for table in table_r2 %}
-                                {{ table|safe }}
-                            {% endfor %}
+                                <h3 id="h3-head-2" class="card__title" style="text-align: center;"></h3>
+                            </div>
 
+                            <div class="row">
+                                <p class="card__title"
+                                   style="font-size: 15px;text-align: justify; font-family: monospace;">
+                                    The graph(left) shows the ROC curve of all the genes selected.That is, the set of
+                                    overlapped genes plus the genes filtered out by {{ method }} considering the least
+                                    correlation, The graph(right) shows the correlation matrix of all the genes
+                                    selected.
+                                    That is, the set of overlapped genes plus the genes filtered out by considering the
+                                    least correlation !</p>
+                            </div>
+
+                            <br>
+
+                            <div id="results_table_div2" style="overflow: auto;">
+                                {% for table in table_r2 %}
+                                    {{ table|safe }}
+                                {% endfor %}
+
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <hr class="line-hr">
+                    <div class="row" style="margin-top: 30px; margin-bottom: 30px">
+                        <div class="col-sm-6">
+                            <h6 id="h3-head-1" class="card__title"
+                                style="text-align: center;font-family: monospace;">Select Disease
+                                :</h6>
+                        </div>
+                        <div id="disease_div" class="col-sm-6">
+                            <div class="md-form">
+                                <select style="font-family: monospace;" class="form-control"
+                                        id="file" name="file">
+                                    {% for validation_file in validation_file_list %}
+                                        <option value="{{ validation_file }}">{{ validation_file }}</option>
+                                    {% endfor %}
 
-                <div class="step-actions">
-                    <button id="btn-submit-an-3-continue" class="waves-effect waves-dark btn next-step step-6-click">
-                        <a>VALIDATION</a>
-                    </button>
-                    <button class="waves-effect waves-dark btn-flat previous-step">
-                        <a href="{{ url_for('analyze.selected_method') }}">BACK</a>
-                    </button>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="line-hr">
+
+                    <div class="step-actions">
+                        <button id="btn-submit-an-3-continue"
+                                class="waves-effect waves-dark btn next-step step-6-click">
+                            <a>VALIDATION</a>
+                        </button>
+                        <button class="waves-effect waves-dark btn-flat previous-step" onclick="goBack()" type="button">
+                            BACK
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <form id="main-form-div-an-3-continue" style="display: none" action="/val" method="get" id="form">
+            <input type="hidden" id="id" name="id" value="{{ result_id }}"/>
+
         </form>
 
     </div>
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 19%;text-align: center;color: #26a69a; margin-bottom: 200px;">VALIDATING</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="text-align: center;color: #26a69a;">VALIDATING</h5>
+</div>
 
 {% include 'guide_footer.html' %}
 
@@ -208,9 +397,13 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
@@ -224,10 +417,10 @@
 
         $("#selected_method").val(fired_button);
 
-        $("#main-form-div-an-3-continue").submit();   
+        $("#main-form-div-an-3-continue").submit();
 
         $('#tourControls').hide(0);
-        $('.notification-container-pop').hide(0); 
+        $('.notification-container-pop').hide(0);
 
     });
 
@@ -268,5 +461,24 @@
 <script>
 
     var tour = guide_main_call(tip_an_final, 'BL');
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/venn_diagram.js') }}"></script>
+
+<script type="text/javascript">
+
+gene_list_post = '{{ gene_info | tojson}}';
+gene_describe_json = JSON.parse(gene_list_post);
 
 </script>

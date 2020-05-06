@@ -1,10 +1,12 @@
+
+var host_name = 'https://guides.genetlabs.com/manual.php'
 var tip_home =  
 [
     {
         element: '#upload_icon',
-        tooltip: 'Upload your pkl/csv files to pre-process !',
+        tooltip: 'Upload your csv files to pre-process !',
         text: 'Upload File',
-        files: [{url: '', name: 'more details'}],
+        files: [{url: host_name+'#upload_link', name: 'more details about input format'}],
         position: 'T'
     },
     {
@@ -63,7 +65,8 @@ var tip_step_1 =
         element : '#available_file_name', 
         tooltip : 'Choose a file from the list !', 
         text: 'Availabe files', 
-        files: [{ url : '', name : 'more details' }], position: 'T' 
+        files: [{url: host_name+'#upload_link', name: 'more details about input format'}],
+        position: 'T' 
     },
     { 
         element : '#view_div', 
@@ -74,13 +77,21 @@ var tip_step_1 =
     { 
         element : '#annotation_table_name', 
         tooltip : 'Choose the annotation table corresponding to the chosen data set to map probe ids to gene symbols !', 
-        text: 'Annotation table', 
+        text: 'Annotation table',
+        files: [{url: host_name+'#preprocess_link', name: 'more details'}],
         position: 'T' 
     },
     { 
         element : '#average_div', 
         tooltip : 'Choose a method to handle multiple probe ids mapping to the same gene symbol !', 
         text: 'Probe selection method', 
+        files: [{url: host_name+'#preprocess_link', name: 'more details'}],
+        position: 'T' 
+    },
+    { 
+        element : '#btn-skip-step-1', 
+        tooltip : 'Without mapping continue processing data !', 
+        text: 'Skip mapping', 
         position: 'T' 
     }
 ];
@@ -172,13 +183,15 @@ var tip_step_3 =
     { 
         element : '#scaling_select_div', 
         tooltip : 'Scale the data to a specific range by selecting an appropriate method !', 
-        text: 'Scaling', 
+        text: 'Normalization',
+        files: [{url: host_name+'#imputation_link', name: 'more details'}],
         position: 'T' 
     },
     { 
         element : '#imputation_select_div', 
         tooltip : 'Null values should be handled properly before moving to next steps. Use these techniques to handle null values !', 
         text: 'Imputation', 
+        files: [{url: host_name+'#imputation_link', name: 'more details'}],
         position: 'T' 
     }
 ];
@@ -188,7 +201,7 @@ var tip_step_5 =
     { 
         element : '#img_results_div', 
         tooltip : 'Volcano Plot :Fold change vs -log10 (p-value) !', 
-        text: 'Fold vs p-value plot', 
+        text: 'Fold vs p-value plot',
         position: 'R' 
     },
     { 
@@ -200,12 +213,17 @@ var tip_step_5 =
     { 
         element : '#fold_range_div', 
         tooltip : 'Fold change is the diﬀerence between the means of the two groups of samples. You can select a value to filter the genes that have a greater fold value !', 
-        text: 'Fold Range', 
+        text: 'Fold Range',
+        files: [{url: host_name+'#fold_link', name: 'more details'}],
         position: 'L' 
     },
     { 
         element : '#p_value_range_div', 
-        tooltip : 'The p-value is a measure of how likely you are to get this spot data if no real difference existed. Therefore, a small p-value indicates that there is a small chance of getting this data if no real difference existed and therefore you decide that the difference in group expression data is significant.  Usually, we select 0.05 as the cut off for p-values!', text: 'P-value', position: 'B' },
+        tooltip : 'The p-value is a measure of how likely you are to get this spot data if no real difference existed. Therefore, a small p-value indicates that there is a small chance of getting this data if no real difference existed and therefore you decide that the difference in group expression data is significant.  Usually, we select 0.05 as the cut off for p-values!', 
+        text: 'P-value',
+        files: [{url: host_name+'#fold_link', name: 'more details'}], 
+        position: 'B' 
+    },
     { 
         element : '#calculate_feature_div', 
         tooltip : 'By selecting cut off values for p-values and the fold change, you can filter out deferentially expressed genes !', 
@@ -230,12 +248,13 @@ var tip_step_6 =
     },
     { element : '#table_results_div', 
         tooltip : 'Classification is the process of predicting the class of given data points. A classifier is a function that is used to assign the samples to a class. Classification accuracy of the selected genes using 5 classifiers is shown in the table !', 
-        text: 'Classification results', 
+        text: 'Classification results',
+        files: [{url: host_name+'#feature_reduction_link', name: 'more details'}], 
         position: 'L' 
     },
     { 
         element : '#highest_accuracy_clf', 
-        tooltip : 'The testing and training accuracy of the filtered features with 6 classifiers are obtained previously. Out of these, we will select the best 3 classifiers to proceed in  the next steps !', 
+        tooltip : 'The testing accuracy of the filtered features with 6 classifiers are obtained previously. Out of these, we will select the best 3 classifiers to proceed in  the next steps !', 
         text: 'Highest accurate classifiers', 
         position: 'L' 
     },
@@ -311,6 +330,12 @@ var tip_fs_results =
 var tip_an_index =
 [
     { 
+        element : '.change_file_div', 
+        tooltip : 'You can change analysis file from here !', 
+        text: 'Select file', 
+        position: 'T' 
+    },
+    { 
         element : '#result_plot_div1', 
         tooltip : 'Right: Number of features selected by each method only, Left : The variation of accuracy with the features selected by one method trained under 3 classifiers !', 
         text: 'Training accuracies', 
@@ -338,6 +363,12 @@ var tip_an_index =
 
 var tip_an_correlation =
 [
+    { 
+        element : '.change_file_div', 
+        tooltip : 'You can change file from here !', 
+        text: 'Select file', 
+        position: 'T' 
+    },
     { 
         element : '#results_plot_div1', 
         tooltip : 'Variation of correlation values with the number of correlated features by considering all the 3 methods !', 
@@ -373,6 +404,12 @@ var tip_an_correlation =
 var tip_an_final =
 [
     { 
+        element : '.change_file_div', 
+        tooltip : 'You can change file from here !', 
+        text: 'Select file', 
+        position: 'T' 
+    },
+    { 
         element : '#gene_output_div1', 
         tooltip : 'This shows the set of genes selected by considering the least correlation values and the highest accuracy !', 
         text: 'Extracted genes', 
@@ -407,11 +444,23 @@ var tip_an_final =
         tooltip : 'This table shows the testing and training accuracies of all the selected features. This is the final accuracy of the  best set of genes !', 
         text: 'Accuracy results', 
         position: 'T' 
+    },
+    { 
+        element : '#disease_div', 
+        tooltip : 'You have to change this for validate your results !', 
+        text: 'Change disease',
+        position: 'T' 
     }
 ];
 
 var tip_validation =
 [
+    { 
+        element : '.change_file_div', 
+        tooltip : 'Choose file you want to validate !', 
+        text: 'Select file', 
+        position: 'T' 
+    },
     { 
         element : '#info_results_div', 
         tooltip : 'Now, we need to validate our results to confirm their biological relevance. For this, we use data from https://www.genecards.org/ to compare our results. In GeneCards, they have information on the already identified risk genes for a particular disease!', 

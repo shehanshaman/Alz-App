@@ -32,6 +32,10 @@
             padding: 5px;
         }
 
+        .form-padding {
+            width: 70%;
+        }
+
         .flash {
             margin: 1em 0;
             padding: 1em;
@@ -43,11 +47,12 @@
 
 <body style="background-color: #f3f6f9;">
 
-<!-- Dropdown Structure -->
-{% include 'horizontal_nav_bar.html' %}
+<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 5%;">
 
-<div id="mainDataInterface-id" class="container mainDataInterface">
-
+    <div class="logo center" style="margin-top: 0;">
+        <img src="{{ url_for('static', filename='images/login-logo.png') }}" alt="logo"
+             style="width:125px; filter: brightness(1.02);">
+    </div>
 
     <div class="step-content">
         <div class="row head-word">
@@ -55,27 +60,31 @@
         </div>
     </div>
 
-    <div>
+    <div class="center">
         {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
         {% endfor %}
     </div>
 
     <div class="row">
-        <div class="border">
-            <form method="post" class="center">
-                <label for="username" style="float: left">E-mail</label>
-                <input type="email" name="username" id="username" required>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <div class="border">
+                <form method="post" class="form-padding center" style="margin-top: 5%">
+                    <label for="username" style="float: left">E-mail</label>
+                    <input type="email" name="username" id="username" required>
 
-                <input type="submit" value="Submit" class="waves-effect waves-dark btn">
-            </form>
+                    <input type="submit" value="Submit" class="waves-effect waves-dark btn" style="margin-top: 10%">
+                </form>
+                <div class="row center">
+                    <label><a href="{{ url_for('auth.login') }}">Sign in instead</a></label>
+                </div>
+            </div>
         </div>
-
+        <div class="col-sm-3"></div>
     </div>
 
 </div>
-
-{% include 'footer.html' %}
 
 </body>
 </html>

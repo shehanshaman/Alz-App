@@ -8,10 +8,11 @@
     <title>GeNet | Validation</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!-- Materializecss compiled and minified CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
@@ -57,6 +58,30 @@
             border-radius: inherit;
             border: inherit;
         }
+
+    ul.stepper .step.active:before, ul.stepper .step.done:before {
+        background-color: #26a69a;
+    }
+
+#exTab3 .tab-content {
+  color : white;
+  background-color: #163b37;
+  padding : 15px 15px;
+}
+
+#exTab3 .tab-content tr:hover {
+  color : #26a69a;
+}
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+    color: #fff;
+    background-color: #26a69a;
+}
+
+.nav>li>a {
+    color: #26a69a;
+    margin-bottom: 10px;    
+}
+
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
@@ -68,22 +93,22 @@
     <div class="card-content">
 
         <ul data-method="GET" class="stepper linear">
-            <li class="step">
+            <li id="side_step_nav_preprocess_icon" class="step">
                 <a href="{{ url_for('preprocess.index') }}">
                     <div class="step-title waves-effect waves-dark">Pre-processing</div>
                 </a>
             </li>
-            <li class="step">
+            <li id="side_step_nav_feature_icon" class="step">
                 <a href="{{ url_for('fs.index') }}">
                     <div class="step-title waves-effect waves-dark">Feature selection</div>
                 </a>
             </li>
-            <li class="step">
+            <li id="side_step_nav_analize_icon" class="step">
                 <a href="{{ url_for('analyze.index') }}">
                     <div class="step-title waves-effect waves-dark">Analysis</div>
                 </a>
             </li>
-            <li class="step active">
+            <li id="side_step_nav_validation_icon" class="step active">
                 <a href="{{ url_for('validation.index') }}">
                     <div class="step-title waves-effect waves-dark">Validation</div>
                 </a>
@@ -97,11 +122,24 @@
 
         <div class="step-heading">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">VALIDATION</h3>
+                <h3 id="h3-head-6" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">VALIDATION</h3>
             </div>
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-6">
+                    <label style="float: right;font-size: 20px;"><b>Selected File: </b> {{ filename }}</label>   
+                </div>
+                <div class="col-sm-3 change_file_div">
+                    <a href="../fs/val/config" style="color: #26a69a;text-decoration: none;font-size: 15px;"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>             
         </div>
 
         <div class="step-content">
+
+        {% if data_available %}
 
             <div id="info_results_div" class="alert alert-info">
                 <strong>Info!</strong>
@@ -137,7 +175,9 @@
 
             <div class="result_content">
                 <div id="venn_diagram_div" class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that are already identified and biologically validated from the 50 genes obtained by each method</h4>
+                    <h4 id="h4-head-6" class="card__title"
+                        style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that
+                        are already identified and biologically validated from the 50 genes obtained by each method</h4>
                 </div>
 
                 <br>
@@ -146,13 +186,13 @@
                     <div class="col-sm-3"></div>
                     <div class="col-sm-8 union_div" style="width: 50%;margin-top: auto;">
 
-                        <p class="p_M value_p">{{venn_data[2] | length}}</p>
-                        <p class="p_T value_p">{{venn_data[0][1] | length}}</p>
-                        <p class="p_L value_p">{{venn_data[0][0] | length}}</p>
-                        <p class="p_R value_p">{{venn_data[0][2] | length}}</p>
-                        <p class="p_TLM value_p">{{venn_data[1][0] | length}}</p>
-                        <p class="p_TRM value_p">{{venn_data[1][1] | length}}</p>
-                        <p class="p_LRM value_p">{{venn_data[1][2] | length}}</p>
+                        <p class="p_M value_p">{{ venn_data[2] | length }}</p>
+                        <p class="p_T value_p">{{ venn_data[0][1] | length }}</p>
+                        <p class="p_L value_p">{{ venn_data[0][0] | length }}</p>
+                        <p class="p_R value_p">{{ venn_data[0][2] | length }}</p>
+                        <p class="p_TLM value_p">{{ venn_data[1][0] | length }}</p>
+                        <p class="p_TRM value_p">{{ venn_data[1][1] | length }}</p>
+                        <p class="p_LRM value_p">{{ venn_data[1][2] | length }}</p>
 
                         <p class="value_clf_p clf_T">{{ method_names[1] }}</p>
                         <p class="value_clf_p clf_L">{{ method_names[0] }}</p>
@@ -207,12 +247,15 @@
                         </svg>
                     </div>
                     <div class="col-sm-1"></div>
- 
+
                 </div>
 
                 <div class="row">
-                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">GeneCards.org contains information on the already identified risk genes for a particular disease. This diagram shows the number of genes selected by each method which are also identified by GeneCards !</p>
-                </div>                
+                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">
+                        GeneCards.org contains information on the already identified risk genes for a particular
+                        disease. This diagram shows the number of genes selected by each method which are also
+                        identified by GeneCards !</p>
+                </div>
             </div>
 
             <div class="result_content">
@@ -233,6 +276,15 @@
                 </div>
             </div>
 
+        {% else %}
+
+            <div class="row" style="margin-bottom: 20%;">
+                <div class="well well-lg">
+                    <h6 style="color: red;">Not found validation results.</h6>
+                </div>
+            </div>
+
+        {% endif %}
 
             <hr class="line-hr">
 
@@ -241,49 +293,137 @@
                     <a>MODELING</a>
                 </button>
                 <button class="waves-effect waves-dark btn-flat previous-step">
-                    <a href="{{ url_for('analyze.final_result') }}">BACK</a>
+                    <a href="{{ url_for('home.index') }}">BACK</a>
                 </button>
             </div>
         </div>
 
         <form id="main-form-div-model" style="display: none" action="/mod" method="get" id="form">
+            <input type="hidden" id="id" name="id" value="{{ result_id }}"/>
         </form>
 
     </div>
 </div>
 
+<p style="display: none;" class="popup_gene_list_div T_gene_list">{{ venn_data[0][1] }}</p>
+<p style="display: none;" class="popup_gene_list_div L_gene_list">{{ venn_data[0][0] }}</p>
+<p style="display: none;" class="popup_gene_list_div R_gene_list">{{ venn_data[0][2] }}</p>
+<p style="display: none;" class="popup_gene_list_div M_gene_list">{{ venn_data[2] }}</p>
+<p style="display: none;" class="popup_gene_list_div TL_gene_list">{{ venn_data[1][0] }}</p>
+<p style="display: none;" class="popup_gene_list_div TR_gene_list">{{ venn_data[1][1] }}</p>
+<p style="display: none;" class="popup_gene_list_div LR_gene_list">{{ venn_data[1][2] }}</p>
+<p style="display: none;" class="gene_ex_list_div">{{ gene_name_list }}</p>
+
 <!-- The Modal -->
 <div id="popup_gene_list" class="modal_pop" style="display: none;">
     <div class="modal-content-1">
         <div class="row">
-            <span class="close">&times;</span>
-        </div>      
-        <div class="row">
-            <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }} method</p>
-            <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }} method</p>
-            <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }} method</p>
-            <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }} + {{ method_names[1] }} + {{ method_names[2] }}</p>
-            <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }} and {{ method_names[1] }}</p>
-            <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }} and {{ method_names[2] }}</p>        
-            <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }} and {{ method_names[2] }}</p>                      
+            <div class="col-sm-10">
+                <p style="display: none;" class="popup_head_div T_gene">Gene selected only by {{ method_names[1] }}
+                    method</p>
+                <p style="display: none;" class="popup_head_div L_gene">Gene selected only by {{ method_names[0] }}
+                    method</p>
+                <p style="display: none;" class="popup_head_div R_gene">Gene selected only by {{ method_names[2] }}
+                    method</p>
+                <p style="display: none;" class="popup_head_div M_gene">Overlapped genes in {{ method_names[0] }}
+                    + {{ method_names[1] }} + {{ method_names[2] }}</p>
+                <p style="display: none;" class="popup_head_div TL_gene">Gene selected by both {{ method_names[0] }}
+                    and {{ method_names[1] }}</p>
+                <p style="display: none;" class="popup_head_div TR_gene">Gene selected by both {{ method_names[1] }}
+                    and {{ method_names[2] }}</p>
+                <p style="display: none;" class="popup_head_div LR_gene">Gene selected by both {{ method_names[0] }}
+                    and {{ method_names[2] }}</p>               
+            </div>
+            <div class="col-sm-2">
+                <span class="close">&times;</span>
+            </div>
         </div>
         <div class="row">
-            <p style="display: none;" class="popup_gene_list_div T_gene">{{venn_data[0][1]}}</p>
-            <p style="display: none;" class="popup_gene_list_div L_gene">{{venn_data[0][0]}}</p>
-            <p style="display: none;" class="popup_gene_list_div R_gene">{{venn_data[0][2]}}</p>
-            <p style="display: none;" class="popup_gene_list_div M_gene">{{venn_data[2]}}</p>
-            <p style="display: none;" class="popup_gene_list_div TL_gene">{{venn_data[1][0]}}</p>
-            <p style="display: none;" class="popup_gene_list_div TR_gene">{{venn_data[1][1]}}</p>        
-            <p style="display: none;" class="popup_gene_list_div LR_gene">{{venn_data[1][2]}}</p>
-        </div>          
+            <div id="exTab3"> 
+                <ul class="nav nav-pills gene_list_div" style="background-color: #26a69a00;">
+                </ul>
+
+                <div class="tab-content clearfix">
+                    <div class="gene_not_have">
+                        <p>Sorry this gene details currently not available..</p>
+                    </div>
+                    <div class="tab-pane active" id="1b">
+                        <table class="table table-bordered table-hover gene_have">
+                          <tbody>
+                            <tr>
+                              <td>Full name</td>
+                              <td id="td_name"></td>
+                            </tr>                            
+                            <tr>
+                              <td>Feature type</td>
+                              <td id="td_type"></td>
+                            </tr>
+                            <tr>
+                              <td>Gene ID</td>
+                              <td id="td_id"></td>
+                            </tr>
+                            <tr>
+                              <td>Locus Tag</td>
+                              <td id="td_locus_tag"></td>
+                            </tr>
+                            <tr>
+                              <td>Modification date</td>
+                              <td id="td_date"></td>
+                            </tr>
+                            <tr>
+                              <td>Nomenclature status</td>
+                              <td id="td_nomenclature_status"></td>
+                            </tr>
+                            <tr>
+                              <td>Description</td>
+                              <td id="td_description"></td>
+                            </tr>
+                            <tr>
+                              <td>Synonyms</td>
+                              <td id="td_synonyms"></td>
+                            </tr>
+                            <tr>
+                              <td>Chromosome</td>
+                              <td id="td_chromosome"></td>
+                            </tr>
+                            <tr>
+                              <td>dbXrefs</td>
+                              <td id="td_dbXrefs"></td>
+                            </tr>
+                            <tr>
+                              <td>Other designations</td>
+                              <td id="td_designations"></td>
+                            </tr>
+                            <tr>
+                              <td>Type of gene</td>
+                              <td id="td_gene_type"></td>
+                            </tr>                                                    
+                          </tbody>
+                      </table>
+                      <div class="gene_have more_details">
+                          <button class="btn" style="float: right; border-radius: 5px; background-color: #f8f8f8;"><a style="color: #163b37" target="_blank">more details</a></button>
+                      </div>                      
+                    </div>
+                    <div class="tab-pane" id="2b">
+                        <h3>We use the class nav-pills instead of nav-tabs which automatically creates a background color for the tab</h3>
+                    </div>
+                    <div class="tab-pane" id="3b">
+                        <h3>We applied clearfix to the tab-content to rid of the gap between the tab and the content</h3>
+                    </div>
+                    <div class="tab-pane" id="4b">
+                        <h3>We use css to change the background color of the content to be equal to the tab</h3>
+                    </div>
+                </div>
+            </div>            
+        </div>
     </div>
 </div>
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">MODELING</h5>        
-    </div> 
-    
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="text-align: center;color: #26a69a;">MODELING</h5>
+</div>
+
 {% include 'guide_footer.html' %}
 
 </body>
@@ -302,9 +442,14 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
@@ -334,9 +479,9 @@
         $('.main-div-validation').hide(0);
         $('.loader-div').show(0);
         $('.main-body').click(false);
-        $("#main-form-div-model").submit();   
+        $("#main-form-div-model").submit();
         $('#tourControls').hide(0);
-        $('.notification-container-pop').hide(0);     
+        $('.notification-container-pop').hide(0);
     });
 
 </script>
@@ -353,5 +498,23 @@
 <script>
 
     var tour = guide_main_call(tip_validation, 'BL');
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+
+<script type="text/javascript">
+
+gene_list_post = '{{ gene_info | tojson}}';
+gene_describe_json = JSON.parse(gene_list_post);
 
 </script>

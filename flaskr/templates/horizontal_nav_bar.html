@@ -1,8 +1,10 @@
-{#    Google Login#}
-<meta name="google-signin-scope" content="profile email">
+{% if g.user['is_verified'] == 2 %}
+    {#    Google Login#}
+    <meta name="google-signin-scope" content="profile email">
 
-<meta name="google-signin-client_id"
-      content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+    <meta name="google-signin-client_id"
+          content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+{% endif %}
 
 <style>
     #user_img {
@@ -23,27 +25,33 @@
         min-height: 405px;
     }
 
-    .disabled {
-        pointer-events: none;
-        opacity: 0.4;
-    }
-
 </style>
 
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-154565227-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-154565227-3');
+    </script>
+    
 <!-- Dropdown Structure -->
 <ul id="dropdown1" class="dropdown-content" style="font-family: monospace;">
-    <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
-    <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
-    <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
-    <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
+    <li id="nav_preprocess_icon" class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
+    <li id="nav_feature_icon" class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
+    <li id="nav_analize_icon" class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
+    <li id="nav_validation_icon" class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
 </ul>
 
 <!-- Dropdown side Structure -->
 <ul id="dropdown1_side" class="dropdown-content">
-    <li class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
-    <li class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
-    <li class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
-    <li class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
+    <li id="side_nav_preprocess_icon" class="nav_link"><a href="{{ url_for('preprocess.index') }}">Pre-processing</a></li>
+    <li id="side_nav_feature_icon" class="nav_link"><a href="{{ url_for('fs.index') }}">Feature selection</a></li>
+    <li id="side_nav_analize_icon" class="nav_link"><a href="{{ url_for('analyze.index') }}">Analysis</a></li>
+    <li id="side_nav_validation_icon" class="nav_link"><a href="{{ url_for('validation.index') }}">Validation</a></li>
 </ul>
 
 <!-- Dropdown Structure User -->
@@ -77,15 +85,15 @@
                 </li>
                 <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
                 </li>
-                <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+                <li id="nav_visualization_icon" class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
                 </li>
                 <!-- Dropdown Trigger -->
-                <li class="nav_link disabled">
+                <li class="nav_link">
                     <a class="dropdown-trigger" href="#" data-target="dropdown1">Framework
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
                 </li>
-                <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
+                <li id="nav_prediction_icon" class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
                 </li>
                 <li><span> <div class="vertical"></div>  </span></li>
                 {% if g.user['image_url'] %}
@@ -108,13 +116,13 @@
         </li>
         <li class="nav_link"><a href="{{ url_for('preprocess.upload_file_view') }}"><span class=""></span>Upload</a>
         </li>
-        <li class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
+        <li id="side_nav_visualization_icon" class="nav_link"><a href="{{ url_for('visualization.index') }}"><span class=""></span>Visualization</a>
         </li>
         <!-- Dropdown Trigger -->
-        <li class="nav_link disabled"><a class="dropdown-trigger" href="#" data-target="dropdown1_side">Framework<i
+        <li class="nav_link"><a class="dropdown-trigger" href="#" data-target="dropdown1_side">Framework<i
                 class="material-icons right">arrow_drop_down</i></a></li>
 
-        <li class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
+        <li id="side_nav_prediction_icon" class="nav_link"><a href="{{ url_for('modeling.predict') }}"><span class=""></span>Prediction</a>
         </li>
         <li><span> <div class="vertical"></div>  </span></li>
         {% if g.user['image_url'] %}
@@ -122,7 +130,7 @@
         {% endif %}
         <li class="nav_link"><a class="dropdown-trigger" href="#"
                                 data-target="dropdown_user_side">{{ g.user['given_name'] }}<i
-                        class="material-icons right">arrow_drop_down</i></a></li>
+                class="material-icons right">arrow_drop_down</i></a></li>
     {% else %}
         <li class="nav_link"><a href="{{ url_for('auth.register') }}">Register</a></li>
         <li class="nav_link"><a href="{{ url_for('auth.login') }}">Log In</a></li>

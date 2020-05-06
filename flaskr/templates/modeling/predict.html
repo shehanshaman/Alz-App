@@ -17,8 +17,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
 </head>
@@ -162,7 +160,7 @@
                                             <div class="md-form" id="anno_tbl_div">
                                                 <select style="font-family: monospace;" class="form-control" id="anno_tbl" name="anno_tbl" style="margin-bottom: 20px;">
                                                     {% for name in annotation_list %}
-                                                        <option value="{{ name }}">{{ name }}</option>
+                                                        <option value="{{ name[1] }}">{{ name[0] }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -200,7 +198,7 @@
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PREDICTING RESULTS</h5>        
+        <h5 style="text-align: center;color: #26a69a;">PREDICTING RESULTS</h5>        
     </div> 
 
 {% include 'guide_footer.html' %}
@@ -209,27 +207,19 @@
 </html>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
-    
-<script type="text/javascript"
-            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
-    
-<script type="text/javascript"
-            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
 
 <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
 
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-
-<script>
-    $(document).ready(function () {
-        $('#table_id').DataTable();
-    });
-</script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script>
     function update_checkbox(event) {
@@ -280,4 +270,13 @@
 
     var tour = guide_main_call(tip_model_predict, 'BL');
 
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
 </script>

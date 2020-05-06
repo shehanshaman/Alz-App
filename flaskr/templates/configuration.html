@@ -1,0 +1,208 @@
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Configuration</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!-- Materializecss compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+
+
+        div.centre {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 0;
+            margin-bottom: 0;
+            align-content: center;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: circle;
+        }
+
+        .modal {
+            bottom: inherit;
+        }
+
+        .modal-content {
+            position: initial;
+            background-color: inherit;
+            border-radius: inherit;
+            border: inherit;
+        }
+
+        #result_view {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-config">
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step-content">
+
+            <!-- Modal Structure -->
+            <div id="modal1" class="modal">
+                <div class="modal-content">
+                    <div class="row">
+                        <h4 id="h3-head-1" class="card__title"
+                            style="text-align: center;font-family: monospace;">Choose File to {{ title }}:</h4>
+
+                    </div>
+                    {% if all_result | length == 0 %}
+                        <div class="alert alert-danger">
+                            <strong>Danger!</strong> You don't have done feature selection. <a href="{{ url_for('fs.index') }}">Lets start</a>
+                        </div>
+                    {% endif %}
+
+                    <div class="content">
+                        <form method="post" action="/fs/config/" enctype="multipart/form-data" id="main-form">
+
+                            <div class="md-form">
+                                <select style="font-family: monospace;" class="form-control" id="available_result"
+                                        name="available_result">
+                                    <option disabled="disabled" selected>Pick a choice!</option>
+                                    {% for name in all_result %}
+                                        <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" id="url" name="url" value="{{ url }}"/>
+                            </div>
+
+                            {% if validation_file_list %}
+                                <div class="row" style="margin-top: 20px;">
+                                    <div class="col-sm-6">
+                                        <h6 id="h3-head-1" class="card__title"
+                                            style="text-align: center;font-family: monospace;">Select Disease
+                                            :</h6>
+                                    </div>
+                                    <div id="disease_div" class="col-sm-6">
+                                        <div class="md-form">
+                                            <select style="font-family: monospace;" class="form-control"
+                                                    id="disease_file" name="disease_file">
+                                                {% for validation_file in validation_file_list %}
+                                                    <option value="{{ validation_file }}">{{ validation_file }}</option>
+                                                {% endfor %}
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="row" class="well" id="result_view"
+                                 style="padding: 10px;">
+                                <div class="row">
+                                    <h6>Feature Selection Methods</h6>
+                                    <div id="fs_methods"></div>
+                                </div>
+                                <div class="row">
+                                    <h6>Number of Features</h6>
+                                    <div id="fs_methods_len"></div>
+                                </div>
+
+                                <div class="row centre">
+                                    <button class="waves-effect waves-dark btn"
+                                            id="submit_button">
+                                        Select
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="goBack()"
+   class="modal-close waves-effect waves-green btn-flat">Close</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="text-align: center;color: #26a69a;">PROCESSING</h5>
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script>
+    $('#modal1').openModal({dismissible: false});
+
+    $('#available_result').change(function () {
+        var filename = $('#available_result').find(":selected").text();
+        $.get("{{ url_for('modeling.get_results_for_modeling') }}", {filename: filename}, function (data, status) {
+            data = data.split("|");
+            methods = data['4'].split(',');
+            len = methods.pop()
+            $('#fs_methods_len').text(len);
+            $('#fs_methods').text(methods);
+
+            document.getElementById('result_view').style.display = "block";
+        });
+    });
+
+    $('#submit_button').click(function () {
+        $('.main-div-config').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form").submit();
+    });
+</script>
+
