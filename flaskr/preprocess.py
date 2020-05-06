@@ -1,6 +1,6 @@
 import base64
 
-from flask import Blueprint, session, send_from_directory, url_for, flash
+from flask import Blueprint, session, send_from_directory, url_for, flash, current_app
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -65,9 +65,11 @@ def index():
 
 
 # step 2 | Session > Database
-@bp.route("/step-2", methods=['POST'])
+@bp.route("/step-2", methods=['POST', 'GET'])
 @login_required
 def view_merge_df():
+    id = request.args.get("id")
+
     user_id = g.user["id"]
     annotation_table = request.form.get("anno_tbl")
     col_sel_method = request.form.get("column_selection")
@@ -142,6 +144,11 @@ def view_merge_df():
                                 merge_path_str)
         pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
 
+        # df = df.sort_values(df.columns[0], ascending=False)
+        df = df.set_index([df.columns[0]])
+        df.columns.name = df.index.name
+        df.index.name = None
+
         if len(df.columns) > 100:
             df_view = df.iloc[:, 0:100].head(15)
         else:
@@ -149,6 +156,28 @@ def view_merge_df():
 
         return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data,
                                pre_process_id=pre_process_id, file_name=merge_name)
+
+    elif id:
+        pre_process = UserData.get_preprocess_from_id(id)
+
+        if pre_process and pre_process['merge_df_path']:
+            merge_name = "merge_" + pre_process['file_name']
+            merge_path = Path(pre_process['merge_df_path'])
+            df = PreProcess.getDF(merge_path)
+
+            data = session[pre_process['file_name']]
+
+            df = df.set_index([df.columns[0]])
+            df.columns.name = df.index.name
+            df.index.name = None
+
+            if len(df.columns) > 100:
+                df_view = df.iloc[:, 0:100].head(15)
+            else:
+                df_view = df.head(15)
+
+            return render_template("preprocess/step-2.html", tables=[df_view.to_html(classes='data')], details=data,
+                                   pre_process_id=id, file_name=merge_name)
 
     return redirect('/pre')
 
@@ -172,9 +201,11 @@ def scaling_imputation():
 
 
 # normalization and null remove
-@bp.route("/step-4", methods=['POST'])
+@bp.route("/step-4", methods=['POST', 'GET'])
 @login_required
 def norm():
+    id = request.args.get("id")
+
     norm_method = request.form.get("norm_mthd")
     null_rmv = request.form.get("null_rmv")
     pre_process_id = request.form.get("id")
@@ -208,13 +239,17 @@ def norm():
         avg_symbol_df_path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
 
         avg_symbol_df_path_str = avg_symbol_df_path.as_posix()
-        PreProcess.saveDF(df, avg_symbol_df_path_str)
+        PreProcess.saveDF(df, avg_symbol_df_path)
 
         UserData.update_preprocess(user_id, pre_process['file_name'], 'avg_symbol_df_path', avg_symbol_df_path_str)
 
         data = session[pre_process['file_name']]
         data = PreProcess.add_details_json(data, df, "r1")
         session[pre_process['file_name']] = data
+
+        df = df.set_index([df.columns[0]])
+        df.columns.name = df.index.name
+        df.index.name = None
 
         if len(df.columns) > 100:
             df_view = df.iloc[:, 0:100].head(15)
@@ -223,6 +258,30 @@ def norm():
 
         return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')],
                                details=data, pre_process_id=pre_process_id, file_name=avg_symbol_name)
+
+    elif id:
+        pre_process = UserData.get_preprocess_from_id(id)
+
+        if pre_process and pre_process['avg_symbol_df_path']:
+
+            avg_symbol_name = "avg_symbol_" + pre_process['file_name']
+            avg_symbol_df_path = USER_PATH / str(g.user["id"]) / "tmp" / avg_symbol_name
+
+            data = session[pre_process['file_name']]
+
+            df = PreProcess.getDF(avg_symbol_df_path)
+
+            df = df.set_index([df.columns[0]])
+            df.columns.name = df.index.name
+            df.index.name = None
+
+            if len(df.columns) > 100:
+                df_view = df.iloc[:, 0:100].head(15)
+            else:
+                df_view = df.head(15)
+
+            return render_template("preprocess/step-4.html", tablesstep4=[df_view.to_html(classes='data')],
+                                   details=data, pre_process_id=id, file_name=avg_symbol_name)
 
     return redirect('/pre')
 
@@ -398,7 +457,12 @@ def save_reduced_df():
 @bp.route('/upload')
 @login_required
 def upload_file_view():
-    return render_template("preprocess/step-0.html")
+    user_id = g.user['id']
+    path = USER_PATH / str(user_id)
+    folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
+    available_space = round(current_app.config['APP_ALZ'].max_usage - folder_size , 2)
+
+    return render_template("preprocess/step-0.html", available_space = available_space)
 
 
 # file upload
@@ -406,6 +470,7 @@ def upload_file_view():
 @login_required
 def upload_file():
     file = request.files['chooseFile']
+    available_space = request.form.get('available_space')
 
     if file and allowed_file(file.filename):
 
@@ -418,7 +483,13 @@ def upload_file():
             file.save(path_csv)
 
             size = os.stat(path_csv).st_size
+
             if size:
+                if (size / 1024 / 1024)  > float(available_space):
+                    os.remove(path_csv)
+                    flash("You don't have enough space.")
+                    return redirect('/pre/upload')
+
                 if not csv2pkl(path_csv, path_pkl):
                     os.remove(path_csv)
                     flash("Error: Empty file content.")
@@ -445,17 +516,28 @@ def download_sample_file():
 @bp.route('/sample/upload/')
 @login_required
 def upload_sample_file():
-    src = UPLOAD_FOLDER / "sample" / 'GSE5281-GPL570.pkl'
-    dst = USER_PATH / str(g.user['id']) / 'GSE5281-GPL570.pkl'
-    copyfile(src, dst)
+    user_id = g.user['id']
+    path = USER_PATH / str(user_id)
+    folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
+    available_space = round(current_app.config['APP_ALZ'].max_usage - folder_size, 2)
 
-    # df = pd.read_csv(src)
-    # df = df.set_index(["ID"])
-    # df.index.name = None
-    # df.columns.name = "ID"
-    # df.to_pickle(dst)
+    if available_space > 68:
 
-    return redirect('/pre?name=GSE5281-GPL570.pkl')
+        src = UPLOAD_FOLDER / "sample" / 'GSE5281-GPL570.pkl'
+        dst = USER_PATH / str(g.user['id']) / 'GSE5281-GPL570.pkl'
+        copyfile(src, dst)
+
+        # df = pd.read_csv(src)
+        # df = df.set_index(["ID"])
+        # df.index.name = None
+        # df.columns.name = "ID"
+        # df.to_pickle(dst)
+
+        return redirect('/pre?name=GSE5281-GPL570.pkl')
+
+    else:
+        flash("You don't have enough space.")
+        return redirect('/pre/upload')
 
 
 def csv2pkl(path_csv, path_pkl):
