@@ -88,7 +88,7 @@ def register():
             # the name is available, store it in the database and go to
             # the login page
 
-            create_user_db(db, username, password, given_name, '', 1)
+            create_user_db(db, username, password, given_name, '', 0)
             if "@" in username:
                 user_id = UserData.get_user_id(username)
                 verify_key = randomString()
@@ -199,7 +199,7 @@ def verify():
 
         db.execute(
             "DELETE FROM verify WHERE user_id = ? AND subject = 'verify'",
-            (user_id, )
+            (user_id, ),
         )
         db.commit()
         flash("Your email has been verified.")
@@ -312,7 +312,22 @@ def settings():
 
     path = USER_PATH / str(user['id'])
     df_files = get_files_size(path)
-    data = [user_data]
+
+    folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
+    max_usage = current_app.config['APP_ALZ'].max_usage
+
+    full_usage = folder_size
+    file_usage = round(df_files['file size'].sum(), 2)
+    cache_usage = round((full_usage - file_usage) ,2)
+    available_space = round((max_usage - full_usage) , 2)
+
+    if available_space < 0:
+        available_space = 0
+
+    usages = [file_usage, cache_usage, available_space]
+
+    data = [user_data, usages]
+
     return render_template("auth/settings.html", data = data, df_files = df_files)
 
 def get_all_users():
@@ -366,7 +381,7 @@ def admin_panel():
 def admin_contact_panel():
     contact_data = {'option':'ok', 'password':'abc123', 'option_name':'contact_list'}
     try:
-        res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)
+        res = requests.post('https://guides.genetlabs.com/data/data_extract_api.php', data=contact_data)
 
     except requests.exceptions.RequestException as e:
         flash("Requested host not available")
@@ -382,7 +397,7 @@ def admin_contact_panel():
 def admin_subscribe_panel():
     contact_data = {'option':'ok', 'password':'abc123', 'option_name':'subscribe_list'}
     try:
-        res = requests.post('http://localhost/myapp/fyp-web-app/web-app/data/data_extract_api.php', data=contact_data)
+        res = requests.post('https://guides.genetlabs.com/data/data_extract_api.php', data=contact_data)
 
     except requests.exceptions.RequestException as e:
         flash("Requested host not available")

@@ -66,9 +66,7 @@
     <div class="step-content">
         <div class="row">
             <div>
-                <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 2 : DATASET
-                    BEFORE
-                    PRE-PROCESS</h3>
+                <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 2 : DATASET BEFORE PRE-PROCESS</h3>
             </div>
             <div style="float: right">
                 <button style="color: #26a69a;border: none;"
@@ -126,11 +124,13 @@
     <hr class="line-hr">
 
     <div class="step-actions">
-        <button class="waves-effect waves-dark btn next-step step-6-click"><a
-                href="{{ url_for('preprocess.scaling_imputation') }}?id={{ pre_process_id }}">CONTINUE</a>
-        </button>
-        <button class="waves-effect waves-dark btn-flat previous-step" type="button"><a
-                href="{{ url_for('preprocess.index') }}">BACK</a></button>
+        <a href="{{ url_for('preprocess.scaling_imputation') }}?id={{ pre_process_id }}">
+            <button class="waves-effect waves-dark btn next-step">CONTINUE</button>
+        </a>
+
+        <a href="{{ url_for('preprocess.index') }}">
+            <button class="waves-effect waves-dark btn-flat previous-step" type="button">BACK</button>
+        </a>
     </div>
 
 </div>
