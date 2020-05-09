@@ -146,10 +146,10 @@
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 0">
-                    <label>
+                    <label style="font-size: inherit;">
                         <ul id="example_gene">
                             <li style="display: block; float:left;">Example:</li>
-                            <li style="display: block; float:left;" id="ex_symbol_name"></li>
+                            <a href="#" id="example_link"><li style="display: block; float:left; padding-left: 6px" id="ex_symbol_name"></li></a>
                         </ul>
                     </label>
                 </div>
@@ -240,6 +240,12 @@
         });
         $('#features').val('');
         $('#submit_button').prop('disabled', true);
+    });
+
+    $('#example_link').click(function () {
+         $('#features')[0].value = $('#ex_symbol_name')[0].innerHTML;
+         $('#submit_button').prop('disabled', false);
+         document.getElementById("submit_button").click();
     });
 
     $('#features').change(function () {
