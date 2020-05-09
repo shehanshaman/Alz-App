@@ -219,6 +219,8 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
+    var file_select_status = 0;
+
     $(document).ready(function () {
         $('#submit_button').prop('disabled', true);
         $('#example_gene').hide();
@@ -228,6 +230,7 @@
 <script>
 
     $('#available_files').change(function () {
+        file_select_status = 1;
         $('.top-right').show(0);
         var conceptName = $('#available_files').find(":selected").text();
         $('#submit_button').prop('disabled', false);
@@ -251,7 +254,9 @@
     });
 
     $('#features').change(function () {
-        $('#submit_button').prop('disabled', false);
+        if(file_select_status){
+            $('#submit_button').prop('disabled', false);
+        }
     });
 
     $("#submit_button").click(function () {
