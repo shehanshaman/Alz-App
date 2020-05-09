@@ -149,7 +149,9 @@
                     <label style="font-size: inherit;">
                         <ul id="example_gene">
                             <li style="display: block; float:left;">Example:</li>
-                            <a href="#" id="example_link"><li style="display: block; float:left; padding-left: 6px" id="ex_symbol_name"></li></a>
+                            <a href="#" id="example_link">
+                                <li style="display: block; float:left; padding-left: 6px" id="ex_symbol_name"></li>
+                            </a>
                         </ul>
                     </label>
                 </div>
@@ -243,9 +245,9 @@
     });
 
     $('#example_link').click(function () {
-         $('#features')[0].value = $('#ex_symbol_name')[0].innerHTML;
-         $('#submit_button').prop('disabled', false);
-         document.getElementById("submit_button").click();
+        $('#features')[0].value = $('#ex_symbol_name')[0].innerHTML;
+        $('#submit_button').prop('disabled', false);
+        document.getElementById("submit_button").click();
     });
 
     $('#features').change(function () {
@@ -258,9 +260,13 @@
         var feature = $('#features').val();
 
         $.get("./img/", {available_file: file, feature: feature}, function (data, status) {
-            var img_hash = "data:image/png;base64, " + data;
-            $("#symbol-vis").attr("src", img_hash);
-            document.getElementById("image_container").style.visibility = "visible";
+            if (data) {
+                var img_hash = "data:image/png;base64, " + data;
+                $("#symbol-vis").attr("src", img_hash);
+                document.getElementById("image_container").style.visibility = "visible";
+            }else{
+                alert("Warning: Check spelling in Gene Symbol");
+            }
         });
 
     });
