@@ -44,7 +44,10 @@ def get_image_src():
     feature = request.args.get('feature').lstrip()
     img64 = getPlot(file_name, feature)
 
-    return str(img64)
+    if img64:
+        return str(img64)
+    else:
+        return ""
 
 @bp.route("/js/", methods=["GET"])
 @login_required
@@ -62,6 +65,9 @@ def get_col_names_js():
 def getPlot(file_name, feature):
     path = USER_PATH / str(g.user["id"]) / file_name
     df = PreProcess.getDF(path)
+
+    if feature not in df.columns:
+        return None
 
     np.warnings.filterwarnings('ignore')
 
