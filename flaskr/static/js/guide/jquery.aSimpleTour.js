@@ -102,7 +102,6 @@
                 location.href = options.data[step].location;
             } else {
                 step++;
-
                 if (step == steps) {
                     methods.destroy();
                 } else {
