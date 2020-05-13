@@ -234,13 +234,15 @@
 
         $('#modal1').openModal({dismissible: false});
 
-        $('#submit_button').click(function () {
-            $('.main-div-config').hide(0);
-            $('.loader-div').show(0);
-            $('.main-body').click(false);
-            $("#main-form").submit();
-        });
-
     </script>
 
 {% endif %}
+
+<script>
+    $('#submit_button').click(function () {
+        $('.main-div-config').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+        $("#main-form").submit();
+    });
+</script>
