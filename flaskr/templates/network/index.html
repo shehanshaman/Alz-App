@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Genet Network Test</title>
+
+	<style type="text/css">
+		#mynetwork {
+		  width: 900px;
+		  height: 900px;
+		  border: 1px solid lightgray;
+		}
+
+	</style>
+	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+<p>
+  Relations between the characters of &quot;Les miserables&quot;.
+</p>
+
+<div id="mynetwork"></div>
+</body>
+<script type="text/javascript">
+	function draw() {
+  // create some nodes
+  var nodes = {{ node | tojson }} ;
+  console.log(nodes);
+
+  // create some edges
+  var edges = {{ edges | tojson }} ;
+  console.log(edges);
+
+  // create a network
+  var container = document.getElementById("mynetwork");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {
+    nodes: {
+      shape: "dot",
+      size: 16
+    },
+    physics: {
+      forceAtlas2Based: {
+        gravitationalConstant: -26,
+        centralGravity: 0.005,
+        springLength: 230,
+        springConstant: 0.18
+      },
+      maxVelocity: 146,
+      solver: "forceAtlas2Based",
+      timestep: 0.35,
+      stabilization: { iterations: 150 }
+    }
+  };
+  var network = new vis.Network(container, data, options);
+}
+
+window.addEventListener("load", () => {
+  draw();
+});
+
+</script>
+</html>

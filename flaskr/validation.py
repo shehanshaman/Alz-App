@@ -83,6 +83,8 @@ def index():
     dis_gene_card.index.name = None
     dis_gene_card = dis_gene_card.sort_values(by='Relevance score', ascending=False)
 
+    #Network Create
+
     return render_template("validation/index.html", col_gene_card = col_gene_card, method_names = method_names,
                            tables=[dis_gene_card.to_html(classes='data')], venn_data=venn_data, filename=filename,
                            result_id = result_id, gene_info = gene_info, gene_name_list = gene_name_list, data_available = data_available)
