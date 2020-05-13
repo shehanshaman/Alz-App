@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, g
 from flask import render_template
 from flask import redirect
 from flaskr.classes.featureSelectionClass import FeatureSelection
@@ -10,10 +10,14 @@ from werkzeug.exceptions import abort
 
 import json
 
+from sklearn import cluster, covariance, manifold
+import numpy as np
+
 ROOT_PATH = Path.cwd()
 GENE_CARD = ROOT_PATH / "flaskr" / "upload" / "Validation" / "GeneCards-SearchResults.pkl"
 VALIDATION_PATH = ROOT_PATH / "flaskr" / "upload" / "Validation"
 GENE_INFO_PATH = ROOT_PATH / "flaskr" / "upload" / "gene_info"
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
 
 bp = Blueprint("validation", __name__, url_prefix="/val")
 
@@ -84,10 +88,48 @@ def index():
     dis_gene_card = dis_gene_card.sort_values(by='Relevance score', ascending=False)
 
     #Network Create
+    file_path = USER_PATH / str(g.user['id']) / filename
+
+    df = PreProcess.getDF(file_path)
+    universal_col = set(col_m1).union(set(col_m2), set(col_m3))
+    # df = df.drop(['class'], axis=1)
+    df = df[universal_col]
+
+    names = df.columns.values
+    X = df.values
+
+    edge_model = covariance.GraphicalLassoCV()
+    edge_model.fit(X)
+
+    partial_correlations = edge_model.precision_.copy()
+    d = 1 / np.sqrt(np.diag(partial_correlations))
+    partial_correlations *= d
+    partial_correlations *= d[:, np.newaxis]
+    non_zero = (np.abs(np.triu(partial_correlations, k=1)) > 0.02)
+
+    start_idx, end_idx = np.where(non_zero)
+
+    node = []
+    i = 0
+    for name in names:
+        if name in col_mo:
+            data_set = {"id": i, "label": name, "group": 2}
+        else:
+            data_set = {"id": i, "label": name, "group": 1}
+        i = i + 1
+        node.append(data_set)
+
+    # print(node)
+    edges = []
+    for x in range(len(start_idx)):
+        link = {"from": str(start_idx[x]), "to": str(end_idx[x])}
+        edges.append(link)
+    # print(edges)
 
     return render_template("validation/index.html", col_gene_card = col_gene_card, method_names = method_names,
                            tables=[dis_gene_card.to_html(classes='data')], venn_data=venn_data, filename=filename,
-                           result_id = result_id, gene_info = gene_info, gene_name_list = gene_name_list, data_available = data_available)
+                           result_id = result_id, gene_info = gene_info, gene_name_list = gene_name_list,
+                           data_available = data_available, node=node, edges=edges)
 
 def get_overlap_features(col1, col2):
     t = list(set(col1) & set(col2))
