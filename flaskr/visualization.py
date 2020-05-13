@@ -18,6 +18,7 @@ import io
 from .classes.preProcessClass import PreProcess
 
 from pathlib import Path
+import matplotlib.gridspec as gridspec
 
 ROOT_PATH = Path.cwd()
 USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
@@ -65,6 +66,7 @@ def get_col_names_js():
 def getPlot(file_name, feature):
     path = USER_PATH / str(g.user["id"]) / file_name
     df = PreProcess.getDF(path)
+    df = df.reset_index()
 
     if feature not in df.columns:
         return None
@@ -74,21 +76,56 @@ def getPlot(file_name, feature):
     if 'class' in df.columns:
 
         fig, axs = plt.subplots(2, 2, figsize=(10, 8))
-        axs[0, 0].scatter(df['class'], df[feature], edgecolors='r')
-        axs[0, 0].set_title('Scatter plot')
+
+        df.plot(kind='line', x=df.columns[0], y=df.columns[1], ax=axs[0, 0])
+        axs[0, 0].get_legend().remove()
+        axs[0, 0].set_ylabel('Gene Expression Values')
+        axs[0, 0].set_xlabel('Sample ID')
+        axs[0, 0].tick_params(labelrotation=45)
+        axs[0, 0].set_title('Variation of gene expression values across samples')
+
         axs[0, 1].hist(df[feature])
         axs[0, 1].set_title('Histogram')
+        axs[0, 1].set_ylabel('Frequency')
+        axs[0, 1].set_xlabel('Gene Expression Values')
+
         df.boxplot(column=[feature], ax=axs[1, 0])
         axs[1, 0].set_title('Boxplot')
+        axs[1, 0].set_ylabel('Gene Expression Values')
+        axs[1, 0].set_xlabel('Gene Symbol')
+
         df.boxplot(column=[feature], by='class', ax=axs[1, 1])
         axs[1, 1].set_title('Boxplot group by class')
+        axs[1, 1].set_ylabel('Gene Expression Values')
+        axs[1, 1].set_xlabel('Different Status')
 
     else:
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 8))
+        gs = gridspec.GridSpec(2, 2)
+        fig = plt.figure(figsize=(10, 8))
+
+        ax1 = plt.subplot(gs[0, 0])
+        ax2 = plt.subplot(gs[0, 1])
+        ax3 = plt.subplot(gs[1, :])
+
         ax1.hist(df[feature])
         ax1.set_title('Histogram')
+        ax1.set_ylabel('Frequency')
+        ax1.set_xlabel('Gene Expression Values')
+
         df.boxplot(column=[feature], ax=ax2)
         ax2.set_title('Boxplot')
+        ax2.set_ylabel('Gene Expression Values')
+        ax2.set_xlabel('Gene Symbol')
+
+        df.plot(kind='line', x=df.columns[0], y=df.columns[1], ax=ax3)
+        ax3.get_legend().remove()
+        ax3.set_ylabel('Gene Expression Values')
+        ax3.set_xlabel('Sample ID')
+        ax3.tick_params(labelrotation=45)
+        ax3.set_title('Variation of gene expression values across samples')
+
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.subplots_adjust(hspace=0.6, wspace=0.25)
 
     fig.suptitle(file_name + ": " + feature, fontsize=16)
 
