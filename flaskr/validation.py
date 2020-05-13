@@ -97,6 +97,7 @@ def index():
 
     names = df.columns.values
     X = df.values
+    X /= X.std(axis=0)
 
     edge_model = covariance.GraphicalLassoCV()
     edge_model.fit(X)
