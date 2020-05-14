@@ -185,11 +185,9 @@
         function draw() {
             // create some nodes
             var nodes = {{ node | tojson }};
-            console.log(nodes);
 
             // create some edges
             var edges = {{ edges | tojson }};
-            console.log(edges);
 
             // create a network
             var container = document.getElementById("mynetwork");
@@ -218,13 +216,11 @@
             var network = new vis.Network(container, data, options);
         }
 
-        window.addEventListener("load", () => {
-          draw();
-        });
-
         function open_modal() {
             $('#modal1').openModal();
         }
+
+        draw();
 
     </script>
 

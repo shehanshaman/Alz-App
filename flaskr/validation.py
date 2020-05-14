@@ -114,9 +114,9 @@ def index():
     i = 0
     for name in names:
         if name in col_mo:
-            data_set = {"id": i, "label": name, "group": 2}
+            data_set = {"id": i, "label": name, "group": 2, "color":'red'}
         else:
-            data_set = {"id": i, "label": name, "group": 1}
+            data_set = {"id": i, "label": name, "group": 0, "color":'green'}
         i = i + 1
         node.append(data_set)
 

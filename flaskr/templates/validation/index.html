@@ -543,42 +543,40 @@
 </script>
 
 <script type="text/javascript">
-	function draw() {
-  // create some nodes
-  var nodes = {{ node | tojson }} ;
+    function draw() {
+        // create some nodes
+        var nodes = {{ node | tojson }};
 
-  // create some edges
-  var edges = {{ edges | tojson }} ;
+        // create some edges
+        var edges = {{ edges | tojson }};
 
-  // create a network
-  var container = document.getElementById("mynetwork");
-  var data = {
-    nodes: nodes,
-    edges: edges
-  };
-  var options = {
-    nodes: {
-      shape: "dot",
-      size: 16
-    },
-    physics: {
-      forceAtlas2Based: {
-        gravitationalConstant: -26,
-        centralGravity: 0.005,
-        springLength: 230,
-        springConstant: 0.18
-      },
-      maxVelocity: 146,
-      solver: "forceAtlas2Based",
-      timestep: 0.35,
-      stabilization: { iterations: 150 }
+        // create a network
+        var container = document.getElementById("mynetwork");
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {
+            nodes: {
+                shape: "dot",
+                size: 16
+            },
+            physics: {
+                forceAtlas2Based: {
+                    gravitationalConstant: -26,
+                    centralGravity: 0.005,
+                    springLength: 230,
+                    springConstant: 0.18
+                },
+                maxVelocity: 146,
+                solver: "forceAtlas2Based",
+                timestep: 0.35,
+                stabilization: {iterations: 150}
+            }
+        };
+        var network = new vis.Network(container, data, options);
     }
-  };
-  var network = new vis.Network(container, data, options);
-}
 
-window.addEventListener("load", () => {
-  draw();
-});
+    draw();
 
 </script>
