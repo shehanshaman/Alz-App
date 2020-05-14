@@ -59,6 +59,17 @@
         #result_view {
             display: none;
         }
+
+        .dot {
+            height: 25px;
+            width: 25px;
+            background-color: #97c2fc;;
+            border-radius: 50%;
+            display: inline-block;
+            border: solid;
+            border-color: #5b99eb;
+            border-width: 1.5px;
+        }
     </style>
 
 </head>
@@ -94,7 +105,33 @@
 
                 <div class="row">
                     <div class="result_content">
-                        <div id="mynetwork"></div>
+                        <div class="row" style="text-align: center;">
+                            <label style="font-size: 20px;"><b>Number of clusters identified: </b> {{ n_labels }}
+                            </label>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6" style="text-align: right; padding-top: 7px;">
+                                <label>Select Cluster: </label>
+                            </div>
+                            <div class="col-sm-6">
+                                <select style="font-family: monospace; width: auto;" class="form-control"
+                                        id="cluster_num"
+                                        name="cluster_num">
+                                    <option value="" selected>All</option>
+                                    {% for i in range(0, n_labels) %}
+                                        <option value="{{ i }}">{{ i + 1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align: center;" id="result_view">
+                            <span class="dot"></span>
+                            <label>Selected cluster nodes </label>
+                        </div>
+                        <div class="row">
+                            <div id="mynetwork"></div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -182,12 +219,57 @@
 {% if node %}
 
     <script type="text/javascript">
-        function draw() {
-            // create some nodes
+
+        function draw(group_no) {
             var nodes = {{ node | tojson }};
 
-            // create some edges
             var edges = {{ edges | tojson }};
+
+            if (group_no) {
+
+                var group1_nodes = $(nodes).filter(function (i, n) {
+                    return n.group == group_no
+                });
+
+                var view_node = [];
+                var view_edge = [];
+
+                for (j = 0; j < group1_nodes.length; j++) {
+
+                    if (!view_node.includes(group1_nodes[j].id.toString())) {
+                        view_node.push(group1_nodes[j].id.toString());
+                    }
+
+                    var tmp = $(edges).filter(function (i, n) {
+                        return n.from == ( group1_nodes[j].id.toString() )
+                    });
+
+                    for (k = 0; k < tmp.length; k++) {
+                        var n_id = tmp[k].to;
+                        if (!view_node.includes(n_id)) {
+                            view_node.push(n_id);
+                        }
+                    }
+                    view_edge.push(group1_nodes[j].id.toString());
+                }
+
+                var new_nodes = [];
+                for (j = 0; j < nodes.length; j++) {
+                    if (view_node.includes(nodes[j].id.toString())) {
+                        new_nodes.push(nodes[j]);
+                    }
+                }
+
+                var new_edges = [];
+                for (j = 0; j < edges.length; j++) {
+                    if (view_edge.includes(edges[j].from)) {
+                        new_edges.push(edges[j]);
+                    }
+                }
+
+                nodes = new_nodes;
+                edges = new_edges;
+            }
 
             // create a network
             var container = document.getElementById("mynetwork");
@@ -219,6 +301,17 @@
         function open_modal() {
             $('#modal1').openModal();
         }
+
+        $('#cluster_num').change(function () {
+            var n = $('#cluster_num').find(":selected").val();
+            if (n) {
+                draw(n.toString());
+                $('#result_view').show();
+            } else {
+                draw();
+                $('#result_view').hide();
+            }
+        });
 
         draw();
 

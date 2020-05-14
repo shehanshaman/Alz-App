@@ -8,6 +8,8 @@ from pathlib import Path
 import numpy as np
 import os
 
+from sklearn import preprocessing
+
 from sklearn import cluster, covariance, manifold
 
 bp = Blueprint("network", __name__, url_prefix="/net")
@@ -44,11 +46,14 @@ def get_network():
     if "class" in df.columns:
         df = df.drop(['class'], axis=1)
 
+    # df = df.iloc[:, 70:150]
+
     names = df.columns.values
     X = df.values.copy()
     X /= X.std(axis=0)
+    # X = preprocessing.normalize(X)
 
-    edge_model = covariance.GraphicalLassoCV()
+    edge_model = covariance.GraphicalLassoCV(tol=1e-3)
     edge_model.fit(X)
 
     _, labels = cluster.affinity_propagation(edge_model.covariance_)
@@ -74,7 +79,8 @@ def get_network():
         link = {"from": str(start_idx[x]), "to": str(end_idx[x])}
         edges.append(link)
 
-    return render_template("network/index.html", node=node, edges=edges, error=error, filename=file_name, all_names=list_names)
+    return render_template("network/index.html", node=node, edges=edges, error=error, filename=file_name,
+                           all_names=list_names, n_labels=n_labels)
 
 
 @bp.route("/")
