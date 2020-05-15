@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
@@ -93,7 +94,7 @@
                 <h4>Upload File</h4></a>
             </div>
 
-            <div id="visualization_icon" class="option sites col-sm-3 center"><a
+            <div id="visualization_icon" class="option sites col-sm-3 center mobile_padding"><a
                     href="{{ url_for('visualization.index') }}">
                 <div class="">
                     <i class="fas fa-chart-line fa-5x"></i>
@@ -102,7 +103,7 @@
             </a>
             </div>
 
-            <div id="preprocess_icon" class="option sites col-sm-3 center"><a
+            <div id="preprocess_icon" class="option sites col-sm-3 center mobile_padding"><a
                     href="{{ url_for('preprocess.index') }}">
                 <div class="">
                     <i class="fas fa-chalkboard-teacher fa-5x"></i>
@@ -111,7 +112,7 @@
             </a>
             </div>
 
-            <div id="feature_icon" class="option sites col-sm-3 center"><a
+            <div id="feature_icon" class="option sites col-sm-3 center mobile_padding"><a
                     href="{{ url_for('fs.index') }}">
                 <div class="">
                     <i class="far fa-object-group fa-5x"></i>
@@ -133,7 +134,7 @@
             </a>
             </div>
 
-            <div id="validation_icon" class="option sites col-sm-3 center"><a
+            <div id="validation_icon" class="option sites col-sm-3 center mobile_padding"><a
                     href="{{ url_for('validation.index') }}">
                 <div class="">
                     <i class="fas fa-clipboard-check fa-5x"></i>
@@ -142,7 +143,7 @@
             </a>
             </div>
 
-            <div id="modeling_icon" class="option sites col-sm-3 center"><a
+            <div id="modeling_icon" class="option sites col-sm-3 center mobile_padding"><a
                     href="{{ url_for('modeling.index') }}">
                 <div class="">
                     <i class="fas fa-laptop-code fa-5x"></i>
@@ -151,7 +152,7 @@
             </a>
             </div>
 
-            <div id="prediction_icon" class="option sites col-sm-3 center"><a
+            <div id="prediction_icon" class="option sites col-sm-3 center mobile_padding"><a
                     href="{{ url_for('modeling.predict') }}">
                 <div class="">
                     <i class="fas fa-thermometer-full fa-5x"></i>

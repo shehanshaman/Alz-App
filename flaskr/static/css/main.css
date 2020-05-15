@@ -713,6 +713,9 @@ div.transbox-like-go p {
 }
 
 @media only screen and (max-width: 768px) and (min-width: 370px) {
+    .mobile_padding{
+        margin-top: 80px;           
+    }
 
     .card__category {
         font-family: 'Raleway', sans-serif;
@@ -959,7 +962,10 @@ div.transbox-like-go p {
 }
 
 @media only screen and (max-width: 370px) {
-
+    .mobile_padding{
+        margin-top: 80px;           
+    }
+    
     .card__category {
         font-family: 'Raleway', sans-serif;
         font-size: 11px;
