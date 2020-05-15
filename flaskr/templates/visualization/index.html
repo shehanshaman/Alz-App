@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>GeNet | Visualization</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -146,10 +147,12 @@
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 0">
-                    <label>
+                    <label style="font-size: inherit;">
                         <ul id="example_gene">
                             <li style="display: block; float:left;">Example:</li>
-                            <li style="display: block; float:left;" id="ex_symbol_name"></li>
+                            <a href="#" id="example_link">
+                                <li style="display: block; float:left; padding-left: 6px" id="ex_symbol_name"></li>
+                            </a>
                         </ul>
                     </label>
                 </div>
@@ -217,6 +220,8 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
+    var file_select_status = 0;
+
     $(document).ready(function () {
         $('#submit_button').prop('disabled', true);
         $('#example_gene').hide();
@@ -226,6 +231,7 @@
 <script>
 
     $('#available_files').change(function () {
+        file_select_status = 1;
         $('.top-right').show(0);
         var conceptName = $('#available_files').find(":selected").text();
         $('#submit_button').prop('disabled', false);
@@ -242,8 +248,16 @@
         $('#submit_button').prop('disabled', true);
     });
 
-    $('#features').change(function () {
+    $('#example_link').click(function () {
+        $('#features')[0].value = $('#ex_symbol_name')[0].innerHTML;
         $('#submit_button').prop('disabled', false);
+        document.getElementById("submit_button").click();
+    });
+
+    $('#features').change(function () {
+        if(file_select_status){
+            $('#submit_button').prop('disabled', false);
+        }
     });
 
     $("#submit_button").click(function () {
@@ -252,9 +266,13 @@
         var feature = $('#features').val();
 
         $.get("./img/", {available_file: file, feature: feature}, function (data, status) {
-            var img_hash = "data:image/png;base64, " + data;
-            $("#symbol-vis").attr("src", img_hash);
-            document.getElementById("image_container").style.visibility = "visible";
+            if (data) {
+                var img_hash = "data:image/png;base64, " + data;
+                $("#symbol-vis").attr("src", img_hash);
+                document.getElementById("image_container").style.visibility = "visible";
+            }else{
+                alert("Warning: Check spelling in Gene Symbol");
+            }
         });
 
     });
