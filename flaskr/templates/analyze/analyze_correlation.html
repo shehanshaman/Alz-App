@@ -136,7 +136,7 @@
             <div class="row">
                 <div class="col-sm-1"></div>
                 <div class="col-sm-6">
-                    <label style="float: right;font-size: 20px;"><b>Selected File: </b> {{ filename }}</label>    
+                    <label style="float: right;font-size: 15px;"><b>Selected File: </b> {{ filename }}</label>    
                 </div>
                 <div class="col-sm-3 change_file_div">
                     <a href="../fs/an/config" style="color: #26a69a;text-decoration: none;font-size: 15px;"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
@@ -165,10 +165,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6 corr_result_text">
-                        <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This
-                            graph shows the variation of correlation values with the number of correlated features. By
-                            examining this graph, the method that gives the least correlated features can be filtered
-                            out !</p>
+                        <p class="card__title card__title_p_size" style="text-align: justify; font-family: monospace;">This graph shows the variation of correlation values with the number of correlated features. By examining this graph, the method that gives the least correlated features can be filtered out !</p>
                     </div>
                 </div>
             </div>
@@ -176,7 +173,7 @@
             <div class="result_content">
                 <div class="row">
                     <h4 id="h4-head-6" class="card__title"
-                        style="text-align: center;font-size:26px;font-family: monospace;">Variation of the correlation
+                        style="text-align: center;font-size:2vw;font-family: monospace;">Variation of the correlation
                         coefficients of the genes found only by {{ method_title }} with
                         classification accuracy</h4>
                 </div>
@@ -198,7 +195,7 @@
                 </div>
 
                 <div class="row">
-                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">This
+                    <p class="card__title card__title_p_size" style="text-align: justify; font-family: monospace;">This
                         graph (right) shows how the correlation coefficients of the genes only found
                         by {{ method_title }} varies with the number of features. The graph(left) shows the variation of
                         correlation coefficients of the genes selected by {{ method_title }} alone varies with the
@@ -210,9 +207,7 @@
                 <div class="row">
 
                     <h4 id="h4-head-2" class="card__title"
-                        style="text-align: center;font-size:26px;font-family: monospace;">Finding features that has
-                        minimum
-                        correlated and high classification accuracy</h4>
+                        style="text-align: center;font-size:2vw;font-family: monospace;">Finding features that has minimum correlated and high classification accuracy</h4>
                 </div>
 
                 <div id="results_table_div" style="overflow: auto;">
@@ -225,16 +220,12 @@
                 <br>
 
                 <div class="row">
-                    <p class="card__title" style="font-size: 15px;text-align: justify; font-family: monospace;">By
-                        considering the above graphs, you can select the plots where the highest accuracies occur in
-                        each classifier. The table shows the instance where the maximum accuracy is obtained, the number
-                        of features at that particular point and the range of correlation coefficients of that instance.
-                        Out of the 3 models, you can obtain the maximum accuracy to proceed further !</p>
+                    <p class="card__title card__title_p_size" style="text-align: justify; font-family: monospace;">By considering the above graphs, you can select the plots where the highest accuracies occur in each classifier. The table shows the instance where the maximum accuracy is obtained, the number of features at that particular point and the range of correlation coefficients of that instance. Out of the 3 models, you can obtain the maximum accuracy to proceed further !</p>
                 </div>
             </div>
 
             <div class="row list-view">
-                <div id="btnContainer">
+                <div id="btnContainer" class="btn_list_grid">
                     <button id="list_div_btn" class="btn" onclick="listView()"
                             style="background-color: white;color: black;"><i class="fa fa-bars"></i> List
                     </button>
@@ -246,12 +237,12 @@
 
                 <div class="row">
                     <div id="overlapped_features_div" class="column" style="background-color:#26a69a8f;">
-                        <h4 style="color: white;font-family: monospace;">Overlapped Features</h4>
-                        <p>{{ overlap }}</p>
+                        <h4 style="color: white;font-family: monospace;font-size: 2.5vw;">Overlapped Features</h4>
+                        <p style="font-size: 1vw;">{{ overlap }}</p>
                     </div>
                     <div id="correlation_features_div" class="column" style="background-color:#26a69a;">
-                        <h4 style="color: white;font-family: monospace;">Correlation | {{ max_clasify }}</h4>
-                        <p>{{ corr_selected }}</p>
+                        <h4 style="color: white;font-family: monospace;font-size: 2.5vw;">Correlation | {{ max_clasify }}</h4>
+                        <p style="font-size: 1vw;">{{ corr_selected }}</p>
                     </div>
                 </div>
 
@@ -310,6 +301,11 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
+
+    jQuery(function(){
+       jQuery('#list_div_btn').click();
+    });
+        
     // Get the elements with class="column"
     var elements = document.getElementsByClassName("column");
 
