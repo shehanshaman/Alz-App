@@ -64,6 +64,9 @@ def create_user():
     db = get_db()
     auth.create_user_db(db, "user", "user", "user", None, 1)
 
+    db.execute("UPDATE user SET is_admin = 1 WHERE id = 1")
+    db.commit()
+
 def setup_folders():
     #users path added
     user_path = UPLOAD_FOLDER / "users"
