@@ -11,6 +11,13 @@ body::-webkit-scrollbar-thumb {
   outline: 1px solid slategrey;
 }
 
+.loader_div_h1{
+    text-align: center;
+    color: #26a69a;
+    font-size: 3vw;
+    text-transform: uppercase;    
+}
+
 .result_content {
     border-color: #26a69a;
     border-style: ridge;
@@ -996,6 +1003,11 @@ div.transbox-like-go p {
         width: -webkit-fill-available;
     }   
 
+    .union_div_venn{
+        margin-left: 20%;
+        width: 50%;
+    }
+    
     .card__title_p_size{
         font-size: 12px;
     }
