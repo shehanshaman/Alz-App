@@ -30,7 +30,12 @@ body::-webkit-scrollbar-thumb {
     top: 8px;
     right: 5px;
 }
-        
+
+#tourControls{
+    max-width: 400px;
+    min-width: 150px;
+}
+
     .modal_pop {
         position: fixed;
         z-index: 3000;
@@ -99,7 +104,7 @@ body::-webkit-scrollbar-thumb {
 .notification-container-pop {
     position: fixed;
     right: 10px;
-    bottom: 10px
+    bottom: 10px;
 }
 
 .pdeselect-div {
@@ -1644,4 +1649,10 @@ th {
 
 .pagination{
     width: max-content;
+}
+
+@media only screen and (max-width: 1200px) {
+    .side_nav_content{
+        display: none;            
+    }
 }
