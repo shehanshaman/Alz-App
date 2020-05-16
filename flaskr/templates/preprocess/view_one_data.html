@@ -25,14 +25,18 @@
 </head>
 
 <style>
-        .pagination li.active {
-            background-color: inherit;
-        }
+    .pagination li.active {
+        background-color: inherit;
+    }
 
-        .content_1 {
-            padding-left: 10%;
-            padding-right: 10%;
-        }
+    .content_1 {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+
+    #table_id_paginate{
+        overflow: scroll;
+    }
 </style>
 
 <body style="background-color: #f3f6f9;font-family: monospace;">
@@ -42,7 +46,7 @@
 
 <div class="row content_1">
     <div class="row" id="h5-head-6" class="card__title">
-        <h5>{{ data[0] }}</h5>
+        <h5 style="font-size: 15px;">{{ data[0] }}</h5>
     </div>
 
     <div class="row">

@@ -123,7 +123,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     {% if available_space > 0 %}
-                        <<a href="{{ url_for('preprocess.upload_sample_file') }}">
+                        <a href="{{ url_for('preprocess.upload_sample_file') }}">
                         <button type="button" class="btn sample_select_btn"
                                 style="background-color: #4c78af;float: right;">SELECT SAMPLE FILE
                         </button>
@@ -165,7 +165,7 @@
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div>
-        <h5 style="text-align: center;color: #26a69a;">UPLOADING DATASET</h5>
+        <h5 class="loader_div_h1">UPLOADING DATASET</h5>
     </div>
 
 </div>

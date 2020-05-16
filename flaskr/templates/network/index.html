@@ -93,7 +93,7 @@
                 <div class="row">
                     <div class="col-sm-1"></div>
                     <div class="col-sm-6">
-                        <label style="float: right;font-size: 20px;"><b>Selected File: </b> {{ filename }}</label>
+                        <label style="float: right;font-size: 15px;"><b>Selected File: </b> {{ filename }}</label>
                     </div>
                     <div class="col-sm-3 change_file_div">
                         <a onclick="open_modal()" href="#"
@@ -120,21 +120,21 @@
                                 <label style="font-size: 20px;"><b>Number of clusters identified: </b> {{ n_labels }}
                                 </label>
                             </div>
+                            <center>
                             <div class="row">
-                                <div class="col-sm-6" style="text-align: right; padding-top: 7px;">
-                                    <label>Select Cluster: </label>
-                                </div>
-                                <div class="col-sm-6">
-                                    <select style="font-family: monospace; width: auto;" class="form-control"
-                                            id="cluster_num"
-                                            name="cluster_num">
+                                <div class="col-sm-4"></div>
+                                <div class="col-sm-4">
+                                    <label style="padding-top: 7px;display: inline;">Select Cluster: </label>
+                                    <select style="font-family: monospace; width: auto;display: inline;" class="form-control" id="cluster_num" name="cluster_num">
                                         <option value="" selected>All</option>
                                         {% for i in range(0, n_labels) %}
                                             <option value="{{ i }}">{{ i + 1 }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="col-sm-4"></div>
                             </div>
+                            </center>
                             <div class="row" style="text-align: center;" id="result_view">
                                 <span class="dot"></span>
                                 <label>Selected cluster nodes </label>
@@ -169,8 +169,7 @@
                         <form method="post" action="/net/" enctype="multipart/form-data" id="main-form">
 
                             <div class="md-form">
-                                <select style="font-family: monospace;" class="form-control" id="file_name"
-                                        name="file_name">
+                                <select style="font-family: monospace;" class="form-control" id="file_name" name="file_name">
                                     <option disabled="disabled" selected>Pick a choice!</option>
                                     {% for name in all_names %}
                                         <option value="{{ name }}">{{ name }}</option>
@@ -183,9 +182,9 @@
                 <div class="modal-footer">
                     <button class="modal-close waves-effect waves-green btn-flat" id="submit_button">Submit</button>
                     {% if node %}
-                        <a class="modal-close waves-effect waves-green btn-flat" href="#">Close</a>
+                        <a class="modal-close waves-effect waves-green btn-flat">Close</a>
                     {% else %}
-                        <a class="modal-close waves-effect waves-green btn-flat" href="../">Close</a>
+                        <a class="modal-close waves-effect waves-green btn-flat">Close</a>
                     {% endif %}
                 </div>
             </div>
@@ -198,7 +197,7 @@
 
 <div class="loader-div" style="display: none;">
     <div id="loader" class="center-load"></div>
-    <h5 style="text-align: center;color: #26a69a;">PROCESSING</h5>
+    <h5 class="loader_div_h1">GENERATING CLUSTERS</h5>
 </div>
 
 {% include 'footer.html' %}
@@ -340,6 +339,9 @@
 {% endif %}
 
 <script>
+
+    $('#submit_button').prop('disabled', true);
+
     function open_modal() {
         $('#modal1').openModal();
     }
@@ -350,4 +352,13 @@
         $('.main-body').click(false);
         $("#main-form").submit();
     });
+
+    $('#file_name').change(function () {
+
+        if( $( "#file_name" ).val() != null ){
+            $('#submit_button').prop('disabled', false);
+        }
+
+    });
+
 </script>

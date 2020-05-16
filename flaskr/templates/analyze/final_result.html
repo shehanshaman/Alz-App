@@ -171,7 +171,7 @@
 <p style="display: none;" class="gene_ex_list_div">{{ gene_name_list }}</p>
 
 <div class="main-div-an-3">
-    <div class="card-content">
+    <div class="card-content side_nav_content">
 
         <ul data-method="GET" class="stepper linear">
             <li id="side_step_nav_preprocess_icon" class="step">
@@ -205,7 +205,7 @@
                     <div class="row">
                         <div class="col-sm-1"></div>
                         <div class="col-sm-6">
-                            <label style="float: right;font-size: 20px;"><b>Selected File: </b> {{ filename }}</label>    
+                            <label style="float: right;font-size: 15px;"><b>Selected File: </b> {{ filename }}</label>    
                         </div>
                         <div class="col-sm-3 change_file_div">
                             <a href="../fs/an/config" style="color: #26a69a;text-decoration: none;font-size: 15px;"><i class="fas fa-exchange-alt fa-2x"></i> Change
@@ -216,14 +216,14 @@
                     <div class="result_content">
                         <div class="row">
                             <h3 id="h3-head-6" class="card__title"
-                                style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">
+                                style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;font-size:2vw;">
                                 {{ method }} Selected Features </h3>
                             <h3 id="selected-method" style="display: none;">{{ method }}</h3>
                         </div>
 
-                        <div id="gene_output_div1" class="alert alert-info" style="cursor: pointer;">
+                        <div id="gene_output_div1" class="alert alert-info" style="cursor: pointer;font-size: 1.5vw;">
                             <strong>Info!</strong> {{ method }} extracted {{ len[0] }} features. 
-                            <h6>{{ col[0] }}</h6>
+                            <h6 style="font-size: 1vw;">{{ col[0] }}</h6>
                         </div>
 
                         <div class="row">
@@ -244,12 +244,12 @@
                         <div>
                             <div class="row">
 
-                                <h3 id="h3-head-2" class="card__title" style="text-align: center;"></h3>
+                                <h3 id="h3-head-2" class="card__title" style="text-align: center;font-size:2vw;"></h3>
                             </div>
 
                             <div class="row">
-                                <p class="card__title"
-                                   style="font-size: 15px;text-align: justify; font-family: monospace;">
+                                <p class="card__title card__title_p_size"
+                                   style="text-align: justify; font-family: monospace;">
                                     A ROC curve is constructed by plotting the true positive rate (TPR) against the
                                     false
                                     positive rate (FPR). The true positive rate is the proportion of observations that
@@ -261,8 +261,8 @@
                                     This graph shows the ROC curve consideing the genes obtained through considering
                                     least
                                     correlation !</p>
-                                <p class="card__title"
-                                   style="font-size: 15px;text-align: justify; font-family: monospace;">
+                                <p class="card__title card__title_p_size"
+                                   style="text-align: justify; font-family: monospace;">
                                     The correlation matrix of the genes selected by {{ method }} only !</p>
                             </div>
 
@@ -280,14 +280,14 @@
                     <div class="result_content">
                         <div class="row">
                             <h3 id="h3-head-6" class="card__title"
-                                style="text-align: center;color: #26a69a;text-transform: uppercase;">{{ method }} +
+                                style="text-align: center;color: #26a69a;text-transform: uppercase;font-size:2vw;">{{ method }} +
                                 Overlapped
                                 Features</h3>
                         </div>
 
-                        <div id="gene_output_div2" class="alert alert-info" style="cursor: pointer;">
+                        <div id="gene_output_div2" class="alert alert-info" style="cursor: pointer;font-size: 1.5vw;">
                             <strong>Info!</strong> {{ method }} + overlapped extracted {{ len[1] }} features.
-                            <h6>{{ col[1] }}</h6>
+                            <h6 style="font-size: 1vw;">{{ col[1] }}</h6>
                         </div>
 
                         <div class="row">
@@ -313,8 +313,8 @@
                             </div>
 
                             <div class="row">
-                                <p class="card__title"
-                                   style="font-size: 15px;text-align: justify; font-family: monospace;">
+                                <p class="card__title card__title_p_size"
+                                   style="text-align: justify; font-family: monospace;">
                                     The graph(left) shows the ROC curve of all the genes selected.That is, the set of
                                     overlapped genes plus the genes filtered out by {{ method }} considering the least
                                     correlation, The graph(right) shows the correlation matrix of all the genes
@@ -376,7 +376,7 @@
 
 <div class="loader-div" style="display: none;">
     <div id="loader" class="center-load"></div>
-    <h5 style="text-align: center;color: #26a69a;">VALIDATING</h5>
+    <h5 class="loader_div_h1">VALIDATING</h5>
 </div>
 
 {% include 'guide_footer.html' %}

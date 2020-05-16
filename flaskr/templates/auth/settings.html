@@ -86,29 +86,30 @@
                 <h5>Host Usage</h5>
                 <div id="piechart"></div>
             </div>
-            <div class="col-sm-4">
-                <div class="row">
-                    <h5>User details</h5><br>
-                    <label for="username" style="float: left">E-mail</label>
-                    <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
-                    <label for="given_name" style="float: left">Name</label>
-                    <input name="given_name" id="given_name" value="{{ data[0][1] }}">
-                    <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
+            <div class="row center">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <h5>User details</h5><br>
+                        <label for="username" style="float: left">E-mail</label>
+                        <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
+                        <label for="given_name" style="float: left">Name</label>
+                        <input name="given_name" id="given_name" value="{{ data[0][1] }}">
+                        <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
+                    </div>
+
+                    <div class="row">
+                        <h5>Cleanup</h5><br>
+                        <label>Clean {{ data[1][1] }} MB in cache</label> <br>
+                        <button class="waves-effect waves-dark btn" style="float: left" id="cache_clear"
+                                {% if data[1][1] < 1 %}
+                                disabled
+                                {% endif %}>Clear
+                        </button>
+                    </div>
+
                 </div>
-
-                <div class="row">
-                    <h5>Cleanup</h5><br>
-                    <label>Clean {{ data[1][1] }} MB in cache</label> <br>
-                    <button class="waves-effect waves-dark btn" style="float: left" id="cache_clear"
-                            {% if data[1][1] < 1 %}
-                            disabled
-                            {% endif %}>Clear
-                    </button>
-                </div>
-
-            </div>
-
-            <div class="col-sm-8">
+            </div>    
+            <div class="col-sm-8" style="overflow: scroll;">
                 <h5>Files</h5><br>
                 <table>
                     {% for index, row in df_files.iterrows() %}
