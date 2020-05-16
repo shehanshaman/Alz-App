@@ -93,7 +93,7 @@
                 <div class="row">
                     <div class="col-sm-1"></div>
                     <div class="col-sm-6">
-                        <label style="float: right;font-size: 20px;"><b>Selected File: </b> {{ filename }}</label>
+                        <label style="float: right;font-size: 15px;"><b>Selected File: </b> {{ filename }}</label>
                     </div>
                     <div class="col-sm-3 change_file_div">
                         <a onclick="open_modal()" href="#"
@@ -120,21 +120,21 @@
                                 <label style="font-size: 20px;"><b>Number of clusters identified: </b> {{ n_labels }}
                                 </label>
                             </div>
+                            <center>
                             <div class="row">
-                                <div class="col-sm-6" style="text-align: right; padding-top: 7px;">
-                                    <label>Select Cluster: </label>
-                                </div>
-                                <div class="col-sm-6">
-                                    <select style="font-family: monospace; width: auto;" class="form-control"
-                                            id="cluster_num"
-                                            name="cluster_num">
+                                <div class="col-sm-4"></div>
+                                <div class="col-sm-4">
+                                    <label style="padding-top: 7px;display: inline;">Select Cluster: </label>
+                                    <select style="font-family: monospace; width: auto;display: inline;" class="form-control" id="cluster_num" name="cluster_num">
                                         <option value="" selected>All</option>
                                         {% for i in range(0, n_labels) %}
                                             <option value="{{ i }}">{{ i + 1 }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="col-sm-4"></div>
                             </div>
+                            </center>
                             <div class="row" style="text-align: center;" id="result_view">
                                 <span class="dot"></span>
                                 <label>Selected cluster nodes </label>
