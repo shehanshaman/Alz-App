@@ -336,12 +336,12 @@ def get_all_users():
         "SELECT * FROM user",
     ).fetchall()
 
-    col = ["id", "username", "given_name", "last_login", "is_verified", "is_admin"]
+    col = ["id", "username", "given_name", "last_login", "is_verified", "is_admin", "disk_space", "is_sent_warning"]
 
     df = pd.DataFrame(columns=col)
 
     for user in users:
-        df2 = pd.DataFrame([[user['id'], user['username'], user['given_name'], user['last_login'], user['is_verified'], user['is_admin']]], columns=col)
+        df2 = pd.DataFrame([[user['id'], user['username'], user['given_name'], user['last_login'], user['is_verified'], user['is_admin'], user['disk_space'], user['is_sent_warning'] ]], columns=col)
         df = df.append(df2)
 
     return df
@@ -771,5 +771,13 @@ class UserData:
         db.execute(
             "DELETE FROM file WHERE user_id = ? AND file_name = ?",
             (user_id, file_name),
+        )
+        db.commit()
+
+    def update_user_disk_space(user_id, new_space):
+        db = get_db()
+        db.execute(
+            "UPDATE user SET "
+            "disk_space = ?  WHERE id = ?", (new_space, user_id),
         )
         db.commit()

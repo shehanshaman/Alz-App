@@ -147,6 +147,20 @@ def update_user_admin():
 
     return str(is_admin)
 
+@bp.route("/user/space/", methods=["GET"])
+@login_required
+def update_user_disk_space():
+    # Check whether admin
+    if is_not_admin(g.user):
+        return abort('401')
+
+    id = request.args.get('id')
+    disk_space = request.args.get('disk_space')
+
+    UserData.update_user_disk_space(id, disk_space)
+
+    return "1"
+
 
 @bp.route("/delete/files/", methods=["GET"])
 @login_required
