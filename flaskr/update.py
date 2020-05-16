@@ -61,6 +61,10 @@ def delete_user_account():
     #Check admin or same user
     if g.user['is_admin'] or g.user['id'] == id:
 
+        if g.user['is_admin'] and g.user['id'] != id:
+            email = UserData.get_user(id)['username']
+            UserData.send_delete_msg([email])
+
         UserData.remove_user(id)
         dir_path = USER_PATH / str(id)
         delete_folder(dir_path)
