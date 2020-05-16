@@ -105,7 +105,7 @@ def add_annotation():
 
 def add_mail_templates():
     db = get_db()
-    subjects = ["verify", "reset", "infrequent"]
+    subjects = ["verify", "reset", "infrequent", "warning"]
     for subject in subjects:
         file_name = MAIL_PATH / (subject + '_mail.html')
         f = open(file_name, "r")

@@ -57,13 +57,20 @@ def update_given_name():
 @login_required
 def delete_user_account():
     id = request.args.get('id')
-    UserData.remove_user(id)
-    dir_path = USER_PATH / str(id)
-    delete_folder(dir_path)
 
-    delete_user_file(id)
+    #Check admin or same user
+    if g.user['is_admin'] or g.user['id'] == id:
 
-    return '1'
+        UserData.remove_user(id)
+        dir_path = USER_PATH / str(id)
+        delete_folder(dir_path)
+
+        delete_user_file(id)
+
+        return '1'
+
+    else:
+        return abort('401')
 
 def delete_user_file(user_id):
     files = UserData.get_user_file(user_id)
@@ -218,5 +225,13 @@ def infrequent_user_ntfy():
 
     ids = request.args.get('ids')
     id_array = ids.split(',')
+
+    return "1"
+
+@bp.route("/warning/user/", methods=["GET"])
+@login_required
+def send_warning():
+    id = request.args.get('id')
+    UserData.send_warning(id)
 
     return "1"

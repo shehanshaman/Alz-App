@@ -131,6 +131,10 @@ def login():
         if error is None:
             # store the user id in a new session and return to the index
             session.clear()
+
+            if user["is_sent_warning"]:
+                UserData.update_is_sent_warning(user['id'], 0)
+
             session["user_id"] = user["id"]
             update_last_login(db, user["id"])
             return redirect(url_for("index"))
@@ -166,6 +170,9 @@ def glogin():
         ).fetchone()
 
     else:
+        if user["is_sent_warning"]:
+            UserData.update_is_sent_warning(user['id'], 0)
+
         # Update user last login
         update_last_login(db, user["id"])
 
@@ -453,9 +460,20 @@ def send_mail(subject, url, recipient, senders_subject):
 
 def send_infrequent_mail(recipients):
     msg = Message("Unavailable uploaded files",
-                  sender="no-reply@alz.com",
+                  sender="no-reply@GeNet.com",
                   recipients=recipients)
     message = get_mail_message("infrequent")
+    msg.html = message
+    mail = current_app.config["APP_ALZ"].mail
+    s = mail.send(msg)
+
+    return s
+
+def send_warning_mail(recipients):
+    msg = Message("Warning",
+                  sender="no-reply@GeNet.com",
+                  recipients=recipients)
+    message = get_mail_message("warning")
     msg.html = message
     mail = current_app.config["APP_ALZ"].mail
     s = mail.send(msg)
@@ -515,6 +533,13 @@ class UserData:
         if user is not None:
             return user["id"]
         return None
+
+    def get_user(id):
+        db = get_db()
+        user = db.execute(
+            "SELECT * FROM user WHERE id = ?", (id,)
+        ).fetchone()
+        return user
 
     def get_user_all_preprocess(user_id):
         db = get_db()
@@ -781,3 +806,15 @@ class UserData:
             "disk_space = ?  WHERE id = ?", (new_space, user_id),
         )
         db.commit()
+
+    def update_is_sent_warning(user_id, state):
+        db = get_db()
+        db.execute(
+            "UPDATE user SET is_sent_warning = ?  WHERE id = ?", (state, user_id),
+        )
+        db.commit()
+
+    def send_warning(user_id):
+        user = UserData.get_user(user_id)
+        send_warning_mail([user['username']])
+        UserData.update_is_sent_warning(user_id, 1)

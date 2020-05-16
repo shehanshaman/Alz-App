@@ -211,10 +211,10 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <button class="btn" id="warning_btn">Sent Warning</button>
+                        <button class="btn" id="warning_btn" onclick="send_user_warning()">Send Warning</button>
                     </div>
                     <div class="col-sm-6">
-                        <button class="btn" id="user_delete_btn">Delete Account</button>
+                        <button class="btn" id="user_delete_btn" onclick="delete_user_account()">Delete Account</button>
                     </div>
                 </div>
             </div>
@@ -299,6 +299,24 @@
         });
     }
 
+    function send_user_warning() {
+        var id = selected_user_id;
+        document.getElementById('warning_btn').disabled = true;
+
+        $.get("../update/warning/user/", {id: id}, function (data, status) {
+
+        });
+    }
+
+    function delete_user_account() {
+        var id = selected_user_id;
+        document.getElementById('user_delete_btn').disabled = true;
+
+        $.get("../update/user/delete/", {id: id}, function (data, status) {
+            location.reload();
+        });
+    }
+
     {% if data[1] %}
 
         $('#infrequent_users_file_delete').click(function () {
@@ -338,6 +356,14 @@
         document.getElementById('last_login').innerHTML = last_login;
 
         document.getElementById('disk_space').value = disk_space;
+
+        if (is_sent_warning == 1){
+            document.getElementById('warning_btn').disabled = true;
+        }else {
+            document.getElementById('warning_btn').disabled = false;
+        }
+
+
     }
 
 </script>
