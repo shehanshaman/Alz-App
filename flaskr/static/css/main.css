@@ -520,6 +520,9 @@ div.transbox-like-go p {
 }
 
 @media only screen and (min-width: 768px) {
+    .union_div_venn{
+        width: 50%;
+    }
 
     .card__category {
         font-family: 'Raleway', sans-serif;
@@ -719,6 +722,15 @@ div.transbox-like-go p {
 }
 
 @media only screen and (max-width: 768px) and (min-width: 370px) {
+    .union_div_venn{
+        margin-left: 20%;
+        width: 50%;
+    }
+
+    .btn_list_grid{
+        display: none;
+    }
+    
     .view_button_step_1{
         width: -webkit-fill-available;
     }    
@@ -975,7 +987,11 @@ div.transbox-like-go p {
     .view_button_step_1{
         width: -webkit-fill-available;
     }   
-        
+
+    .btn_list_grid{
+        display: none;
+    }
+
     .mobile_padding{
         margin-top: 80px;           
     }
