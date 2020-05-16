@@ -478,6 +478,12 @@ var tip_validation =
         tooltip : 'This table gives information on the already identified genes !', 
         text: 'Validation', 
         position: 'T' 
+    },
+    { 
+        element : '#mynetwork', 
+        tooltip : 'clst !', 
+        text: 'Clusters', 
+        position: 'T' 
     }
 ];
 
