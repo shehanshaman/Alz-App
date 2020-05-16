@@ -90,22 +90,43 @@
         </div>
     {% endfor %}
 
-    {% if data[1] %}
+    {% if warning_list or delete_list %}
         <div class="row">
             <h5>Infrequent Users Details</h5><br>
             <div class="row">
                 <div class="well well-lg">
-                    <div class="row">
-                        There has {{ data[1] }} infrequent users and they used {{ data[0] }} MB of storage.
-                    </div>
+                    {% if warning_list %}
+                        <div class="row">
+                            <div class="col-sm-9">
+                                There has {{ warning_list | length }} infrequent users and they used {{ sum_usage }} MB
+                                of
+                                storage.
+                            </div>
+                            <div class="col-sm-3">
+                                <button id="infrequent_users_send_warning" class="waves-effect waves-dark btn"
+                                        onclick="send_infrequent_warning()">SEND WARNING
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if delete_list %}
+                        <div class="row">
+                            <div class="col-sm-9">
+                                There has {{ delete_list | length }} infrequent users and they used {{ sum_usage }} MB
+                                of storage.
+                            </div>
+                            <div class="col-sm-3">
+                                <button id="infrequent_users_account_delete" class="waves-effect waves-dark btn"
+                                        onclick="delete_infrequent_users()">DELETE
+                                    ACCOUNTS
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
 
                     <div class="row progress" id="progress_bar">
                         <div class="indeterminate"></div>
-                    </div>
-
-                    <div class="row">
-                        <button id="infrequent_users_file_delete" class="waves-effect waves-dark btn">DELETE FILES
-                        </button>
                     </div>
                 </div>
             </div>
@@ -317,19 +338,45 @@
         });
     }
 
-    {% if data[1] %}
+    function send_infrequent_warning() {
+        var ids = {{ warning_list | tojson }};
+        document.getElementById("progress_bar").style.visibility = "visible";
+        document.getElementById('infrequent_users_send_warning').disabled = true;
+        $.ajax({
+            type: "POST",
+            url: "../update/warning/users/",
+            data: JSON.stringify(ids),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            error: function () {
 
-        $('#infrequent_users_file_delete').click(function () {
-            var ids = {{ data[2] }};
-            document.getElementById("progress_bar").style.visibility = "visible";
-            document.getElementById("infrequent_users_file_delete").disabled = true;
-            $.get("../update/infrequent/files/", {ids: ids}, function (data, status) {
+            },
+            success: function () {
                 document.getElementById("progress_bar").style.visibility = "hidden";
-
-            });
+                location.reload();
+            }
         });
+    }
 
-    {% endif %}
+    function delete_infrequent_users() {
+        var ids = {{ delete_list | tojson }};
+        document.getElementById("progress_bar").style.visibility = "visible";
+        document.getElementById('infrequent_users_account_delete').disabled = true;
+        $.ajax({
+            type: "POST",
+            url: "../update/delete/users/",
+            data: JSON.stringify(ids),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            error: function () {
+
+            },
+            success: function () {
+                document.getElementById("progress_bar").style.visibility = "hidden";
+                location.reload();
+            }
+        });
+    }
 
     function open_modal(id, username, given_name, last_login, is_verified, is_admin, disk_space, is_sent_warning, usage) {
         $('#user_modal').openModal();
@@ -357,13 +404,11 @@
 
         document.getElementById('disk_space').value = disk_space;
 
-        if (is_sent_warning == 1){
+        if (is_sent_warning == 1) {
             document.getElementById('warning_btn').disabled = true;
-        }else {
+        } else {
             document.getElementById('warning_btn').disabled = false;
         }
-
-
     }
 
 </script>

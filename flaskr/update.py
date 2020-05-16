@@ -205,33 +205,36 @@ def delete_files_in_dir(path, modal=False):
         if isfile(file):
             os.remove(file)
 
-@bp.route("/infrequent/files/", methods=["GET"])
-@login_required
-def infrequent_files_delete():
-
-    ids = request.args.get('ids')
-    id_array = ids.split(',')
-
-    for id in id_array:
-        delete_user_all_files(id)
-
-    UserData.infrequent_users(ids)
-
-    return "1"
-
-@bp.route("/infrequent/ntfy/", methods=["GET"])
-@login_required
-def infrequent_user_ntfy():
-
-    ids = request.args.get('ids')
-    id_array = ids.split(',')
-
-    return "1"
-
 @bp.route("/warning/user/", methods=["GET"])
 @login_required
 def send_warning():
     id = request.args.get('id')
     UserData.send_warning(id)
+
+    return "1"
+
+@bp.route("/warning/users/", methods=["post"])
+@login_required
+def send_warnings():
+    emails = request.get_json()
+    UserData.send_warnings(emails)
+    return "1"
+
+@bp.route("/delete/users/", methods=["post"])
+@login_required
+def delete_infrequent_users():
+    emails = request.get_json()
+    emails_str = ','.join(('"' + e + '"') for e in emails)
+    query = "SELECT * FROM user WHERE username  IN  (" + emails_str + ")"
+    db = get_db()
+    result = db.execute(query).fetchall()
+
+    for r in result:
+        UserData.remove_user(r['id'])
+        dir_path = USER_PATH / str(r['id'])
+        delete_folder(dir_path)
+        delete_user_file(r['id'])
+
+    UserData.send_delete_msg(emails)
 
     return "1"
