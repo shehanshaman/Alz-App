@@ -7,10 +7,9 @@ from .classes.preProcessClass import PreProcess
 from pathlib import Path
 import numpy as np
 import os
+import warnings
 
-from sklearn import preprocessing
-
-from sklearn import cluster, covariance, manifold
+from sklearn import cluster, covariance
 
 bp = Blueprint("network", __name__, url_prefix="/net")
 
@@ -38,20 +37,19 @@ def get_network():
     file_path = USER_PATH / str(g.user['id']) / file_name
     df = PreProcess.getDF(file_path)
 
-    error = None
+    error = check_df(df)
 
-    if len(df.columns) > 300:
-        abort(404)
+    if error:
+        return render_template("network/index.html", error=error, filename=file_name,
+                               all_names=list_names)
 
-    if "class" in df.columns:
-        df = df.drop(['class'], axis=1)
-
-    # df = df.iloc[:, 70:150]
+    # df = df.iloc[:, 0:350]
 
     names = df.columns.values
     X = df.values.copy()
     X /= X.std(axis=0)
-    # X = preprocessing.normalize(X)
+
+    warnings.filterwarnings("ignore", category=RuntimeWarning)
 
     edge_model = covariance.GraphicalLassoCV(tol=1e-3)
     edge_model.fit(X)
@@ -82,6 +80,21 @@ def get_network():
     return render_template("network/index.html", node=node, edges=edges, error=error, filename=file_name,
                            all_names=list_names, n_labels=n_labels)
 
+def check_df(df):
+    error_msg = None
+
+    #remove class
+    if "class" in df.columns:
+        df = df.drop(['class'], axis=1)
+
+    #Check file length
+    if len(df.columns) > 300:
+        error_msg = "Array is too big."
+
+    if df.isnull().values.any():
+        error_msg = "Input contains NaN or infinity."
+
+    return error_msg
 
 @bp.route("/")
 # @login_required
