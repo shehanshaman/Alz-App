@@ -84,7 +84,7 @@
     <div id="mainDataInterface-id" class="container mainDataInterface">
 
         <div class="step-content">
-            {% if node %}
+            {% if node or error %}
 
                 <div class="row">
                     <h3 id="h3-head-6" class="card__title"
@@ -103,37 +103,50 @@
                     <div class="col-sm-2"></div>
                 </div>
 
-                <div class="row">
-                    <div class="result_content">
-                        <div class="row" style="text-align: center;">
-                            <label style="font-size: 20px;"><b>Number of clusters identified: </b> {{ n_labels }}
-                            </label>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6" style="text-align: right; padding-top: 7px;">
-                                <label>Select Cluster: </label>
-                            </div>
-                            <div class="col-sm-6">
-                                <select style="font-family: monospace; width: auto;" class="form-control"
-                                        id="cluster_num"
-                                        name="cluster_num">
-                                    <option value="" selected>All</option>
-                                    {% for i in range(0, n_labels) %}
-                                        <option value="{{ i }}">{{ i + 1 }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row" style="text-align: center;" id="result_view">
-                            <span class="dot"></span>
-                            <label>Selected cluster nodes </label>
-                        </div>
-                        <div class="row">
-                            <div id="mynetwork"></div>
-                        </div>
+                {% if error %}
 
+                    <div class="row">
+                        <div class="alert alert-danger alert-dismissible fade in">
+                            <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
+                            <strong>Danger!</strong> {{ error }}
+                        </div>
                     </div>
-                </div>
+
+                {% else %}
+
+                    <div class="row">
+                        <div class="result_content">
+                            <div class="row" style="text-align: center;">
+                                <label style="font-size: 20px;"><b>Number of clusters identified: </b> {{ n_labels }}
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6" style="text-align: right; padding-top: 7px;">
+                                    <label>Select Cluster: </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select style="font-family: monospace; width: auto;" class="form-control"
+                                            id="cluster_num"
+                                            name="cluster_num">
+                                        <option value="" selected>All</option>
+                                        {% for i in range(0, n_labels) %}
+                                            <option value="{{ i }}">{{ i + 1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="text-align: center;" id="result_view">
+                                <span class="dot"></span>
+                                <label>Selected cluster nodes </label>
+                            </div>
+                            <div class="row">
+                                <div id="mynetwork"></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                {% endif %}
 
             {% endif %}
 
@@ -298,10 +311,6 @@
             var network = new vis.Network(container, data, options);
         }
 
-        function open_modal() {
-            $('#modal1').openModal();
-        }
-
         $('#cluster_num').change(function () {
             var n = $('#cluster_num').find(":selected").val();
             if (n) {
@@ -317,7 +326,7 @@
 
     </script>
 
-{% else %}
+{% elif not error %}
 
     <script>
 
@@ -328,6 +337,10 @@
 {% endif %}
 
 <script>
+    function open_modal() {
+        $('#modal1').openModal();
+    }
+
     $('#submit_button').click(function () {
         $('.main-div-config').hide(0);
         $('.loader-div').show(0);
