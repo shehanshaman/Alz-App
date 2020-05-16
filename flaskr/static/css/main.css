@@ -524,6 +524,10 @@ div.transbox-like-go p {
         width: 50%;
     }
 
+    .card__title_p_size{
+        font-size: 15px;
+    }
+
     .card__category {
         font-family: 'Raleway', sans-serif;
         font-weight: 500;
@@ -727,10 +731,14 @@ div.transbox-like-go p {
         width: 50%;
     }
 
+    .card__title_p_size{
+        font-size: 12px;
+    }
+    
     .btn_list_grid{
         display: none;
     }
-    
+
     .view_button_step_1{
         width: -webkit-fill-available;
     }    
@@ -987,6 +995,10 @@ div.transbox-like-go p {
     .view_button_step_1{
         width: -webkit-fill-available;
     }   
+
+    .card__title_p_size{
+        font-size: 12px;
+    }
 
     .btn_list_grid{
         display: none;
