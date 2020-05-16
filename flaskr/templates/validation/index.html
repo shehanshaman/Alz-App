@@ -137,7 +137,7 @@
             <div class="row">
                 <div class="col-sm-1"></div>
                 <div class="col-sm-6">
-                    <label style="float: right;font-size: 20px;"><b>Selected File: </b> {{ filename }}</label>
+                    <label style="float: right;font-size: 15px;"><b>Selected File: </b> {{ filename }}</label>
                 </div>
                 <div class="col-sm-3 change_file_div">
                     <a href="../fs/val/config" style="color: #26a69a;text-decoration: none;font-size: 15px;"><i
@@ -151,7 +151,7 @@
 
             {% if data_available %}
 
-                <div id="info_results_div" class="alert alert-info">
+                <div id="info_results_div" class="alert alert-info card__title_p_size">
                     <strong>Info!</strong>
                     <ul>
                         <li>- There are <b> {{ col_gene_card[0] | length }} already identified </b> genes within
@@ -189,14 +189,14 @@
                 <div class="result_content">
                     <div id="venn_diagram_div" class="row">
                         <h4 id="h4-head-6" class="card__title"
-                            style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes that are already identified and biologically validated from the 50 genes obtained by each method</h4>
+                            style="text-align: center;font-size:2vw;font-family: monospace;">Venn diagram of the genes that are already identified and biologically validated from the 50 genes obtained by each method</h4>
                     </div>
 
                     <br>
                     <div class="row">
 
                         <div class="col-sm-3"></div>
-                        <div class="col-sm-8 union_div" style="width: 50%;margin-top: auto;">
+                        <div class="col-sm-8 union_div union_div_venn" style="margin-top: auto;">
 
                             <p class="p_M value_p">{{ venn_data[2] | length }}</p>
                             <p class="p_T value_p">{{ venn_data[0][1] | length }}</p>
@@ -263,7 +263,7 @@
                     </div>
 
                     <div class="row">
-                        <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">
+                        <p class="card__title card__title_p_size" style="text-align: justify; font-family: monospace;">
                             GeneCards.org contains information on the already identified risk genes for a particular
                             disease. This diagram shows the number of genes selected by each method which are also
                             identified by GeneCards !</p>
@@ -275,7 +275,7 @@
                         <h4 id="h4-head-6" class="card__title" style="text-align: center;"></h4>
                     </div>
 
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger card__title_p_size">
                         <strong>Our Method!</strong> Out of those predicted {{ col_gene_card[3] | length }},
                         {{ col_gene_card[4] | length }} were currently discovered.
                         <a href="#modal1"
@@ -293,13 +293,13 @@
                     
                     <div class="row">
                         <h4 id="h4-head-6" class="card__title"
-                            style="text-align: center;font-size:26px;font-family: monospace;">Gene Regulatory Network for the genes selected by all three feature selection methods</h4>
+                            style="text-align: center;font-size:2vw;font-family: monospace;">Gene Regulatory Network for the genes selected by all three feature selection methods</h4>
                     </div>
 
                     <div id="mynetwork"></div>
 
                     <div class="row">
-                        <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">This gene regulatory network depicts the interaction among genes that were selected by all the feature selection methods. The nodes in red color show the final set of genes extracted using the overlapped set and by considering colinearity. The nodes in green represent the rest of the genes !</p>
+                        <p class="card__title card__title_p_size" style="text-align: justify; font-family: monospace;">This gene regulatory network depicts the interaction among genes that were selected by all the feature selection methods. The nodes in red color show the final set of genes extracted using the overlapped set and by considering colinearity. The nodes in green represent the rest of the genes !</p>
                     </div>
 
                 </div>
