@@ -314,7 +314,7 @@ def settings():
     df_files = get_files_size(path)
 
     folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
-    max_usage = current_app.config['APP_ALZ'].max_usage
+    max_usage = user['disk_space']
 
     full_usage = folder_size
     file_usage = round(df_files['file size'].sum(), 2)
