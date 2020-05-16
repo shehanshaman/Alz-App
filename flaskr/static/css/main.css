@@ -105,6 +105,7 @@ body::-webkit-scrollbar-thumb {
     position: fixed;
     right: 10px;
     bottom: 10px;
+    z-index: 10;
 }
 
 .pdeselect-div {
@@ -718,6 +719,10 @@ div.transbox-like-go p {
 }
 
 @media only screen and (max-width: 768px) and (min-width: 370px) {
+    .view_button_step_1{
+        width: -webkit-fill-available;
+    }    
+
     .mobile_padding{
         margin-top: 80px;           
     }
@@ -967,6 +972,10 @@ div.transbox-like-go p {
 }
 
 @media only screen and (max-width: 370px) {
+    .view_button_step_1{
+        width: -webkit-fill-available;
+    }   
+        
     .mobile_padding{
         margin-top: 80px;           
     }
