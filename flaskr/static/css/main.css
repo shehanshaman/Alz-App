@@ -11,6 +11,13 @@ body::-webkit-scrollbar-thumb {
   outline: 1px solid slategrey;
 }
 
+.loader_div_h1{
+    text-align: center;
+    color: #26a69a;
+    font-size: 3vw;
+    text-transform: uppercase;    
+}
+
 .result_content {
     border-color: #26a69a;
     border-style: ridge;
@@ -30,7 +37,12 @@ body::-webkit-scrollbar-thumb {
     top: 8px;
     right: 5px;
 }
-        
+
+#tourControls{
+    max-width: 400px;
+    min-width: 150px;
+}
+
     .modal_pop {
         position: fixed;
         z-index: 3000;
@@ -99,7 +111,8 @@ body::-webkit-scrollbar-thumb {
 .notification-container-pop {
     position: fixed;
     right: 10px;
-    bottom: 10px
+    bottom: 10px;
+    z-index: 10;
 }
 
 .pdeselect-div {
@@ -514,6 +527,13 @@ div.transbox-like-go p {
 }
 
 @media only screen and (min-width: 768px) {
+    .union_div_venn{
+        width: 50%;
+    }
+
+    .card__title_p_size{
+        font-size: 15px;
+    }
 
     .card__category {
         font-family: 'Raleway', sans-serif;
@@ -713,6 +733,26 @@ div.transbox-like-go p {
 }
 
 @media only screen and (max-width: 768px) and (min-width: 370px) {
+    .union_div_venn{
+        margin-left: 20%;
+        width: 50%;
+    }
+
+    .card__title_p_size{
+        font-size: 12px;
+    }
+    
+    .btn_list_grid{
+        display: none;
+    }
+
+    .view_button_step_1{
+        width: -webkit-fill-available;
+    }    
+
+    .mobile_padding{
+        margin-top: 80px;           
+    }
 
     .card__category {
         font-family: 'Raleway', sans-serif;
@@ -959,7 +999,27 @@ div.transbox-like-go p {
 }
 
 @media only screen and (max-width: 370px) {
+    .view_button_step_1{
+        width: -webkit-fill-available;
+    }   
 
+    .union_div_venn{
+        margin-left: 20%;
+        width: 50%;
+    }
+    
+    .card__title_p_size{
+        font-size: 12px;
+    }
+
+    .btn_list_grid{
+        display: none;
+    }
+
+    .mobile_padding{
+        margin-top: 80px;           
+    }
+    
     .card__category {
         font-family: 'Raleway', sans-serif;
         font-size: 11px;
@@ -1638,4 +1698,10 @@ th {
 
 .pagination{
     width: max-content;
+}
+
+@media only screen and (max-width: 1200px) {
+    .side_nav_content{
+        display: none;            
+    }
 }
