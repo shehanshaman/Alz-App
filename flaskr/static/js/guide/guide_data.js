@@ -16,6 +16,12 @@ var tip_home =
         position: 'T'
     },
     {
+        element: '#classification_icon',
+        tooltip: 'Visualize the gene regulatory network for the final set of genes !',
+        text: 'Classification',
+        position: 'T'
+    },    
+    {
         element: '#preprocess_icon',
         tooltip: 'Pre-process the raw data set. Map into gene symbols, normalize, handle null values and filter deferentially expressed genes based on p-values and fold change !',
         text: 'Pre-processing',
@@ -477,6 +483,12 @@ var tip_validation =
         element : '#results_table_div1', 
         tooltip : 'This table gives information on the already identified genes !', 
         text: 'Validation', 
+        position: 'T' 
+    },
+    { 
+        element : '#mynetwork', 
+        tooltip : 'This shows the interaction among the gene sets selected by all the three feature selection methods !', 
+        text: 'Clusters', 
         position: 'T' 
     }
 ];
