@@ -29,7 +29,7 @@
         .border {
             border: 2px solid #bcbaba;
             border-radius: 30px;
-            padding: 35px;
+            padding: 10px;
         }
 
         .flash {
@@ -103,7 +103,7 @@
                     <div id="piechart" style="margin-top: -6vw;"></div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" style="padding-left: 0px;">
                 <div class="col-sm-4">
                     <div class="row">
                         <h5>User details</h5><br>
@@ -125,7 +125,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-8">
+                <div class="col-sm-8" style="padding-left: 0px;">
                     <h5>Files</h5><br>
                     <table>
                         {% for index, row in df_files.iterrows() %}

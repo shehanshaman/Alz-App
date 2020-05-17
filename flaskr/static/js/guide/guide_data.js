@@ -315,17 +315,6 @@ var tip_fs_results =
     position: 'T' 
 },
 { 
-    element : '#list_div_btn', 
-    tooltip : 'Now you have got a subset of the best features. Click this if you want to view them as a list !', 
-    text: 'List layout', 
-    position: 'T' 
-},
-{ 
-    element : '#grid_div_btn', 
-    tooltip : 'Click this to view the features in a grid layout !', 
-    text: 'Grid layout', 
-    position: 'T' },
-{ 
     element : '#results_gene_div', 
     tooltip : 'View all the gene symbols of the features selected by each feature selection method !', 
     text: 'Result gene list', 
