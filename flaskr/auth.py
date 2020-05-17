@@ -131,6 +131,10 @@ def login():
         if error is None:
             # store the user id in a new session and return to the index
             session.clear()
+
+            if user["is_sent_warning"]:
+                UserData.update_is_sent_warning(user['id'], 0)
+
             session["user_id"] = user["id"]
             update_last_login(db, user["id"])
             return redirect(url_for("index"))
@@ -166,6 +170,9 @@ def glogin():
         ).fetchone()
 
     else:
+        if user["is_sent_warning"]:
+            UserData.update_is_sent_warning(user['id'], 0)
+
         # Update user last login
         update_last_login(db, user["id"])
 
@@ -314,7 +321,7 @@ def settings():
     df_files = get_files_size(path)
 
     folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
-    max_usage = current_app.config['APP_ALZ'].max_usage
+    max_usage = user['disk_space']
 
     full_usage = folder_size
     file_usage = round(df_files['file size'].sum(), 2)
@@ -336,25 +343,16 @@ def get_all_users():
         "SELECT * FROM user",
     ).fetchall()
 
-    col = ["id", "username", "given_name", "last_login", "is_verified", "is_admin"]
+    col = ["id", "username", "given_name", "last_login", "is_verified", "is_admin", "disk_space", "is_sent_warning", "usage", "warning_sent_time"]
 
     df = pd.DataFrame(columns=col)
 
     for user in users:
-        df2 = pd.DataFrame([[user['id'], user['username'], user['given_name'], user['last_login'], user['is_verified'], user['is_admin']]], columns=col)
+        root_directory = USER_PATH / str(user['id'])
+        folder_size = round(sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
+        df2 = pd.DataFrame([[user['id'], user['username'], user['given_name'], user['last_login'], user['is_verified'],
+                             user['is_admin'], user['disk_space'], user['is_sent_warning'], folder_size, user['warning_sent_time'] ]], columns=col)
         df = df.append(df2)
-
-    return df
-
-def get_folder_size(users_id):
-    col = ["id", "usage"]
-    df = pd.DataFrame(columns=col)
-
-    for user_id in users_id:
-        root_directory = USER_PATH / str(user_id)
-        folder_size = round(sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file()) / 1024 / 1024 , 2)
-        df2 = pd.DataFrame([[user_id, folder_size]], columns=col)
-        df = df.append(df2, ignore_index=True)
 
     return df
 
@@ -363,17 +361,10 @@ def get_folder_size(users_id):
 def admin_panel():
 
     users = get_all_users()
-    host_usage = get_folder_size(users["id"].tolist())
+    warning_list, delete_list, sum_usage_warning, sum_usage_delete = get_infrequent_ids(users)
 
-    users = pd.merge(users, host_usage, on='id')
-
-    infrequent_ids = get_infrequent_ids(users)
-    select_users = users[(users['id'].isin(infrequent_ids))]
-    ids_str = ','.join(str(e) for e in select_users['id'].tolist())
-
-    data = [round(select_users['usage'].sum(), 2) , select_users.shape[0], ids_str]
-
-    return render_template("auth/admin.html", select_users=select_users, users=users, data=data)
+    return render_template("auth/admin.html", warning_list=warning_list, delete_list=delete_list,
+                           sum_usage_warning=round(sum_usage_warning, 2), sum_usage_delete=round(sum_usage_delete, 2), users=users)
 
 #contact list show
 @bp.route("/admin/contact_list")
@@ -409,14 +400,27 @@ def admin_subscribe_panel():
 
 def get_infrequent_ids(users):
     n = datetime.now()
-    list = []
+    warning_list = []
+    delete_list = []
+    sum_usage_warning = 0
+    sum_usage_delete = 0
+
     for index, row in users.iterrows():
         u_log = datetime.strptime(row['last_login'], '%Y-%m-%d %H:%M:%S.%f')
         delta = n - u_log
-        if delta.days > 1 and row['usage'] > 10:
-            list.append(row['id'])
+        if delta.days > 7 and row['usage'] > 10 and row['is_sent_warning'] == 0:
+            warning_list.append(row['username'])
+            sum_usage_warning = sum_usage_warning + row['usage']
 
-    return list
+        elif row['is_sent_warning']:
+            u_warning = datetime.strptime(row['warning_sent_time'], '%Y-%m-%d %H:%M:%S.%f')
+            delta = n - u_warning
+
+            if delta.days > 3:
+                delete_list.append(row['username'])
+                sum_usage_delete = sum_usage_delete + row['usage']
+
+    return warning_list, delete_list, sum_usage_warning, sum_usage_delete
 
 
 def get_files_size(path):
@@ -451,11 +455,22 @@ def send_mail(subject, url, recipient, senders_subject):
 
     return s
 
-def send_infrequent_mail(recipients):
-    msg = Message("Unavailable uploaded files",
-                  sender="no-reply@alz.com",
+def send_account_delete_mail(recipients):
+    msg = Message("Your GeNet Account Deleted",
+                  sender="no-reply@GeNet.com",
                   recipients=recipients)
-    message = get_mail_message("infrequent")
+    message = get_mail_message("delete")
+    msg.html = message
+    mail = current_app.config["APP_ALZ"].mail
+    s = mail.send(msg)
+
+    return s
+
+def send_warning_mail(recipients):
+    msg = Message("Warning",
+                  sender="no-reply@GeNet.com",
+                  recipients=recipients)
+    message = get_mail_message("warning")
     msg.html = message
     mail = current_app.config["APP_ALZ"].mail
     s = mail.send(msg)
@@ -515,6 +530,13 @@ class UserData:
         if user is not None:
             return user["id"]
         return None
+
+    def get_user(id):
+        db = get_db()
+        user = db.execute(
+            "SELECT * FROM user WHERE id = ?", (id,)
+        ).fetchone()
+        return user
 
     def get_user_all_preprocess(user_id):
         db = get_db()
@@ -671,20 +693,6 @@ class UserData:
         UserData.delete_results(user_id)
         UserData.delete_preprocess_all_file(user_id)
 
-    def infrequent_users(ids):
-        db = get_db()
-        query = "SELECT * FROM user WHERE id IN (" + ids + ")"
-        result = db.execute(query).fetchall()
-
-        list = []
-        for user in result:
-            x =user['username']
-            list.append(x)
-
-        send_infrequent_mail(list)
-
-        return list
-
     def is_file_upload(user_id):
         path = USER_PATH / str(user_id)
 
@@ -714,19 +722,20 @@ class UserData:
         return False
 
     def get_disable_validate_array(user_id):
-        disable_list = [0, 0, 0, 0, 0, 0, 0]
+        disable_list = [0, 0, 0, 0, 0, 0, 0, 0]
 
         if(UserData.is_file_upload(user_id)):
             disable_list[0] = 1
             disable_list[1] = 1
             disable_list[2] = 1
-        if(UserData.get_user_results(user_id)):
             disable_list[3] = 1
-        if(UserData.get_result_to_validation(user_id)):
+        if(UserData.get_user_results(user_id)):
             disable_list[4] = 1
+        if(UserData.get_result_to_validation(user_id)):
             disable_list[5] = 1
+            disable_list[6] = 1
         if UserData.is_model_created(user_id) and disable_list[0]:
-            disable_list[6] = 1  
+            disable_list[7] = 1  
         return disable_list
 
     def add_file(file_name, file_type, path, user_id, is_annotation, has_class):
@@ -773,3 +782,37 @@ class UserData:
             (user_id, file_name),
         )
         db.commit()
+
+    def update_user_disk_space(user_id, new_space):
+        db = get_db()
+        db.execute(
+            "UPDATE user SET "
+            "disk_space = ?  WHERE id = ?", (new_space, user_id),
+        )
+        db.commit()
+
+    def update_is_sent_warning(user_id, state):
+        db = get_db()
+        warning_time = None
+        if state:
+            warning_time = datetime.now()
+        db.execute(
+            "UPDATE user SET is_sent_warning = ?, warning_sent_time = ?  WHERE id = ?", (state, warning_time,user_id),
+        )
+        db.commit()
+
+    def send_warning(user_id):
+        user = UserData.get_user(user_id)
+        send_warning_mail([user['username']])
+        UserData.update_is_sent_warning(user_id, 1)
+
+    def send_warnings(emails):
+        send_warning_mail(emails)
+        emails_str = ','.join(('"' + e + '"') for e in emails)
+        query = "UPDATE user SET is_sent_warning = 1, warning_sent_time = ? WHERE username  IN  (" + emails_str + ")"
+        db = get_db()
+        db.execute(query, (datetime.now(),),)
+        db.commit()
+
+    def send_delete_msg(emails):
+        send_account_delete_mail(emails)

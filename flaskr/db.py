@@ -6,10 +6,13 @@ from flask import current_app
 from flask import g
 from flask.cli import with_appcontext
 from pathlib import Path
+import pandas as pd
+from flaskr import auth
 
 ROOT_PATH = Path.cwd()
 MAIL_PATH = ROOT_PATH / "flaskr" / "mail"
 ANNOTATION_TBL = ROOT_PATH / "flaskr" / "upload" / "AnnotationTbls"
+UPLOAD_FOLDER = ROOT_PATH / "flaskr" / "upload"
 
 def get_db():
     """Connect to the application's configured database. The connection
@@ -50,7 +53,44 @@ def init_db_command():
     init_db()
     add_mail_templates()
     add_annotation()
+    setup_folders()
+    sample_pkl_create()
+    create_user()
+    
     click.echo("Initialized the database.")
+
+def create_user():
+    #Admin of the app
+    db = get_db()
+    auth.create_user_db(db, "user", "user", "user", None, 1)
+
+    db.execute("UPDATE user SET is_admin = 1 WHERE id = 1")
+    db.commit()
+
+def setup_folders():
+    #users path added
+    user_path = UPLOAD_FOLDER / "users"
+    try:
+        os.makedirs(user_path)
+    except OSError:
+        pass
+
+    #Other annotation folder create
+    other_path = UPLOAD_FOLDER / "AnnotationTbls" / "other"
+    try:
+        os.makedirs(other_path)
+    except OSError:
+        pass
+
+def sample_pkl_create():
+    #sample pkl create
+    sample_path = UPLOAD_FOLDER / "sample"
+
+    df = pd.read_csv((sample_path / 'GSE5281-GPL570.zip'))
+    df = df.set_index(["ID"])
+    df.index.name = None
+    df.columns.name = "ID"
+    df.to_pickle((sample_path /'GSE5281-GPL570.pkl'))
 
 def add_annotation():
     file_names = [f for f in os.listdir(ANNOTATION_TBL) if os.path.isfile((ANNOTATION_TBL / f))]
@@ -65,7 +105,7 @@ def add_annotation():
 
 def add_mail_templates():
     db = get_db()
-    subjects = ["verify", "reset", "infrequent"]
+    subjects = ["verify", "reset", "delete", "warning"]
     for subject in subjects:
         file_name = MAIL_PATH / (subject + '_mail.html')
         f = open(file_name, "r")

@@ -71,7 +71,7 @@ function guide_main_call(tip_data, controls_position){
         controlsCss: {
             background: 'rgba(255, 255, 255, 0.71)',
             color: '#1c1d21',
-            width: '400px',
+            width: '45%',
             border: '2px solid #26a69a'
         }
     };
