@@ -20,7 +20,10 @@ CREATE TABLE user (
   last_login DATETIME NOT NULL,
   is_verified INTEGER NOT NULL,
   want_tour INTEGER DEFAULT 1,
-  is_admin INTEGER DEFAULT 0
+  is_admin INTEGER DEFAULT 0,
+  disk_space INTEGER DEFAULT 100,
+  is_sent_warning INTEGER DEFAULT 0,
+  warning_sent_time DATETIME DEFAULT NULL
 );
 
 -- is_verified: 0-Unverified, 1-GeNet-User, 2-Google-User

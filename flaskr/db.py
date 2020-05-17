@@ -64,6 +64,9 @@ def create_user():
     db = get_db()
     auth.create_user_db(db, "user", "user", "user", None, 1)
 
+    db.execute("UPDATE user SET is_admin = 1 WHERE id = 1")
+    db.commit()
+
 def setup_folders():
     #users path added
     user_path = UPLOAD_FOLDER / "users"
@@ -102,7 +105,7 @@ def add_annotation():
 
 def add_mail_templates():
     db = get_db()
-    subjects = ["verify", "reset", "infrequent"]
+    subjects = ["verify", "reset", "delete", "warning"]
     for subject in subjects:
         file_name = MAIL_PATH / (subject + '_mail.html')
         f = open(file_name, "r")
