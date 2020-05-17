@@ -27,6 +27,17 @@
         display: none;
     }
 
+    .vertical_ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .vertical_ul > li {
+        display: inline-block;
+        padding-right: 5px;
+    }
+
 </style>
 
 <body style="background-color: #f3f6f9;font-family: monospace;">
@@ -116,11 +127,15 @@
                         </div>
                         <div class="row">
                             <h5>Overlapped Features </h5>
-                            <div id="overlapped_features_div"></div>
+                            <div id="overlapped_features_div">
+                                <ul class="vertical_ul" id="overlap_features_list"></ul>
+                            </div>
                         </div>
                         <div class="row">
                             <h5 id="selected_method"></h5>
-                            <div id="extracted_features_div"></div>
+                            <div id="extracted_features_div">
+                                <ul class="vertical_ul" id="method_features_list"></ul>
+                            </div>
                         </div>
                     </div>
 
@@ -227,8 +242,21 @@
                 data = data.split("|");
                 methods = data['4'].split(',');
                 methods.pop();
-                $('#overlapped_features_div').text(data[8]);
-                $('#extracted_features_div').text(data[9]);
+
+                var overlap_gene_ul = document.getElementById('overlap_features_list');
+                var overlap_gene = data[8].split(',');
+                for (var i = 0; i < overlap_gene.length; i++) {
+                    $(overlap_gene_ul).append($("<li></li>").text(overlap_gene[i]));
+                }
+                $('#overlapped_features_div').html(overlap_gene_ul);
+
+                var method_gene_ul = document.getElementById('method_features_list');
+                var extracted_gene = data[9].split(',');
+                console.log(extracted_gene);
+                for (var i = 0; i < extracted_gene.length; i++) {
+                    $(method_gene_ul).append($("<li></li>").text(extracted_gene[i]));
+                }
+                $('#extracted_features_div').html(method_gene_ul);
                 $('#selected_method').text(data[10] + " Extracted Features");
                 $('#fs_methods_div').text(methods);
 
