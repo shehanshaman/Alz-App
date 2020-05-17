@@ -252,7 +252,6 @@
 
                 var method_gene_ul = document.getElementById('method_features_list');
                 var extracted_gene = data[9].split(',');
-                console.log(extracted_gene);
                 for (var i = 0; i < extracted_gene.length; i++) {
                     $(method_gene_ul).append($("<li></li>").text(extracted_gene[i]));
                 }
