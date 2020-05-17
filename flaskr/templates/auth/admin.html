@@ -98,7 +98,7 @@
                     {% if warning_list %}
                         <div class="row">
                             <div class="col-sm-9">
-                                There has {{ warning_list | length }} infrequent users and they used {{ sum_usage }} MB
+                                There has {{ warning_list | length }} infrequent users and they used {{ sum_usage_warning }} MB
                                 of
                                 storage.
                             </div>
@@ -113,7 +113,7 @@
                     {% if delete_list %}
                         <div class="row">
                             <div class="col-sm-9">
-                                There has {{ delete_list | length }} infrequent users and they used {{ sum_usage }} MB
+                                There has {{ delete_list | length }} infrequent users and they used {{ sum_usage_delete }} MB
                                 of storage.
                             </div>
                             <div class="col-sm-3">

@@ -361,17 +361,10 @@ def get_all_users():
 def admin_panel():
 
     users = get_all_users()
-    # host_usage = get_folder_size(users["id"].tolist())
+    warning_list, delete_list, sum_usage_warning, sum_usage_delete = get_infrequent_ids(users)
 
-    # users = pd.merge(users, host_usage, on='id')
-
-    warning_list, delete_list, sum_usage = get_infrequent_ids(users)
-    # select_users = users[(users['id'].isin(infrequent_ids))]
-    # ids_str = ','.join(str(e) for e in select_users['id'].tolist())
-    #
-    # data = [round(select_users['usage'].sum(), 2) , select_users.shape[0], ids_str]
-
-    return render_template("auth/admin.html", warning_list=warning_list, delete_list=delete_list, sum_usage=round(sum_usage, 2), users=users)
+    return render_template("auth/admin.html", warning_list=warning_list, delete_list=delete_list,
+                           sum_usage_warning=round(sum_usage_warning, 2), sum_usage_delete=round(sum_usage_delete, 2), users=users)
 
 #contact list show
 @bp.route("/admin/contact_list")
@@ -409,14 +402,15 @@ def get_infrequent_ids(users):
     n = datetime.now()
     warning_list = []
     delete_list = []
-    sum_usage = 0
+    sum_usage_warning = 0
+    sum_usage_delete = 0
 
     for index, row in users.iterrows():
         u_log = datetime.strptime(row['last_login'], '%Y-%m-%d %H:%M:%S.%f')
         delta = n - u_log
         if delta.days > 1 and row['usage'] > 10 and row['is_sent_warning'] == 0:
             warning_list.append(row['username'])
-            sum_usage = sum_usage + row['usage']
+            sum_usage_warning = sum_usage_warning + row['usage']
 
         elif row['is_sent_warning']:
             u_warning = datetime.strptime(row['warning_sent_time'], '%Y-%m-%d %H:%M:%S.%f')
@@ -424,8 +418,9 @@ def get_infrequent_ids(users):
 
             if delta.days > 1:
                 delete_list.append(row['username'])
+                sum_usage_delete = sum_usage_delete + row['usage']
 
-    return warning_list, delete_list, sum_usage
+    return warning_list, delete_list, sum_usage_warning, sum_usage_delete
 
 
 def get_files_size(path):
