@@ -408,7 +408,7 @@ def get_infrequent_ids(users):
     for index, row in users.iterrows():
         u_log = datetime.strptime(row['last_login'], '%Y-%m-%d %H:%M:%S.%f')
         delta = n - u_log
-        if delta.days > 1 and row['usage'] > 10 and row['is_sent_warning'] == 0:
+        if delta.days > 7 and row['usage'] > 10 and row['is_sent_warning'] == 0:
             warning_list.append(row['username'])
             sum_usage_warning = sum_usage_warning + row['usage']
 
@@ -416,7 +416,7 @@ def get_infrequent_ids(users):
             u_warning = datetime.strptime(row['warning_sent_time'], '%Y-%m-%d %H:%M:%S.%f')
             delta = n - u_warning
 
-            if delta.days > 1:
+            if delta.days > 3:
                 delete_list.append(row['username'])
                 sum_usage_delete = sum_usage_delete + row['usage']
 
