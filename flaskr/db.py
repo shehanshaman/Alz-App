@@ -7,6 +7,7 @@ from flask import g
 from flask.cli import with_appcontext
 from pathlib import Path
 import pandas as pd
+from flaskr import auth
 
 ROOT_PATH = Path.cwd()
 MAIL_PATH = ROOT_PATH / "flaskr" / "mail"
@@ -54,8 +55,17 @@ def init_db_command():
     add_annotation()
     setup_folders()
     sample_pkl_create()
+    create_user()
     
     click.echo("Initialized the database.")
+
+def create_user():
+    #Admin of the app
+    db = get_db()
+    auth.create_user_db(db, "user", "user", "user", None, 1)
+
+    db.execute("UPDATE user SET is_admin = 1 WHERE id = 1")
+    db.commit()
 
 def setup_folders():
     #users path added
@@ -95,7 +105,7 @@ def add_annotation():
 
 def add_mail_templates():
     db = get_db()
-    subjects = ["verify", "reset", "infrequent"]
+    subjects = ["verify", "reset", "delete", "warning"]
     for subject in subjects:
         file_name = MAIL_PATH / (subject + '_mail.html')
         f = open(file_name, "r")

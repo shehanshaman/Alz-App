@@ -57,13 +57,24 @@ def update_given_name():
 @login_required
 def delete_user_account():
     id = request.args.get('id')
-    UserData.remove_user(id)
-    dir_path = USER_PATH / str(id)
-    delete_folder(dir_path)
 
-    delete_user_file(id)
+    #Check admin or same user
+    if g.user['is_admin'] or g.user['id'] == id:
 
-    return '1'
+        if g.user['is_admin'] and g.user['id'] != id:
+            email = UserData.get_user(id)['username']
+            UserData.send_delete_msg([email])
+
+        UserData.remove_user(id)
+        dir_path = USER_PATH / str(id)
+        delete_folder(dir_path)
+
+        delete_user_file(id)
+
+        return '1'
+
+    else:
+        return abort('401')
 
 def delete_user_file(user_id):
     files = UserData.get_user_file(user_id)
@@ -147,6 +158,20 @@ def update_user_admin():
 
     return str(is_admin)
 
+@bp.route("/user/space/", methods=["GET"])
+@login_required
+def update_user_disk_space():
+    # Check whether admin
+    if is_not_admin(g.user):
+        return abort('401')
+
+    id = request.args.get('id')
+    disk_space = request.args.get('disk_space')
+
+    UserData.update_user_disk_space(id, disk_space)
+
+    return "1"
+
 
 @bp.route("/delete/files/", methods=["GET"])
 @login_required
@@ -184,25 +209,36 @@ def delete_files_in_dir(path, modal=False):
         if isfile(file):
             os.remove(file)
 
-@bp.route("/infrequent/files/", methods=["GET"])
+@bp.route("/warning/user/", methods=["GET"])
 @login_required
-def infrequent_files_delete():
-
-    ids = request.args.get('ids')
-    id_array = ids.split(',')
-
-    for id in id_array:
-        delete_user_all_files(id)
-
-    UserData.infrequent_users(ids)
+def send_warning():
+    id = request.args.get('id')
+    UserData.send_warning(id)
 
     return "1"
 
-@bp.route("/infrequent/ntfy/", methods=["GET"])
+@bp.route("/warning/users/", methods=["post"])
 @login_required
-def infrequent_user_ntfy():
+def send_warnings():
+    emails = request.get_json()
+    UserData.send_warnings(emails)
+    return "1"
 
-    ids = request.args.get('ids')
-    id_array = ids.split(',')
+@bp.route("/delete/users/", methods=["post"])
+@login_required
+def delete_infrequent_users():
+    emails = request.get_json()
+    emails_str = ','.join(('"' + e + '"') for e in emails)
+    query = "SELECT * FROM user WHERE username  IN  (" + emails_str + ")"
+    db = get_db()
+    result = db.execute(query).fetchall()
+
+    for r in result:
+        UserData.remove_user(r['id'])
+        dir_path = USER_PATH / str(r['id'])
+        delete_folder(dir_path)
+        delete_user_file(r['id'])
+
+    UserData.send_delete_msg(emails)
 
     return "1"
