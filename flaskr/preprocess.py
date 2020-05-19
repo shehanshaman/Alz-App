@@ -520,7 +520,7 @@ def upload_sample_file():
     user_id = g.user['id']
     path = USER_PATH / str(user_id)
     folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
-    available_space = round(current_app.config['APP_ALZ'].max_usage - folder_size, 2)
+    available_space = round(g.user['disk_space'] - folder_size, 2)
 
     if available_space > 68:
 
