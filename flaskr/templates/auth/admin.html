@@ -88,6 +88,10 @@
         <a href="admin/subscribe_list" class="btn" target="_blank">Subscribers List</a>
     </div>
 
+    <div class="row" style="text-align: center; margin-bottom: auto;">
+        <label style="font-size: inherit;">Host usage: {{ host_usage }} GB</label>
+    </div>
+
     {% for message in get_flashed_messages() %}
         <div class="row">
             <div class="flash">{{ message }}</div>

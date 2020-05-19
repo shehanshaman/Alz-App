@@ -361,10 +361,12 @@ def get_all_users():
 def admin_panel():
 
     users = get_all_users()
+    host_usage = round(users['usage'].sum() / 1024, 2)
     warning_list, delete_list, sum_usage_warning, sum_usage_delete = get_infrequent_ids(users)
 
     return render_template("auth/admin.html", warning_list=warning_list, delete_list=delete_list,
-                           sum_usage_warning=round(sum_usage_warning, 2), sum_usage_delete=round(sum_usage_delete, 2), users=users)
+                           sum_usage_warning=round(sum_usage_warning, 2), sum_usage_delete=round(sum_usage_delete, 2),
+                           users=users, host_usage=host_usage)
 
 #contact list show
 @bp.route("/admin/contact_list")
