@@ -32,6 +32,12 @@
 
 </head>
 
+<!-- <style type="text/css">
+    #table_id_paginate{
+        overflow: scroll;
+    }    
+</style> -->
+
 <body style="font-family: monospace;">
 
 <!-- Dropdown Structure -->
@@ -41,8 +47,8 @@
     <div class="row">
         <div class="row" id="h3-head-6" class="card__title">
             <div class="col-sm-12">
-                <h4 style="color: #26a69a; display: inline;font-size: 20px;">File Name : </h4>
-                <h4 class="h4-file-name" style="color: #26a69a; display: inline;font-size: 20px;">{{ data[0] }}</h4>
+                <h4 style="color: #26a69a; display: inline;font-size: 15px;">File Name : </h4>
+                <h4 class="h4-file-name" style="color: #26a69a; display: inline;font-size: 15px;">{{ data[0] }}</h4>
                 <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
                         class="use-download" value="{{ data[0] }}">
                     <i class="fas fa-file-download fa-2x"></i>
@@ -79,7 +85,7 @@
 
         </div>
 
-        <div class="row table_view">
+        <div class="row table_view" style="overflow: scroll;">
             {% for table in tables %}
                 {{ table|safe }}
             {% endfor %}

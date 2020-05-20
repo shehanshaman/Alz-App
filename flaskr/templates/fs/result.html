@@ -102,7 +102,7 @@ tr:hover{
 {% include 'horizontal_nav_bar.html' %}
 
 <div class="main-div-fn-2">
-    <div class="card-content">
+    <div class="card-content side_nav_content">
 
         <ul data-method="GET" class="stepper linear">
             <li id="side_step_nav_preprocess_icon" class="step">
@@ -139,14 +139,14 @@ tr:hover{
 
             <div class="result_content" style="padding: 10px; border: 2px solid #26a69a; border-radius: 4px;">
                 <div class="row">
-                    <h4 id="results_venn_div" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Venn diagram of the genes found by each feature selection method</h4>
+                    <h4 id="results_venn_div" class="card__title" style="text-align: center;font-size:2vw;font-family: monospace;">Venn diagram of the genes found by each feature selection method</h4>
                 </div>
 
                 <br>
                 <div class="row">
 
                     <div class="col-sm-3"></div>
-                    <div class="col-sm-8 union_div" style="width: 50%;margin-top: auto;">
+                    <div class="col-sm-8 union_div union_div_venn" style="margin-top: auto;">
 
                         <p class="p_M value_p">{{venn_data[2] | length}}</p>
                         <p class="p_T value_p">{{venn_data[0][1] | length}}</p>
@@ -213,7 +213,7 @@ tr:hover{
                 </div>
 
                 <div class="row">
-                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">This Venn diagram shows the number of genes found by each method. The intersections show the number of common genes found by the corresponding methods. You can see the number of overlapped genes through this diagram !</p>
+                    <p class="card__title" style=" font-size: 1vw;text-align: justify; font-family: monospace;">This Venn diagram shows the number of genes found by each method. The intersections show the number of common genes found by the corresponding methods. You can see the number of overlapped genes through this diagram !</p>
                 </div>                
             </div>
 
@@ -221,7 +221,7 @@ tr:hover{
 
             <div class="result_content" style="padding: 10px; border: 2px solid #26a69a; border-radius: 4px;">
                 <div class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:26px;font-family: monospace;">Variation of testing and training accuracies with the features selected by each method with three classifiers</h4>
+                    <h4 id="h4-head-6" class="card__title" style="text-align: center;font-size:2vw;font-family: monospace;">Variation of testing and training accuracies with the features selected by each method with three classifiers</h4>
                 </div>
                 <div class="row">
                     <div id="results_img_div" class="container-1">
@@ -238,7 +238,7 @@ tr:hover{
                 </div>
 
                 <div class="row">
-                    <p class="card__title" style=" font-size: 15px;text-align: justify; font-family: monospace;">This graph shows the variation of testing(left) and training(right) accuracies trained with the features selected by each method. In each instance, 3 classifiers are used to compare the results !</p>
+                    <p class="card__title" style=" font-size: 1vw;text-align: justify; font-family: monospace;">This graph shows the variation of testing(left) and training(right) accuracies trained with the features selected by each method. In each instance, 3 classifiers are used to compare the results !</p>
                 </div>                 
             </div>
                     
@@ -247,7 +247,7 @@ tr:hover{
                 </div>
 
                 <div class="row">
-                    <div id="btnContainer">
+                    <div id="btnContainer" class="btn_list_grid">
                         <button id="list_div_btn" class="btn" onclick="listView()" style="color: black;font-family: monospace;"><i class="fa fa-bars"></i> List</button>
                         <button id="grid_div_btn" class="btn active" onclick="gridView()" style="font-family: monospace;"><i class="fa fa-th-large"></i> Grid</button>
                     </div>
@@ -255,16 +255,16 @@ tr:hover{
 
                     <div id="results_gene_div" class="row">
                         <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
-                            <h4 style="color: #ffffff;font-family: monospace;">{{ methods[1] }}</h4>
-                            <p>{{ columns[0] }}</p>
+                            <h4 style="color: #ffffff;font-family: monospace;font-size: 2.5vw;">{{ methods[1] }}</h4>
+                            <p style="font-size: 1vw;">{{ columns[0] }}</p>
                         </div>
                         <div class="column" style="background-color:rgba(38, 166, 154, 0.91);">
-                            <h4 style="color: #ffffff;font-family: monospace;">{{ methods[2] }}</h4>
-                            <p>{{ columns[1] }}</p>
+                            <h4 style="color: #ffffff;font-family: monospace;font-size: 2.5vw;">{{ methods[2] }}</h4>
+                            <p style="font-size: 1vw;">{{ columns[1] }}</p>
                         </div>
                         <div class="column" style="background-color:rgba(38, 166, 154, 0.65);">
-                            <h4 style="color: #ffffff;font-family: monospace;">{{ methods[3] }}</h4>
-                            <p>{{ columns[2] }}</p>
+                            <h4 style="color: #ffffff;font-family: monospace;font-size: 2.5vw;">{{ methods[3] }}</h4>
+                            <p style="font-size: 1vw;">{{ columns[2] }}</p>
                         </div>
                     </div>
 
@@ -325,7 +325,7 @@ tr:hover{
                     <div class="gene_not_have">
                         <p>Sorry this gene details currently not available..</p>
                     </div>
-                    <div class="tab-pane active" id="1b">
+                    <div class="tab-pane active" id="1b" style="overflow: scroll;">
                         <table class="table table-bordered table-hover gene_have">
                           <tbody>
                             <tr>
@@ -399,7 +399,7 @@ tr:hover{
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div> 
-        <h5 style="text-align: center;color: #26a69a;">ANALYSING RESULTS</h5>        
+        <h5 class="loader_div_h1">ANALYSING RESULTS</h5>        
     </div> 
 
 {% include 'guide_footer.html' %}
@@ -484,6 +484,10 @@ tr:hover{
 </script>
 
 <script type="text/javascript">
+
+    jQuery(function(){
+       jQuery('#list_div_btn').click();
+    });
 
     $('#btn-submit-fn-2').click(function () {
         $('.main-div-fn-2').hide(0);
