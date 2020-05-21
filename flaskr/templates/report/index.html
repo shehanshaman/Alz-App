@@ -1,0 +1,85 @@
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Report</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!-- Materializecss compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize.min.css') }}">
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <style>
+
+        ul {
+            list-style-type: circle;
+        }
+
+    </style>
+
+</head>
+
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div class="main-div-config">
+
+    <div id="mainDataInterface-id" class="container mainDataInterface">
+
+        <div class="step-content">
+            <div class="row">
+                <h3 id="h3-head-6" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">REPORTS</h3>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="text-align: center;color: #26a69a;">PROCESSING</h5>
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
