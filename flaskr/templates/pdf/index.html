@@ -1,11 +1,247 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>GeNet</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | PDF</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}"> -->
+
+    <!--Import Google Icon Font-->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}"> -->
+
+    <!-- Compiled and minified CSS -->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> -->
+
 </head>
+
+<style type="text/css">
+
+</style>
+
 <body>
 
-{{data}}
+<div id="div_process">
+	<center>
+		<h2 style="color: #26a69a;font-family: monospace;">PREPROCESSING DOCUMENT</h2>
+	</center>
+
+	<h3 style="font-family: monospace;">You have selected below details in step 1 (CHOOSE DATA SET)</h3>
+	
+	<center>
+		<table style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Selected file</td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">{{data['file_name']}}</td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Annotation table</td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">{{data['annotation_table']}}</td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Probe selection method</td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">{{data['prob_mthd']}}</td>
+		  </tr>
+		</table>		
+	</center>
+
+	<h3 style="font-family: monospace;">Details about dataset before preprocess</h3>
+
+	<center>
+		<table style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of features</td>
+		    <td class="num_features" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of samples</td>
+		    <td class="num_samples" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Minimum value</td>
+		    <td class="b_min_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Maximum value</td>
+		    <td class="b_max_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of positive samples</td>
+		    <td class="num_positive" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of negative samples</td>
+		    <td class="num_negative" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>		  
+		</table>		
+	</center>
+
+	<h3 style="font-family: monospace;">Details about dataset after probe mapping</h3>
+
+	<center>
+		<table style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of unique Gene Symbols</td>
+		    <td class="num_unq_gene" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of null values in data</td>
+		    <td class="null_data_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of null values in Gene Symbols</td>
+		    <td class="null_gene_sym" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>	  
+		</table>		
+	</center>
+
+	<h3 style="font-family: monospace;">Details about dataset after normalization and imputation</h3>
+
+	<center>
+		<table style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of features</td>
+		    <td class="aa_num_features" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of samples</td>
+		    <td class="a_num_samples" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Minimum value</td>
+		    <td class="aa_min_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Maximum value</td>
+		    <td class="aa_max_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>		  
+		</table>		
+	</center>
+
+	<br>
+
+	<center>
+		<h2 style="color: #26a69a;font-family: monospace;">FEATURE REDUCTION DOCUMENT</h2>
+	</center>
+
+	<br>
+
+	<center>
+		<h3 style="font-family: monospace;">fold range vs -log(pvalue)</h3>
+    	<img src="data:image/png;base64,{{ data_plot['volcano_hash'] }}" alt="volcano" width="600" height="auto">    
+    </center>
+
+    <p class="univariate_p_details" style="font-family: monospace; text-align: justify;"></p>
+
+	<br>
+
+	<center>
+		<h2 style="color: #26a69a;font-family: monospace;">FEATURE REDUCTION DOCUMENT</h2>
+	</center>
+
+	<br>
+
+	<center>
+		<h3 style="font-family: monospace;">Speces vs Scores</h3>
+    	<img src="data:image/png;base64,{{ data_plot['fr_univariate_hash'] }}" alt="volcano" width="600" height="auto">    
+    </center>
+
+    <p class="volcanoplot_p_details" style="font-family: monospace; text-align: justify;"></p>
+
+	<h3 style="font-family: monospace;">Testing accuracy ... .. .</h3>
+
+	<center>
+		<table id="clf_results_tbl" style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Classification method</th>
+		    <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Testing accuracy / %</th>
+		  </tr>	  		  
+		</table>		
+	</center>
+
+	<p class="univariate_p_details" style="font-family: monospace; text-align: justify;"></p>
+
+</div>
+
+ <button type="button" onclick="printJS({ printable: 'div_process', type: 'html', targetStyles:'*'})">
+    Print Form
+ </button>
 
 </body>
 </html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+
+<script type="text/javascript">
+
+// data = '{{ data | tojson}}';
+// gene_describe_json = JSON.parse(data);
+
+// data_after_norm = '{{data_after_norm | tojson}}'
+
+// console.log(data_after_norm)
+
+// data_after_norm = data_after_norm.substring(1, data_after_norm.length-1);
+
+// data_after_map_set = data_after_norm.substring(0, data_after_norm.indexOf(', "r1": {"'));
+// data_after_map_set = JSON.parse(data_after_map_set+'}');
+
+// console.log(data_after_map_set)	
+
+// data_after_norm_set = data_after_norm.substring(0, data_after_norm.indexOf(', "r1": {"'));
+// console.log(data_after_norm_set)
+
+data_after_norm = '{{data_after_norm | tojson}}'
+
+console.log(data_after_norm)
+
+data_after_norm = data_after_norm.substring(1, data_after_norm.length-1);
+
+data_list_set = data_after_norm.split(', "r1": ')
+
+data_after_map_set = JSON.parse(data_list_set[0]+'}');
+console.log(data_after_map_set)
+
+data_after_norm_set = JSON.parse(data_list_set[1].substring(0, data_list_set[1].length-1));
+
+console.log(data_after_norm_set)
+
+$('.num_features').html(data_after_map_set['Number of features']);
+$('.num_samples').html(data_after_map_set['Number of samples']);
+$('.b_min_val').html(data_after_map_set['min']);
+$('.b_max_val').html(data_after_map_set['max']);
+$('.num_negative').html(data_after_map_set['Negative']);
+$('.num_positive').html(data_after_map_set['Positive']);
+
+$('.num_unq_gene').html(data_after_map_set['Number of unique Gene Symbols']);
+$('.null_data_val').html(data_after_map_set['Number of null values in data']);
+$('.null_gene_sym').html(data_after_map_set['Number of null values in Gene Symbols']);
+
+$('.aa_num_features').html(data_after_norm_set['Number of features']);
+$('.a_num_samples').html(data_after_norm_set['Number of samples']);
+$('.aa_min_val').html(data_after_norm_set['min']);
+$('.aa_max_val').html(data_after_norm_set['max']);
+
+data_plot = '{{ data_plot | tojson}}';
+data_plot_json = JSON.parse(data_plot);
+
+// console.log(data_plot)
+
+$('.volcanoplot_p_details').text('You have selected fold range as ' + data_plot_json['fold'] + ' and p-value as ' + data_plot_json['pvalue'] + '. Using those variables we have extracted ' + data_plot_json['univariate_length'] + ' features.');
+
+clf_results = '{{ clf_results | tojson}}';
+clf_results = clf_results.substring(1, clf_results.length-1);
+
+clf_results = JSON.parse(clf_results)
+clf_name_list = []
+
+for (var row in clf_results) {
+    $('#clf_results_tbl tr:last').after(
+		  '<tr>'+
+		    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + row + '</td>'+
+		    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + clf_results[row]['Testing Accuracy /%'] + '</td>'+
+		  '</tr>'
+    	);
+    clf_name_list.push(row);
+}
+
+$('.univariate_p_details').text('We select ' + clf_name_list[0] + ', ' + clf_name_list[1] + ' and ' + clf_name_list[2] + ' to further analyzes.');
+</script>
