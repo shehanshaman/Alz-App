@@ -124,16 +124,16 @@ def get_val():
         classifiers = selected_clfs_str.split(',')
         session['pre_process_id'] = None
 
-    # Save data to the result table
-    UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2], selected_clfs_str)
-    result_id = UserData.get_result(user_id, filename)['id']
-
     results_testing, results_training = FeatureSelection.getSummaryFeatureSelection(df_m1, df_m2, df_m3, y,
                                                                                     fs_methods, classifiers)
 
     img64 = get_summary_plot(results_testing, results_training)
 
     venn_data = FeatureSelection.venn_diagram_data(col_m1, col_m2, col_m3)
+
+    # Save data to the result table
+    UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2], selected_clfs_str, str(venn_data), img64)
+    result_id = UserData.get_result(user_id, filename)['id']
 
     # Get gene info
     gene_info_path = GENE_INFO_PATH / "Homo_sapiens.gene_info"

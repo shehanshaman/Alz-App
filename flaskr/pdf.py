@@ -5,6 +5,8 @@ from flaskr.auth import login_required, UserData
 from flask import request
 from flask import render_template
 
+from .classes.featureSelectionClass import FeatureSelection
+
 bp = Blueprint("pdf", __name__, url_prefix="/pdf")
 
 #pdf data for create preprocess file
@@ -14,21 +16,6 @@ def preprocessing_pdf():
 	id = request.args.get("id")
 
 	preprocess = UserData.get_preprocess_from_id(id)
-
-	# preprocess_data = { 
-	# 		"file_name": preprocess['file_name'], 
-	# 		"annotation_table": (preprocess['annotation_table']).replace('/AnnotationTbls/',''), 
-	# 		"prob_mthd": preprocess['col_sel_method'],
-	# 		"normalize": preprocess['scaling'],
-	# 		"imputation": preprocess['imputation'],
-	# 		"after_norm_details": preprocess['after_norm_set'],
-	# 		"volcano_hash": preprocess['volcano_hash'],
-	# 		"fold": preprocess['fold'],
-	# 		"pvalue": preprocess['pvalue'],
-	# 		"univariate_length": preprocess['length'],
-	# 		"fr_univariate_hash": preprocess['fr_univariate_hash'],
-	# 		"classification_result_set": preprocess['classification_result_set']			
-	# 	};
 
 	col_sel_method_set = ['Average', 'Max', 'Min', 'Interquartile range']
 
@@ -68,3 +55,21 @@ def preprocessing_pdf():
 		};
 
 	return render_template("pdf/preprocess_pdf.html", data=preprocess_data, data_after_norm=preprocess['after_norm_set'], data_plot=preprocess_data_plot, clf_results=preprocess['classification_result_set'])
+
+#pdf data for create preprocess file
+@bp.route("/feature_selection", methods=['POST', 'GET'])
+@login_required
+def feature_selection_pdf():
+	id = request.args.get("id")
+	
+	feature_details = UserData.get_result_from_id(id)
+
+	feature_details_set = {
+			"filename": feature_details['filename'],
+			"fs_methods": feature_details['fs_methods'],
+			"col_method1": feature_details['col_method1'],
+			"col_method2": feature_details['col_method2'],
+			"col_method3": feature_details['col_method3']		
+		};
+
+	return render_template("pdf/feature_pdf.html", feature_details=feature_details_set, venn_data = feature_details['venn_data_set'], fs_hash = feature_details['fs_hash'])

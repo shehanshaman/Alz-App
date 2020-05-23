@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | PDF</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}"> -->
+
+    <!--Import Google Icon Font-->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}"> -->
+
+    <!-- Compiled and minified CSS -->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> -->
+
+</head>
+
+<style type="text/css">
+
+</style>
+
+<body>
+
+<div id="div_feature">
+
+    <center>
+        <h2 style="color: #26a69a;font-family: monospace;">FEATURE SELECTION DOCUMENT</h2>
+    </center>
+
+    <p class="feature_details_1" style="font-family: monospace; text-align: justify;"></p>
+
+    <h3 class="fs_feature_set_1_details" style="font-family: monospace;"></h3>
+
+    <center>
+        <table id="fs_feature_set_1" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <h3 class="fs_feature_set_2_details" style="font-family: monospace;"></h3>
+
+    <center>
+        <table id="fs_feature_set_2" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <h3 class="fs_feature_set_3_details" style="font-family: monospace;"></h3>
+
+    <center>
+        <table id="fs_feature_set_3" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <br>
+
+    <h2 class="overlap_list_h" style="font-family: monospace;"></h2>
+    <p class="overlap_list" style="font-family: monospace; text-align: justify;"></p>
+    <center>
+        <table id="fs_feature_set_4" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <h2 style="font-family: monospace;">Features in two subsets</h2>
+
+    <h3 class="2_subset_list_h1" style="font-family: monospace;"></h3>
+    <p class="2_subset_list_1" style="font-family: monospace; text-align: justify;"></p>
+    <center>
+        <table id="fs_feature_set_5" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <h3 class="2_subset_list_h2" style="font-family: monospace;"></h3>
+    <p class="2_subset_list_2" style="font-family: monospace; text-align: justify;"></p>
+    <center>
+        <table id="fs_feature_set_6" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <h3 class="2_subset_list_h3" style="font-family: monospace;"></h3>
+    <p class="2_subset_list_3" style="font-family: monospace; text-align: justify;"></p>
+    <center>
+        <table id="fs_feature_set_7" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <h2 style="font-family: monospace;">Unique features</h2>
+
+    <h3 class="unique_list_h1" style="font-family: monospace;"></h3>
+    <p class="unique_list_1" style="font-family: monospace; text-align: justify;"></p>
+    <center>
+        <table id="fs_feature_set_8" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <h3 class="unique_list_h2" style="font-family: monospace;"></h3>
+    <p class="unique_list_2" style="font-family: monospace; text-align: justify;"></p>
+    <center>
+        <table id="fs_feature_set_9" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <h3 class="unique_list_h3" style="font-family: monospace;"></h3>
+    <p class="unique_list_3" style="font-family: monospace; text-align: justify;"></p>
+    <center>
+        <table id="fs_feature_set_10" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <br>
+
+    <center>
+        <h3 style="font-family: monospace;">Variation of testing and training accuracies with the features selected by each method with three classifiers</h3>
+        <img src="data:image/png;base64,{{fs_hash}}" alt="volcano" width="800" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">This graph shows the variation of testing(left) and training(right) accuracies trained with the features selected by each method. In each instance, 3 classifiers are used to compare the results !</p>
+
+
+</div>
+
+ <button type="button" onclick="printJS({ printable: 'div_feature', type: 'html', targetStyles:'*'})">
+    Print Form
+ </button>
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+
+<script type="text/javascript">
+
+feature_details = '{{feature_details | tojson}}'
+feature_details_set = JSON.parse(feature_details);
+
+method_set = feature_details_set['fs_methods'].split(',');
+
+$('.feature_details_1').text('You have selected ' + '{{feature_details['filename']}}' + ' file for feature selection. You have select ' + method_set[3] + ' features from each ' + method_set[0] + ', ' + method_set[1] + ', and ' + method_set[2] + ' classifiers.');
+
+set_1 = feature_details_set['col_method1'].split(',')
+set_2 = feature_details_set['col_method2'].split(',')
+set_3 = feature_details_set['col_method3'].split(',')
+
+$('.fs_feature_set_1_details').text('Selected ' + method_set[3] + ' features from ' + method_set[0]);
+$('.fs_feature_set_2_details').text('Selected ' + method_set[3] + ' features from ' + method_set[1]);
+$('.fs_feature_set_3_details').text('Selected ' + method_set[3] + ' features from ' + method_set[2]);
+
+selected_features_set_fun(set_1, 1, method_set[3]);
+selected_features_set_fun(set_2, 2, method_set[3]);
+selected_features_set_fun(set_3, 3, method_set[3]);
+
+function selected_features_set_fun(set_1, set_n, len){
+
+    stop_val=8;
+    if( len < stop_val){
+        for (var f in set_1) {
+            $('#fs_feature_set_' + set_n + ' tr:last').after(
+                '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[f] + '</td>'  
+            );
+        }
+    }
+    else{
+
+        l = 0;
+        while( l < (len/stop_val - 1) ){
+            $('#fs_feature_set_' + set_n + ' tr:last').after(
+                '<tr>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 0] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 1] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 2] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 3] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 4] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 5] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 6] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 7] + '</td>'+
+                    '</tr>'  
+            );
+        l=l+1
+        }
+
+        int_val = (l)*stop_val;
+        while(  int_val < len){
+            $('#fs_feature_set_' + set_n + ' tr:last').after(
+                '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[int_val] + '</td>' 
+            );
+            int_val++   
+        }
+
+    }
+
+}
+
+
+venn_data_set = '{{venn_data | tojson}}'
+
+venn_data_set = venn_data_set.substring(2, venn_data_set.length-2);
+
+venn_set_b = venn_data_set.split(']], ')
+
+venn_set_1 = venn_set_b[0].split('], [')
+venn_set_2 = venn_set_b[1].split('], [')
+
+x11 = venn_set_1[0].substring(2, venn_set_1[0].length).split(', ')
+x12 = venn_set_1[1].split(', ')
+x13 = venn_set_1[2].split(', ')
+x21 = venn_set_2[0].substring(2, venn_set_2[0].length).split(', ')
+x22 = venn_set_2[1].split(', ')
+x23 = venn_set_2[2].split(', ')
+x3 = venn_set_b[2].substring(1, venn_set_b[2].length-1).split(', ')
+
+$('.overlap_list_h').text('Overlaped features in ' + method_set[0] + ', '  + method_set[1] + ' and '  + method_set[2]);
+$('.overlap_list').text('There are ' + x3.length + ' overlaped features in this set, those are,');
+selected_features_set_fun(x3, 4, x3.length);
+
+$('.unique_list_h1').text(method_set[0]);
+$('.unique_list_1').text('There are ' + x11.length + ' features only in '+ method_set[0] + '. Those are,');
+selected_features_set_fun(x11, 8, x11.length);
+
+$('.unique_list_h2').text(method_set[1]);
+$('.unique_list_2').text('There are ' + x12.length + ' features only in '+ method_set[1] + '. Those are,');
+selected_features_set_fun(x12, 9, x12.length);
+
+$('.unique_list_h3').text(method_set[2]);
+$('.unique_list_3').text('There are ' + x13.length + ' features only in '+ method_set[2] + '. Those are,');
+selected_features_set_fun(x13, 10, x13.length);
+
+$('.2_subset_list_h1').text(method_set[0] + ' + ' + method_set[1]);
+$('.2_subset_list_1').text('There are ' + x21.length + ' features in '+ method_set[0] + ' and ' + method_set[1] + '. Those are,');
+selected_features_set_fun(x21, 5, x21.length);
+
+$('.2_subset_list_h2').text(method_set[1] + ' + ' + method_set[2]);
+$('.2_subset_list_2').text('There are ' + x21.length + ' features in '+ method_set[1] + ' and ' + method_set[2] + '. Those are,');
+selected_features_set_fun(x22, 6, x22.length);
+
+$('.2_subset_list_h3').text(method_set[0] + ' + ' + method_set[2]);
+$('.2_subset_list_3').text('There are ' + x21.length + ' features in '+ method_set[1] + ' and ' + method_set[2] + '. Those are,');
+selected_features_set_fun(x23, 7, x23.length);
+
+</script>

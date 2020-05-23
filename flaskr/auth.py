@@ -621,11 +621,11 @@ class UserData:
 
         return result
 
-    def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers):
+    def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers, venn_data, img64):
         db = get_db()
         db.execute(
-            "INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers),
+            "INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers, venn_data_set, fs_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers, venn_data, img64),
         )
         db.commit()
 
