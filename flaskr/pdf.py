@@ -32,18 +32,32 @@ def preprocessing_pdf():
 
 	col_sel_method_set = ['Average', 'Max', 'Min', 'Interquartile range']
 
-	preprocess_data = { 
-		"file_name": preprocess['file_name'], 
-		"annotation_table": (preprocess['annotation_table']).replace('/AnnotationTbls/',''), 
-		"prob_mthd": col_sel_method_set[int(preprocess['col_sel_method'])-1],
-		"normalize": preprocess['scaling'],
-		"imputation": preprocess['imputation'],
-		"volcano_hash": preprocess['volcano_hash'],
-		"fold": preprocess['fold'],
-		"pvalue": preprocess['pvalue'],
-		"univariate_length": preprocess['length'],
-		"fr_univariate_hash": preprocess['fr_univariate_hash']			
-	};
+	if( preprocess['col_sel_method'] == '' ):
+		preprocess_data = { 
+			"file_name": preprocess['file_name'], 
+			"annotation_table": '-', 
+			"prob_mthd": '-',
+			"normalize": preprocess['scaling'],
+			"imputation": preprocess['imputation'],
+			"volcano_hash": preprocess['volcano_hash'],
+			"fold": preprocess['fold'],
+			"pvalue": preprocess['pvalue'],
+			"univariate_length": preprocess['length'],
+			"fr_univariate_hash": preprocess['fr_univariate_hash']			
+		};
+	else:
+		preprocess_data = { 
+			"file_name": preprocess['file_name'], 
+			"annotation_table": (preprocess['annotation_table']).replace('/AnnotationTbls/',''), 
+			"prob_mthd": col_sel_method_set[int(preprocess['col_sel_method'])-1],
+			"normalize": preprocess['scaling'],
+			"imputation": preprocess['imputation'],
+			"volcano_hash": preprocess['volcano_hash'],
+			"fold": preprocess['fold'],
+			"pvalue": preprocess['pvalue'],
+			"univariate_length": preprocess['length'],
+			"fr_univariate_hash": preprocess['fr_univariate_hash']			
+		};
 
 	preprocess_data_plot = {
 			"volcano_hash": preprocess['volcano_hash'],
@@ -53,4 +67,4 @@ def preprocessing_pdf():
 			"fr_univariate_hash": preprocess['fr_univariate_hash']		
 		};
 
-	return render_template("pdf/index.html", data=preprocess_data, data_after_norm=preprocess['after_norm_set'], data_plot=preprocess_data_plot, clf_results=preprocess['classification_result_set'])
+	return render_template("pdf/preprocess_pdf.html", data=preprocess_data, data_after_norm=preprocess['after_norm_set'], data_plot=preprocess_data_plot, clf_results=preprocess['classification_result_set'])

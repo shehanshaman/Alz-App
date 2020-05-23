@@ -312,7 +312,7 @@ def skip_df_mapping():
 
     UserData.delete_preprocess_file(user_id, file_name)
 
-    UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '')
+    UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '', '')
     pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
 
     df = PreProcess.getDF(file_path)
