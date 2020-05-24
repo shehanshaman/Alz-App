@@ -160,10 +160,10 @@
 	<p class="univariate_p_details" style="font-family: monospace; text-align: justify;"></p>
 
 </div>
-
+<!-- 
  <button type="button" onclick="printJS({ printable: 'div_process', type: 'html', targetStyles:'*'})">
     Print Form
- </button>
+ </button> -->
 
 </body>
 </html>
@@ -246,4 +246,6 @@ for (var row in clf_results) {
 }
 
 $('.univariate_p_details').text('We select ' + clf_name_list[0] + ', ' + clf_name_list[1] + ' and ' + clf_name_list[2] + ' to further analyzes.');
+
+printJS({ printable: 'div_process', type: 'html', targetStyles:'*'})
 </script>

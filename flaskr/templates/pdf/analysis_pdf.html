@@ -164,9 +164,9 @@
 
 </div>
 
- <button type="button" onclick="printJS({ printable: 'div_feature', type: 'html', targetStyles:'*'})">
+<!--  <button type="button" onclick="printJS({ printable: 'div_feature', type: 'html', targetStyles:'*'})">
     Print Form
- </button>
+ </button> -->
 
 </body>
 </html>
@@ -276,4 +276,6 @@ all_features_set = '{{anlz_details_set['col_overlapped']}}' + ',' + '{{anlz_deta
 
 all_features_set_arr = all_features_set.substring(1, all_features_set.length-1).split(',')
 selected_features_set_fun(all_features_set_arr, 2, all_features_set_arr.length)
+
+printJS({ printable: 'div_feature', type: 'html', targetStyles:'*'})
 </script>

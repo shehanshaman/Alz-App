@@ -54,10 +54,11 @@ def index_pdf():
 @bp.route("/preprocessing", methods=['POST', 'GET'])
 @login_required
 def preprocessing_pdf():
-	id = request.args.get("id")
+	file_name = request.args.get("filename")
 
-	preprocess = UserData.get_preprocess_from_id(id)
-
+	#preprocess = UserData.get_preprocess_from_id(id)
+	preprocess = UserData.get_user_preprocess(g.user["id"], file_name)
+	
 	col_sel_method_set = ['Average', 'Max', 'Min', 'Interquartile range']
 
 	if( preprocess['col_sel_method'] == '' ):
@@ -101,9 +102,9 @@ def preprocessing_pdf():
 @bp.route("/feature_selection", methods=['POST', 'GET'])
 @login_required
 def feature_selection_pdf():
-	id = request.args.get("id")
+	file_name = request.args.get("filename")
 	
-	feature_details = UserData.get_result_from_id(id)
+	feature_details = UserData.get_result(g.user["id"], file_name)
 
 	feature_details_set = {
 			"filename": feature_details['filename'],
@@ -119,9 +120,9 @@ def feature_selection_pdf():
 @bp.route("/analysis", methods=['POST', 'GET'])
 @login_required
 def analysis_pdf():
-	id = request.args.get("id")
+	file_name = request.args.get("filename")
 	
-	anlz_details = UserData.get_result_from_id(id)
+	anlz_details = UserData.get_result(g.user["id"], file_name)
 
 	anlz_details_set = {
 			"filename": anlz_details['filename'],
