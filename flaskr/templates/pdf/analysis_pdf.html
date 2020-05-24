@@ -27,7 +27,7 @@
 
 <body>
 
-<div id="div_feature">
+<div id="div_feature_anlz">
 
     <center>
         <h2 style="color: #26a69a;font-family: monospace;">ANALYSIS</h2>
@@ -164,7 +164,7 @@
 
 </div>
 
-<!--  <button type="button" onclick="printJS({ printable: 'div_feature', type: 'html', targetStyles:'*'})">
+<!--  <button type="button" onclick="printJS({ printable: 'div_feature_anlz', type: 'html', targetStyles:'*'})">
     Print Form
  </button> -->
 
@@ -277,5 +277,5 @@ all_features_set = '{{anlz_details_set['col_overlapped']}}' + ',' + '{{anlz_deta
 all_features_set_arr = all_features_set.substring(1, all_features_set.length-1).split(',')
 selected_features_set_fun(all_features_set_arr, 2, all_features_set_arr.length)
 
-printJS({ printable: 'div_feature', type: 'html', targetStyles:'*'})
+printJS({ printable: 'div_feature_anlz', type: 'html', targetStyles:'*'})
 </script>
