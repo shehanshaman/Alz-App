@@ -37,7 +37,7 @@ def index_pdf():
 		if( results_fs is None):
 			fs_can_download.append(0)
 		else:
-			fs_can_download.append(results_fs['can_download'])
+			fs_can_download.append(results_fs['can_download_fs'])
 
 	anlz_can_download	= []		
 	for file_name in list_names:
@@ -45,7 +45,7 @@ def index_pdf():
 		if( results_anlz is None):
 			anlz_can_download.append(0)
 		else:
-			anlz_can_download.append(results_anlz['can_download'])
+			anlz_can_download.append(results_anlz['can_download_anlz'])
 
 	return render_template("pdf/index.html", available_list=list_names, can_download_pre = preprocess_can_download, can_download_fs = fs_can_download, can_download_anlz = anlz_can_download)
 
