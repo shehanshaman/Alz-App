@@ -30,7 +30,7 @@ class PreProcess:
 
 	def getProbeDF(file_path):
 		if PreProcess.check_file_exist(file_path):
-			probes = pd.read_csv(file_path, usecols=[0, 1], header=0)
+			probes = pd.read_csv(file_path, usecols=[0, 1], header=0, delimiter=',')
 		return probes
 
 	def mergeDF(df_path, probe_path):

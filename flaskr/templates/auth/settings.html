@@ -22,14 +22,14 @@
     <style>
         .center {
             margin: auto;
-            width: 50%;
+            width: 60%;
             padding: 10px;
         }
 
         .border {
             border: 2px solid #bcbaba;
             border-radius: 30px;
-            padding: 35px;
+            padding: 10px;
         }
 
         .flash {
@@ -55,6 +55,21 @@
             font: inherit;
             cursor: pointer;
             outline: inherit;
+        }
+
+        #chart_wrap {
+            position: relative;
+            padding-bottom: 100%;
+            height: 0;
+            overflow: hidden;
+        }
+
+        #piechart {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
 
     </style>
@@ -84,59 +99,61 @@
         <div class="border row">
             <div class="row center">
                 <h5>Host Usage</h5>
-                <div id="piechart"></div>
+                <div id="chart_wrap" style="margin-bottom: -15vw;">
+                    <div id="piechart" style="margin-top: -6vw;"></div>
+                </div>
             </div>
-            <div class="col-sm-4">
-                <div class="row">
-                    <h5>User details</h5><br>
-                    <label for="username" style="float: left">E-mail</label>
-                    <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
-                    <label for="given_name" style="float: left">Name</label>
-                    <input name="given_name" id="given_name" value="{{ data[0][1] }}">
-                    <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
+            <div class="row" style="padding-left: 0px;">
+                <div class="col-sm-4">
+                    <div class="row">
+                        <h5>User details</h5><br>
+                        <label for="username" style="float: left">E-mail</label>
+                        <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
+                        <label for="given_name" style="float: left">Name</label>
+                        <input name="given_name" id="given_name" value="{{ data[0][1] }}">
+                        <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
+                    </div>
+
+                    <div class="row">
+                        <h5>Cleanup</h5><br>
+                        <label>Clean {{ data[1][1] }} MB in cache</label> <br>
+                        <button class="waves-effect waves-dark btn" style="float: left" id="cache_clear"
+                                {% if data[1][1] < 1 %}
+                                disabled
+                                {% endif %}>Clear
+                        </button>
+                    </div>
                 </div>
 
-                <div class="row">
-                    <h5>Cleanup</h5><br>
-                    <label>Clean {{ data[1][1] }} MB in cache</label> <br>
-                    <button class="waves-effect waves-dark btn" style="float: left" id="cache_clear"
-                            {% if data[1][1] < 1 %}
-                            disabled
-                            {% endif %}>Clear
-                    </button>
+                <div class="col-sm-8" style="padding-left: 0px;">
+                    <h5>Files</h5><br>
+                    <table>
+                        {% for index, row in df_files.iterrows() %}
+                            <tr class="row" id="tr_{{ row['file name'] }}">
+                                <td class="col-sm-2">{{ row['file name'] }}</td>
+                                <td class="col-sm-5">
+                                    <div class="progress">
+                                        <div class="determinate" style="width: {{ row['percentage'] }}%"></div>
+                                    </div>
+                                </td>
+                                <td class="col-sm-2">{{ row['percentage'] }} %</td>
+                                <td class="col-sm-1">
+                                    <button class="use-address" value="{{ row['file name'] }}">
+                                        <i class="fas fa-trash-alt fa-2x"></i>
+                                    </button>
+                                </td>
+                                <td class="col-sm-1">
+                                    <button class="use-download" value="{{ row['file name'] }}">
+                                        <i class="fas fa-file-download fa-2x"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                 </div>
-
             </div>
-
-            <div class="col-sm-8">
-                <h5>Files</h5><br>
-                <table>
-                    {% for index, row in df_files.iterrows() %}
-                        <tr class="row" id="tr_{{ row['file name'] }}">
-                            <td class="col-sm-2">{{ row['file name'] }}</td>
-                            <td class="col-sm-6">
-                                <div class="progress">
-                                    <div class="determinate" style="width: {{ row['percentage'] }}%"></div>
-                                </div>
-                            </td>
-                            <td class="col-sm-2">{{ row['percentage'] }} %</td>
-                            <td class="col-sm-1">
-                                <button class="use-address" value="{{ row['file name'] }}">
-                                    <i class="fas fa-trash-alt fa-2x"></i>
-                                </button>
-                            </td>
-                            <td class="col-sm-1">
-                                <button class="use-download" value="{{ row['file name'] }}">
-                                    <i class="fas fa-file-download fa-2x"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-
-            </div>
-
         </div>
+
         <div class="row" style="background-color: #ff00008c; padding: 10px; border: 3px solid red; border-radius: 5px;">
             <h5 class="row">Delete account</h5>
             <div class="row">
@@ -219,7 +236,7 @@
     });
 
     $("#delete_account").click(function () {
-        $('.container').hide(0);
+        $('.mainDataInterface').hide(0);
         $('.loader-div').show(0);
         $('.main-body').click(false);
 
@@ -247,8 +264,9 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script type="text/javascript">
+
     // Load google charts
-    google.charts.load('current', {'packages': ['corechart']});
+    google.charts.load("visualization", "1", {'packages': ['corechart']});
     google.charts.setOnLoadCallback(drawChart);
 
     // Draw the chart and set the chart values
@@ -261,10 +279,23 @@
         ]);
 
         // Optional; add a title and set the width and height of the chart
-        var options = {backgroundColor: 'transparent', 'width': 550, 'height': 400, sliceVisibilityThreshold: 0};
+        var options = {backgroundColor: 'transparent', sliceVisibilityThreshold: 0};
 
         // Display the chart inside the <div> element with id="piechart"
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
         chart.draw(data, options);
+    }
+
+    window.onresize = doALoadOfStuff;
+
+    function doALoadOfStuff() {
+        //do a load of stuff
+        var options = {
+            width: '100%',
+            height: '100%'
+        };
+
+        var data = google.visualization.arrayToDataTable([]);
+        drawChart(data, options);
     }
 </script>
