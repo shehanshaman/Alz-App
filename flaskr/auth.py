@@ -14,6 +14,7 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from flask import Markup
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
@@ -59,6 +60,18 @@ def load_logged_in_user():
             get_db().execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
         )
 
+def send_verification_key(user_id, username):
+    verify_key = randomString()
+    db = get_db()
+    db.execute(
+        "INSERT INTO verify (user_id, subject, verify_key) VALUES (?, ?, ?)",
+        (user_id, 'verify', verify_key),
+    )
+    db.commit()
+    url = "http://" + str(request.host) + "/auth/verify/?id=" + str(user_id) + "&key=" + verify_key
+    send_mail("verify", url, username, "Verify email address")
+
+
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     """Register a new user.
@@ -91,14 +104,7 @@ def register():
             create_user_db(db, username, password, given_name, '', 0)
             if "@" in username:
                 user_id = UserData.get_user_id(username)
-                verify_key = randomString()
-                db.execute(
-                    "INSERT INTO verify (user_id, subject, verify_key) VALUES (?, ?, ?)",
-                    (user_id, 'verify', verify_key),
-                )
-                db.commit()
-                url = "http://" + str(request.host) + "/auth/verify/?id=" + str(user_id) + "&key=" + verify_key
-                send_mail("verify", url, username, "Verify email address")
+                send_verification_key(user_id, username)
 
             message  = given_name + ", Your account created. Verify your email"
             flash(message)
@@ -108,6 +114,18 @@ def register():
 
     return render_template("auth/register.html")
 
+@bp.route("/resend_key", methods=["GET"])
+def re_send_verification_key():
+    username = request.args.get('mail')
+    db = get_db()
+    user = db.execute(
+        "SELECT * FROM user WHERE username = ? AND is_verified = 0", (username,)
+    ).fetchone()
+    if user:
+        send_verification_key(user['id'], user['username'])
+        return "Resent your verification mail,  Check your mail."
+    else:
+        return "Wrong username"
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
@@ -126,8 +144,8 @@ def login():
         elif not check_password_hash(user["password"], password):
             error = "Incorrect password."
         elif user["is_verified"] == 0:
-            error = "Your account not verified, check email."
-
+            error = "Your account not verify, check email or <a id='resend_verification' href='#'>resend verification<a>."
+            error = Markup(error)
         if error is None:
             # store the user id in a new session and return to the index
             session.clear()
@@ -141,7 +159,13 @@ def login():
 
         flash(error)
 
-    return render_template("auth/login.html")
+        return redirect(url_for('auth.login') + "?u=" + username)
+
+    else:
+
+        username = request.args.get('u')
+
+        return render_template("auth/login.html", username=username)
 
 
 @bp.route("/logout")
@@ -189,7 +213,7 @@ def verify():
 
     db = get_db()
     verify_data = db.execute(
-        "SELECT * FROM verify WHERE user_id = ? AND subject = 'verify'", (user_id,)
+        "SELECT * FROM verify WHERE user_id = ? AND subject = 'verify' ORDER BY id DESC", (user_id,)
     ).fetchone()
 
     e = ["Not Found",[]]
@@ -361,10 +385,12 @@ def get_all_users():
 def admin_panel():
 
     users = get_all_users()
+    host_usage = round(users['usage'].sum() / 1024, 2)
     warning_list, delete_list, sum_usage_warning, sum_usage_delete = get_infrequent_ids(users)
 
     return render_template("auth/admin.html", warning_list=warning_list, delete_list=delete_list,
-                           sum_usage_warning=round(sum_usage_warning, 2), sum_usage_delete=round(sum_usage_delete, 2), users=users)
+                           sum_usage_warning=round(sum_usage_warning, 2), sum_usage_delete=round(sum_usage_delete, 2),
+                           users=users, host_usage=host_usage)
 
 #contact list show
 @bp.route("/admin/contact_list")
