@@ -34,7 +34,6 @@ def index_pdf():
 	fs_can_download	= []	
 	for file_name in list_names:
 		results_fs = UserData.get_can_download_result(g.user["id"], file_name)
-		results_anlz = UserData.get_can_download_result(g.user["id"], file_name)
 		if( results_fs is None):
 			fs_can_download.append(0)
 		else:
