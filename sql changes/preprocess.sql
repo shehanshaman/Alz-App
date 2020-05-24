@@ -16,7 +16,7 @@ ALTER TABLE results ADD corr_classification_accuracy varchar(500);
 ALTER TABLE results ADD selected_roc_pic_hash MEDIUMTEXT;
 ALTER TABLE results ADD all_roc_pic_hash MEDIUMTEXT;
 ALTER TABLE results ADD result_data_1 varchar(500);
-ALTER TABLE results ADD result_data_2 varchar(500);"user_id"	
+ALTER TABLE results ADD result_data_2 varchar(500);
 ALTER TABLE preprocess ADD can_download INTEGER;
 ALTER TABLE results ADD can_download_fs INTEGER;
 ALTER TABLE results ADD can_download_anlz INTEGER;
