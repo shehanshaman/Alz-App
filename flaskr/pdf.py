@@ -73,3 +73,27 @@ def feature_selection_pdf():
 		};
 
 	return render_template("pdf/feature_pdf.html", feature_details=feature_details_set, venn_data = feature_details['venn_data_set'], fs_hash = feature_details['fs_hash'])
+
+#pdf data for create preprocess file
+@bp.route("/analysis", methods=['POST', 'GET'])
+@login_required
+def analysis_pdf():
+	id = request.args.get("id")
+	
+	anlz_details = UserData.get_result_from_id(id)
+
+	anlz_details_set = {
+			"filename": anlz_details['filename'],
+			"an_overlap_hash": anlz_details['an_overlap_hash'],
+			"an_cls_hash": anlz_details['an_cls_hash'],
+			"an_crr_hash": anlz_details['an_crr_hash'],
+			"col_selected_method": anlz_details['col_selected_method'],
+			"selected_method": anlz_details['selected_method'],
+			"an_crr_1_hash": anlz_details['an_crr_1_hash'],
+			"an_crr_2_hash": anlz_details['an_crr_2_hash'],
+			"selected_roc_pic_hash": anlz_details['selected_roc_pic_hash'],
+			"all_roc_pic_hash": anlz_details['an_crr_2_hash'],
+			"col_overlapped": anlz_details['col_overlapped']
+		};
+
+	return render_template("pdf/analysis_pdf.html", anlz_details_set=anlz_details_set, corr_classification_accuracy=anlz_details['corr_classification_accuracy'], result_data_1=anlz_details['result_data_1'], result_data_2=anlz_details['result_data_2'])

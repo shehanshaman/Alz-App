@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | PDF</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}"> -->
+
+    <!--Import Google Icon Font-->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}"> -->
+
+    <!-- Compiled and minified CSS -->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> -->
+
+</head>
+
+<style type="text/css">
+
+</style>
+
+<body>
+
+<div id="div_feature">
+
+    <center>
+        <h2 style="color: #26a69a;font-family: monospace;">ANALYSIS</h2>
+    </center>
+
+    <center>
+        <h3 style="font-family: monospace;">Training accuracies of genes only found by each classifier and the overlapped set of genes</h3>
+        <img src="data:image/png;base64,{{anlz_details_set['an_overlap_hash']}}" alt="volcano" width="1000" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">There are some features that are only selected by one feature selection method. Also, there are some features that are selected by all three feature selection methods. We will refer to these genes as the 'overlap' features. The right graph shows the number of features selected by each method together with the overlap set. The left graph shows how the accuracy of these features varies with 3 classifiers; SVM+ Gaussian kernal, SVM+ Linear kernel and Random forest !</p>
+
+    <br>
+
+    <center>
+        <h3 style="font-family: monospace;">Classification accuracy of three classifiers using incrementally smaller sets of genes</h3>
+        <img src="data:image/png;base64,{{anlz_details_set['an_cls_hash']}}" alt="volcano" width="1000" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">You can view how the accuracy varies with incrementally smaller set of genes. For example, if the selected number of features by each method is 50, you can get the best 50, 40,30,20,10,5,3,2,1 set of genes by gradually decreasing the number of features. By plotting the accuracy for these subsets of genes, you can see how the accuracy varies according to the number of features you select. Here also, you can compare and contrast the results using 3 classifiers !</p>
+
+    <br>
+    
+    <center>
+        <h3 style="font-family: monospace;">Correlation matrix</h3>
+        <img src="data:image/png;base64,{{anlz_details_set['an_crr_hash']}}" alt="volcano" width="1000" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">In gene expression analysis, removing the redundant data is vital. One such method to remove redundancy is to minimize the number of correlated genes. For this, we plot the correlation matrix of the features selected by each feature selection method alone. By examining this plot, you can see which method gives the highest correlated genes and which gives the lowest correlated genes !</p>    
+
+    <br>
+
+    <p style="font-family: monospace; text-align: justify;">From above details you have selected {{anlz_details_set['selected_method']}} for further analisis.</p>
+
+    <center>
+        <h2 style="color: #26a69a;font-family: monospace;">CORRELATION : {{anlz_details_set['selected_method']}}</h2>
+    </center>
+
+    <br>
+
+    <center>
+        <h3 style="font-family: monospace;">Correlated features vs correlation value</h3>
+        <img src="data:image/png;base64,{{anlz_details_set['an_crr_1_hash']}}" alt="volcano" width="700" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">This graph shows the variation of correlation values with the number of correlated features. By examining this graph, the method that gives the least correlated features can be filtered out !</p>
+
+    <br>
+
+    <center>
+        <h3 style="font-family: monospace;">Variation of the correlation coefficients of the genes found only by Random Forest with classification accuracy</h3>
+        <img src="data:image/png;base64,{{anlz_details_set['an_crr_2_hash']}}" alt="volcano" width="1000" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">This graph (right) shows how the correlation coefficients of the genes only found by Random Forest varies with the number of features. The graph(left) shows the variation of correlation coefficients of the genes selected by Random Forest alone varies with the classification accuracy of three classifiers !</p>
+
+    <center>
+
+        <h3 style="font-family: monospace;">Finding features that has minimum correlated and high classification accuracy</h3>
+
+        <table id="clf_results_tbl" style="background-color: #26a69a82;font-family: monospace;">
+          <tr>
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Method</th>
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Correlation coefficient</th>
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">No of features</th> 
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Maximum Accuracy</th>                                   
+          </tr>           
+        </table>        
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">By considering the above graphs, you can select the plots where the highest accuracies occur in each classifier. The table shows the instance where the maximum accuracy is obtained, the number of features at that particular point and the range of correlation coefficients of that instance. Out of the 3 models, you can obtain the maximum accuracy to proceed further !</p>
+
+    <h3 id="tb_head" style="font-family: monospace;"></h3>
+
+    <center>
+        <table id="fs_feature_set_1" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">Using {{anlz_details_set['selected_method']}} selected features futher analysis</p>
+
+    <br>
+
+    <center>
+        <h3 style="font-family: monospace;">ROC</h3>
+        <img src="data:image/png;base64,{{anlz_details_set['selected_roc_pic_hash']}}" alt="volcano" width="1000" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">A ROC curve is constructed by plotting the true positive rate (TPR) against the false positive rate (FPR). The true positive rate is the proportion of observations that were correctly predicted to be positive out of all positive observations (TP/(TP + FN)). Similarly, the false positive rate is the proportion of observations that are incorrectly predicted to be positive out of all negative observations (FP/(TN + FP)). This graph shows the ROC curve consideing the genes obtained through considering least correlation !</p>
+
+    <p style="font-family: monospace; text-align: justify;">The correlation matrix of the genes selected by Extra Tree Classifier only !</p>
+    <br>
+
+    <center>
+        <table id="clf_results_1_tbl" style="background-color: #26a69a82;font-family: monospace;">
+          <tr>
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Method</th>
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Testing</th>
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Training</th>                                   
+          </tr>           
+        </table>        
+    </center>
+
+    <br>
+
+    <center>
+        <h3 style="font-family: monospace;">{{anlz_details_set['selected_method']}} + OVERLAPPED FEATURES</h3>
+
+        <br>
+
+        <table id="fs_feature_set_2" style="background-color: #26a69a82;font-family: monospace;">
+          <tr></tr>           
+        </table>        
+
+        <br>
+
+        <img src="data:image/png;base64,{{anlz_details_set['all_roc_pic_hash']}}" alt="volcano" width="1000" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">The graph(left) shows the ROC curve of all the genes selected.That is, the set of overlapped genes plus the genes filtered out by Extra Tree Classifier considering the least correlation, The graph(right) shows the correlation matrix of all the genes selected. That is, the set of overlapped genes plus the genes filtered out by considering the least correlation !</p>
+
+    <br>
+
+    <center>
+        <table id="clf_results_2_tbl" style="background-color: #26a69a82;font-family: monospace;">
+          <tr>
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Method</th>
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Testing</th>
+            <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Training</th>                                   
+          </tr>           
+        </table>        
+    </center>
+
+</div>
+
+ <button type="button" onclick="printJS({ printable: 'div_feature', type: 'html', targetStyles:'*'})">
+    Print Form
+ </button>
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+
+<script type="text/javascript">
+
+clf_results = '{{ corr_classification_accuracy | tojson}}';
+clf_results = clf_results.substring(1, clf_results.length-1);
+
+clf_results = JSON.parse(clf_results)
+
+clf_name_list = []
+for (var row in clf_results) {
+    $('#clf_results_tbl tr:last').after(
+          '<tr>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + row + '</td>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + clf_results[row]['Correlation coefficient'] + '</td>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + clf_results[row]['No of features'] + '</td>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + clf_results[row]['Maximum Accuracy'] + '</td>'+            
+          '</tr>'
+        );
+    clf_name_list.push(row);
+}
+
+clf_results_1 = '{{ result_data_1 | tojson}}';
+clf_results_1 = clf_results_1.substring(1, clf_results_1.length-1);
+
+clf_results_1 = JSON.parse(clf_results_1)
+
+for (var row in clf_results_1) {
+    $('#clf_results_1_tbl tr:last').after(
+          '<tr>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + row + '</td>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + clf_results_1[row]['Testing'] + '</td>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + clf_results_1[row]['Training'] + '</td>'+           
+          '</tr>'
+        );
+}
+
+clf_results_2 = '{{ result_data_2 | tojson}}';
+clf_results_2 = clf_results_2.substring(1, clf_results_2.length-1);
+
+clf_results_2 = JSON.parse(clf_results_2)
+
+for (var row in clf_results_2) {
+    $('#clf_results_2_tbl tr:last').after(
+          '<tr>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + row + '</td>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + clf_results_2[row]['Testing'] + '</td>'+
+            '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + clf_results_2[row]['Training'] + '</td>'+           
+          '</tr>'
+        );
+}
+
+clf_results_features = '{{ anlz_details_set['col_selected_method'] | tojson}}';
+features_set = clf_results_features.substring(1, clf_results_features.length-1).split(',')
+
+function selected_features_set_fun(set_1, set_n, len){
+
+    stop_val=8;
+    if( len < stop_val){
+        for (var f in set_1) {
+            $('#fs_feature_set_' + set_n + ' tr:last').after(
+                '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[f] + '</td>'  
+            );
+        }
+    }
+    else{
+
+        l = 0;
+        while( l < (len/stop_val - 1) ){
+            $('#fs_feature_set_' + set_n + ' tr:last').after(
+                '<tr>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 0] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 1] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 2] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 3] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 4] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 5] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 6] + '</td>'+
+                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 7] + '</td>'+
+                    '</tr>'  
+            );
+        l=l+1
+        }
+
+        int_val = (l)*stop_val;
+        while(  int_val < len){
+            $('#fs_feature_set_' + set_n + ' tr:last').after(
+                '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[int_val] + '</td>' 
+            );
+            int_val++   
+        }
+
+    }
+
+}
+
+selected_features_set_fun(features_set, 1, features_set.length)
+$('#tb_head').text('Correlation | ' + clf_name_list[0]);
+
+all_features_set = '{{anlz_details_set['col_overlapped']}}' + ',' + '{{anlz_details_set['col_selected_method']}}'
+
+all_features_set_arr = all_features_set.substring(1, all_features_set.length-1).split(',')
+selected_features_set_fun(all_features_set_arr, 2, all_features_set_arr.length)
+</script>

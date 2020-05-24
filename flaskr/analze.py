@@ -81,6 +81,10 @@ def index():
 
     small_set_pic_hash = get_small_set_features_fig(m_scores,x_scores, method_names[1:4], selected_clfs)
 
+    UserData.update_result_column(user_id, filename, 'an_overlap_hash', overlap_pic_hash)
+    UserData.update_result_column(user_id, filename, 'an_cls_hash', small_set_pic_hash)
+    UserData.update_result_column(user_id, filename, 'an_crr_hash', correlation_pic_hash)
+
     return render_template("analyze/index.html", corr_data = correlation_pic_hash, overlap_data = overlap_pic_hash,
                            small_set= small_set_pic_hash, methods = method_names[1:4], filename=filename, result_id = result_id)
 
@@ -127,9 +131,16 @@ def selected_method():
     col_selected_method = FeatureSelection.getSelectedDF(x, x.corr(), max_corr_df.loc[max_corr_df['Maximum Accuracy'].idxmax()]['Correlation coefficient']).columns.tolist()
     col_selected_str = ','.join(e for e in col_selected_method)
 
+    #convert dictionary into string 
+    #using json.dumps() 
+    result_data = json.dumps(max_corr_df.to_dict(orient='index'))
+
     #Update results
     UserData.update_result_column(user_id, filename, 'selected_method', selected_method)
     UserData.update_result_column(user_id, filename, 'col_selected_method', col_selected_str)
+    UserData.update_result_column(user_id, filename, 'an_crr_1_hash', cmp_corr_results_pic_hash)
+    UserData.update_result_column(user_id, filename, 'an_crr_2_hash', corr_score_pic_hash)
+    UserData.update_result_column(user_id, filename, 'corr_classification_accuracy', result_data)
 
     return render_template("analyze/analyze_correlation.html", corr_results=cmp_corr_results_pic_hash,
                            tables=[max_corr_df.head().to_html(classes='data')],
@@ -181,6 +192,15 @@ def final_result():
 
     gene_name_list = list(gene_info_df.index)
 
+    #convert dictionary into string 
+    #using json.dumps() 
+    result_data_1 = json.dumps(r1_df.to_dict(orient='index'))
+    result_data_2 = json.dumps(r2_df.to_dict(orient='index'))
+
+    UserData.update_result_column(user_id, filename, 'selected_roc_pic_hash', selected_roc_pic_hash)
+    UserData.update_result_column(user_id, filename, 'all_roc_pic_hash', all_roc_pic_hash)
+    UserData.update_result_column(user_id, filename, 'result_data_1', result_data_1)
+    UserData.update_result_column(user_id, filename, 'result_data_2', result_data_2)
 
     validation_file_list = [f for f in os.listdir(VALIDATION_PATH) if os.path.isfile((VALIDATION_PATH / f))]
 
