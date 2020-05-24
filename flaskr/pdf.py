@@ -6,8 +6,49 @@ from flask import request
 from flask import render_template
 
 from .classes.featureSelectionClass import FeatureSelection
+import os
+
+from pathlib import Path
+from flask import g
 
 bp = Blueprint("pdf", __name__, url_prefix="/pdf")
+
+ROOT_PATH = Path.cwd()
+USER_PATH = ROOT_PATH / "flaskr" / "upload" / "users"
+
+#pdf create
+@bp.route("/", methods=['POST', 'GET'])
+@login_required
+def index_pdf():
+	path = USER_PATH / str(g.user["id"])
+	list_names = [f for f in os.listdir(path) if os.path.isfile((path / f))]
+
+	preprocess_can_download = []
+	for file_name in list_names:
+		results = UserData.get_user_can_download_preprocess(g.user["id"], file_name)
+		if( results is None):
+			preprocess_can_download.append(0)
+		else:
+			preprocess_can_download.append(results['can_download'])
+
+	fs_can_download	= []	
+	for file_name in list_names:
+		results_fs = UserData.get_can_download_result(g.user["id"], file_name)
+		results_anlz = UserData.get_can_download_result(g.user["id"], file_name)
+		if( results_fs is None):
+			fs_can_download.append(0)
+		else:
+			fs_can_download.append(results['can_download'])
+
+	anlz_can_download	= []		
+	for file_name in list_names:
+		results_anlz = UserData.get_can_download_result(g.user["id"], file_name)
+		if( results_anlz is None):
+			anlz_can_download.append(0)
+		else:
+			anlz_can_download.append(results['can_download'])
+
+	return render_template("pdf/index.html", available_list=list_names, can_download_pre = preprocess_can_download, can_download_fs = fs_can_download, can_download_anlz = anlz_can_download)
 
 #pdf data for create preprocess file
 @bp.route("/preprocessing", methods=['POST', 'GET'])

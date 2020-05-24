@@ -132,7 +132,7 @@ def get_val():
     venn_data = FeatureSelection.venn_diagram_data(col_m1, col_m2, col_m3)
 
     # Save data to the result table
-    UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2], selected_clfs_str, str(venn_data), img64)
+    UserData.add_result(user_id, filename, fs_methods_str, selected_col[0], selected_col[1], selected_col[2], selected_clfs_str, str(venn_data), img64, 1)
     result_id = UserData.get_result(user_id, filename)['id']
 
     # Get gene info

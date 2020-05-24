@@ -65,6 +65,7 @@ def index():
     overlap_str = ','.join(e for e in overlap)
 
     UserData.update_result_column(user_id, filename, 'col_overlapped', overlap_str)
+    UserData.update_result_column(user_id, filename, 'can_download_anlz', 0)
 
     results, count = FeatureSelection.getFeatureSummary(df, y, col_uni, overlap, method_names, selected_clfs)
     results = results.astype(float)
@@ -201,6 +202,7 @@ def final_result():
     UserData.update_result_column(user_id, filename, 'all_roc_pic_hash', all_roc_pic_hash)
     UserData.update_result_column(user_id, filename, 'result_data_1', result_data_1)
     UserData.update_result_column(user_id, filename, 'result_data_2', result_data_2)
+    UserData.update_result_column(user_id, filename, 'can_download_anlz', 1)
 
     validation_file_list = [f for f in os.listdir(VALIDATION_PATH) if os.path.isfile((VALIDATION_PATH / f))]
 

@@ -1,1 +1,147 @@
-index
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
+
+	<!--bootstrap-->
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+	<!--Import Google Icon Font-->
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+	<!-- Compiled and minified CSS -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+	<title>GeNet | pdf</title>
+
+</head>
+
+<style type="text/css">
+	.success_class{
+		padding: 10px;
+    	color: white;
+    	background-color: #79d31f;
+    	border-radius: 20px;
+	}
+	.pending_class{
+		padding: 10px;
+	    color: white;
+	    background-color: #F44336;
+	    border-radius: 20px;		
+	}
+</style>
+
+<body style="font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+	<div class="container mainDataInterface">
+
+		<div class="step">
+			<div class="step-content">
+				<div class="row">
+					<h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">REPORT DOWNLOAD</h3>
+				</div>
+
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">
+                            Available Files :</h5>
+                    </div>
+                    <div id="available_file_name" class="col-sm-5">
+                        <div class="md-form">
+                            <select style="font-family: monospace;" class="form-control" id="available_files"
+                                    name="available_files">
+                                {% for name in available_list %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            <br>
+            <br>    
+
+			<div class="row">
+				<div class="row table_view">
+					<table class="display" id="table_id">
+						<tbody>
+							<tr>
+								<td style="font-size: 17px;">Preprocessing</td>
+								<td>
+									<span class="preprocessing_badge_s success_class" style="display: none;">Success</span>
+									<span class="preprocessing_badge_p pending_class">Success</span>
+								</td>
+								<td>
+                                    <a>
+                                        <i class="fas fa-download fa-2x"></i>
+                                    </a>
+								</td>
+							</tr>
+							<tr>
+								<td style="font-size: 17px;">Feature selection</td>
+								<td>
+									<span class="fs_badge_s success_class">Success</span>
+									<span class="fs_badge_p pending_class" style="display: none;">Success</span>
+								</td>
+								<td>
+                                    <a>
+                                        <i class="fas fa-download fa-2x"></i>
+                                    </a>
+								</td>
+							</tr>
+							<tr>
+								<td style="font-size: 17px;">Analiysis</td>
+								<td>
+									<span class="anlz_badge_s success_class">Success</span>
+									<span class="anlz_badge_p pending_class" style="display: none;">Success</span>
+								</td>
+								<td>
+                                    <a>
+                                        <i class="fas fa-download fa-2x"></i>
+                                    </a>
+								</td>
+							</tr>														
+						</tbody>
+					</table>
+				</div>
+
+			</div>				
+			</div>
+		</div>
+	</div>			
+
+{{can_download_pre}}
+{{can_download_fs}}
+{{can_download_anlz}}
+{% include 'guide_footer.html' %}
+
+</body>
+
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+	<script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+	<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+	<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}

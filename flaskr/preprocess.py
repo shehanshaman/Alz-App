@@ -143,7 +143,7 @@ def view_merge_df():
 
         # save data to the Database
         UserData.add_preprocess(user_id, file_name, file_path.as_posix(), annotation_table, col_sel_method,
-                                merge_path_str)
+                                merge_path_str, 0)
         pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
 
         # df = df.sort_values(df.columns[0], ascending=False)
@@ -312,7 +312,7 @@ def skip_df_mapping():
 
     UserData.delete_preprocess_file(user_id, file_name)
 
-    UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '', '')
+    UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '', '', 0)
     pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
 
     df = PreProcess.getDF(file_path)
@@ -418,6 +418,8 @@ def get_reduce_features_from_pvalues():
     #using json.dumps() 
     result_data = json.dumps(classification_result_df.to_dict(orient='index'))
     UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'classification_result_set', result_data)
+
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'can_download', 1)
 
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
 
