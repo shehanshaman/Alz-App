@@ -92,6 +92,7 @@
 
 	<p style="font-family: monospace; text-align: justify;">Here, the number of features is the total number of probe IDs in the uploaded data set. The minimum and maximum value corresponding to the minimum and maximum gene expression value in the whole data set. The “class” variable can only contain information about two classes. The number of samples you denoted by 1 (usually the samples checked positive for a disease) is denoted by the number of positive samples while the rest is denoted by the negative samples.</p>
 
+<div class="skip_mapping">
 	<h3 style="font-family: monospace;">Summary of the data set after the probe_IDs are mapped into gene symbols</h3>
 
 	<center>
@@ -112,7 +113,7 @@
 	</center>
 
 	<p class="prbe_map_P" style="font-family: monospace; text-align: justify;"></p>
-
+</div>
 	<br>
 
 	<h3 style="font-family: monospace;">Summary of the data set after going through normalization and imputation</h3>
@@ -282,6 +283,7 @@ else if( $('.prb_mthd_text').text() == 'Interquartile range'){
 	$('.prb_mthd_textP').text('You have selected the inter-quartile range as the probe selection method. The inter-quartile value of all the values mapping to the same gene symbol in a specific sample is given here.');
 }
 else{
+	$('.skip_mapping').hide(0);
 	$('.prb_mthd_textP').text('You have skipped probe ID mapping step.');
 }
 
