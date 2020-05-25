@@ -80,8 +80,9 @@ def create_default_model():
     df.columns.name = df.index.name
     df.index.name = None
 
-    col = ["AC004951.6", "MAFF", "SLC39A12", "PCYOX1L", "CTD-3092A11.2", "RP11-271C24.3", "PRO1804", "PRR34-AS1", "SST",
-           "CHGB", "MT1M", "JPX", "APLNR", "PPEF1"]
+    # col = ["AC004951.6", "MAFF", "SLC39A12", "PCYOX1L", "CTD-3092A11.2", "RP11-271C24.3", "PRO1804", "PRR34-AS1", "SST",
+    #        "CHGB", "MT1M", "JPX", "APLNR", "PPEF1"]
+    col = ["MAFF", "SLC39A12", "PCYOX1L", "PRO1804", "PRR34-AS1", "SST", "CHGB", "MT1M", "JPX", "APLNR", "PPEF1"]
 
     col_str = ','.join(e for e in col)
 
