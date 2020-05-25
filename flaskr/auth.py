@@ -771,13 +771,13 @@ class UserData:
             disable_list[2] = 1
             disable_list[3] = 1
             disable_list[8] = 1
+            disable_list[7] = 1
         if(UserData.get_user_results(user_id)):
             disable_list[4] = 1
         if(UserData.get_result_to_validation(user_id)):
             disable_list[5] = 1
             disable_list[6] = 1
-        if UserData.is_model_created(user_id) and disable_list[0]:
-            disable_list[7] = 1  
+
         return disable_list
 
     def add_file(file_name, file_type, path, user_id, is_annotation, has_class):

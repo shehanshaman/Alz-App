@@ -22,35 +22,35 @@
 </head>
 
 <style>
-        .pagination li.active {
-            background-color: inherit;
-        }
+    .pagination li.active {
+        background-color: inherit;
+    }
 
-        #anno_tbl_div {
-            visibility: hidden;
-        }
+    #anno_tbl_div {
+        visibility: hidden;
+    }
 
-        #modal_create {
-            float: right;
-        }
+    #modal_create {
+        float: right;
+    }
 
-        #modal_create > button {
-            background-color: #eea236;
-            font-size: 8px;
-        }
+    #modal_create > button {
+        background-color: #eea236;
+        font-size: 8px;
+    }
 
-        #modal_create > button > a {
-            text-decoration: none;
-            color: inherit;
-        }
+    #modal_create > button > a {
+        text-decoration: none;
+        color: inherit;
+    }
 
-        .button {
-            margin-top: inherit;
-        }
+    .button {
+        margin-top: inherit;
+    }
 
-        #progress_bar {
-            visibility: hidden;
-        }
+    #progress_bar {
+        visibility: hidden;
+    }
 </style>
 
 <body class="main-body" style="background-color: #f3f6f9; font-family: monospace;">
@@ -63,7 +63,8 @@
 
         <div class="step-content">
             <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">PREDICTION</h3>
+                <h3 id="h3-head-1" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">PREDICTION</h3>
             </div>
         </div>
 
@@ -75,7 +76,8 @@
                     </div>
                     <div class="col-sm-4" id="modal_create">
                         <button type="button" class="btn btn-warning">
-                            <a style="font-size: 15px;font-family: monospace;" href="{{ url_for('modeling.index') }}">Customize Model</a>
+                            <a style="font-size: 15px;font-family: monospace;" href="{{ url_for('modeling.index') }}">Customize
+                                Model</a>
                         </button>
                     </div>
 
@@ -84,27 +86,36 @@
                     <table>
                         <tr>
                             <td>Classifier:</td>
-                            <td>{{ details[2] }}</td>
+                            <td id="selected_classifier">{{ default_details[2] }}</td>
                         </tr>
                         <tr>
                             <td>Accuracy:</td>
-                            <td>{{ details[3] }} %</td>
+                            <td id="selected_accuracy">{{ default_details[3] }} %</td>
                         </tr>
                         <tr>
                             <td>Trained from:</td>
-                            <td>{{ details[1] }}</td>
+                            <td id="selected_from">{{ default_details[1] }}</td>
                         </tr>
                         <tr>
                             <td>Features:</td>
-                            <td>{{ details[0] }}</td>
+                            <td id="selected_features">{{ default_details[0] }}</td>
                         </tr>
                     </table>
                 </div>
+                <div class="row">
 
+                    <label>
+                        <input id="default_model" type="checkbox" class="filled-in" checked="checked" {% if not details %}
+                            disabled
+                        {% endif %}/>
+                        <span>Default Model</span>
+                    </label>
+                </div>
             </div>
 
             <div class="col-sm-6" style="">
-                <form id="main-form-div-predict" method="post" action="/mod/predict/results/" id="predict-result" enctype="multipart/form-data">
+                <form id="main-form-div-predict" method="post" action="/mod/predict/results/" id="predict-result"
+                      enctype="multipart/form-data">
 
                     <br>
 
@@ -112,11 +123,13 @@
 
                         <div class="row" style="margin-top: 10px;">
                             <div class="col-sm-4">
-                                <h5 id="" class="card__title" style="text-align: center;font-family: monospace;">Choose File:</h5>
+                                <h5 id="" class="card__title" style="text-align: center;font-family: monospace;">Choose
+                                    File:</h5>
                             </div>
                             <div class="col-sm-5">
                                 <div id="select_file_div" class="md-form">
-                                    <select style="font-family: monospace;" class="form-control" id="available_files" name="available_files">
+                                    <select style="font-family: monospace;" class="form-control" id="available_files"
+                                            name="available_files">
                                         {% for name in available_list %}
                                             <option value="{{ name }}">{{ name }}</option>
                                         {% endfor %}
@@ -130,7 +143,8 @@
 
                         <div class="row" style="margin-top: 10px; margin-bottom: -75px;margin-right: 10px;">
                             <div class="row">
-                                <h5 id="h5-head-1" class="card__title card_head_size" style="text-align: center;font-family: monospace;">Check pre-process
+                                <h5 id="h5-head-1" class="card__title"
+                                    style="text-align: center;font-family: monospace;">Check pre-process
                                     steps</h5>
                             </div>
                             <div class="row">
@@ -148,7 +162,8 @@
                                 <div class="switch row">
                                     <div class="row">
                                         <span class="col-sm-6">Annotation Table Mapping </span>
-                                        <label id="select_annotation_div"   class="col-sm-6" onclick="update_checkbox(event)">
+                                        <label id="select_annotation_div" class="col-sm-6"
+                                               onclick="update_checkbox(event)">
                                             Off
                                             <input type="checkbox" value="false" id="is_map" name="is_map">
                                             <span class="lever"></span>
@@ -160,7 +175,8 @@
                                         <div class="col-sm-6"></div>
                                         <div class="col-sm-6">
                                             <div class="md-form" id="anno_tbl_div">
-                                                <select style="font-family: monospace;" class="form-control" id="anno_tbl" name="anno_tbl" style="margin-bottom: 20px;">
+                                                <select style="font-family: monospace;" class="form-control"
+                                                        id="anno_tbl" name="anno_tbl" style="margin-bottom: 20px;">
                                                     {% for name in annotation_list %}
                                                         <option value="{{ name[1] }}">{{ name[0] }}</option>
                                                     {% endfor %}
@@ -175,11 +191,15 @@
                         </div>
                     </div>
 
+                    <input type="hidden" id="is_default_model" name="is_default_model" value="1">
+
                     <div class="submit">
-                        <button id="btn-submit-predict" class="waves-effect waves-dark btn next-step step-6-click" id="btn-submit">SUBMIT</button>
+                        <button id="btn-submit-predict" class="waves-effect waves-dark btn next-step step-6-click"
+                                id="btn-submit">SUBMIT
+                        </button>
                     </div>
 
-                </form>            
+                </form>
             </div>
 
         </div>
@@ -198,10 +218,10 @@
 </div>
 
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 class="loader_div_h1">PREDICTING RESULTS</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 class="loader_div_h1">PREDICTING RESULTS</h5>
+</div>
 
 {% include 'guide_footer.html' %}
 
@@ -224,6 +244,8 @@
 {% endif %}
 
 <script>
+    document.getElementById('default_model').value = 1;
+
     function update_checkbox(event) {
         var id = event.target.id;
         if (id) {
@@ -251,11 +273,28 @@
         var conceptName = $('#available_files').find(":selected").text();
 
         $("#selected_file").val(conceptName);
-                
-        $("#main-form-div-predict").submit();  
+
+        $("#main-form-div-predict").submit();
         $('#tourControls').hide(0);
-        $('.notification-container-pop').hide(0);     
+        $('.notification-container-pop').hide(0);
     });
+
+    $('#default_model').click(function () {
+        var is_default = document.getElementById('default_model').value == 0 ? 1:0;
+        if(is_default == 1){
+            document.getElementById('selected_classifier').innerHTML = '{{ default_details[2] }}';
+            document.getElementById('selected_accuracy').innerHTML = '{{ default_details[3] }} %';
+            document.getElementById('selected_from').innerHTML = '{{ default_details[1] }}';
+            document.getElementById('selected_features').innerHTML = '{{ default_details[0] }}';
+        }else{
+            document.getElementById('selected_classifier').innerHTML = '{{ details[2] }}';
+            document.getElementById('selected_accuracy').innerHTML = '{{ details[3] }} %';
+            document.getElementById('selected_from').innerHTML = '{{ details[1] }}';
+            document.getElementById('selected_features').innerHTML = '{{ details[0] }}';
+        }
+        document.getElementById('is_default_model').value = is_default;
+        document.getElementById('default_model').value = is_default;
+    })
 
 </script>
 
@@ -278,7 +317,7 @@
 
 <script type="text/javascript">
 
-disable_prop = {{ g.dList }};
+    disable_prop = {{ g.dList }};
 
-disable_read_fun(disable_prop)
+    disable_read_fun(disable_prop)
 </script>
