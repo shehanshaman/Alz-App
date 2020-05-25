@@ -123,3 +123,26 @@ CREATE TABLE file (
 
 --   FOREIGN KEY (user_id) REFERENCES user (id)
 );
+
+ALTER TABLE preprocess ADD after_norm_set varchar(500);
+ALTER TABLE preprocess ADD volcano_hash MEDIUMTEXT;
+ALTER TABLE preprocess ADD fold varchar(10);
+ALTER TABLE preprocess ADD pvalue varchar(10);
+ALTER TABLE preprocess ADD length varchar(10);
+ALTER TABLE preprocess ADD fr_univariate_hash MEDIUMTEXT;
+ALTER TABLE preprocess ADD classification_result_set varchar(500);
+ALTER TABLE results ADD venn_data_set varchar(5000);
+ALTER TABLE results ADD fs_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_overlap_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_cls_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_crr_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_crr_1_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_crr_2_hash MEDIUMTEXT;
+ALTER TABLE results ADD corr_classification_accuracy varchar(500);
+ALTER TABLE results ADD selected_roc_pic_hash MEDIUMTEXT;
+ALTER TABLE results ADD all_roc_pic_hash MEDIUMTEXT;
+ALTER TABLE results ADD result_data_1 varchar(500);
+ALTER TABLE results ADD result_data_2 varchar(500);
+ALTER TABLE preprocess ADD can_download INTEGER;
+ALTER TABLE results ADD can_download_fs INTEGER;
+ALTER TABLE results ADD can_download_anlz INTEGER;
