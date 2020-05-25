@@ -75,15 +75,16 @@ def init_default_model_command():
     click.echo("Initialized the default model.")
 
 def create_default_model():
-    path_csv = SAMPLE_PATH / "GSE5281_DE_200.csv"
+    # path_csv = SAMPLE_PATH / "GSE5281_DE_200.csv"
+    path_csv = SAMPLE_PATH / "GeNet_GSE5281-GPL570.csv"
     df = pd.read_csv(path_csv, index_col=0)
     df.columns.name = df.index.name
     df.index.name = None
 
     # col = ["AC004951.6", "MAFF", "SLC39A12", "PCYOX1L", "CTD-3092A11.2", "RP11-271C24.3", "PRO1804", "PRR34-AS1", "SST",
     #        "CHGB", "MT1M", "JPX", "APLNR", "PPEF1"]
-    col = ["MAFF", "SLC39A12", "PCYOX1L", "PRO1804", "PRR34-AS1", "SST", "CHGB", "MT1M", "JPX", "APLNR", "PPEF1"]
-
+    col = ['RTN3', 'NAPB', 'TMSB10', 'ACTB', 'SPOCK1', 'NELL2', 'CHN1', 'TUBB2A', 'GAPDH', 'SPARCL1', 'ENO2', 'RCAN2',
+           'TUBA1A', 'GABARAPL3///GABARAPL1', 'NEFM', 'ATP1B1']
     col_str = ','.join(e for e in col)
 
     X = df[col]
