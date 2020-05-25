@@ -166,8 +166,9 @@ def predict_results():
         annotation_file = request.form["anno_tbl"]
         annotation_table_path = UPLOAD_FOLDER.as_posix() + annotation_file
         df = PreProcess.mergeDF(df_path, Path(annotation_table_path) )
-        df = PreProcess.step3(df, 'sklearn', 'drop')
+        df = df.dropna(axis=0, subset=['Gene Symbol'])
         df = PreProcess.probe2Symbol(df)
+        df = PreProcess.step3(df, 'sklearn', 'drop')
         df = df.set_index(['Gene Symbol'])
         df = df.T
 
