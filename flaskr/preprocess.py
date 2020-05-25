@@ -22,6 +22,7 @@ from flask import g
 import numpy as np
 
 import matplotlib
+import json
 
 matplotlib.use('Agg')
 
@@ -142,7 +143,7 @@ def view_merge_df():
 
         # save data to the Database
         UserData.add_preprocess(user_id, file_name, file_path.as_posix(), annotation_table, col_sel_method,
-                                merge_path_str)
+                                merge_path_str, 0)
         pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
 
         # df = df.sort_values(df.columns[0], ascending=False)
@@ -167,7 +168,7 @@ def view_merge_df():
             df = PreProcess.getDF(merge_path)
 
             data = session[pre_process['file_name']]
-
+            print(data)
             df = df.set_index([df.columns[0]])
             df.columns.name = df.index.name
             df.index.name = None
@@ -248,6 +249,11 @@ def norm():
         data = PreProcess.add_details_json(data, df, "r1")
         session[pre_process['file_name']] = data
 
+        # convert dictionary into string 
+        # using json.dumps() 
+        result_data = json.dumps(data)
+        UserData.update_preprocess(user_id, pre_process['file_name'], 'after_norm_set', result_data)
+
         df = df.set_index([df.columns[0]])
         df.columns.name = df.index.name
         df.index.name = None
@@ -301,7 +307,7 @@ def skip_df_mapping():
 
     UserData.delete_preprocess_file(user_id, file_name)
 
-    UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '', '')
+    UserData.add_preprocess(user_id, file_name, file_path.as_posix(), '', '', '', 0)
     pre_process_id = UserData.get_user_preprocess(user_id, file_name)['id']
 
     df = PreProcess.getDF(file_path)
@@ -346,6 +352,7 @@ def feature_reduction():
     data_array = [pvalues, folds]
 
     volcano_hash = get_volcano_fig(p_fold_df['fold'], p_fold_df['pValues'])
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'volcano_hash', volcano_hash)
 
     return render_template("preprocess/step-5.html", data_array=data_array, volcano_hash=volcano_hash,
                            pre_process_id=pre_process_id)
@@ -375,10 +382,14 @@ def get_reduce_features_from_pvalues():
 
     length = len(df.columns)
 
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'fold', fold)
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'pvalue', pvalue)
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'length', length)
+
     if length <= 150:
         split_array = np.array([length])
     elif length < 350:
-        split_array = np.arange(150, int(length / 10) * 10, 10)
+        split_array = np.arange(150, int(length / 10) * 10 + 10, 10)
     else:
         split_array = np.linspace(150, 350, 21)
 
@@ -398,7 +409,16 @@ def get_reduce_features_from_pvalues():
     classification_result_df.index.name = None
     classification_result_df = classification_result_df.rename(columns={"Testing": "Testing Accuracy /%"})
 
+    #convert dictionary into string 
+    #using json.dumps() 
+    result_data = json.dumps(classification_result_df.to_dict(orient='index'))
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'classification_result_set', result_data)
+
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'can_download', 1)
+
     fs_fig_hash = get_feature_selection_fig(df, df_y, length)
+
+    UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'fr_univariate_hash', fs_fig_hash)
 
     UserData.update_preprocess(pre_process['user_id'], pre_process['file_name'], 'reduce_df_path',
                                fr_df_path.as_posix())
@@ -520,7 +540,7 @@ def upload_sample_file():
     user_id = g.user['id']
     path = USER_PATH / str(user_id)
     folder_size = round(sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / 1024 / 1024, 2)
-    available_space = round(current_app.config['APP_ALZ'].max_usage - folder_size, 2)
+    available_space = round(g.user['disk_space'] - folder_size, 2)
 
     if available_space > 68:
 
