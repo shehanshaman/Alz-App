@@ -276,11 +276,6 @@ def norm():
 
             data = session[pre_process['file_name']]
 
-            # convert dictionary into string 
-            # using json.dumps() 
-            result_data = json.dumps(data)
-            UserData.update_preprocess(user_id, pre_process['file_name'], 'after_norm_set', result_data)
-
             df = PreProcess.getDF(avg_symbol_df_path)
 
             df = df.set_index([df.columns[0]])
