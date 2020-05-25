@@ -9,10 +9,17 @@ from pathlib import Path
 import pandas as pd
 from flaskr import auth
 
+from sklearn.svm import SVC
+from sklearn.model_selection import cross_val_score
+import pickle
+from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
+
 ROOT_PATH = Path.cwd()
 MAIL_PATH = ROOT_PATH / "flaskr" / "mail"
 ANNOTATION_TBL = ROOT_PATH / "flaskr" / "upload" / "AnnotationTbls"
 UPLOAD_FOLDER = ROOT_PATH / "flaskr" / "upload"
+SAMPLE_PATH = ROOT_PATH / "flaskr" / "upload" / "sample"
 
 def get_db():
     """Connect to the application's configured database. The connection
@@ -56,8 +63,40 @@ def init_db_command():
     setup_folders()
     sample_pkl_create()
     create_user()
+    create_default_model()
     
     click.echo("Initialized the database.")
+
+def create_default_model():
+    path_csv = SAMPLE_PATH / "GSE5281_DE_200.csv"
+    df = pd.read_csv(path_csv, index_col=0)
+    df.columns.name = df.index.name
+    df.index.name = None
+
+    col = ["AC004951.6", "MAFF", "SLC39A12", "PCYOX1L", "CTD-3092A11.2", "RP11-271C24.3", "PRO1804", "PRR34-AS1", "SST",
+           "CHGB", "MT1M", "JPX", "APLNR", "PPEF1"]
+
+    col_str = ','.join(e for e in col)
+
+    X = df[col]
+    Y = df["class"]
+
+    clf = svm.SVC(kernel='linear')
+
+    clf.fit(X, Y)
+
+    scores = cross_val_score(clf, X, Y, cv=3)
+    score = round(scores.mean() * 100, 2)
+
+    file_to_write = SAMPLE_PATH / "_model.pkl"
+    pickle.dump(clf, open(file_to_write, 'wb'))
+
+    db = get_db()
+    db.execute(
+        "INSERT INTO modeling (user_id, trained_file, clasifier, features, model_path_name, accuracy) VALUES (?, ?, ?, ?, ?, ?)",
+        (0, "GSE5281", "SVM + linear kernel", col_str, file_to_write.as_posix(), str(score)),
+    )
+    db.commit()
 
 def create_user():
     #Admin of the app
