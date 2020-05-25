@@ -1,5 +1,5 @@
 
-div_list = ['visualization_icon', 'classification_icon', 'preprocess_icon', 'feature_icon', 'analize_icon', 'validation_icon', 'modeling_icon', 'prediction_icon'];
+div_list = ['visualization_icon', 'classification_icon', 'preprocess_icon', 'feature_icon', 'analize_icon', 'validation_icon', 'modeling_icon', 'prediction_icon', 'pdf_icon'];
 
 function disable_read_fun(disable_prop){
 	// console.log(disable_prop);
