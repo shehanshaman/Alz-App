@@ -394,7 +394,7 @@ def get_reduce_features_from_pvalues():
     if length <= 150:
         split_array = np.array([length])
     elif length < 350:
-        split_array = np.arange(150, int(length / 10) * 10, 10)
+        split_array = np.arange(150, int(length / 10) * 10 + 10, 10)
     else:
         split_array = np.linspace(150, 350, 21)
 
