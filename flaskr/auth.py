@@ -578,6 +578,13 @@ class UserData:
         ).fetchone()
         return result
 
+    def get_user_can_download_preprocess(user_id, file_name):
+        db = get_db()
+        result = db.execute(
+            "SELECT can_download FROM preprocess WHERE user_id = ? AND file_name = ?", (user_id, file_name)
+        ).fetchone()
+        return result
+
     def get_preprocess_from_id(id):
         db = get_db()
         result = db.execute(
@@ -592,11 +599,11 @@ class UserData:
         )
         db.commit()
 
-    def add_preprocess(user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path):
+    def add_preprocess(user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path, can_download):
         db = get_db()
         db.execute(
-            "INSERT INTO preprocess (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path) VALUES (?, ?, ?, ?, ?, ?)",
-            (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path),
+            "INSERT INTO preprocess (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path, can_download) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path, can_download),
         )
         db.commit()
 
@@ -624,6 +631,14 @@ class UserData:
         ).fetchone()
         return result
 
+    #result Table
+    def get_can_download_result(user_id, filename):
+        db = get_db()
+        result = db.execute(
+            "SELECT can_download_fs, can_download_anlz FROM results WHERE user_id = ? AND filename = ?", (user_id, filename)
+        ).fetchone()
+        return result
+
     def get_result_from_id(id):
         db = get_db()
         result = db.execute(
@@ -647,11 +662,11 @@ class UserData:
 
         return result
 
-    def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers):
+    def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers, venn_data, img64, can_download_fs):
         db = get_db()
         db.execute(
-            "INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers),
+            "INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers, venn_data_set, fs_hash, can_download_fs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers, venn_data, img64, can_download_fs),
         )
         db.commit()
 
@@ -755,13 +770,13 @@ class UserData:
             disable_list[1] = 1
             disable_list[2] = 1
             disable_list[3] = 1
+            disable_list[7] = 1
         if(UserData.get_user_results(user_id)):
             disable_list[4] = 1
         if(UserData.get_result_to_validation(user_id)):
             disable_list[5] = 1
             disable_list[6] = 1
-        if UserData.is_model_created(user_id) and disable_list[0]:
-            disable_list[7] = 1  
+
         return disable_list
 
     def add_file(file_name, file_type, path, user_id, is_annotation, has_class):

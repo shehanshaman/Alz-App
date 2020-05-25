@@ -113,20 +113,33 @@ def predict():
         annotation_list.append([f['file_name'], f['path']])
 
     r = UserData.get_model(user_id)
+    default_r = UserData.get_model(0)
 
-    if r['accuracy'] is None:
-        return redirect(url_for('modeling.index') + "?s=2")
+    if r['accuracy']:
+        # return redirect(url_for('modeling.index') + "?s=2")
 
-    features = r['features'].split(',')
-    trained_file = r['trained_file']
-    clasifier = r['clasifier']
-    accuracy = r['accuracy']
-    accuracy = str(round(float(accuracy), 2))
+        features = r['features'].split(',')
+        trained_file = r['trained_file']
+        clasifier = r['clasifier']
+        accuracy = r['accuracy']
+        accuracy = str(round(float(accuracy), 2))
 
-    details = [features, trained_file, clasifier, accuracy]
+        details = [features, trained_file, clasifier, accuracy]
+
+    else:
+        details = None
+
+    default_features = default_r['features'].split(',')
+    default_trained_file = default_r['trained_file']
+    default_clasifier = default_r['clasifier']
+    default_accuracy = default_r['accuracy']
+    default_accuracy = str(round(float(default_accuracy), 2))
+
+
+    default_details = [default_features, default_trained_file, default_clasifier, default_accuracy]
 
     return render_template("modeling/predict.html", available_list=list_names, details=details,
-                           annotation_list=annotation_list)
+                           annotation_list=annotation_list, default_details= default_details)
 
 
 # add new
@@ -134,7 +147,12 @@ def predict():
 @login_required
 def predict_results():
     user_id = g.user['id']
-    r = UserData.get_model(user_id)
+    is_default_model = request.form.get("is_default_model")
+    if int(is_default_model):
+        r = UserData.get_model(0)
+    else:
+        r = UserData.get_model(user_id)
+
     features = r['features'].split(',')
 
     selected_file = request.form["available_files"]
@@ -162,7 +180,7 @@ def predict_results():
     if e is not None:
         return render_template("error.html", errors=e)
 
-    result = get_predicted_result_df(user_id, model_name, df[features])
+    result = get_predicted_result_df(user_id, model_name, df[features], is_default_model)
     result = result.astype(str)
     result[result == '0'] = 'Negative'
     result[result == '1'] = 'Positive'
@@ -191,8 +209,12 @@ def get_results_for_modeling():
     return result
 
 
-def get_predicted_result_df(user_id, model_name, df):
-    model = pickle.load(open(USER_PATH / str(user_id) / "tmp" / model_name, 'rb'))
+def get_predicted_result_df(user_id, model_name, df, is_default_model):
+    if int(is_default_model):
+        model = pickle.load(open(Path(model_name), 'rb'))
+    else:
+        model = pickle.load(open(USER_PATH / str(user_id) / "tmp" / model_name, 'rb'))
+
     prediction = model.predict(df)
 
     return prediction

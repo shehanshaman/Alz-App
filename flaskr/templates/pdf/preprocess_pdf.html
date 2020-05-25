@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Preprocess Doc</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+    <!--Import Google Icon Font-->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}"> -->
+
+    <!-- Compiled and minified CSS -->
+<!--     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> -->
+
+</head>
+
+<style type="text/css">
+
+</style>
+
+<body style="padding: 20px;">
+
+<br>
+
+<center>
+	<button type="button" class="btn btn-warning" onclick="printJS({ printable: 'div_process', type: 'html', targetStyles:'*'})"> Print Preprocessing Document
+	</button>
+</center>
+
+<br>
+<br>
+
+<div id="div_process">
+	<center>
+		<h2 style="color: #26a69a;font-family: monospace;">PREPROCESSING DOCUMENT</h2>
+	</center>
+
+	<h3 style="font-family: monospace;">You have selected below details in step 1 (CHOOSE DATA SET)</h3>
+	
+	<center>
+		<table style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Selected file</td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">{{data['file_name']}}</td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Annotation table</td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">{{data['annotation_table']}}</td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Probe selection method</td>
+		    <td class="prb_mthd_text" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">{{data['prob_mthd']}}</td>
+		  </tr>
+		</table>		
+	</center>
+
+	<p style="font-family: monospace; text-align: justify;">The selected file contains the data about gene expression values with regard to probe IDs. The Annotation table contains information about how each probe IDs are mapped into gene symbols.</p>
+
+	<p class="prb_mthd_textP" style="font-family: monospace; text-align: justify;"></p>
+
+	<h3 style="font-family: monospace;">Summary of the data set before preprocess</h3>
+
+	<center>
+		<table style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of features</td>
+		    <td class="num_features" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of samples</td>
+		    <td class="num_samples" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Minimum value</td>
+		    <td class="b_min_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Maximum value</td>
+		    <td class="b_max_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of positive samples</td>
+		    <td class="num_positive" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of negative samples</td>
+		    <td class="num_negative" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>		  
+		</table>		
+	</center>
+
+	<p style="font-family: monospace; text-align: justify;">Here, the number of features is the total number of probe IDs in the uploaded data set. The minimum and maximum value corresponding to the minimum and maximum gene expression value in the whole data set. The “class” variable can only contain information about two classes. The number of samples you denoted by 1 (usually the samples checked positive for a disease) is denoted by the number of positive samples while the rest is denoted by the negative samples.</p>
+
+<div class="skip_mapping">
+	<h3 style="font-family: monospace;">Summary of the data set after the probe_IDs are mapped into gene symbols</h3>
+
+	<center>
+		<table style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of unique Gene Symbols</td>
+		    <td class="num_unq_gene" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of null values in data</td>
+		    <td class="null_data_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of null values in Gene Symbols</td>
+		    <td class="null_gene_sym" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>	  
+		</table>		
+	</center>
+
+	<p class="prbe_map_P" style="font-family: monospace; text-align: justify;"></p>
+</div>
+	<br>
+
+	<h3 style="font-family: monospace;">Summary of the data set after going through normalization and imputation</h3>
+
+	<center>
+		<table style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of features</td>
+		    <td class="aa_num_features" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Number of samples</td>
+		    <td class="a_num_samples" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>
+		  <tr>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Minimum value</td>
+		    <td class="aa_min_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		    <td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Maximum value</td>
+		    <td class="aa_max_val" style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;"></td>
+		  </tr>		  
+		</table>		
+	</center>
+
+	<p style="font-family: monospace; text-align: justify;">The data set still contains raw gene expression data. Raw gene expression data from these high-throughput technologies must be normalized to remove technical variation so that meaningful biological comparisons can be made. Data normalization is a crucial step in the gene expression analysis as it ensures the validity of its downstream analyses. Normalization is the process of scaling individual samples to have unit norm. In basic terms, you need to normalize data when the algorithm predicts based on the weighted relationships formed between data points. The goal of normalization is to change the values of numeric columns in the dataset to a common scale, without distorting differences in the ranges of values.</p>
+
+	<p style="font-family: monospace; text-align: justify;">The data set might also contain missing values. These missing values may sometimes skew the results if not handled properly. Missing data presents various problems. First, the absence of data reduces statistical power, which refers to the probability that the test will reject the null hypothesis when it is false. Second, the lost data can cause bias in the estimation of parameters. Third, it can reduce the representativeness of the samples. Fourth, it may complicate the analysis of the study.</p>
+
+	<p style="font-family: monospace; text-align: justify;">You selected {{data['normalize']}} as the scaling method. And you selected {{data['imputation']}} as the imputation method.</p>
+
+	<p class="imputation_mthd_p" style="font-family: monospace; text-align: justify;"></p>
+
+	<br>
+
+	<center>
+		<h2 style="color: #26a69a;font-family: monospace;">FEATURE REDUCTION</h2>
+	</center>
+
+	<center>
+		<h3 style="font-family: monospace;">Volcano plot</h3>
+    	<img src="data:image/png;base64,{{ data_plot['volcano_hash'] }}" alt="volcano" width="700" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">Microarray studies often aim to identify genes that are differentially regulated across different classes of samples; examples are: finding the genes affected by treatment or finding marker genes that discriminate diseased from healthy subjects. Since the data set contains a column named ‘class’ with binary values, we can identify differentially expressed genes across those two samples by performing statistical tests.</p>
+
+    <p style="font-family: monospace; text-align: justify;">Fold change is the log-ratio between two conditions (or the average of ratios when there are replicates) and consider all genes that differ by more than an arbitrary cut-off.</p>
+
+    <p style="font-family: monospace; text-align: justify;">p-value is the probability of obtaining results as extreme as the observed results of a statistical hypothesis test, assuming that the null hypothesis is correct.</p>
+
+    <p style="font-family: monospace; text-align: justify;">By setting up boundaries for fold change and p-values, the genes that show significant difference between the two classes can be detected.</p>
+
+    <p style="font-family: monospace; text-align: justify;">You have selected {{data_plot['pvalue']}} as the boundary for P-Value and {{data_plot['fold']}} as the cutoff for fold change. Through this, you were able to reduce the number of genes to {{data_plot['univariate_length']}}.</p>
+
+	<br>
+
+	<center>
+		<h3 style="font-family: monospace;">Speces vs Scores</h3>
+    	<img src="data:image/png;base64,{{ data_plot['fr_univariate_hash'] }}" alt="volcano" width="700" height="auto">    
+    </center>
+
+    <p style="font-family: monospace; text-align: justify;">This graph shows how the univariate scores change with the number of genes. Univariate feature selection works by selecting the best features based on univariate statistical tests.</p>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+	<h3 style="font-family: monospace;">Accuracy of the data set reduced to {{data_plot['univariate_length']}} genes tested upon 6 classification methods.</h3>
+
+	<center>
+		<table id="clf_results_tbl" style="background-color: #26a69a82;font-family: monospace;">
+		  <tr>
+		    <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Classification method</th>
+		    <th style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">Testing accuracy / %</th>
+		  </tr>	  		  
+		</table>		
+	</center>
+
+	<p class="univariate_p_details" style="font-family: monospace; text-align: justify;"></p>
+
+</div>
+
+<br>
+
+<center>
+	<button type="button" class="btn btn-warning" onclick="printJS({ printable: 'div_process', type: 'html', targetStyles:'*'})"> Print Preprocessing Document
+	</button>
+</center>
+
+<br>
+<br>
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+
+<script type="text/javascript">
+
+data_after_norm = '{{data_after_norm | tojson}}'
+
+console.log(data_after_norm)
+
+data_after_norm = data_after_norm.substring(1, data_after_norm.length-1);
+
+data_list_set = data_after_norm.split(', "r1": ')
+
+data_after_map_set = JSON.parse(data_list_set[0]+'}');
+console.log(data_after_map_set)
+
+data_after_norm_set = JSON.parse(data_list_set[1].substring(0, data_list_set[1].length-1));
+
+console.log(data_after_norm_set)
+
+$('.num_features').html(data_after_map_set['Number of features']);
+$('.num_samples').html(data_after_map_set['Number of samples']);
+$('.b_min_val').html(data_after_map_set['min']);
+$('.b_max_val').html(data_after_map_set['max']);
+$('.num_negative').html(data_after_map_set['Negative']);
+$('.num_positive').html(data_after_map_set['Positive']);
+
+$('.num_unq_gene').html(data_after_map_set['Number of unique Gene Symbols']);
+$('.null_data_val').html(data_after_map_set['Number of null values in data']);
+$('.null_gene_sym').html(data_after_map_set['Number of null values in Gene Symbols']);
+
+$('.aa_num_features').html(data_after_norm_set['Number of features']);
+$('.a_num_samples').html(data_after_norm_set['Number of samples']);
+$('.aa_min_val').html(data_after_norm_set['min']);
+$('.aa_max_val').html(data_after_norm_set['max']);
+
+data_plot = '{{ data_plot | tojson}}';
+data_plot_json = JSON.parse(data_plot);
+
+// console.log(data_plot)
+
+clf_results = '{{ clf_results | tojson}}';
+clf_results = clf_results.substring(1, clf_results.length-1);
+
+clf_results = JSON.parse(clf_results)
+clf_name_list = []
+
+for (var row in clf_results) {
+    $('#clf_results_tbl tr:last').after(
+		  '<tr>'+
+		    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + row + '</td>'+
+		    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + clf_results[row]['Testing Accuracy /%'] + '</td>'+
+		  '</tr>'
+    	);
+    clf_name_list.push(row);
+}
+
+$('.univariate_p_details').text('Out of these 6 classification methods, we select the 3 methods that give the highest accuracy. Accordingly, ' + clf_name_list[0] + ', ' + clf_name_list[1] + ' and ' + clf_name_list[2] + ' were selected to test the future performance.');
+
+console.log($('.prb_mthd_text').text());
+
+if( $('.prb_mthd_text').text() == 'Average'){
+	$('.prb_mthd_textP').text('You have selected average as the probe selection method. The average value of all the values mapping to the same gene symbol in a specific sample is given here.');
+}
+else if( $('.prb_mthd_text').text() == 'Max'){
+	$('.prb_mthd_textP').text('You have selected max as the probe selection method. The maximum value of all the values mapping to the same gene symbol in a specific sample is given here.');
+}
+else if( $('.prb_mthd_text').text() == 'Min'){
+	$('.prb_mthd_textP').text('You have selected min as the probe selection method. The minimum value of all the values mapping to the same gene symbol in a specific sample is given here.');
+}
+else if( $('.prb_mthd_text').text() == 'Interquartile range'){
+	$('.prb_mthd_textP').text('You have selected the inter-quartile range as the probe selection method. The inter-quartile value of all the values mapping to the same gene symbol in a specific sample is given here.');
+}
+else{
+	$('.skip_mapping').hide(0);
+	$('.prb_mthd_textP').text('You have skipped probe ID mapping step.');
+}
+
+$('.prbe_map_P').text('After the mapping of probe IDs to gene symbols is done through the annotation table, the modified data set contains ' + data_after_map_set['Number of unique Gene Symbols'] + ' unique gene symbols. When mapping the probe_IDs to gene symbols from the annotation table, there are some probe_IDs that do not map to any gene symbol at all. This number is represented by the “number of null values in gene symbols”. There can be some missing values for gene expression data in the data set. “Number of null values of data” refers to this missing value instances. The maximum and minimum values show the maximum and minimum gene expression data values present in the corresponding data set after going through the selected method in the probe selection method.');
+
+imputation_mthd = '{{data['imputation']}}'
+
+if( imputation_mthd == 'drop'){
+	$('.imputation_mthd_p').text('Since you selected “drop” as the imputation method, you dropped the complete sample including the missing values so that it won’t skew the results.');
+}
+else if( imputation_mthd == 'avg'){
+	$('.imputation_mthd_p').text('Since you selected “Average” as the imputation method, you replaced the missing value with the average of present values which will be a fair indicator of the missing values.');
+}
+
+printJS({ printable: 'div_process', type: 'html', targetStyles:'*'})
+</script>
