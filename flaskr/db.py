@@ -64,8 +64,15 @@ def init_db_command():
     sample_pkl_create()
     create_user()
     create_default_model()
-    
+
     click.echo("Initialized the database.")
+
+@click.command("init-model")
+@with_appcontext
+def init_default_model_command():
+    create_default_model()
+
+    click.echo("Initialized the default model.")
 
 def create_default_model():
     path_csv = SAMPLE_PATH / "GSE5281_DE_200.csv"
@@ -161,3 +168,4 @@ def init_app(app):
     """
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    app.cli.add_command(init_default_model_command)
