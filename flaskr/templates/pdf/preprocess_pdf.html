@@ -21,10 +21,6 @@
 
 </head>
 
-<style type="text/css">
-
-</style>
-
 <body style="padding: 20px;">
 
 <br>
@@ -38,9 +34,16 @@
 <br>
 
 <div id="div_process">
+
+	<img src="{{ url_for('static', filename='images/logo_pdf.png') }}" alt="logo" style="width:115px; margin-top: -3px;">
+
+	<h4 style="color: #26a69a;font-family: monospace;">geNetLabs.info@gmail.com</h4>
+
 	<center>
 		<h2 style="color: #26a69a;font-family: monospace;">PREPROCESSING DOCUMENT</h2>
 	</center>
+
+	<hr style="border: 1px solid #26a69a;">
 
 	<h3 style="font-family: monospace;">You have selected below details in step 1 (CHOOSE DATA SET)</h3>
 	
@@ -216,18 +219,18 @@
 
 data_after_norm = '{{data_after_norm | tojson}}'
 
-console.log(data_after_norm)
+//console.log(data_after_norm)
 
 data_after_norm = data_after_norm.substring(1, data_after_norm.length-1);
 
 data_list_set = data_after_norm.split(', "r1": ')
 
 data_after_map_set = JSON.parse(data_list_set[0]+'}');
-console.log(data_after_map_set)
+//console.log(data_after_map_set)
 
 data_after_norm_set = JSON.parse(data_list_set[1].substring(0, data_list_set[1].length-1));
 
-console.log(data_after_norm_set)
+//console.log(data_after_norm_set)
 
 $('.num_features').html(data_after_map_set['Number of features']);
 $('.num_samples').html(data_after_map_set['Number of samples']);
@@ -268,7 +271,7 @@ for (var row in clf_results) {
 
 $('.univariate_p_details').text('Out of these 6 classification methods, we select the 3 methods that give the highest accuracy. Accordingly, ' + clf_name_list[0] + ', ' + clf_name_list[1] + ' and ' + clf_name_list[2] + ' were selected to test the future performance.');
 
-console.log($('.prb_mthd_text').text());
+//console.log($('.prb_mthd_text').text());
 
 if( $('.prb_mthd_text').text() == 'Average'){
 	$('.prb_mthd_textP').text('You have selected average as the probe selection method. The average value of all the values mapping to the same gene symbol in a specific sample is given here.');
