@@ -23,75 +23,27 @@
 
 <style type="text/css">
 
-/*        #tourControls{
-            bottom: 80px !important;
-        }*/
-
-    .notification-container{
-        position: fixed;
-        left: 10px;
-        width: 255px;
-        max-width: calc(100% - 30px);
+    #result_view, #available_files_div {
+        display: none;
     }
 
-    .notification{
-        background-color: #fff;
-        /*border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
-        color: #fff;
-        font-size: 14px;
-        padding: 8px 0px;
-        line-height: 20px;
-        /*margin-bottom: 15px;*/
-        animation: grow 0.5s ease-in forwards;
-    }
-    @keyframes grow{
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to{
-            opacity: 1;
-            transform: scale(1);
-        }
+    .vertical_ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
     }
 
-    .notification.hide{
-        animation: shrink 0.4s ease-out forwards;
-    }
-    @keyframes shrink{
-        to{
-            opacity: 0;
-            transform: scale(0.6);
-        }
-    }
-
-    .notification-info{
-        background-color: #00000096;
+    .vertical_ul > li {
+        display: inline-block;
+        padding-right: 5px;
     }
 
 </style>
 
-<body style="background-color: #f3f6f9;">
+<body style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
-
-<div class="notification-container" id="notification-container">
-    <div class="notification notification-info">
-        <div class="row">
-            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
-        </div>
-        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
-            <div class="col-sm-6">
-                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
-            </div>
-            <div class="col-sm-6">
-                <a class="btn btn-primary tour_no">NO</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div id="mainDataInterface-id" class="container mainDataInterface">
 
@@ -99,42 +51,110 @@
 
         <div class="step-content">
             <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">MODELING</h3>
+                <h3 id="h3-head-1" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">MODELING</h3>
             </div>
         </div>
 
         {% if state == '1' %}
 
             <div class="alert alert-success alert-dismissible fade in">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b> <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
+                <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
+                <strong>Success!</strong> Your predictive model created successfully. <b>Accuracy: {{ accuracy }} %</b>
+                <a href="{{ url_for('modeling.predict') }}">Lets Try</a>
             </div>
 
         {% elif state == '0' %}
 
             <div class="alert alert-danger alert-dismissible fade in">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
                 <strong>Danger!</strong> Something went wrong.
+            </div>
+
+        {% elif state == '2' %}
+            <div class="alert alert-danger alert-dismissible fade in">
+                <a class="close" data-dismiss="alert" aria-label="close" style="top: -13px;">&times;</a>
+                <strong>Danger!</strong> You don't have configured model.
             </div>
 
         {% endif %}
 
-        <div class="features">
-            <h5>Extracted Features </h5>
-            <div id="extracted_features_div" class="well" style="background-color: #26a69a54; border: 1px solid #26a69a;">{{ features }}</div>
-        </div>
+        {% if analysed_file %}
+            <div class="select-model">
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">
+                            Analysed File : </h5>
+                    </div>
+                    <div class="col-sm-6">
+                        <h5 id="h4-head-2" class="card__title card_head_size" style="text-align: center;font-family: monospace;"><b id="selected_file">{{ analysed_file }}</b></h5>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <input type="hidden" id="available_result" name="available_result" value="{{ analysed_file }}"/>
+            </div>
+            <div id="extracted_features_div"></div>
+        {% else %}
+            <div class="select-model">
+
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-sm-6">
+                        <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
+                            Analysed File :</h5>
+                    </div>
+                    <div class="col-sm-6">
+                        <div id="choose_result_div" class="md-form">
+                            <select style="font-family: monospace;" class="form-control" id="available_result"
+                                    name="available_result">
+                                <option disabled="disabled" selected>Pick a choice!</option>
+                                {% for name in all_result %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="result_view">
+
+                    <div class="features" class="well"
+                         style="background-color: #26a69a54; border: 1px solid #26a69a; padding: 10px;">
+                        <div class="row">
+                            <h5>Feature Selection Methods</h5>
+                            <p id="fs_methods_div"></p>
+                        </div>
+                        <div class="row">
+                            <h5>Overlapped Features </h5>
+                            <div id="overlapped_features_div">
+                                <ul class="vertical_ul" id="overlap_features_list"></ul>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h5 id="selected_method"></h5>
+                            <div id="extracted_features_div">
+                                <ul class="vertical_ul" id="method_features_list"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        {% endif %}
 
         <br>
 
-        <div class="where-you-like" style="margin-top: 40px;border: 2px solid #26a69a;padding: 30px;">
+        <div class="where-you-like" style="margin-top: 5px;border: 2px solid #26a69a;padding: 30px;">
 
-            <div class="row" style="margin-top: 40px;">
+            <div class="row" style="margin-top: 40px;" id="available_files_div">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Choose File :</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Choose
+                        File :</h5>
                 </div>
                 <div class="col-sm-6">
-                    <div id="choose_file_div"  class="md-form">
-                        <select class="form-control" id="available_files" name="available_files">
+                    <div id="choose_file_div" class="md-form">
+                        <select style="font-family: monospace;" class="form-control" id="available_files"
+                                name="available_files">
                             {% for name in available_list %}
                                 <option value="{{ name }}">{{ name }}</option>
                             {% endfor %}
@@ -143,13 +163,14 @@
                 </div>
             </div>
 
-            <div class="row" style="margin-top: 40px;">
+            <div class="row" style="margin-top: 5px;">
                 <div class="col-sm-6">
-                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">Classifier :</h5>
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">Classifier
+                        :</h5>
                 </div>
                 <div class="col-sm-6">
-                    <div id="classifier_method_div"  class="md-form">
-                        <select class="form-control" id="classifier" name="classifier">
+                    <div id="classifier_method_div" class="md-form">
+                        <select style="font-family: monospace;" class="form-control" id="classifier" name="classifier">
                             {% for name in classifier_list %}
                                 <option value="{{ name }}">{{ name }}</option>
                             {% endfor %}
@@ -159,15 +180,16 @@
             </div>
 
             <div class="step-actions">
-                <button class="waves-effect waves-dark btn next-step step-6-click">SUBMIT</button>
+                <button class="waves-effect waves-dark btn next-step step-6-click" id="submit_button">SUBMIT</button>
             </div>
+            <br>
         </div>
 
     </form>
 
 </div>
 
-{% include 'footer.html' %}
+{% include 'guide_footer.html' %}
 
 </body>
 </html>
@@ -182,47 +204,97 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
-    var tour = {
-        data : [
-            { element : '#extracted_features_div', tooltip : 'info!!', text: 'gene', position: 'T' },
-            { element : '#choose_file_div', tooltip : 'table!!', text: 'Choose File ', position: 'T' },
-            { element : '#classifier_method_div', tooltip : 'table!!', text: 'Classifier', position: 'T' },
-            { element : '.step-6-click', tooltip : 'model!!', text: 'select', position: 'T' }
-        ],
-        welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'BR',
-        buttons: {
-            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
-            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
-            start : { text : 'Start', class: 'btn btn-primary' },
-            end   : { text : 'End', class: 'btn btn-primary' }
-        },
-        controlsCss: {
-            background: 'rgba(187, 178, 48, 0.71)',
-            color: '#1c1d21',
-            width: '400px',
-            'border-radius': 0
-        }
-    };
 
-    $(document).ready(function(){
-        $('.tour').on('click', function(){
-            $.aSimpleTour(tour);
-            $('.notification-container').hide(1000);
-        });
-        $('.tour_no').on('click', function(){
-            $('.notification-container').hide(1000);
-        });
+    var tour = guide_main_call(tip_model_index, 'BL');
+
+    $('.close').click(function () {
+        $('.alert-dismissible').hide(0);
     });
 
+</script>
+
+{% if analysed_file == None %}
+    <script>
+        $('#submit_button').prop('disabled', true);
+
+        $('#available_result').change(function () {
+            var filename = $('#available_result').find(":selected").text();
+            $.get("./results/", {filename: filename}, function (data, status) {
+                data = data.split("|");
+                methods = data['4'].split(',');
+                methods.pop();
+
+                var overlap_gene_ul = document.getElementById('overlap_features_list');
+                var overlap_gene = data[8].split(',');
+                for (var i = 0; i < overlap_gene.length; i++) {
+                    $(overlap_gene_ul).append($("<li></li>").text(overlap_gene[i]));
+                }
+                $('#overlapped_features_div').html(overlap_gene_ul);
+
+                var method_gene_ul = document.getElementById('method_features_list');
+                var extracted_gene = data[9].split(',');
+                for (var i = 0; i < extracted_gene.length; i++) {
+                    $(method_gene_ul).append($("<li></li>").text(extracted_gene[i]));
+                }
+                $('#extracted_features_div').html(method_gene_ul);
+                $('#selected_method').text(data[10] + " Extracted Features");
+                $('#fs_methods_div').text(methods);
+
+                document.getElementById('result_view').style.display = "block";
+                $('#submit_button').prop('disabled', false);
+            });
+        });
+
+        $('#available_result').change(function () {
+            $('#available_files').find('option').remove();
+            var result_file = $('#available_result').find(":selected").text();
+            $.getJSON("./files/", {filename: result_file}, function (data, status) {
+                for (i = 0; i < data.length; i++) {
+                    $("#available_files").append(new Option(data[i], data[i]));
+                }
+                document.getElementById('available_files_div').style.display = "block";
+            });
+        });
+
+    </script>
+
+{% else %}
+
+    <script>
+        var result_file = '{{ analysed_file }}';
+        $.getJSON("./files/", {filename: result_file}, function (data, status) {
+            for (i = 0; i < data.length; i++) {
+                $("#available_files").append(new Option(data[i], data[i]));
+            }
+            document.getElementById('available_files_div').style.display = "block";
+        });
+    </script>
+
+{% endif %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+    disable_prop = {{ g.dList }};
+
+    disable_read_fun(disable_prop)
 </script>

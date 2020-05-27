@@ -19,10 +19,12 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
-        <!-- Compiled and minified CSS -->
+    <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-    <style>
+</head>
+
+<style>
         .summary_plot > img {
             padding: 5px;
             width: 100%;
@@ -72,36 +74,6 @@
             margin-top: 15%;
         }
 
-        .result_content {
-            border-color: #26a69a;
-            border-style: ridge;
-            padding: 15px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-radius: 16px;
-        }
-
-        .container-1 {
-            position: relative;
-            text-align: center;
-        }
-
-        .top-right {
-            position: absolute;
-            top: 8px;
-            right: 5px;
-        } 
-
-    </style>
-
-</head>
-
-    <style>
-        .summary_plot > img {
-            padding: 5px;
-            width: 100%;
-        }
-
         div.centre {
             display: block;
             margin-left: auto;
@@ -112,134 +84,37 @@
             text-align: center;
         }
 
-        .result_content {
-            border-color: #26a69a;
-            border-style: ridge;
-            padding: 15px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border-radius: 16px;
-        }
-    </style>
-
-    <style> 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
-    </style> 
-
-<style type="text/css">
-
-/*        #tourControls{
-            bottom: 80px !important;
-        }*/
-
-    .notification-container{
-        position: fixed;
-        left: 10px;
-        width: 245px;
-        max-width: calc(100% - 30px);
-    }
-
-    .notification{
-        background-color: #fff;
-        /*border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
-        color: #fff;
-        font-size: 14px;
-        padding: 8px 0px;
-        line-height: 20px;
-        /*margin-bottom: 15px;*/
-        animation: grow 0.5s ease-in forwards;
-    }
-    @keyframes grow{
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to{
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    .notification.hide{
-        animation: shrink 0.4s ease-out forwards;
-    }
-    @keyframes shrink{
-        to{
-            opacity: 0;
-            transform: scale(0.6);
-        }
-    }
-
-    .notification-info{
-        background-color: #00000096;
+    ul.stepper .step.active:before, ul.stepper .step.done:before {
+        background-color: #26a69a;
     }
 
 </style>
 
-<body class="main-body" style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="notification-container" id="notification-container">
-    <div class="notification notification-info">
-        <div class="row">
-            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
-        </div>
-        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
-            <div class="col-sm-6">
-                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
-            </div>
-            <div class="col-sm-6">
-                <a class="btn btn-primary tour_no">NO</a>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="main-div-an-2">
-    <div class="card-content">
+    <div class="card-content side_nav_content">
 
         <ul data-method="GET" class="stepper linear">
-            <li class="step">
+            <li id="side_step_nav_preprocess_icon" class="step">
                 <a href="{{ url_for('preprocess.index') }}">
                     <div class="step-title waves-effect waves-dark">Pre-processing</div>
                 </a>
             </li>
-            <li class="step">
+            <li id="side_step_nav_feature_icon" class="step">
                 <a href="{{ url_for('fs.index') }}">
                     <div class="step-title waves-effect waves-dark">Feature selection</div>
                 </a>
             </li>
-            <li class="step active">
+            <li id="side_step_nav_analize_icon" class="step active">
                 <a href="{{ url_for('analyze.index') }}">
                     <div class="step-title waves-effect waves-dark">Analysis</div>
                 </a>
             </li>
-            <li class="step">
+            <li id="side_step_nav_validation_icon" class="step">
                 <a href="{{ url_for('validation.index') }}">
                     <div class="step-title waves-effect waves-dark">Validation</div>
                 </a>
@@ -253,9 +128,21 @@
 
         <div class="step-heading">
             <div class="row">
-                <h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;">CORRELATION : {{ method_title }}</h3>
+                <h3 id="h3-head-6" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">
+                    CORRELATION : {{ method_title }}</h3>
                 <h3 id="selected-method" style="display: none;">{{ method_title }}</h3>
             </div>
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-6">
+                    <label style="float: right;font-size: 15px;"><b>Selected File: </b> {{ filename }}</label>    
+                </div>
+                <div class="col-sm-3 change_file_div">
+                    <a href="../fs/an/config" style="color: #26a69a;text-decoration: none;font-size: 15px;"><i class="fas fa-exchange-alt fa-2x"></i> Change file</a>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>            
         </div>
 
         <div class="step-content">
@@ -265,50 +152,60 @@
                     <div class="col-sm-6">
                         <div id="results_plot_div1" class="container-1">
                             <div class="result_plot">
-                                <img id="correlated_features" src="data:image/png;base64,{{ corr_results }}" alt="overlap">
+                                <img id="correlated_features" src="data:image/png;base64,{{ corr_results }}"
+                                     alt="overlap">
                             </div>
                             <div class="top-right" style="right: 31px;">
-                                <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
-                                                    class="use-download-correlated_features" value="">
+                                <button type="button"
+                                        style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                        class="use-download-correlated_features" value="">
                                     <i class="fas fa-file-download fa-2x"></i>
                                 </button>
                             </div>
                         </div>
-                    </div>                      
+                    </div>
                     <div class="col-sm-6 corr_result_text">
-                        <p>An interpretation of the number of correlation features with the variation of correlation
-                            values</p>
+                        <p class="card__title card__title_p_size" style="text-align: justify; font-family: monospace;">This graph shows the variation of correlation values with the number of correlated features. By examining this graph, the method that gives the least correlated features can be filtered out !</p>
                     </div>
                 </div>
             </div>
 
             <div class="result_content">
                 <div class="row">
-                    <h4 id="h4-head-6" class="card__title" style="text-align: center;">Variation of the correlation
+                    <h4 id="h4-head-6" class="card__title card_head_size" style="text-align: center;font-family: monospace;">Variation of the correlation
                         coefficients of the genes found only by {{ method_title }} with
                         classification accuracy</h4>
                 </div>
 
                 <div class="row">
-                    <div id="results_plot_div2"  class="container-1">
+                    <div id="results_plot_div2" class="container-1">
                         <div class="summary_plot">
-                            <img id="correlation_coefficients" src="data:image/png;base64,{{ corr_score }}" alt="overlap">
+                            <img id="correlation_coefficients" src="data:image/png;base64,{{ corr_score }}"
+                                 alt="overlap">
                         </div>
                         <div class="top-right">
-                            <button type="button" style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
-                                                class="use-download-correlation_coefficients" value="">
+                            <button type="button"
+                                    style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                    class="use-download-correlation_coefficients" value="">
                                 <i class="fas fa-file-download fa-2x"></i>
                             </button>
                         </div>
-                    </div>                    
+                    </div>
+                </div>
+
+                <div class="row">
+                    <p class="card__title card__title_p_size" style="text-align: justify; font-family: monospace;">This
+                        graph (right) shows how the correlation coefficients of the genes only found
+                        by {{ method_title }} varies with the number of features. The graph(left) shows the variation of
+                        correlation coefficients of the genes selected by {{ method_title }} alone varies with the
+                        classification accuracy of three classifiers !</p>
                 </div>
             </div>
 
             <div class="result_content">
                 <div class="row">
 
-                    <h4 id="h4-head-2" class="card__title" style="text-align: center;">Finding features that has minimum
-                        correlated and high classification accuracy</h4>
+                    <h4 id="h4-head-2" class="card__title card_head_size" style="text-align: center;font-family: monospace;">Finding features that has minimum correlated and high classification accuracy</h4>
                 </div>
 
                 <div id="results_table_div" style="overflow: auto;">
@@ -317,22 +214,32 @@
                     {% endfor %}
 
                 </div>
+
+                <br>
+
+                <div class="row">
+                    <p class="card__title card__title_p_size" style="text-align: justify; font-family: monospace;">By considering the above graphs, you can select the plots where the highest accuracies occur in each classifier. The table shows the instance where the maximum accuracy is obtained, the number of features at that particular point and the range of correlation coefficients of that instance. Out of the 3 models, you can obtain the maximum accuracy to proceed further !</p>
+                </div>
             </div>
 
             <div class="row list-view">
-                <div id="btnContainer">
-                    <button class="btn" onclick="listView()"><i class="fa fa-bars"></i> List</button>
-                    <button class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+                <div id="btnContainer" class="btn_list_grid">
+                    <button id="list_div_btn" class="btn" onclick="listView()"
+                            style="background-color: white;color: black;"><i class="fa fa-bars"></i> List
+                    </button>
+                    <button id="grid_div_btn" class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i>
+                        Grid
+                    </button>
                 </div>
                 <br>
 
                 <div class="row">
                     <div id="overlapped_features_div" class="column" style="background-color:#26a69a8f;">
-                        <h2 style="color: white;">Overlapped Features</h2>
+                        <h4 class="card_head_size" style="color: white;font-family: monospace;">Overlapped Features</h4>
                         <p>{{ overlap }}</p>
                     </div>
                     <div id="correlation_features_div" class="column" style="background-color:#26a69a;">
-                        <h2 style="color: white;">Correlation | {{ max_clasify }}</h2>
+                        <h4 class="card_head_size" style="color: white;font-family: monospace;">Correlation | {{ max_clasify }}</h4>
                         <p>{{ corr_selected }}</p>
                     </div>
                 </div>
@@ -345,13 +252,13 @@
                 <button id="btn-submit-an-2-continue" class="waves-effect waves-dark btn next-step step-6-click">
                     <a>CONTINUE</a>
                 </button>
-                <button class="waves-effect waves-dark btn-flat previous-step">
-                    <a href="{{ url_for('analyze.index') }}">BACK</a>
+                <button class="waves-effect waves-dark btn-flat previous-step" onclick="goBack()" type="button">BACK
                 </button>
             </div>
         </div>
 
         <form id="main-form-div-an-2-continue" style="display: none" action="/an/step3" method="get" id="form">
+            <input type="hidden" id="id" name="id" value="{{ result_id }}"/>
         </form>
 
     </div>
@@ -359,11 +266,11 @@
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">{{ method_title }}</h5>
-        <h5 style="margin-top: -12%;text-align: center;color: #26a69a; margin-bottom: 200px;">CONTINUE RESULTS ANALYSING</h5>        
-    </div> 
+        <h5 class="loader_div_h1">{{ method_title }}</h5>
+        <h5 class="loader_div_h1">CONTINUE RESULTS ANALYSING</h5>        
+    </div>
 
-{% include 'footer.html' %}
+{% include 'guide_footer.html' %}
 
 </body>
 </html>
@@ -381,13 +288,22 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
+
+    jQuery(function(){
+       jQuery('#list_div_btn').click();
+    });
+        
     // Get the elements with class="column"
     var elements = document.getElementsByClassName("column");
 
@@ -399,6 +315,12 @@
         for (i = 0; i < elements.length; i++) {
             elements[i].style.width = "100%";
         }
+
+        $('#tourControls').hide(0);
+        $("#list_div_btn").css("color", "white");
+        $("#list_div_btn").css("background-color", "#666");
+        $("#grid_div_btn").css("color", "black");
+        $("#grid_div_btn").css("background-color", "white");
     }
 
     // Grid View
@@ -406,6 +328,12 @@
         for (i = 0; i < elements.length; i++) {
             elements[i].style.width = "50%";
         }
+
+        $('#tourControls').hide(0);
+        $("#list_div_btn").css("color", "black");
+        $("#list_div_btn").css("background-color", "white");
+        $("#grid_div_btn").css("color", "white");
+        $("#grid_div_btn").css("background-color", "#666");
     }
 
     /* Optional: Add active class to the current button (highlight it) */
@@ -426,7 +354,9 @@
         $('.main-div-an-2').hide(0);
         $('.loader-div').show(0);
         $('.main-body').click(false);
-        $("#main-form-div-an-2-continue").submit();        
+        $("#main-form-div-an-2-continue").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
     });
 
 
@@ -440,6 +370,8 @@
         a1.href = url;
         a1.download = selected_method + "_" + "correlated_features.png";
         a1.click();
+
+        $('#tourControls').hide(0);
     });
 
     $(".use-download-correlation_coefficients").click(function () {
@@ -450,46 +382,29 @@
         a2.href = url;
         a2.download = selected_method + "_" + "correlation_coefficients.png";
         a2.click();
+
+        $('#tourControls').hide(0);
     });
 </script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
-    var tour = {
-        data : [
-            { element : '#results_plot_div1', tooltip : 'plot1!!', text: 'Training accuracies', position: 'T' },
-            { element : '#results_plot_div2', tooltip : 'plot2!!', text: 'Classification accuracy', position: 'T' },
-            { element : '#results_table_div', tooltip : 'table!!', text: 'Correlation matrix', position: 'T' },
-            { element : '#overlapped_features_div', tooltip : 'select!!', text: 'select', position: 'T' },
-            { element : '#correlation_features_div', tooltip : 'select!!', text: 'select', position: 'T' }
-        ],
-        welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'BR',
-        buttons: {
-            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
-            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
-            start : { text : 'Start', class: 'btn btn-primary' },
-            end   : { text : 'End', class: 'btn btn-primary' }
-        },
-        controlsCss: {
-            background: 'rgba(187, 178, 48, 0.71)',
-            color: '#1c1d21',
-            width: '400px',
-            'border-radius': 0
-        }
-    };
 
-    $(document).ready(function(){
-        $('.tour').on('click', function(){
-            $.aSimpleTour(tour);
-            $('.notification-container').hide(1000);
-        });
-        $('.tour_no').on('click', function(){
-            $('.notification-container').hide(1000);
-        });
-    });
+    var tour = guide_main_call(tip_an_correlation, 'BL');
+
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
 </script>

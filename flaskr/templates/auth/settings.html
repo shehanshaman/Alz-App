@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>GeNet | Register</title>
+    <title>GeNet | Settings</title>
 
     <!--bootstrap-->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
@@ -22,14 +22,14 @@
     <style>
         .center {
             margin: auto;
-            width: 50%;
+            width: 60%;
             padding: 10px;
         }
 
         .border {
             border: 2px solid #bcbaba;
             border-radius: 30px;
-            padding: 35px;
+            padding: 10px;
         }
 
         .flash {
@@ -44,7 +44,7 @@
         }
 
         svg:hover {
-            color: red;
+            color: #26a69a;
         }
 
         button, input[type="submit"], input[type="reset"] {
@@ -57,10 +57,25 @@
             outline: inherit;
         }
 
+        #chart_wrap {
+            position: relative;
+            padding-bottom: 100%;
+            height: 0;
+            overflow: hidden;
+        }
+
+        #piechart {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
     </style>
 </head>
 
-<body style="background-color: #f3f6f9;">
+<body style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
@@ -70,7 +85,7 @@
 
     <div class="step-content">
         <div class="row head-word">
-            <h3 id="h3-head-1" class="card__title" style="text-align: center;">Settings</h3>
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a">SETTINGS</h3>
         </div>
     </div>
 
@@ -82,49 +97,70 @@
 
     <div class="row">
         <div class="border row">
-            <div class="col-sm-5">
-                <h5>User details</h5><br>
-                <label for="username" style="float: left">E-mail</label>
-                <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
-                <label for="given_name" style="float: left">Name</label>
-                <input name="given_name" id="given_name" value="{{ data[0][1] }}">
-                <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
+            <div class="row center">
+                <h5>Host Usage</h5>
+                <div id="chart_wrap" style="margin-bottom: -15vw;">
+                    <div id="piechart" style="margin-top: -6vw;"></div>
+                </div>
             </div>
-            <div class="col-sm-7">
-                <h5>Files</h5><br>
-                <table>
-                    {% for index, row in df_files.iterrows() %}
-                        <tr class="row" id="tr_{{ row['file name'] }}">
-                            <td class="col-sm-2">{{ row['file name'] }}</td>
-                            <td class="col-sm-7">
-                                <div class="progress">
-                                    <div class="determinate" style="width: {{ row['percentage'] }}%"></div>
-                                </div>
-                            </td>
-                            <td class="col-sm-1">{{ row['percentage'] }} %</td>
-                            <td class="col-sm-1">
-                                <button class="use-address" value="{{ row['file name'] }}">
-                                    <i class="fas fa-trash-alt fa-2x"></i>
-                                </button>
-                            </td>
-                            <td class="col-sm-1">
-                                <button class="use-download" value="{{ row['file name'] }}">
-                                    <i class="fas fa-file-download fa-2x"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
+            <div class="row" style="padding-left: 0px;">
+                <div class="col-sm-4">
+                    <div class="row">
+                        <h5>User details</h5><br>
+                        <label for="username" style="float: left">E-mail</label>
+                        <input type="email" name="username" id="username" disabled value="{{ data[0][0] }}">
+                        <label for="given_name" style="float: left">Name</label>
+                        <input name="given_name" id="given_name" value="{{ data[0][1] }}">
+                        <button class="waves-effect waves-dark btn" style="float: left" id="update_name">Update</button>
+                    </div>
 
+                    <div class="row">
+                        <h5>Cleanup</h5><br>
+                        <label>Clean {{ data[1][1] }} MB in cache</label> <br>
+                        <button class="waves-effect waves-dark btn" style="float: left" id="cache_clear"
+                                {% if data[1][1] < 1 %}
+                                disabled
+                                {% endif %}>Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-sm-8" style="padding-left: 0px;">
+                    <h5>Files</h5><br>
+                    <table>
+                        {% for index, row in df_files.iterrows() %}
+                            <tr class="row" id="tr_{{ row['file name'] }}">
+                                <td class="col-sm-2">{{ row['file name'] }}</td>
+                                <td class="col-sm-5">
+                                    <div class="progress">
+                                        <div class="determinate" style="width: {{ row['percentage'] }}%"></div>
+                                    </div>
+                                </td>
+                                <td class="col-sm-2">{{ row['percentage'] }} %</td>
+                                <td class="col-sm-1">
+                                    <button class="use-address" value="{{ row['file name'] }}">
+                                        <i class="fas fa-trash-alt fa-2x"></i>
+                                    </button>
+                                </td>
+                                <td class="col-sm-1">
+                                    <button class="use-download" value="{{ row['file name'] }}">
+                                        <i class="fas fa-file-download fa-2x"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
-
         </div>
-        <div class="row">
+
+        <div class="row" style="background-color: #ff00008c; padding: 10px; border: 3px solid red; border-radius: 5px;">
             <h5 class="row">Delete account</h5>
             <div class="row">
-                <p class="col-sm-8"><br><b>Please note, </b> If you delete your account, you won't be able to reactive it
+                <p class="col-sm-8"><br><b>Please note, </b> If you delete your account, you won't be able to reactive
+                    it
                     later.</p>
-                <button class="col-sm-3 waves-effect waves-dark btn" id="delete_account">Delete
+                <button class="col-sm-3 waves-effect btn" id="delete_account" style="background-color: #31708f">Delete
                     account
                 </button>
             </div>
@@ -136,6 +172,11 @@
         </div>
     </div>
 
+</div>
+
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 style="text-align: center;color: #26a69a;">DELETING</h5>
 </div>
 
 {% include 'footer.html' %}
@@ -155,9 +196,13 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script>
     $(document).ready(function () {
@@ -179,30 +224,78 @@
         var $item = $row.find(".use-download").val();
 
         var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $item + "&is_tmp=0";
-        console.log(url);
         window.open(url, '_blank');
 
     });
 
     $("#update_name").click(function () {
         var given_name = document.getElementById('given_name').value;
-        console.log(given_name);
         $.get("/update/user/givenname/", {id: '{{ g.user['id'] }}', name: given_name}, function (data, status) {
-            console.log(data);
+
         });
     });
 
     $("#delete_account").click(function () {
+        $('.mainDataInterface').hide(0);
+        $('.loader-div').show(0);
+        $('.main-body').click(false);
+
         $.get("/update/user/delete/", {id: '{{ g.user['id'] }}'}, function (data, status) {
-            console.log(data);
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
-                console.log("Sign out");
+            {% if g.user['is_verified'] == 2 %}
+                var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut().then(function () {
+                    window.location.replace('/auth/logout');
+                });
+            {% else %}
                 window.location.replace('/auth/logout');
-            });
+            {% endif %}
         });
     });
+
+    $("#cache_clear").click(function () {
+        $.get("/update/delete/tmp/", {id: '{{ g.user['id'] }}'}, function (data, status) {
+            location.reload();
+        });
+    });
+
 </script>
 
+{# Google Charts #}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
+<script type="text/javascript">
 
+    // Load google charts
+    google.charts.load("visualization", "1", {'packages': ['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Draw the chart and set the chart values
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Task', 'Spaces'],
+            ['Files', {{ data[1][0] }}],
+            ['Cache', {{ data[1][1] }}],
+            ['Available', {{ data[1][2] }}]
+        ]);
+
+        // Optional; add a title and set the width and height of the chart
+        var options = {backgroundColor: 'transparent', sliceVisibilityThreshold: 0};
+
+        // Display the chart inside the <div> element with id="piechart"
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+    }
+
+    window.onresize = doALoadOfStuff;
+
+    function doALoadOfStuff() {
+        //do a load of stuff
+        var options = {
+            width: '100%',
+            height: '100%'
+        };
+
+        var data = google.visualization.arrayToDataTable([]);
+        drawChart(data, options);
+    }
+</script>

@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>GeNet | Visualization</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -22,113 +23,175 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
-    <style>
-        .result > img {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-            width: 100%;
-        }
-
-        #gene_symbol_div {
-            visibility: hidden;
-        }
-
-        .form_container {
-            padding-right: 10px;
-            padding-left: 10px;
-        }
-
-        .container-1 {
-            position: relative;
-            text-align: center;
-        }
-
-        .top-right {
-            position: absolute;
-            top: 8px;
-            right: 5px;
-        }
-    </style>
-
 </head>
-<body>
+
+<style>
+    .result > img {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+        width: 100%;
+    }
+
+    #image_container {
+        visibility: hidden;
+    }
+
+    .form_container {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    /*the container must be positioned relative:*/
+    .autocomplete {
+        position: relative;
+        display: inline-block;
+    }
+
+    input {
+        border: 1px solid transparent;
+        background-color: #f1f1f1;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    input[type=text] {
+        background-color: #f1f1f1;
+        width: 100%;
+    }
+
+    input[type=submit] {
+        background-color: DodgerBlue;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .autocomplete-items {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        /*position the autocomplete items to be the same width as the container:*/
+        top: 100%;
+        left: 0;
+        right: 0;
+    }
+
+    .autocomplete-items div {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #fff;
+        border-bottom: 1px solid #d4d4d4;
+    }
+
+    /*when hovering an item:*/
+    .autocomplete-items div:hover {
+        background-color: #e9e9e9;
+    }
+
+    /*when navigating through the items using the arrow keys:*/
+    .autocomplete-active {
+        background-color: DodgerBlue !important;
+        color: #ffffff;
+    }
+
+    /*  #featuresautocomplete-list{
+          height: 300px;
+          overflow: scroll;
+      }*/
+
+</style>
+
+<body style="font-family: monospace;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="limiter">
+<div class="limiter" style="min-height: 450px;">
     <div class="row head-word">
-        <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">Visualization</h3>
+        <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">
+            VISUALIZATION</h3>
     </div>
 
     <div class="row" style="padding: 10px;">
+        <div class="col-sm-5 form_container">
+            <div class="row" style="margin-top: 40px;">
+                <div class="row">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
+                </div>
+                <div class="row">
+                    <div class="md-form">
+                        <select style="font-family: monospace;" class="form-control" id="available_files"
+                                name="available_files">
+                            <option disabled="disabled" selected>Pick a choice!</option>
+                            {% for name in available_list %}
+                                <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5 form_container">
+            <div class="row" style="margin-top: 40px;" id="gene_symbol_div">
+                <div class="row">
+                    <h5 id="h3-head-1" class="card__title" style="text-align: center;">GENE SYMBOLS:</h5>
+                </div>
+                <div class="row" style="margin-bottom: 0">
+                    <div class="md-form">
+                        <div class="autocomplete" style="width:100%;">
+                            <input id="features" type="text" name="features" placeholder="GENE SYMBOLS"
+                                   style="margin-top: -10px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 0">
+                    <label style="font-size: inherit;">
+                        <ul id="example_gene">
+                            <li style="display: block; float:left;">Example:</li>
+                            <a href="#" id="example_link">
+                                <li style="display: block; float:left; padding-left: 6px" id="ex_symbol_name"></li>
+                            </a>
+                        </ul>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2 form_container">
+            <div class="row" style="margin-top: 76px;float: left;">
+                <div class="col-sm-12">
+                    <div class="step-actions">
+                        <button class="waves-effect waves-dark btn next-step step-6-click" id="submit_button">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <div class="col-sm-7 image_container">
+    <div class="row" style="padding: 10px;">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8 image_container" id="image_container">
 
             <div class="row" id="h3-head-6" class="card__title">
                 <div class="container-1">
 
-                    {% if image_data %}
-                        <div class="result">
-                            <img id="symbol-vis" src="data:image/png;base64,{{ image_data }}" alt="my plot">
-                        </div>
+                    <div class="result">
+                        <img id="symbol-vis" src="" alt="vis-plot">
+                    </div>
 
-                        <div class="top-right">
-                            <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
-                                    class="use-download" value="">
-                                <i class="fas fa-file-download fa-2x"></i>
-                            </button>
-                        </div>
-                    {% endif %}
-
+                    <div class="top-right">
+                        <button style="margin-left: 10px;color: #26a69a;border: none; background-color: white;"
+                                class="use-download" value="">
+                            <i class="fas fa-file-download fa-2x"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-
         </div>
-
-        <div class="col-sm-5 form_container">
-            <form class="login100-form validate-form" method="post" action="/vis/">
-
-                <div class="row" style="margin-top: 40px;">
-                    <div class="col-sm-12">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">AVAILABLE FILES:</h5>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="md-form">
-                            <select class="form-control" id="available_files" name="available_files">
-                                <option disabled="disabled" selected>Pick a choice!</option>
-                                {% for name in available_list %}
-                                    <option value="{{ name }}">{{ name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" style="margin-top: 40px;" id="gene_symbol_div">
-                    <div class="col-sm-12">
-                        <h5 id="h3-head-1" class="card__title" style="text-align: center;">GENE SYMBOLS:</h5>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="md-form">
-                            <select class="form-control" id="features" name="features">
-
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="step-actions">
-                    <button class="waves-effect waves-dark btn next-step step-6-click" id="submit_button">
-                        Update
-                    </button>
-                </div>
-
-            </form>
-        </div>
-
+        <div class="col-sm-2"></div>
     </div>
 
 </div>
@@ -146,33 +209,72 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
 
 <script>
+    var file_select_status = 0;
+
     $(document).ready(function () {
         $('#submit_button').prop('disabled', true);
+        $('#example_gene').hide();
     });
 </script>
 
 <script>
 
     $('#available_files').change(function () {
-        document.getElementById("gene_symbol_div").style.visibility = "visible";
+        file_select_status = 1;
         $('.top-right').show(0);
         var conceptName = $('#available_files').find(":selected").text();
         $('#submit_button').prop('disabled', false);
         $.get("./js/", {available_files: conceptName, user_id: {{ g.user['id'] }}}, function (data, status) {
             data = data.split(",");
-            for (i = 0; i < data.length; i++) {
-                console.log('.');
-                f = data[i];
-                $('#features').append("<option value=" + f + "> " + f + "</option>");
+            data_len = data.length;
+            if (data_len > 0) {
+                $('#ex_symbol_name')[0].innerHTML = data[0];
+                $('#example_gene').show();
+            }
+            autocomplete(document.getElementById("features"), data);
+        });
+        $('#features').val('');
+        $('#submit_button').prop('disabled', true);
+    });
+
+    $('#example_link').click(function () {
+        $('#features')[0].value = $('#ex_symbol_name')[0].innerHTML;
+        $('#submit_button').prop('disabled', false);
+        document.getElementById("submit_button").click();
+    });
+
+    $('#features').change(function () {
+        if(file_select_status){
+            $('#submit_button').prop('disabled', false);
+        }
+    });
+
+    $("#submit_button").click(function () {
+        $('#submit_button').prop('disabled', true);
+        var file = $('#available_files').find(":selected").text();
+        var feature = $('#features').val();
+
+        $.get("./img/", {available_file: file, feature: feature}, function (data, status) {
+            if (data) {
+                var img_hash = "data:image/png;base64, " + data;
+                $("#symbol-vis").attr("src", img_hash);
+                document.getElementById("image_container").style.visibility = "visible";
+            }else{
+                alert("Warning: Check spelling in Gene Symbol");
             }
         });
+
     });
 </script>
 </html>
@@ -189,4 +291,131 @@
         a.click();
     });
 
+</script>
+
+<script>
+    function autocomplete(inp, arr) {
+        /*the autocomplete function takes two arguments,
+         the text field element and an array of possible autocompleted values:*/
+        var currentFocus;
+        /*execute a function when someone writes in the text field:*/
+        inp.addEventListener("input", function (e) {
+            var a, b, i, val = this.value;
+
+            /*close any already open lists of autocompleted values*/
+            closeAllLists(this.value);
+
+            //only auto search after two charactoers enter
+            if (val.length < 2) {
+
+            }
+            else {
+                if (!val) {
+                    return false;
+                }
+                currentFocus = -1;
+                /*create a DIV element that will contain the items (values):*/
+                a = document.createElement("DIV");
+                a.setAttribute("id", this.id + "autocomplete-list");
+                a.setAttribute("class", "autocomplete-items");
+                /*append the DIV element as a child of the autocomplete container:*/
+                this.parentNode.appendChild(a);
+                /*for each item in the array...*/
+                for (i = 0; i < arr.length; i++) {
+                    /*check if the item starts with the same letters as the text field value:*/
+                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                        /*create a DIV element for each matching element:*/
+                        b = document.createElement("DIV");
+                        /*make the matching letters bold:*/
+                        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                        b.innerHTML += arr[i].substr(val.length);
+                        /*insert a input field that will hold the current array item's value:*/
+                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                        /*execute a function when someone clicks on the item value (DIV element):*/
+                        b.addEventListener("click", function (e) {
+                            /*insert the value for the autocomplete text field:*/
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            /*close the list of autocompleted values,
+                             (or any other open lists of autocompleted values:*/
+                            closeAllLists();
+                        });
+                        a.appendChild(b);
+
+                        $("#featuresautocomplete-list").css("height", "300px");
+                        $("#featuresautocomplete-list").css("overflow", "scroll");
+                    }
+                }
+            }
+
+        });
+
+        /*execute a function presses a key on the keyboard:*/
+        inp.addEventListener("keydown", function (e) {
+            var x = document.getElementById(this.id + "autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) {
+                /*If the arrow DOWN key is pressed,
+                 increase the currentFocus variable:*/
+                currentFocus++;
+                /*and and make the current item more visible:*/
+                addActive(x);
+            } else if (e.keyCode == 38) { //up
+                /*If the arrow UP key is pressed,
+                 decrease the currentFocus variable:*/
+                currentFocus--;
+                /*and and make the current item more visible:*/
+                addActive(x);
+            } else if (e.keyCode == 13) {
+                /*If the ENTER key is pressed, prevent the form from being submitted,*/
+                e.preventDefault();
+                if (currentFocus > -1) {
+                    /*and simulate a click on the "active" item:*/
+                    if (x) x[currentFocus].click();
+                }
+            }
+        });
+        function addActive(x) {
+            /*a function to classify an item as "active":*/
+            if (!x) return false;
+            /*start by removing the "active" class on all items:*/
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            /*add class "autocomplete-active":*/
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+
+        function removeActive(x) {
+            /*a function to remove the "active" class from all autocomplete items:*/
+            for (var i = 0; i < x.length; i++) {
+                x[i].classList.remove("autocomplete-active");
+            }
+        }
+
+        function closeAllLists(elmnt) {
+            /*close all autocomplete lists in the document,
+             except the one passed as an argument:*/
+            var x = document.getElementsByClassName("autocomplete-items");
+
+            for (var i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+
+        /*execute a function when someone clicks in the document:*/
+        document.addEventListener("click", function (e) {
+            closeAllLists(e.target);
+        });
+    }
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+    disable_prop = {{ g.dList }};
+
+    disable_read_fun(disable_prop)
 </script>

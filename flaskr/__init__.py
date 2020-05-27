@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from flask import Flask, render_template, session, request
 
+from flaskr.auth import login_required
 from .classes.app_alz import Alz
 from flaskr.classes.preProcessClass import PreProcess
 
@@ -38,20 +39,27 @@ def create_app(test_config=None):
 
     # View DF
     @app.route("/view/", methods = ["POST"])
+    @login_required
     def view_df():
         user_id = session.get("user_id")
         selected_file = request.form["selected_file"]
         file_to_open = USER_PATH / str(user_id) / selected_file
         df = PreProcess.getDF(file_to_open)
 
+        shape = df.shape
+        min = round(df.min().min())
+        max = round(df.max().max())
+
         if len(df.columns) > 15:
             session['view_df_name'] = selected_file
-            df = df.iloc[:, : 10]
+            df.insert(10, "....", "....")
+            df = df.iloc[:, : 11]
 
-        data = [selected_file]
+        data = [selected_file, shape, min, max]
         return render_template('preprocess/tableVIew.html', tables=[df.to_html(classes = 'display" id = "table_id')], data=data)
 
     @app.route("/view/p/", methods=["GET"])
+    @login_required
     def view_one_data():
         file_name = session.get('view_df_name')
         user_id = session.get("user_id")
@@ -79,8 +87,8 @@ def create_app(test_config=None):
         "MAIL_PORT": 465,
         "MAIL_USE_TLS": False,
         "MAIL_USE_SSL": True,
-        "MAIL_USERNAME": 'kggcbgunarathne@gmail.com',
-        "MAIL_PASSWORD": 'Gihan@pera123'
+        "MAIL_USERNAME": 'genetlabs.info@gmail.com',
+        "MAIL_PASSWORD": 'Gihan123'
     }
     app.config.update(mail_settings)
     mail.init_app(app)
@@ -88,7 +96,7 @@ def create_app(test_config=None):
     app.config["APP_ALZ"].mail = mail
 
     # apply the blueprints to the app
-    from flaskr import auth, blog, preprocess, visualization, fs, analze, validation, modeling, home, update
+    from flaskr import auth, blog, preprocess, visualization, fs, analze, validation, modeling, home, update, network, pdf
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
@@ -100,6 +108,8 @@ def create_app(test_config=None):
     app.register_blueprint(modeling.bp)
     app.register_blueprint(home.bp)
     app.register_blueprint(update.bp)
+    app.register_blueprint(network.bp)
+    app.register_blueprint(pdf.bp)
 
     # make url_for('index') == url_for('blog.index')
     # in another app, you might define a separate main index here with

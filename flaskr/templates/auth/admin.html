@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>GeNet | Admin</title>
+
+	<!--bootstrap-->
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+	<!--Import Google Icon Font-->
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+	<!-- Compiled and minified CSS -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+	<style>
+		.center {
+			margin: auto;
+			width: 50%;
+			padding: 10px;
+		}
+
+		.g-user {
+			padding: 4px 8px;
+			font-weight: 600;
+			line-height: 20px;
+			color: #fff;
+			text-align: center;
+			white-space: nowrap;
+			background-color: #6f42c1;
+			border-radius: 3px;
+		}
+
+		#progress_bar {
+			visibility: hidden;
+		}
+
+		.character-counter{
+			visibility: hidden;
+		}
+
+		.flash {
+			margin: 1em 0;
+			padding: 1em;
+			background: #f6ac8f;
+			border: 1px solid #5c0202;
+			text-align: center;
+			margin-left: 10%;
+			margin-right: 10%;
+		}
+
+		.modal {
+			bottom: inherit;
+		}
+
+		.modal-content {
+			position: initial;
+			background-color: inherit;
+			border-radius: inherit;
+			border: inherit;
+		}
+
+	</style>
+</head>
+
+<body style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+	<div class="row head-word" style="margin-bottom: inherit;">
+		<h3 id="h3-head-1" class="card__title"
+			style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">Admin Panel</h3>
+	</div>
+
+	<div class="row text-center">
+		<a href="admin/contact_list" class="btn" target="_blank">Contact List</a>
+		<a href="admin/subscribe_list" class="btn" target="_blank">Subscribers List</a>
+	</div>
+
+    <div class="row" style="text-align: center; margin-top: -3px; margin-bottom: -3px;">
+        <label>SERVER USAGE: {{ host_usage }} GB</label>
+    </div>
+
+	{% for message in get_flashed_messages() %}
+		<div class="row">
+			<div class="flash">{{ message }}</div>
+		</div>
+	{% endfor %}
+
+	{% if warning_list or delete_list %}
+		<div class="row" style="margin-bottom: -10px;">
+			<h5>Infrequent Users Details</h5><br>
+			<div class="row">
+				<div class="well well-lg">
+					{% if warning_list %}
+						<div class="row">
+							<div class="col-sm-9">
+								There has {{ warning_list | length }} infrequent users and they used {{ sum_usage_warning }} MB
+								of
+								storage.
+							</div>
+							<div class="col-sm-3">
+								<button id="infrequent_users_send_warning" class="waves-effect waves-dark btn"
+										onclick="send_infrequent_warning()">SEND WARNING
+								</button>
+							</div>
+						</div>
+					{% endif %}
+
+					{% if delete_list %}
+						<div class="row">
+							<div class="col-sm-9">
+								There has {{ delete_list | length }} infrequent users and they used {{ sum_usage_delete }} MB
+								of storage.
+							</div>
+							<div class="col-sm-3">
+								<button id="infrequent_users_account_delete" class="waves-effect waves-dark btn"
+										onclick="delete_infrequent_users()">DELETE
+									ACCOUNTS
+								</button>
+							</div>
+						</div>
+					{% endif %}
+
+					<div class="row progress" id="progress_bar">
+						<div class="indeterminate"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
+
+	<div class="row">
+		<h5>Users Details</h5><br>
+		<div class="row table_view" style="overflow: scroll;">
+			<table class="display" id="table_id">
+				<thead>
+				<tr>
+					<th>User name</th>
+					<th>Name</th>
+					<th>Last login</th>
+					<th>Account type</th>
+					<th>Admin</th>
+					<th>Usage</th>
+					<th>More</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for index, user in users.iterrows() %}
+
+					<tr id="user_{{ user['id'] }}">
+						<td>{{ user['username'] }}</td>
+						<td>{{ user['given_name'] }}</td>
+						<td>{{ user['last_login'] }}</td>
+						<td>
+							{% if user['is_verified'] == 2 %}
+								Google
+							{% elif user['is_verified'] == 0 %}
+								Unverified
+							{% else %}
+								GeNet
+							{% endif %}
+						</td>
+						<td data-id="{{ user['is_admin'] }}">
+							{% if user['is_admin'] == 1 %}
+								<label>Admin</label>
+							{% else %}
+								<label>Not Admin</label>
+							{% endif %}
+						</td>
+						<td>{{ user['usage'] }} MB</td>
+
+						<td><a href="#"
+							   onclick="open_modal( {{ user['id'] }}, '{{ user['username'] }}', '{{ user['given_name'] }}' ,'{{ user['last_login'] }}', {{ user['is_verified'] }}, {{ user['is_admin'] }}, {{ user['disk_space'] }}, {{ user['is_sent_warning'] }}, {{ user['usage'] }} )">More</a>
+						</td>
+
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+	<!-- Modal Structure -->
+	<div id="user_modal" class="modal">
+		<div class="modal-content">
+			<div class="row">
+				<h4 id="modal_heder_name" class="card__title"
+					style="text-align: center;font-family: monospace;">Name</h4>
+			</div>
+
+			<div class="content">
+				<div class="row">
+					<div class="col-sm-6">E-Mail:</div>
+					<div class="col-sm-6" id="user_name">-</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">Account type:</div>
+					<div class="col-sm-6" id="account_type">-</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">Admin state:</div>
+					<div class="col-sm-3" id="admin_state">-</div>
+					<div class="col-sm-3">
+						<button class="btn" id="change_admin_state" onclick="change_admin_state()">Change state</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">Usage:</div>
+					<div class="col-sm-3" id="usage">-</div>
+					<div class="col-sm-3">
+						<button class="btn" id="delete_file" onclick="delete_user_files()">Delete Files</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">Disk space:</div>
+					<div class="col-sm-3">
+						<input type="text" id="disk_space" style="margin-top: -15px;">
+					</div>
+					<div class="col-sm-3">
+						<button class="btn" onclick="update_user_disk_space()">Update</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">Last login:</div>
+					<div class="col-sm-6" id="last_login">-</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<button class="btn" id="warning_btn" onclick="send_user_warning()" style="float: right">Send Warning</button>
+					</div>
+					<div class="col-sm-6">
+						<button class="btn" id="user_delete_btn" onclick="delete_user_account()">Delete Account</button>
+					</div>
+				</div>
+
+                <div class="row modal_progress" id="modal_progress">
+                    <div class="progress">
+                        <div class="indeterminate"></div>
+                    </div>
+                </div>
+
+			</div>
+		</div>
+		<div class="modal-footer">
+			<a class="modal-close waves-effect waves-green btn-flat" href="{{ url_for('auth.admin_panel') }}">Close</a>
+		</div>
+	</div>
+
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+	<script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+	<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+	<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/>
+
+<script type="text/javascript"
+		src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+
+<!-- Materializecss compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+
+<script>
+	var selected_user_id = 0;
+
+	$(document).ready(function () {
+		$('#table_id').DataTable();
+	});
+
+	function change_admin_state() {
+		var state = document.getElementById('admin_state').innerHTML;
+		var id = selected_user_id;
+        $('#modal_progress').show();
+
+		if (state == "Admin") {
+			$.get("../update/user/admin/", {id: id, is_admin: 0}, function (data, status) {
+				document.getElementById('admin_state').innerHTML = "Not Admin";
+                $('#modal_progress').hide();
+			});
+		} else {
+			$.get("../update/user/admin/", {id: id, is_admin: 1}, function (data, status) {
+				document.getElementById('admin_state').innerHTML = "Admin";
+				$('#modal_progress').hide();
+			});
+		}
+	}
+
+	function update_user_disk_space() {
+		var disk_space = document.getElementById('disk_space').value;
+		var id = selected_user_id;
+		$('#modal_progress').show();
+
+		$.get("../update/user/space/", {id: id, disk_space: disk_space}, function (data, status) {
+            $('#modal_progress').hide();
+		});
+	}
+
+	function delete_user_files() {
+		var id = selected_user_id;
+		$('#modal_progress').show();
+
+		$.get("../update/delete/files/", {id: id}, function (data, status) {
+			document.getElementById('usage').innerHTML = "0 MB";
+			$('#modal_progress').hide();
+		});
+	}
+
+	function send_user_warning() {
+		var id = selected_user_id;
+		document.getElementById('warning_btn').disabled = true;
+		$('#modal_progress').show();
+
+		$.get("../update/warning/user/", {id: id}, function (data, status) {
+            $('#modal_progress').hide();
+		});
+	}
+
+	function delete_user_account() {
+		var id = selected_user_id;
+		document.getElementById('user_delete_btn').disabled = true;
+		$('#modal_progress').show();
+
+		$.get("../update/user/delete/", {id: id}, function (data, status) {
+			location.reload();
+		});
+	}
+
+	function send_infrequent_warning() {
+		var ids = {{ warning_list | tojson }};
+		document.getElementById("progress_bar").style.visibility = "visible";
+		document.getElementById('infrequent_users_send_warning').disabled = true;
+		$.ajax({
+			type: "POST",
+			url: "../update/warning/users/",
+			data: JSON.stringify(ids),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			error: function () {
+
+			},
+			success: function () {
+				document.getElementById("progress_bar").style.visibility = "hidden";
+				location.reload();
+			}
+		});
+	}
+
+	function delete_infrequent_users() {
+		var ids = {{ delete_list | tojson }};
+		document.getElementById("progress_bar").style.visibility = "visible";
+		document.getElementById('infrequent_users_account_delete').disabled = true;
+		$.ajax({
+			type: "POST",
+			url: "../update/delete/users/",
+			data: JSON.stringify(ids),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			error: function () {
+
+			},
+			success: function () {
+				document.getElementById("progress_bar").style.visibility = "hidden";
+				location.reload();
+			}
+		});
+	}
+
+	function open_modal(id, username, given_name, last_login, is_verified, is_admin, disk_space, is_sent_warning, usage) {
+		$('#user_modal').openModal();
+		selected_user_id = id;
+		document.getElementById('modal_heder_name').innerHTML = given_name;
+		document.getElementById('user_name').innerHTML = username;
+
+		if (is_verified == 2) {
+			account_type = "Google"
+		} else if (is_verified == 0) {
+			account_type = "Unverified"
+		} else {
+			account_type = "GeNet"
+		}
+		document.getElementById('account_type').innerHTML = account_type;
+
+		if (is_admin == 1) {
+			document.getElementById('admin_state').innerHTML = "Admin";
+		} else {
+			document.getElementById('admin_state').innerHTML = "Not Admin";
+		}
+
+		document.getElementById('usage').innerHTML = usage + " MB";
+		document.getElementById('last_login').innerHTML = last_login;
+
+		document.getElementById('disk_space').value = disk_space;
+
+		if (is_sent_warning == 1) {
+			document.getElementById('warning_btn').disabled = true;
+		} else {
+			document.getElementById('warning_btn').disabled = false;
+		}
+
+		$('#modal_progress').hide();
+	}
+
+</script>
+
+
+

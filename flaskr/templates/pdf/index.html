@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
+
+	<!--bootstrap-->
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+
+	<!--Import Google Icon Font-->
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+	<!-- Compiled and minified CSS -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+	<title>GeNet | pdf</title>
+
+</head>
+
+<style type="text/css">
+	.success_class{
+		padding: 10px;
+		color: white;
+		background-color: #79d31f;
+		border-radius: 20px;
+	}
+	.pending_class{
+		padding: 10px;
+		color: white;
+		background-color: #F44336;
+		border-radius: 20px;		
+	}
+</style>
+
+<body style="font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+	<div class="container mainDataInterface">
+
+		<div class="step">
+			<div class="step-content">
+				<div class="row">
+					<h3 id="h3-head-6" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;">REPORT DOWNLOAD</h3>
+				</div>
+
+				<div class="row" style="margin-top: 40px;">
+					<div class="col-sm-6">
+						<h5 id="h3-head-1" class="card__title" style="text-align: center;font-family: monospace;">
+							Available Files :</h5>
+					</div>
+					<div id="available_file_name" class="col-sm-5">
+						<div class="md-form">
+							<select style="font-family: monospace;" class="form-control" id="available_files" name="available_files">
+								{% for name in available_list %}
+									<option value="{{ name }}">{{ name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</div>
+
+			<br>
+			<br>    
+
+			<div class="row">
+				<div class="row table_view">
+					<table class="display" id="table_id">
+						<tbody>
+							<tr>
+								<td style="font-size: 17px;">Preprocessing</td>
+								<td>
+									<span class="preprocessing_badge_s success_class" style="display: none;">Success</span>
+									<span class="preprocessing_badge_p pending_class" style="display: none;">Pending</span>
+								</td>
+								<td>
+									<a id="preprocessing_download_a">
+										<i class="fas fa-download fa-2x preprocessing_download"></i>
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td style="font-size: 17px;">Feature selection</td>
+								<td>
+									<span class="fs_badge_s success_class" style="display: none;">Success</span>
+									<span class="fs_badge_p pending_class" style="display: none;">Pending</span>
+								</td>
+								<td>
+									<a id="fs_download_a">
+										<i class="fas fa-download fa-2x fs_download"></i>
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td style="font-size: 17px;">Analysis</td>
+								<td>
+									<span class="anlz_badge_s success_class" style="display: none;">Success</span>
+									<span class="anlz_badge_p pending_class" style="display: none;">Pending</span>
+								</td>
+								<td>
+									<a id="anlz_download_a">
+										<i class="fas fa-download fa-2x anlz_download"></i>
+									</a>
+								</td>
+							</tr>														
+						</tbody>
+					</table>
+				</div>
+
+			</div>				
+			</div>
+		</div>
+	</div>			
+
+{% include 'footer.html' %}
+
+</body>
+
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+	<script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+	<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+	<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<script type="text/javascript">
+
+file_names = '{{available_list | tojson}}'
+file_names = JSON.parse(file_names)
+
+can_download_pre = '{{can_download_pre | tojson}}'
+can_download_pre = JSON.parse(can_download_pre)
+
+can_download_fs = '{{can_download_fs | tojson}}'
+can_download_fs = JSON.parse(can_download_fs)
+
+can_download_anlz = '{{can_download_anlz | tojson}}'
+can_download_anlz = JSON.parse(can_download_anlz)
+
+current_file_name = file_names[0];
+
+if(can_download_pre[0]){
+	$('.preprocessing_badge_s').show(0);
+	$(".preprocessing_download").attr("color", '#79d31f');
+	$("#preprocessing_download_a").show(0);
+}
+else{
+	$('.preprocessing_badge_p').show(0);
+	$("#preprocessing_download_a").hide(0);
+}
+if(can_download_fs[0]){
+	$('.fs_badge_s').show(0);
+	$(".fs_download").attr("color", '#79d31f');
+	$("#fs_download_a").show(0);
+}
+else{
+	$('.fs_badge_p').show(0);
+	$("#fs_download_a").hide(0);	
+}
+if(can_download_anlz[0]){
+	$('.anlz_badge_s').show(0);
+	$(".anlz_download").attr("color", '#79d31f');		
+	$("#anlz_download_a").show(0);
+}
+else{
+	$('.anlz_badge_p').show(0);
+	$("#anlz_download_a").hide(0);		
+}
+
+$('#available_files').on('change', function() {
+
+	$('.preprocessing_badge_s').hide(0);
+	$('.preprocessing_badge_p').hide(0);
+	$('.fs_badge_s').hide(0);
+	$('.fs_badge_p').hide(0);
+	$('.anlz_badge_s').hide(0);
+	$('.anlz_badge_p').hide(0);
+	
+	val_set = file_names.indexOf(this.value)
+	current_file_name = this.value;
+
+	if(can_download_pre[val_set]){
+		$('.preprocessing_badge_s').show(0);
+		$(".preprocessing_download").attr("color", '#79d31f');
+		$("#preprocessing_download_a").show(0);
+	}
+	else{
+		$('.preprocessing_badge_p').show(0);
+		$("#preprocessing_download_a").hide(0);
+	}
+	if(can_download_fs[val_set]){
+		$('.fs_badge_s').show(0);
+		$(".fs_download").attr("color", '#79d31f');
+		$("#fs_download_a").show(0);
+	}
+	else{
+		$('.fs_badge_p').show(0);
+		$("#fs_download_a").hide(0);	
+	}
+	if(can_download_anlz[val_set]){
+		$('.anlz_badge_s').show(0);
+		$(".anlz_download").attr("color", '#79d31f');
+		$("#anlz_download_a").show(0);		
+	}
+	else{
+		$('.anlz_badge_p').show(0);
+		$("#anlz_download_a").hide(0);		
+	}		
+});
+
+$('#preprocessing_download_a').click(function (){
+	window.open('preprocessing?filename=' + current_file_name, '_blank');
+});
+
+$('#fs_download_a').click(function (){
+	window.open('feature_selection?filename=' + current_file_name, '_blank');
+});
+
+$('#anlz_download_a').click(function (){
+	window.open('analysis?filename=' + current_file_name, '_blank');
+});
+</script>

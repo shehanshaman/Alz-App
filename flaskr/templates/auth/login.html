@@ -5,6 +5,11 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta name="google-signin-scope" content="profile email">
+
+    <meta name="google-signin-client_id"
+      content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+
     <title>GeNet | Login</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!--bootstrap-->
@@ -19,6 +24,11 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
 
+    <meta name="google-signin-scope" content="profile email">
+
+    <meta name="google-signin-client_id"
+          content="714190011560-iq9odnvd1oed7ui0m5jh6dln4o979l28.apps.googleusercontent.com">
+
     <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 
     <style>
@@ -28,10 +38,10 @@
             width: 50%;
         }
 
-        .form-padding{
+        .form-padding {
             width: 70%;
         }
-        
+
         .separator {
             display: flex;
             align-items: center;
@@ -64,7 +74,6 @@
         }
 
         .flash {
-            margin: 1em 0;
             padding: 1em;
             background: #cae6f6;
             border: 1px solid #377ba8;
@@ -74,19 +83,20 @@
 
 <body style="background-color: #f3f6f9;">
 
-<!-- Dropdown Structure -->
-{% include 'horizontal_nav_bar.html' %}
+<div id="mainDataInterface-id" class="container mainDataInterface" style="margin-top: 5%;">
 
-<div id="mainDataInterface-id" class="container mainDataInterface">
-
+    <div class="logo center" style="margin-top: -3%;">
+        <img src="{{ url_for('static', filename='images/login-logo.png') }}" alt="logo"
+                 style="width:125px; filter: brightness(1.02);">
+    </div>
 
     <div class="step-content">
-        <div class="row head-word">
+        <div class="row head-word" style="margin-bottom: 0px;">
             <h3 id="h3-head-1" class="card__title" style="text-align: center; color: #26a69a;">Log In</h3>
         </div>
     </div>
 
-    <div>
+    <div class="center">
         {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
         {% endfor %}
@@ -97,8 +107,8 @@
         <div class="col-sm-6">
             <div class="border">
                 <form method="post" class="center form-padding">
-                    <label for="username" style="float: left">Username</label>
-                    <input name="username" id="username" required>
+                    <label for="username" style="float: left">E-mail</label>
+                    <input name="username" id="username" {% if username %} } value="{{ username }}" {% endif %} required>
                     <label for="password" style="float: left">Password</label>
                     <input type="password" name="password" id="password" required>
                     <input type="submit" value="Log In" class="waves-effect waves-dark btn">
@@ -106,7 +116,7 @@
                 <div class="row center">
                     <label>Forgot Password? <a href="{{ url_for('auth.reset_request') }}">Reset Password</a></label>
                 </div>
-            </div>            
+            </div>
         </div>
         <div class="col-sm-3"></div>
     </div>
@@ -135,8 +145,6 @@
     <input type="hidden" id="profile_id" name="profile_id" value=""/>
 </form>
 
-{% include 'footer.html' %}
-
 </body>
 </html>
 
@@ -160,16 +168,8 @@
         var email = profile.getEmail();
         var profile_id = profile.getId();
 
-        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-        console.log('Full Name: ' + profile.getName());
-        console.log('Given Name: ' + profile.getGivenName());
-        console.log('Family Name: ' + profile.getFamilyName());
-        console.log("Image URL: " + profile.getImageUrl());
-        console.log("Email: " + profile.getEmail());
-
         // The ID token you need to pass to your backend:
         var id_token = googleUser.getAuthResponse().id_token;
-        {#        console.log("ID Token: " + id_token);#}
 
         if (id_token !== null && id_token !== '') {
             $("#given_name").val(given_name);
@@ -179,4 +179,12 @@
             $("#gform").submit();
         }
     }
+
+    $('#resend_verification').click(function () {
+        var username = document.getElementById('username').value;
+
+        $.get("./resend_key", {mail: username}, function (data, status) {
+            document.getElementsByClassName('flash')[0].innerHTML = data;
+        });
+    })
 </script>

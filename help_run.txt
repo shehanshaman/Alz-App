@@ -2,3 +2,8 @@ set FLASK_APP=flaskr
 set FLASK_ENV=development
 flask init-db
 flask run
+
+pip install -r requirements.txt
+
+flask init-model
+flask init-sample

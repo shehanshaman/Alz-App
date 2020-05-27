@@ -17,156 +17,54 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
 
-    {#    Table css and js#}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}">
-
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
-    <script type="text/javascript"
-            src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
-    <script type="text/javascript"
-            src="{{ url_for('static', filename='js/jquery/dataTables.bootstrap4.min.js') }}"></script>
-
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
-    <style>
-        .pagination li.active {
-            background-color: inherit;
-        }
-
-        #anno_tbl_div {
-            visibility: hidden;
-        }
-
-        #modal_create {
-            float: right;
-        }
-
-        #modal_create > button {
-            background-color: #eea236;
-            font-size: 8px;
-        }
-
-        #modal_create > button > a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .button {
-            margin-top: inherit;
-        }
-
-        #progress_bar {
-            visibility: hidden;
-        }
-    </style>
 
 </head>
 
-    <style> 
-        #loader { 
-            border: 12px solid #26a69a66; 
-            border-radius: 50%; 
-            border-top: 12px solid #26a69a; 
-            width: 70px; 
-            height: 70px; 
-            animation: spin 1s linear infinite; 
-        } 
-          
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        } 
-          
-        .center-load { 
-            position: absolute; 
-            top: -230px; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            margin: auto; 
-        } 
-    </style>
-
-<style type="text/css">
-
-/*        #tourControls{
-            bottom: 80px !important;
-        }*/
-
-    .notification-container{
-        position: fixed;
-        left: 10px;
-        width: 255px;
-        max-width: calc(100% - 30px);
+<style>
+    .pagination li.active {
+        background-color: inherit;
     }
 
-    .notification{
-        background-color: #fff;
-        /*border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
-        color: #fff;
-        font-size: 14px;
-        padding: 8px 0px;
-        line-height: 20px;
-        /*margin-bottom: 15px;*/
-        animation: grow 0.5s ease-in forwards;
-    }
-    @keyframes grow{
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to{
-            opacity: 1;
-            transform: scale(1);
-        }
+    #anno_tbl_div {
+        visibility: hidden;
     }
 
-    .notification.hide{
-        animation: shrink 0.4s ease-out forwards;
-    }
-    @keyframes shrink{
-        to{
-            opacity: 0;
-            transform: scale(0.6);
-        }
+    #modal_create {
+        float: right;
     }
 
-    .notification-info{
-        background-color: #00000096;
+    #modal_create > button {
+        background-color: #eea236;
+        font-size: 8px;
     }
 
+    #modal_create > button > a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .button {
+        margin-top: inherit;
+    }
+
+    #progress_bar {
+        visibility: hidden;
+    }
 </style>
 
-<body class="main-body" style="background-color: #f3f6f9;">
+<body class="main-body" style="background-color: #f3f6f9; font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
-
-<div class="notification-container" id="notification-container">
-    <div class="notification notification-info">
-        <div class="row">
-            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
-        </div>
-        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
-            <div class="col-sm-6">
-                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
-            </div>
-            <div class="col-sm-6">
-                <a class="btn btn-primary tour_no">NO</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="main-div-predict">
     <div id="mainDataInterface-id" class="container mainDataInterface">
 
         <div class="step-content">
             <div class="row head-word">
-                <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;">PREDICTION</h3>
+                <h3 id="h3-head-1" class="card__title"
+                    style="text-align: center;color: #26a69a;font-family: monospace;">PREDICTION</h3>
             </div>
         </div>
 
@@ -177,7 +75,9 @@
                         <h5>Details</h5>
                     </div>
                     <div class="col-sm-4" id="modal_create">
-                        <button type="button" class="btn btn-warning"><a style="font-size: 15px;" href="{{ url_for('modeling.index') }}">Customize Model</a></button>
+                        <a style="font-size: 15px;font-family: monospace;" href="{{ url_for('modeling.index') }}">
+                                <button type="button" class="btn btn-warning">Customize Model</button>
+                        </a>
                     </div>
 
                 </div>
@@ -185,27 +85,36 @@
                     <table>
                         <tr>
                             <td>Classifier:</td>
-                            <td>{{ details[2] }}</td>
+                            <td id="selected_classifier">{{ default_details[2] }}</td>
                         </tr>
                         <tr>
                             <td>Accuracy:</td>
-                            <td>{{ details[3] }} %</td>
+                            <td id="selected_accuracy">{{ default_details[3] }} %</td>
                         </tr>
                         <tr>
                             <td>Trained from:</td>
-                            <td>{{ details[1] }}</td>
+                            <td id="selected_from">{{ default_details[1] }}</td>
                         </tr>
                         <tr>
                             <td>Features:</td>
-                            <td>{{ details[0] }}</td>
+                            <td id="selected_features">{{ default_details[0] }}</td>
                         </tr>
                     </table>
                 </div>
+                <div class="row">
 
+                    <label>
+                        <input id="default_model" type="checkbox" class="filled-in" checked="checked" {% if not details %}
+                            disabled
+                        {% endif %}/>
+                        <span>Default Model</span>
+                    </label>
+                </div>
             </div>
 
             <div class="col-sm-6" style="">
-                <form id="main-form-div-predict" method="post" action="/mod/predict/results/" id="predict-result" enctype="multipart/form-data">
+                <form id="main-form-div-predict" method="post" action="/mod/predict/results/" id="predict-result"
+                      enctype="multipart/form-data">
 
                     <br>
 
@@ -213,26 +122,28 @@
 
                         <div class="row" style="margin-top: 10px;">
                             <div class="col-sm-4">
-                                <h5 id="" class="card__title" style="text-align: center;">Choose File:</h5>
+                                <h5 id="" class="card__title" style="text-align: center;font-family: monospace;">Choose
+                                    File:</h5>
                             </div>
-                            <div class="col-sm-1"></div>
                             <div class="col-sm-5">
                                 <div id="select_file_div" class="md-form">
-                                    <select class="form-control" id="available_files" name="available_files">
+                                    <select style="font-family: monospace;" class="form-control" id="available_files"
+                                            name="available_files">
                                         {% for name in available_list %}
                                             <option value="{{ name }}">{{ name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                             </div>
-                            <div id="show_file_div" class="col-sm-1">
-                                <button type="button" class="button btn btn-warning">View</button>
+                            <div id="show_file_div" class="col-sm-3" style="padding-left: inherit">
+                                <button type="button" class="button btn btn-warning view_button_step_1">View</button>
                             </div>
                         </div>
 
                         <div class="row" style="margin-top: 10px; margin-bottom: -75px;margin-right: 10px;">
                             <div class="row">
-                                <h5 id="h5-head-1" class="card__title" style="text-align: center;">Check preprocess
+                                <h5 id="h5-head-1" class="card__title"
+                                    style="text-align: center;font-family: monospace;">Check pre-process
                                     steps</h5>
                             </div>
                             <div class="row">
@@ -250,7 +161,8 @@
                                 <div class="switch row">
                                     <div class="row">
                                         <span class="col-sm-6">Annotation Table Mapping </span>
-                                        <label id="select_annotation_div"   class="col-sm-6" onclick="update_checkbox(event)">
+                                        <label id="select_annotation_div" class="col-sm-6"
+                                               onclick="update_checkbox(event)">
                                             Off
                                             <input type="checkbox" value="false" id="is_map" name="is_map">
                                             <span class="lever"></span>
@@ -262,9 +174,10 @@
                                         <div class="col-sm-6"></div>
                                         <div class="col-sm-6">
                                             <div class="md-form" id="anno_tbl_div">
-                                                <select class="form-control" id="anno_tbl" name="anno_tbl" style="margin-bottom: 20px;">
+                                                <select style="font-family: monospace;" class="form-control"
+                                                        id="anno_tbl" name="anno_tbl" style="margin-bottom: 20px;">
                                                     {% for name in annotation_list %}
-                                                        <option value="{{ name }}">{{ name }}</option>
+                                                        <option value="{{ name[1] }}">{{ name[0] }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -277,11 +190,15 @@
                         </div>
                     </div>
 
+                    <input type="hidden" id="is_default_model" name="is_default_model" value="1">
+
                     <div class="submit">
-                        <button id="btn-submit-predict" class="waves-effect waves-dark btn next-step step-6-click" id="btn-submit">SUBMIT</button>
+                        <button id="btn-submit-predict" class="waves-effect waves-dark btn next-step step-6-click"
+                                id="btn-submit">SUBMIT
+                        </button>
                     </div>
 
-                </form>            
+                </form>
             </div>
 
         </div>
@@ -300,40 +217,39 @@
 </div>
 
 
-    <div class="loader-div" style="display: none;">
-        <div id="loader" class="center-load"></div> 
-        <h5 style="margin-top: 18%;text-align: center;color: #26a69a; margin-bottom: 200px;">PREDICTING RESULTS</h5>        
-    </div> 
+<div class="loader-div" style="display: none;">
+    <div id="loader" class="center-load"></div>
+    <h5 class="loader_div_h1">PREDICTING RESULTS</h5>
+</div>
 
-{% include 'footer.html' %}
+{% include 'guide_footer.html' %}
 
 </body>
 </html>
 
-<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main-site/upload_fs.js') }}"></script>
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
 
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-
-<script>
-    $(document).ready(function () {
-        $('#table_id').DataTable();
-    });
-</script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
 <script>
+    document.getElementById('default_model').value = 1;
+
     function update_checkbox(event) {
         var id = event.target.id;
         if (id) {
 
             if (id == 'is_map') {
-                console.log(id);
                 document.getElementById("anno_tbl_div").style.visibility = "visible";
             }
             document.getElementById(id).value = document.getElementById(id).checked;
@@ -344,6 +260,8 @@
 
         $("#selected_file").val(conceptName);
         $("#form").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
     });
 
     $('#btn-submit-predict').click(function () {
@@ -354,50 +272,51 @@
         var conceptName = $('#available_files').find(":selected").text();
 
         $("#selected_file").val(conceptName);
-                
-        $("#main-form-div-predict").submit();        
+
+        $("#main-form-div-predict").submit();
+        $('#tourControls').hide(0);
+        $('.notification-container-pop').hide(0);
     });
+
+    $('#default_model').click(function () {
+        var is_default = document.getElementById('default_model').value == 0 ? 1:0;
+        if(is_default == 1){
+            document.getElementById('selected_classifier').innerHTML = '{{ default_details[2] }}';
+            document.getElementById('selected_accuracy').innerHTML = '{{ default_details[3] }} %';
+            document.getElementById('selected_from').innerHTML = '{{ default_details[1] }}';
+            document.getElementById('selected_features').innerHTML = '{{ default_details[0] }}';
+        }else{
+            document.getElementById('selected_classifier').innerHTML = '{{ details[2] }}';
+            document.getElementById('selected_accuracy').innerHTML = '{{ details[3] }} %';
+            document.getElementById('selected_from').innerHTML = '{{ details[1] }}';
+            document.getElementById('selected_features').innerHTML = '{{ details[0] }}';
+        }
+        document.getElementById('is_default_model').value = is_default;
+        document.getElementById('default_model').value = is_default;
+    })
 
 </script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
-    var tour = {
-        data : [
-            { element : '#modal_create', tooltip : 'info!!', text: 'Model', position: 'T' },
-            { element : '#select_file_div', tooltip : 'table!!', text: 'Choose File ', position: 'T' },
-            { element : '#select_normalize_div', tooltip : 'table!!', text: 'Normaliz emethod', position: 'T' },
-            { element : '#select_annotation_div', tooltip : 'table!!', text: 'Annotation Mapping', position: 'T' },
-            { element : '#btn-submit-predict', tooltip : 'predict!!', text: 'select', position: 'T' }
-        ],
-        welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'BR',
-        buttons: {
-            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
-            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
-            start : { text : 'Start', class: 'btn btn-primary' },
-            end   : { text : 'End', class: 'btn btn-primary' }
-        },
-        controlsCss: {
-            background: 'rgba(187, 178, 48, 0.71)',
-            color: '#1c1d21',
-            width: '400px',
-            'border-radius': 0
-        }
-    };
 
-    $(document).ready(function(){
-        $('.tour').on('click', function(){
-            $.aSimpleTour(tour);
-            $('.notification-container').hide(1000);
-        });
-        $('.tour_no').on('click', function(){
-            $('.notification-container').hide(1000);
-        });
-    });
+    var tour = guide_main_call(tip_model_predict, 'BL');
 
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+    disable_prop = {{ g.dList }};
+
+    disable_read_fun(disable_prop)
 </script>

@@ -23,99 +23,36 @@
 
 <style type="text/css">
 
-        #tourControls{
-            top: 80px !important;
-        }
-
-        #tourtip{
-           width: 290px !important; 
-        }
-
-    .notification-container{
-        position: fixed;
-        left: 10px;
-        width: 245px;
-        max-width: calc(100% - 30px);
+    ul.stepper .step.active:before, ul.stepper .step.done:before {
+        background-color: #26a69a;
     }
-
-    .notification{
-        background-color: #fff;
-        /*border-radius: 5px;
-        box-shadow: 0 3px 6px rgb(0, 0, 0, 0.2), 0 3px 6px rgb(0, 0, 0, 0.3);*/
-        color: #fff;
-        font-size: 14px;
-        padding: 8px 0px;
-        line-height: 20px;
-        /*margin-bottom: 15px;*/
-        animation: grow 0.5s ease-in forwards;
-    }
-    @keyframes grow{
-        from {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        to{
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    .notification.hide{
-        animation: shrink 0.4s ease-out forwards;
-    }
-    @keyframes shrink{
-        to{
-            opacity: 0;
-            transform: scale(0.6);
-        }
-    }
-
-    .notification-info{
-        background-color: #00000096;
-    }
-
+        
 </style>
 
-<body style="background-color: #f3f6f9;">
+<body style="background-color: #f3f6f9;font-family: monospace;">
 
 <!-- Dropdown Structure -->
 {% include 'horizontal_nav_bar.html' %}
 
-<div class="notification-container" id="notification-container">
-    <div class="notification notification-info">
-        <div class="row">
-            <p style="text-align: center;font-size: 15px;margin-bottom: -10px;">Do you want a trip?</p>
-        </div>
-        <div class="row" style="margin-bottom: 7px;margin-top: -8px;">
-            <div class="col-sm-6">
-                <a style="float: right;" href="javascript:void(0);" class="btn btn-primary tour">YES</a>
-            </div>
-            <div class="col-sm-6">
-                <a class="btn btn-primary tour_no">NO</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="card-content">
+<div class="card-content side_nav_content">
 
     <ul data-method="GET" class="stepper linear">
-        <li class="step active">
+        <li id="side_step_nav_preprocess_icon" class="step active">
             <a href="{{ url_for('preprocess.index') }}">
                 <div class="step-title waves-effect waves-dark">Pre-processing</div>
             </a>
         </li>
-        <li class="step">
+        <li id="side_step_nav_feature_icon" class="step">
             <a href="{{ url_for('fs.index') }}">
                 <div class="step-title waves-effect waves-dark">Feature selection</div>
             </a>
         </li>
-        <li class="step">
+        <li id="side_step_nav_analize_icon" class="step">
             <a href="{{ url_for('analyze.index') }}">
                 <div class="step-title waves-effect waves-dark">Analysis</div>
             </a>
         </li>
-        <li class="step">
+        <li id="side_step_nav_validation_icon" class="step">
             <a href="{{ url_for('validation.index') }}">
                 <div class="step-title waves-effect waves-dark">Validation</div>
             </a>
@@ -128,7 +65,15 @@
 
     <div class="step-content">
         <div class="row">
-            <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 2 : DATASET BEFORE PRE-PROCESS</h3>
+            <div>
+                <h3 id="h3-head-2" class="card__title" style="text-align: center;color: #26a69a;">STEP 2 : DATASET AFTER MAPPING</h3>
+            </div>
+            <div style="float: right">
+                <button style="color: #26a69a;border: none;" class="use-download" value="{{ file_name }}">
+                    <i class="fas fa-file-download fa-2x"></i>
+                </button>
+            </div>
+
         </div>
 
         <div class="row">
@@ -142,6 +87,10 @@
                         <td>Number of samples</td>
                         <td id="number_samples_div">{{ details["Number of samples"] }}</td>
                     </tr>
+                    <tr>
+                        <td>Number of positive samples</td>
+                        <td id="number_samples_positive">{{ details["Positive"] }}</td>
+                    </tr>
                 </table>
             </div>
 
@@ -154,6 +103,10 @@
                     <tr>
                         <td>Maximum value</td>
                         <td id="max_val_div">{{ details["max"] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Number of negative samples</td>
+                        <td id="number_samples_negative">{{ details["Negative"] }}</td>
                     </tr>
                 </table>
             </div>
@@ -170,16 +123,18 @@
     <hr class="line-hr">
 
     <div class="step-actions">
-        <button class="waves-effect waves-dark btn next-step step-6-click"><a
-                href="{{ url_for('preprocess.indexstep1') }}">CONTINUE</a>
-        </button>
-        <button class="waves-effect waves-dark btn-flat previous-step"><a
-                href="{{ url_for('preprocess.index') }}">BACK</a></button>
+        <a href="{{ url_for('preprocess.scaling_imputation') }}?id={{ pre_process_id }}">
+            <button class="waves-effect waves-dark btn next-step">CONTINUE</button>
+        </a>
+
+        <a href="{{ url_for('preprocess.index') }}">
+            <button class="waves-effect waves-dark btn-flat previous-step" type="button">BACK</button>
+        </a>
     </div>
 
 </div>
 
-{% include 'footer.html' %}
+{% include 'guide_footer.html' %}
 
 </body>
 </html>
@@ -194,49 +149,44 @@
 <!-- Compiled and minified JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
 
-<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.aSimpleTour.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/jquery.aSimpleTour.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_data.js') }}"></script>
 
-</html>
+<script type="text/javascript" src="{{ url_for('static', filename='js/guide/guide_main.js') }}"></script>
 
 <script>
-    var tour = {
-        data : [
-            { element : '#number_features_div', tooltip : 'Number of probe ids in the data set !', text: 'Number of features', position: 'T' },
-            { element : '#number_samples_div', tooltip : 'Number of samples in the data set !', text: 'Number of samples', position: 'T' },
-            { element : '#min_val_div', tooltip : 'Minimum gene expression data value in all the samples (considering all the features) !', text: 'Minimum value', position: 'T' },
-            { element : '#max_val_div', tooltip : 'Maximum gene expression data value in all the samples (considering all the features) !', text: 'Maximum value', position: 'T' },
-            { element : '#table_div', tooltip : 'You can view a portion of the data set. Scroll right to view more samples !', text: 'Show Data set', position: 'T' }
-        ],
-        welcomeMessage: 'Lets Start Tour!',
-        controlsPosition : 'TL',
-        buttons: {
-            next  : { text : 'Next &rarr;', class : 'btn btn-default'},
-            prev  : { text : '&larr; Previous', class: 'btn btn-default' },
-            start : { text : 'Start', class: 'btn btn-primary' },
-            end   : { text : 'End', class: 'btn btn-primary' }
-        },
-        controlsCss: {
-            background: 'rgba(187, 178, 48, 0.71)',
-            color: '#1c1d21',
-            width: '400px',
-            'border-radius': 0
-        }
-    };
 
-    $(document).ready(function(){
-        $('.tour').on('click', function(){
-            $.aSimpleTour(tour);
-            $('.notification-container').hide(1000);
-        });
-        $('.tour_no').on('click', function(){
-            $('.notification-container').hide(1000);
-        });
+    var tour = guide_main_call(tip_step_2, 'BL');
+
+</script>
+
+<script>
+    $(".use-download").click(function () {
+        var $file_name = $('.use-download').val();
+
+        var url = "../update/download/df/?id=" + '{{ g.user['id'] }}' + "&name=" + $file_name + "&is_tmp=1";
+        window.open(url, '_blank');
+
     });
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/disable_validation.js') }}"></script>
+
+<script type="text/javascript">
+
+disable_prop = {{ g.dList }};
+
+disable_read_fun(disable_prop)
 </script>

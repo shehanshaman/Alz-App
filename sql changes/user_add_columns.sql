@@ -1,0 +1,3 @@
+ALTER TABLE user ADD disk_space INTEGER DEFAULT 100;
+ALTER TABLE user ADD is_sent_warning INTEGER DEFAULT 0;
+ALTER TABLE user ADD warning_sent_time DATETIME DEFAULT NULL;

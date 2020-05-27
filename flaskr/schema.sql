@@ -7,6 +7,9 @@ DROP TABLE IF EXISTS results;
 DROP TABLE IF EXISTS modeling;
 DROP TABLE IF EXISTS mail_template;
 DROP TABLE IF EXISTS verify;
+DROP TABLE IF EXISTS classifiers;
+DROP TABLE IF EXISTS preprocess;
+DROP TABLE IF EXISTS file;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,8 +18,15 @@ CREATE TABLE user (
   given_name VARCHAR(20) NOT NULL,
   image_url TEXT,
   last_login DATETIME NOT NULL,
-  is_verified INTEGER NOT NULL
+  is_verified INTEGER NOT NULL,
+  want_tour INTEGER DEFAULT 1,
+  is_admin INTEGER DEFAULT 0,
+  disk_space INTEGER DEFAULT 100,
+  is_sent_warning INTEGER DEFAULT 0,
+  warning_sent_time DATETIME DEFAULT NULL
 );
+
+-- is_verified: 0-Unverified, 1-GeNet-User, 2-Google-User
 
 CREATE TABLE post (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,13 +37,32 @@ CREATE TABLE post (
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
 
+CREATE TABLE preprocess (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL ,
+  file_name VARCHAR(40) NOT NULL ,
+  file_path TEXT NOT NULL ,
+  annotation_table VARCHAR(30) NOT NULL ,
+  col_sel_method VARCHAR(30) NOT NULL ,
+  merge_df_path TEXT DEFAULT NULL ,
+  avg_symbol_df_path TEXT DEFAULT NULL ,
+  reduce_df_path TEXT DEFAULT NULL ,
+  scaling VARCHAR(30) DEFAULT NULL ,
+  imputation VARCHAR(30) DEFAULT NULL ,
+  classifiers VARCHAR(10) DEFAULT NULL ,
+
+  FOREIGN KEY (user_id) REFERENCES user (id)
+);
+
 CREATE TABLE results (
-  user_id INTEGER PRIMARY KEY,
-  filename VARCHAR(100),
-  fs_methods VARCHAR(100),
-  col_method1 TEXT,
-  col_method2 TEXT,
-  col_method3 TEXT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL ,
+  filename VARCHAR(100) NOT NULL ,
+  classifiers VARCHAR(10) DEFAULT '4,5,6',
+  fs_methods VARCHAR(100) NOT NULL ,
+  col_method1 TEXT NOT NULL ,
+  col_method2 TEXT NOT NULL ,
+  col_method3 TEXT NOT NULL ,
   col_overlapped TEXT,
   col_selected_method TEXT,
   selected_method VARCHAR(30),
@@ -47,8 +76,8 @@ CREATE TABLE modeling (
   clasifier VARCHAR(50),
   features TEXT,
   model_path_name VARCHAR(100),
-  accuracy VARCHAR(10),
-  has_model INTEGER,
+  accuracy VARCHAR(10) DEFAULT NULL,
+  has_model INTEGER DEFAULT 1,
 
   FOREIGN KEY (user_id) REFERENCES user (id)
 );
@@ -68,7 +97,52 @@ CREATE TABLE verify (
   FOREIGN KEY (user_id) REFERENCES user (id)
 );
 
-INSERT INTO user (username, given_name, password, last_login, is_verified) VALUES ('user', 'user', 'pbkdf2:sha256:150000$LuBMEbIc$f3e7ec7e9061bad12ffb9193a8740722cc96be7e193c520e3aa551dc43c78b7c', '2012-12-25 23:59:59', 3);
-INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2,
-                     col_method3, col_overlapped, col_selected_method, selected_method) VALUES (1, 'GSE5281_DE_200.plk', 'PCA,Random Forest,Extra Tree Classifier,50', 'SST,CHGB,CALY,STAT4,AX747182,SERTM1,PCSK1,MT1M,LOC101929787,MAFF,KIFAP3,MAL2,AMPH,SLC39A12,ZIC2,PCYOX1L,TAC1,JPX,TMEM200A,SLIRP,SLC39A10,SPHKAP,CALB1,CDK7,SGIP1,AP2M1,CDK5,NAP1L5,LOC100507557,MRPL15,CTD-3092A11.2,PLK2,ZDHHC23,SMYD3,P2RY14,RP11-271C24.3,ZNF415,SCG2,EMX2,SERPINF1,ARPC1A,PVALB,ID3,THYN1,LOC101060510,PRO1804,LINC00889,DDIT4,PSMD8,FPGT-TNNI3K', 'NEAT1,MIR612,PCYOX1L,CTD-3092A11.2,SLC12A7,FIBP,MLLT11,CKMT1B,JPX,GNG3,SST,CKMT1A,NIT2,ATP6V1E1,MAFF,MGC12488,LDHA,FIG4,LOC101929787,LOC202181,MT1M,ATP6V1G2,ATP5B,TUBB4B,LOC100272216,REEP1,CHRM1,COPG2IT1,TUBB3,AK090844,PSMB3,PRO1804,MIF,MKKS,GFAP,RGS7,CDK5,IMMT,PSMA5,PLSCR4,LRP4,BSCL2,PRR34-AS1,RP11-271C24.3,GPI,DDIT4,SLC39A12,YAP1,ATP5C1,AC004951.6', 'NEAT1,MIR612,TUBB4B,CTD-3092A11.2,SLC12A7,MAFF,PCYOX1L,FIBP,ATP5B,SLC39A12,GNG3,MGC12488,JPX,MT1M,LDHA,LOC101929787,CKMT1A,ATP5C1,PSMA5,LOC202181,CKMT1B,ATP1A1,SST,BCAS2,NAA20,LOC100272216,GPI,FIG4,EMC4,ATP6V1G2,SNCA,MKKS,ZNF415,AP2M1,CALY,SCN3B,GFAP,GPRASP1,BSCL2,MLLT11,PLSCR4,ID3,NECAP1,RP11-271C24.3,PSMB3,APOO,SLIRP,CCNH,RPH3A,STMN2', 'RP11-271C24.3,CTD-3092A11.2,MAFF,PCYOX1L,MT1M,SST,LOC101929787,JPX,SLC39A12', 'CHGB,STAT4,AX747182,ZIC2,LOC101060510', 'PCA' );
-INSERT INTO modeling (user_id, trained_file, clasifier, features, model_path_name, accuracy, has_model) VALUES (1, 'GSE5281_DE_200.plk', 'svmLinear', 'RP11-271C24.3,CTD-3092A11.2,MAFF,PCYOX1L,MT1M,SST,LOC101929787,JPX,SLC39A12,CHGB,STAT4,AX747182,ZIC2,LOC101060510', '_model.pkl', '80.1', 1 );
+CREATE TABLE classifiers (
+  id INTEGER PRIMARY KEY,
+  clf_name VARCHAR(50),
+  short_name VARCHAR(10)
+);
+
+INSERT INTO classifiers (id, clf_name, short_name) VALUES
+  (1, 'Gaussian Naive Bayes', 'GNB'),
+  (2, 'Decision Tree', 'DT'),
+  (3, 'Nearest Neighbors', 'NN'),
+  (4, 'SVM + Gaussian kernel', 'GK'),
+  (5, 'SVM + linear kernel', 'LK'),
+  (6, 'Random Forest', 'RF');
+
+
+CREATE TABLE file (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  file_name VARCHAR(100) NOT NULL ,
+  file_type VARCHAR(10) NOT NULL,
+  path TEXT NOT NULL,
+  user_id int NOT NULL,
+  is_annotation int NOT NULL,
+  has_class int NOT NULL
+
+--   FOREIGN KEY (user_id) REFERENCES user (id)
+);
+
+ALTER TABLE preprocess ADD after_norm_set varchar(500);
+ALTER TABLE preprocess ADD volcano_hash MEDIUMTEXT;
+ALTER TABLE preprocess ADD fold varchar(10);
+ALTER TABLE preprocess ADD pvalue varchar(10);
+ALTER TABLE preprocess ADD length varchar(10);
+ALTER TABLE preprocess ADD fr_univariate_hash MEDIUMTEXT;
+ALTER TABLE preprocess ADD classification_result_set varchar(500);
+ALTER TABLE results ADD venn_data_set varchar(5000);
+ALTER TABLE results ADD fs_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_overlap_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_cls_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_crr_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_crr_1_hash MEDIUMTEXT;
+ALTER TABLE results ADD an_crr_2_hash MEDIUMTEXT;
+ALTER TABLE results ADD corr_classification_accuracy varchar(500);
+ALTER TABLE results ADD selected_roc_pic_hash MEDIUMTEXT;
+ALTER TABLE results ADD all_roc_pic_hash MEDIUMTEXT;
+ALTER TABLE results ADD result_data_1 varchar(500);
+ALTER TABLE results ADD result_data_2 varchar(500);
+ALTER TABLE preprocess ADD can_download INTEGER;
+ALTER TABLE results ADD can_download_fs INTEGER;
+ALTER TABLE results ADD can_download_anlz INTEGER;

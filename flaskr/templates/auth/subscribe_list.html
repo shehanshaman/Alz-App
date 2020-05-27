@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GeNet | Admin</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/fonts/family=Material+Icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/materialize-stepper.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+
+</head>
+
+    <style>
+        .center {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+
+        .g-user {
+            padding: 4px 8px;
+            font-weight: 600;
+            line-height: 20px;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            background-color: #6f42c1;
+            border-radius: 3px;
+        }
+
+        #progress_bar {
+            visibility: hidden;
+        }
+
+    </style>
+
+<body style="background-color: #f3f6f9;font-family: monospace;">
+
+<!-- Dropdown Structure -->
+{% include 'horizontal_nav_bar.html' %}
+
+<div id="mainDataInterface-id" class="container mainDataInterface">
+
+    <div class="step-content">
+        <div class="row head-word">
+            <h3 id="h3-head-1" class="card__title" style="text-align: center;color: #26a69a;font-family: monospace;text-transform: uppercase;">Subscribe details</h3>
+        </div>
+
+	    <div class="row">
+	    	<div class="table-responsive-sm">
+	            <table id="dtVerticalScrollExample" class="table table-striped table-bordered table-sm" cellspacing="0">
+	                <thead>
+	                <tr>
+	                    <th class="th-sm">ID</th>
+	                    <th class="th-sm">Name</th>
+	                    <th class="th-sm">Email</th>
+	                </tr>
+	                </thead>
+	                <tbody id="table_contact_tbody">
+	                </tbody>
+	            </table>
+	        </div>
+	    </div> 
+    </div>
+  
+</div>
+
+{% include 'footer.html' %}
+
+</body>
+</html>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<!-- jQueryValidation Plugin -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.validate.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome-all.js') }}"></script>
+
+{% if g.user['is_verified'] == 2 %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/google_auth_main.js') }}"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+{% else %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endif %}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/>
+
+<script type="text/javascript"
+        src="{{ url_for('static', filename='js/jquery/jquery.dataTables.min.js') }}"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/materialize/materialize.min.js') }}"></script>
+
+<script type="text/javascript">
+
+subscribe_before_process = '';
+subscribe_before_process = '{{ subscribe_list | tojson}}';
+
+subscribe_before_process = subscribe_before_process.substring(1, subscribe_before_process.length-1);
+subscribe_object = JSON.parse(subscribe_before_process);
+
+for(var i=0; i<subscribe_object.length; i++){
+
+	$("#table_contact_tbody").append(
+	        '<tr>'+
+	         '<td>' + subscribe_object[i].user_ID + '</td>'+
+	         '<td>' + subscribe_object[i].user_name + '</td>'+
+	         '<td>' + subscribe_object[i].user_email + '</td>'+
+	        '</tr>'
+		);
+
+}
+
+$(document).ready(function () {
+
+$('#dtVerticalScrollExample').DataTable({
+	"scrollY": "500px",
+	"scrollCollapse": true,
+});
+
+$('.dataTables_length').addClass('bs-select');
+});
+
+</script>

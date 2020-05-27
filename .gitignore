@@ -13,3 +13,6 @@ build/
 *.swp
 *~
 flaskr/upload/users/
+flaskr/upload/AnnotationTbls/other/
+flaskr/upload/sample/GSE5281-GPL570.pkl
+flaskr/upload/sample/_model.pkl
