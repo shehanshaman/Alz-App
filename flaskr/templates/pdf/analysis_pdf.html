@@ -32,7 +32,7 @@
     </button>
 </center>
 
-<div id="div_feature_anlz">
+<div id="div_feature_anlz" style="padding: 15px; border: 2px solid #26a69a;">
 
     <img src="{{ url_for('static', filename='images/logo_pdf.png') }}" alt="logo" style="width:115px; margin-top: -3px;">
 
@@ -50,7 +50,7 @@
 
     <center>
         <h3 style="font-family: monospace;">Training accuracies of genes only found by each classifier and the overlapped set of genes</h3>
-        <img src="data:image/png;base64,{{anlz_details_set['an_overlap_hash']}}" alt="volcano" width="1000" height="auto">    
+        <img src="data:image/png;base64,{{anlz_details_set['an_overlap_hash']}}" alt="volcano" width="850" height="auto">    
     </center>
 
     <p style="font-family: monospace; text-align: justify;">The graph at the right shows the number of genes selected by each feature selection method excluding the overlapped gene set. The last column refers to the number of “Overlapped” set of genes, that is the genes that are found by all the three methods. The graph at the left shows how the accuracy of the models varies when you only input the gene list selected by each feature selection method excluding the overlapped set. In the last column set of this graph, the variation of the accuracy of the overlapped set of genes with the 3 classifiers is represented.</p>
@@ -60,7 +60,7 @@
 
     <center>
         <h3 style="font-family: monospace;">Classification accuracy of three classifiers using incrementally smaller sets of genes</h3>
-        <img src="data:image/png;base64,{{anlz_details_set['an_cls_hash']}}" alt="volcano" width="1000" height="auto">    
+        <img src="data:image/png;base64,{{anlz_details_set['an_cls_hash']}}" alt="volcano" width="850" height="auto">    
     </center>
 
     <p style="font-family: monospace; text-align: justify;">This graph shows how the accuracy varies when you gradually keep on decreasing the number of genes. For example, if the selected number of features by each method is 50, you can get the best 50, 40,30,20,10,5,3,2,1 set of genes by gradually decreasing the number of features. By plotting the accuracy for these subsets of genes, you can see how the accuracy varies according to the number of features you select. This again is represented with reference to the three classifiers.</p>
@@ -74,7 +74,7 @@
 
     <center>
         <h3 style="font-family: monospace;">Correlation matrix for the genes that are found by each feature selection method</h3>
-        <img src="data:image/png;base64,{{anlz_details_set['an_crr_hash']}}" alt="volcano" width="1000" height="auto">    
+        <img src="data:image/png;base64,{{anlz_details_set['an_crr_hash']}}" alt="volcano" width="850" height="auto">    
     </center>
 
     <p style="font-family: monospace; text-align: justify;">This shows the correlation between the genes found by each method. The index 1 means they are fully correlated while 0 represents there is no correlation at all.</p>    
@@ -107,7 +107,7 @@
 
     <center>
         <h3 style="font-family: monospace;">Variation of the correlation coefficients of the genes found only by Random Forest with classification accuracy</h3>
-        <img src="data:image/png;base64,{{anlz_details_set['an_crr_2_hash']}}" alt="volcano" width="1000" height="auto">    
+        <img src="data:image/png;base64,{{anlz_details_set['an_crr_2_hash']}}" alt="volcano" width="850" height="auto">    
     </center>
 
     <p style="font-family: monospace; text-align: justify;">The variation of classification accuracies with the number of genes with respect to their correlation coefficients. The graph at the right shows the number of features in the range of correlation coefficients from range 0 to x correlation coefficient. The graph at the right shows how the classification accuracy changes when we only train it by selecting the gene list that is within the range of correlation coefficient.</p>
@@ -144,7 +144,7 @@
 
     <center>
         <h3 style="font-family: monospace;">ROC curves and the correlation matrix for genes selected by extra tree classifier considering correlation and accuracy</h3>
-        <img src="data:image/png;base64,{{anlz_details_set['selected_roc_pic_hash']}}" alt="volcano" width="1000" height="auto">    
+        <img src="data:image/png;base64,{{anlz_details_set['selected_roc_pic_hash']}}" alt="volcano" width="850" height="auto">    
     </center>
 
     <p style="font-family: monospace; text-align: justify;">A ROC curve is constructed by plotting the true positive rate (TPR) against the false positive rate (FPR). The true positive rate is the proportion of observations that were correctly predicted to be positive out of all positive observations (TP/(TP + FN)). Similarly, the false positive rate is the proportion of observations that are incorrectly predicted to be positive out of all negative observations (FP/(TN + FP)). This graph shows the ROC curve consideing the genes obtained through considering least correlation !</p>
@@ -177,7 +177,7 @@
 
         <br>
 
-        <img src="data:image/png;base64,{{anlz_details_set['all_roc_pic_hash']}}" alt="volcano" width="1000" height="auto">    
+        <img src="data:image/png;base64,{{anlz_details_set['all_roc_pic_hash']}}" alt="volcano" width="850" height="auto">    
     </center>
 
     <p style="font-family: monospace; text-align: justify;">This graph also shows the variation of classification accuracy with the number of features. Here the features are the combination of the  overlapped set of genes and the other gene set extracted by extra tree classifier. </p>
@@ -266,7 +266,7 @@ features_set = clf_results_features.substring(1, clf_results_features.length-1).
 
 function selected_features_set_fun(set_1, set_n, len){
 
-    stop_val=8;
+    stop_val=6;
     if( len < stop_val){
         for (var f in set_1) {
             $('#fs_feature_set_' + set_n + ' tr:last').after(
@@ -286,8 +286,6 @@ function selected_features_set_fun(set_1, set_n, len){
                     '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 3] + '</td>'+
                     '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 4] + '</td>'+
                     '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 5] + '</td>'+
-                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 6] + '</td>'+
-                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 7] + '</td>'+
                     '</tr>'  
             );
         l=l+1
