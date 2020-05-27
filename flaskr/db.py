@@ -74,6 +74,13 @@ def init_default_model_command():
 
     click.echo("Initialized the default model.")
 
+@click.command("init-sample")
+@with_appcontext
+def init_sample_file_command():
+    sample_pkl_create()
+
+    click.echo("Sample pkl file created.")
+
 def create_default_model():
     # path_csv = SAMPLE_PATH / "GSE5281_DE_200.csv"
     path_csv = SAMPLE_PATH / "GeNet_GSE5281-GPL570.csv"
@@ -171,3 +178,4 @@ def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.cli.add_command(init_default_model_command)
+    app.cli.add_command(init_sample_file_command)

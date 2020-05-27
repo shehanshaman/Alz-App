@@ -90,6 +90,8 @@ class PreProcess:
 		return df_symbol
 
 	def probe2Symbol(df_symbol, col_sel_method = 1):
+		df_symbol = df_symbol.drop(["ID"], axis=1)
+
 		#1-Average, 2-Max, 3-Min, 4-quantile(IQR)
 
 		# df_avg_symbol = df_symbol.groupby(['Gene Symbol']).agg([np.average])
