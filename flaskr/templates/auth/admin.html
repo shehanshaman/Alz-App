@@ -209,23 +209,23 @@
 					<div class="col-sm-6">Admin state:</div>
 					<div class="col-sm-3" id="admin_state">-</div>
 					<div class="col-sm-3">
-						<button id="change_admin_state" onclick="change_admin_state()">Change state</button>
+						<button class="btn" id="change_admin_state" onclick="change_admin_state()">Change state</button>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">Usage:</div>
 					<div class="col-sm-3" id="usage">-</div>
 					<div class="col-sm-3">
-						<button id="delete_file" onclick="delete_user_files()">Delete Files</button>
+						<button class="btn" id="delete_file" onclick="delete_user_files()">Delete Files</button>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">Disk space:</div>
 					<div class="col-sm-3">
-						<input type="text" id="disk_space">
+						<input type="text" id="disk_space" style="margin-top: -15px;">
 					</div>
 					<div class="col-sm-3">
-						<button onclick="update_user_disk_space()">Update</button>
+						<button class="btn" onclick="update_user_disk_space()">Update</button>
 					</div>
 				</div>
 				<div class="row">
@@ -234,12 +234,19 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
-						<button class="btn" id="warning_btn" onclick="send_user_warning()">Send Warning</button>
+						<button class="btn" id="warning_btn" onclick="send_user_warning()" style="float: right">Send Warning</button>
 					</div>
 					<div class="col-sm-6">
 						<button class="btn" id="user_delete_btn" onclick="delete_user_account()">Delete Account</button>
 					</div>
 				</div>
+
+                <div class="row modal_progress" id="modal_progress">
+                    <div class="progress">
+                        <div class="indeterminate"></div>
+                    </div>
+                </div>
+
 			</div>
 		</div>
 		<div class="modal-footer">
@@ -293,14 +300,17 @@
 	function change_admin_state() {
 		var state = document.getElementById('admin_state').innerHTML;
 		var id = selected_user_id;
+        $('#modal_progress').show();
 
 		if (state == "Admin") {
 			$.get("../update/user/admin/", {id: id, is_admin: 0}, function (data, status) {
-				document.getElementById('admin_state').innerHTML = "Not Admin"
+				document.getElementById('admin_state').innerHTML = "Not Admin";
+                $('#modal_progress').hide();
 			});
 		} else {
 			$.get("../update/user/admin/", {id: id, is_admin: 1}, function (data, status) {
-				document.getElementById('admin_state').innerHTML = "Admin"
+				document.getElementById('admin_state').innerHTML = "Admin";
+				$('#modal_progress').hide();
 			});
 		}
 	}
@@ -308,32 +318,37 @@
 	function update_user_disk_space() {
 		var disk_space = document.getElementById('disk_space').value;
 		var id = selected_user_id;
+		$('#modal_progress').show();
 
 		$.get("../update/user/space/", {id: id, disk_space: disk_space}, function (data, status) {
-
+            $('#modal_progress').hide();
 		});
 	}
 
 	function delete_user_files() {
 		var id = selected_user_id;
+		$('#modal_progress').show();
 
 		$.get("../update/delete/files/", {id: id}, function (data, status) {
 			document.getElementById('usage').innerHTML = "0 MB";
+			$('#modal_progress').hide();
 		});
 	}
 
 	function send_user_warning() {
 		var id = selected_user_id;
 		document.getElementById('warning_btn').disabled = true;
+		$('#modal_progress').show();
 
 		$.get("../update/warning/user/", {id: id}, function (data, status) {
-
+            $('#modal_progress').hide();
 		});
 	}
 
 	function delete_user_account() {
 		var id = selected_user_id;
 		document.getElementById('user_delete_btn').disabled = true;
+		$('#modal_progress').show();
 
 		$.get("../update/user/delete/", {id: id}, function (data, status) {
 			location.reload();
@@ -411,6 +426,8 @@
 		} else {
 			document.getElementById('warning_btn').disabled = false;
 		}
+
+		$('#modal_progress').hide();
 	}
 
 </script>
