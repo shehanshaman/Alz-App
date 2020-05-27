@@ -83,20 +83,20 @@ def create_app(test_config=None):
 
     mail = Mail()
     mail_settings = {
-        "MAIL_SERVER": 'mail.genetlabs.com',
+        "MAIL_SERVER": 'smtp.gmail.com',
         "MAIL_PORT": 465,
         "MAIL_USE_TLS": False,
         "MAIL_USE_SSL": True,
-        "MAIL_USERNAME": 'info@genetlabs.com',
-        "MAIL_PASSWORD": ';46sEs$0&AL+'
-    }    
+        "MAIL_USERNAME": 'genetlabs.info@gmail.com',
+        "MAIL_PASSWORD": 'Gihan123'
+    }
     app.config.update(mail_settings)
     mail.init_app(app)
 
     app.config["APP_ALZ"].mail = mail
 
     # apply the blueprints to the app
-    from flaskr import auth, blog, preprocess, visualization, fs, analze, validation, modeling, home, update
+    from flaskr import auth, blog, preprocess, visualization, fs, analze, validation, modeling, home, update, network, pdf
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
@@ -108,6 +108,8 @@ def create_app(test_config=None):
     app.register_blueprint(modeling.bp)
     app.register_blueprint(home.bp)
     app.register_blueprint(update.bp)
+    app.register_blueprint(network.bp)
+    app.register_blueprint(pdf.bp)
 
     # make url_for('index') == url_for('blog.index')
     # in another app, you might define a separate main index here with

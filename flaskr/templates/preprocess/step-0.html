@@ -40,8 +40,12 @@
 <div id="upload_page_pop" class="modal_pop" style="display: none;">
 
     <!-- Modal_pop content -->
-    <div class="modal_pop_content">
-        <span class="close close_pop">&times;</span>
+    <div class="modal_pop_content modal_pop_content_width">
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="close close_pop">&times;</span>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-12">
                 <p class="tip_class_text" style="font-size: 15px; font-family: Monospace; text-align: justify;">tip</p>
@@ -55,7 +59,7 @@
                 </div>
             </center>
         </div>
-        <div class="row" style="position: absolute; bottom: 5%; left: 43%;">
+        <div class="row">
             <div class="col-sm-6">
                 <button class="prv_btn_class btn info" style="float: right;">PREV</button>
             </div>
@@ -123,11 +127,11 @@
             <div class="row">
                 <div class="col-sm-6">
                     {% if available_space > 0 %}
-                        <<a href="{{ url_for('preprocess.upload_sample_file') }}">
-                        <button type="button" class="btn sample_select_btn"
-                                style="background-color: #4c78af;float: right;">SELECT SAMPLE FILE
-                        </button>
-                    </a>
+                        <a href="{{ url_for('preprocess.upload_sample_file') }}">
+                            <button type="button" class="btn sample_select_btn"
+                                    style="background-color: #4c78af; float: right;">SELECT SAMPLE FILE
+                            </button>
+                        </a>
                     {% else %}
                         <button type="button" class="btn sample_select_btn"
                                 style="background-color: #4c78af;float: right;" disabled>SELECT SAMPLE FILE
@@ -136,7 +140,7 @@
                 </div>
                 <div class="col-sm-6">
                     <a href="{{ url_for('preprocess.download_sample_file') }}">
-                        <button type="button" class="btn download_sample_file" style="background-color: #a94442;">
+                        <button type="button" class="btn download_sample_file" style="background-color: #a94442; float: left">
                             DOWNLOAD SAMPLE FILE
                         </button>
                     </a>
@@ -165,7 +169,7 @@
 
     <div class="loader-div" style="display: none;">
         <div id="loader" class="center-load"></div>
-        <h5 style="text-align: center;color: #26a69a;">UPLOADING DATASET</h5>
+        <h5 class="loader_div_h1">UPLOADING DATASET</h5>
     </div>
 
 </div>
