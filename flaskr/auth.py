@@ -14,6 +14,7 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from flask import Markup
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
@@ -59,6 +60,18 @@ def load_logged_in_user():
             get_db().execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
         )
 
+def send_verification_key(user_id, username):
+    verify_key = randomString()
+    db = get_db()
+    db.execute(
+        "INSERT INTO verify (user_id, subject, verify_key) VALUES (?, ?, ?)",
+        (user_id, 'verify', verify_key),
+    )
+    db.commit()
+    url = "http://" + str(request.host) + "/auth/verify/?id=" + str(user_id) + "&key=" + verify_key
+    send_mail("verify", url, username, "Verify email address")
+
+
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     """Register a new user.
@@ -91,14 +104,7 @@ def register():
             create_user_db(db, username, password, given_name, '', 0)
             if "@" in username:
                 user_id = UserData.get_user_id(username)
-                verify_key = randomString()
-                db.execute(
-                    "INSERT INTO verify (user_id, subject, verify_key) VALUES (?, ?, ?)",
-                    (user_id, 'verify', verify_key),
-                )
-                db.commit()
-                url = "http://" + str(request.host) + "/auth/verify/?id=" + str(user_id) + "&key=" + verify_key
-                send_mail("verify", url, username, "Verify email address")
+                send_verification_key(user_id, username)
 
             message  = given_name + ", Your account created. Verify your email"
             flash(message)
@@ -108,6 +114,18 @@ def register():
 
     return render_template("auth/register.html")
 
+@bp.route("/resend_key", methods=["GET"])
+def re_send_verification_key():
+    username = request.args.get('mail')
+    db = get_db()
+    user = db.execute(
+        "SELECT * FROM user WHERE username = ? AND is_verified = 0", (username,)
+    ).fetchone()
+    if user:
+        send_verification_key(user['id'], user['username'])
+        return "Resent your verification mail,  Check your mail."
+    else:
+        return "Wrong username"
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
@@ -126,8 +144,8 @@ def login():
         elif not check_password_hash(user["password"], password):
             error = "Incorrect password."
         elif user["is_verified"] == 0:
-            error = "Your account not verified, check email."
-
+            error = "Your account not verify, check email or <a id='resend_verification' href='#'>resend verification<a>."
+            error = Markup(error)
         if error is None:
             # store the user id in a new session and return to the index
             session.clear()
@@ -141,7 +159,13 @@ def login():
 
         flash(error)
 
-    return render_template("auth/login.html")
+        return redirect(url_for('auth.login') + "?u=" + username)
+
+    else:
+
+        username = request.args.get('u')
+
+        return render_template("auth/login.html", username=username)
 
 
 @bp.route("/logout")
@@ -189,7 +213,7 @@ def verify():
 
     db = get_db()
     verify_data = db.execute(
-        "SELECT * FROM verify WHERE user_id = ? AND subject = 'verify'", (user_id,)
+        "SELECT * FROM verify WHERE user_id = ? AND subject = 'verify' ORDER BY id DESC", (user_id,)
     ).fetchone()
 
     e = ["Not Found",[]]
@@ -361,10 +385,12 @@ def get_all_users():
 def admin_panel():
 
     users = get_all_users()
+    host_usage = round(users['usage'].sum() / 1024, 2)
     warning_list, delete_list, sum_usage_warning, sum_usage_delete = get_infrequent_ids(users)
 
     return render_template("auth/admin.html", warning_list=warning_list, delete_list=delete_list,
-                           sum_usage_warning=round(sum_usage_warning, 2), sum_usage_delete=round(sum_usage_delete, 2), users=users)
+                           sum_usage_warning=round(sum_usage_warning, 2), sum_usage_delete=round(sum_usage_delete, 2),
+                           users=users, host_usage=host_usage)
 
 #contact list show
 @bp.route("/admin/contact_list")
@@ -552,6 +578,13 @@ class UserData:
         ).fetchone()
         return result
 
+    def get_user_can_download_preprocess(user_id, file_name):
+        db = get_db()
+        result = db.execute(
+            "SELECT can_download FROM preprocess WHERE user_id = ? AND file_name = ?", (user_id, file_name)
+        ).fetchone()
+        return result
+
     def get_preprocess_from_id(id):
         db = get_db()
         result = db.execute(
@@ -566,11 +599,11 @@ class UserData:
         )
         db.commit()
 
-    def add_preprocess(user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path):
+    def add_preprocess(user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path, can_download):
         db = get_db()
         db.execute(
-            "INSERT INTO preprocess (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path) VALUES (?, ?, ?, ?, ?, ?)",
-            (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path),
+            "INSERT INTO preprocess (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path, can_download) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (user_id, file_name, file_path, annotation_table, col_sel_method, merge_df_path, can_download),
         )
         db.commit()
 
@@ -598,6 +631,14 @@ class UserData:
         ).fetchone()
         return result
 
+    #result Table
+    def get_can_download_result(user_id, filename):
+        db = get_db()
+        result = db.execute(
+            "SELECT can_download_fs, can_download_anlz FROM results WHERE user_id = ? AND filename = ?", (user_id, filename)
+        ).fetchone()
+        return result
+
     def get_result_from_id(id):
         db = get_db()
         result = db.execute(
@@ -621,11 +662,11 @@ class UserData:
 
         return result
 
-    def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers):
+    def add_result(user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers, venn_data, img64, can_download_fs):
         db = get_db()
         db.execute(
-            "INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers),
+            "INSERT INTO results (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers, venn_data_set, fs_hash, can_download_fs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (user_id, filename, fs_methods, col_method1, col_method2, col_method3, classifiers, venn_data, img64, can_download_fs),
         )
         db.commit()
 
@@ -722,20 +763,21 @@ class UserData:
         return False
 
     def get_disable_validate_array(user_id):
-        disable_list = [0, 0, 0, 0, 0, 0, 0, 0]
+        disable_list = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         if(UserData.is_file_upload(user_id)):
             disable_list[0] = 1
             disable_list[1] = 1
             disable_list[2] = 1
             disable_list[3] = 1
+            disable_list[8] = 1
+            disable_list[7] = 1
         if(UserData.get_user_results(user_id)):
             disable_list[4] = 1
         if(UserData.get_result_to_validation(user_id)):
             disable_list[5] = 1
             disable_list[6] = 1
-        if UserData.is_model_created(user_id) and disable_list[0]:
-            disable_list[7] = 1  
+
         return disable_list
 
     def add_file(file_name, file_type, path, user_id, is_annotation, has_class):
