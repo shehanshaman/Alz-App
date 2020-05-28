@@ -57,6 +57,7 @@ def update_given_name():
 @login_required
 def delete_user_account():
     id = request.args.get('id')
+    id = int(id)
 
     #Check admin or same user
     if g.user['is_admin'] or g.user['id'] == id:
