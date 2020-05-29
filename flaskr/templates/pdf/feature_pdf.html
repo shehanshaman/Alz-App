@@ -32,7 +32,7 @@
     </button>
 </center>
 
-<div id="div_feature">
+<div id="div_feature" style="padding: 15px; border: 2px solid #26a69a;">
 
     <img src="{{ url_for('static', filename='images/logo_pdf.png') }}" alt="logo" style="width:115px; margin-top: -3px;">
 
@@ -148,7 +148,7 @@
 
     <center>
         <h3 style="font-family: monospace;">Variation of testing and training accuracies with the features selected by each feature selection method.</h3>
-        <img src="data:image/png;base64,{{fs_hash}}" alt="volcano" width="1000" height="auto">    
+        <img src="data:image/png;base64,{{fs_hash}}" alt="volcano" width="850" height="auto">    
     </center>
 
     <p style="font-family: monospace; text-align: justify;">When building the model, we split the data set into 2 parts called testing and training data set. We use the training set in training the data and use the test set as an independent set to test the accuracy. The graph shows the variation of the accuracy of the data set for the model with only the genes selected by each method as the features. Both datasets were trained upon 3 classifiers as represented by different colors.</p>
@@ -191,7 +191,7 @@ selected_features_set_fun(set_3, 3, method_set[3]);
 
 function selected_features_set_fun(set_1, set_n, len){
 
-    stop_val=8;
+    stop_val=6;
     if( len < stop_val){
         for (var f in set_1) {
             $('#fs_feature_set_' + set_n + ' tr:last').after(
@@ -211,8 +211,6 @@ function selected_features_set_fun(set_1, set_n, len){
                     '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 3] + '</td>'+
                     '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 4] + '</td>'+
                     '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 5] + '</td>'+
-                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 6] + '</td>'+
-                    '<td style="border: 1px solid #26a69a; border-collapse: collapse;padding: 15px; text-align:left;">' + set_1[stop_val*l + 7] + '</td>'+
                     '</tr>'  
             );
         l=l+1
