@@ -4,3 +4,6 @@ flask init-db
 flask run
 
 pip install -r requirements.txt
+
+flask init-model
+flask init-sample
