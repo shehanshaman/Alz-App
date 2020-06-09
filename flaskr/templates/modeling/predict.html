@@ -76,37 +76,62 @@
                     </div>
                     <div class="col-sm-4" id="modal_create">
                         <a style="font-size: 15px;font-family: monospace;" href="{{ url_for('modeling.index') }}">
-                                <button type="button" class="btn btn-warning">Customize Model</button>
+                            <button type="button" class="btn btn-warning">Customize Model</button>
                         </a>
                     </div>
 
                 </div>
                 <div class="row">
-                    <table>
-                        <tr>
-                            <td>Classifier:</td>
-                            <td id="selected_classifier">{{ default_details[2] }}</td>
-                        </tr>
-                        <tr>
-                            <td>Accuracy:</td>
-                            <td id="selected_accuracy">{{ default_details[3] }} %</td>
-                        </tr>
-                        <tr>
-                            <td>Trained from:</td>
-                            <td id="selected_from">{{ default_details[1] }}</td>
-                        </tr>
-                        <tr>
-                            <td>Features:</td>
-                            <td id="selected_features">{{ default_details[0] }}</td>
-                        </tr>
-                    </table>
+                    {% if details %}
+                        <table>
+                            <tr>
+                                <td>Classifier:</td>
+                                <td id="selected_classifier">{{ details[2] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Accuracy:</td>
+                                <td id="selected_accuracy">{{ details[3] }} %</td>
+                            </tr>
+                            <tr>
+                                <td>Trained from:</td>
+                                <td id="selected_from">{{ details[1] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Features:</td>
+                                <td id="selected_features">{{ details[0] }}</td>
+                            </tr>
+                        </table>
+                    {% else %}
+                        <table>
+                            <tr>
+                                <td>Classifier:</td>
+                                <td id="selected_classifier">{{ default_details[2] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Accuracy:</td>
+                                <td id="selected_accuracy">{{ default_details[3] }} %</td>
+                            </tr>
+                            <tr>
+                                <td>Trained from:</td>
+                                <td id="selected_from">{{ default_details[1] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Features:</td>
+                                <td id="selected_features">{{ default_details[0] }}</td>
+                            </tr>
+                        </table>
+                    {% endif %}
+
                 </div>
                 <div class="row">
 
                     <label>
-                        <input id="default_model" type="checkbox" class="filled-in" checked="checked" {% if not details %}
-                            disabled
-                        {% endif %}/>
+                        {% if details %}
+                            <input id="default_model" type="checkbox" class="filled-in">
+                        {% else %}
+                            <input id="default_model" type="checkbox" class="filled-in" checked="checked" disabled>
+                        {% endif %}
+
                         <span>Default Model</span>
                     </label>
                 </div>
@@ -190,7 +215,12 @@
                         </div>
                     </div>
 
-                    <input type="hidden" id="is_default_model" name="is_default_model" value="1">
+                    {% if details %}
+                        <input type="hidden" id="is_default_model" name="is_default_model" value="0">
+                    {% else %}
+                        <input type="hidden" id="is_default_model" name="is_default_model" value="1">
+                    {% endif %}
+
 
                     <div class="submit">
                         <button id="btn-submit-predict" class="waves-effect waves-dark btn next-step step-6-click"
@@ -243,7 +273,12 @@
 {% endif %}
 
 <script>
-    document.getElementById('default_model').value = 1;
+    {% if details %}
+        document.getElementById('default_model').value = 0;
+    {% else %}
+        document.getElementById('default_model').value = 1;
+    {% endif %}
+
 
     function update_checkbox(event) {
         var id = event.target.id;
@@ -279,13 +314,13 @@
     });
 
     $('#default_model').click(function () {
-        var is_default = document.getElementById('default_model').value == 0 ? 1:0;
-        if(is_default == 1){
+        var is_default = document.getElementById('default_model').value == 0 ? 1 : 0;
+        if (is_default == 1) {
             document.getElementById('selected_classifier').innerHTML = '{{ default_details[2] }}';
             document.getElementById('selected_accuracy').innerHTML = '{{ default_details[3] }} %';
             document.getElementById('selected_from').innerHTML = '{{ default_details[1] }}';
             document.getElementById('selected_features').innerHTML = '{{ default_details[0] }}';
-        }else{
+        } else {
             document.getElementById('selected_classifier').innerHTML = '{{ details[2] }}';
             document.getElementById('selected_accuracy').innerHTML = '{{ details[3] }} %';
             document.getElementById('selected_from').innerHTML = '{{ details[1] }}';

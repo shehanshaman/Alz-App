@@ -1,11 +1,11 @@
 export PS1='$(whoami)@$(hostname):$(pwd)$ '
 
 envirenment set
-cd fyp_host/Alz-App
-. env/bin/activate
+cd Alz-App
+. venv/bin/activate
 
-ps -U servercom -au
+ps -U genetserver -au
 kill pid
 
 run
-python app.py &
+python3 app.py &
